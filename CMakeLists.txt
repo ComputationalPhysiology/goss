@@ -10,7 +10,7 @@ project(GOSOL)
 set(GOSOL_VERSION_MAJOR "0")
 set(GOSOL_VERSION_MINOR "9")
 set(GOSOL_VERSION_MICRO "0")
-set(GOSOL_VERSION_STRING "${GOSOL_VERSION_MAJOR}.${GOSOL_VERSION_MINOR}.${GOSOL_VERSION_MICRO}")
+set(GOSOL_VERSION "${GOSOL_VERSION_MAJOR}.${GOSOL_VERSION_MINOR}.${GOSOL_VERSION_MICRO}")
 
 # Set special link option, see `cmake --help-policy CMP0003`
 if(COMMAND cmake_policy)
@@ -28,6 +28,11 @@ set(GOSOL_CMAKE_DIR "${GOSOL_SOURCE_DIR}/cmake" CACHE INTERNAL "")
 # Options
 
 option(GOSOL_ENABLE_PYTHON "Enable Python extensions." OFF)
+option(GOSOL_WITH_LIBRARY_VERSION "Build with library version information." ON)
+option(BUILD_SHARED_LIBS "Build GOSOL with shared libraries." ON)
+option(CMAKE_SKIP_RPATH "Do not add runtime paths when using shared libraries." OFF)
+option(CMAKE_INSTALL_RPATH_USE_LINK_PATH "Add paths to linker search and installed rpath." ON)
+option(CMAKE_USE_RELATIVE_PATHS "Use relative paths in makefiles and projects." OFF)
 
 #------------------------------------------------------------------------------
 # Run tests to find required packages
@@ -76,17 +81,6 @@ if (PYTHONINTERP_FOUND)
       CACHE PATH "Python module installation directory.")
   endif()
 endif (PYTHONINTERP_FOUND)
-
-#------------------------------------------------------------------------------
-# Target names and installation directories
-
-# Set GOSOL install sub-directories
-set(GOSOL_LIB_DIR "lib")
-set(GOSOL_INCLUDE_DIR "include")
-set(GOSOL_PKGCONFIG_DIR "lib/pkgconfig")
-set(GOSOL_SHARE_DIR "share")
-set(GOSOL_MAN_DIR "share/man")
-set(GOSOL_CMAKE_CONFIG_DIR "share/ufc")
 
 #------------------------------------------------------------------------------
 # Build SWIG extension and install
@@ -163,6 +157,28 @@ if (GOSOL_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
 endif()
 
 #------------------------------------------------------------------------------
+# Installation of DOLFIN library
+
+# Set GOSOL install sub-directories
+#set(GOSOL_BIN_DIR "bin" CACHE PATH "Binary installation directory.")
+set(GOSOL_LIB_DIR "lib" CACHE PATH "Library installation directory.")
+set(GOSOL_INCLUDE_DIR "include" CACHE PATH "C/C++ header installation directory.")
+set(GOSOL_PKGCONFIG_DIR "lib/pkgconfig" CACHE PATH "pkg-config file installation directory.")
+#set(GOSOL_SHARE_DIR "share/gosol" CACHE PATH "Shared data installation directory.")
+#set(GOSOL_MAN_DIR "share/man" CACHE PATH "Manual page installation directory.")
+#set(GOSOL_DOC_DIR "${GOSOL_SHARE_DIR}/doc" CACHE PATH "GOSOL Documentation directory.")
+
+# Append the library version information to the library target properties
+if (GOSOL_WITH_LIBRARY_VERSION)
+  string(REPLACE "+" "" GOSOL_LIBRARY_VERSION ${GOSOL_VERSION})
+  # This setting of SOVERSION assumes that any API change
+  # will increment either the minor or major version number.
+  set(GOSOL_LIBRARY_PROPERTIES ${GOSOL_LIBRARY_PROPERTIES}
+    VERSION ${GOSOL_LIBRARY_VERSION}
+    SOVERSION ${GOSOL_VERSION_MAJOR}.${GOSOL_VERSION_MINOR}
+  )
+endif()
+
 # Add source directory
 add_subdirectory(gosol)
 

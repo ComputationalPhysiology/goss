@@ -1,5 +1,4 @@
 set(GOSOL_H gosol.h)
-install(FILES ${GOSOL_H} DESTINATION ${GOSOL_INCLUDE_DIR} COMPONENT Development)
 
 #------------------------------------------------------------------------------
 # GOSOL source directories
@@ -13,12 +12,12 @@ file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 #------------------------------------------------------------------------------
 # Install header files
 
-install(file ${GOSOL_H} DESTINATION ${GOSOL_INCLUDE_DIR} COMPONENT Development)
+install(FILES ${GOSOL_H} DESTINATION ${GOSOL_INCLUDE_DIR} COMPONENT Development)
 
 foreach(_HEADER ${HEADERS})
   list(FIND ${GOSOL_H} ${_HEADER} INDEX_EXCLUDES)
   if (${INDEX_EXCLUDES} LESS 0)
-    install(FILE ${_HEADER} DESTINATION ${GOSOL_INCLUDE_DIR}/gosol COMPONENT Development)
+    install(FILES ${_HEADER} DESTINATION ${GOSOL_INCLUDE_DIR}/gosol COMPONENT Development)
   endif()
 endforeach()
 
@@ -66,10 +65,14 @@ foreach(_lib ${GOSOL_TARGET_LINK_LIBRARIES})
   endif()
 endforeach()
 
+message(STATUS "LINKFLAGS ${PKG_LINKFLAGS}")
+
 # Remove duplicated link flags
-separate_arguments(PKG_LINKFLAGS)
-list(REMOVE_DUPLICATES PKG_LINKFLAGS)
-string(REPLACE ";" " " PKG_LINKFLAGS "${PKG_LINKFLAGS}")
+if (PKG_LINKFLAGS)
+  separate_arguments(PKG_LINKFLAGS)
+  list(REMOVE_DUPLICATES PKG_LINKFLAGS)
+  string(REPLACE ";" " " PKG_LINKFLAGS "${PKG_LINKFLAGS}")
+endif()
 
 # Add additional link flags
 foreach(_linkflag ${GOSOL_LINK_FLAGS})

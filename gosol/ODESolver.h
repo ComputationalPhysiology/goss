@@ -1,8 +1,9 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
-#include "../ODE.h"
 #include <iostream>
+
+#include "ODE.h"
 
 namespace gosol 
 {
