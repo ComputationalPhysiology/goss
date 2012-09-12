@@ -1,4 +1,4 @@
-# Top level CMakeLists.txt file for GOSOL
+# Top level CMakeLists.txt file for GOSS
 
 # Require CMake 2.6
 cmake_minimum_required(VERSION 2.6)
@@ -6,11 +6,11 @@ cmake_minimum_required(VERSION 2.6)
 #------------------------------------------------------------------------------
 # Set project name and version number
 
-project(GOSOL)
-set(GOSOL_VERSION_MAJOR "0")
-set(GOSOL_VERSION_MINOR "9")
-set(GOSOL_VERSION_MICRO "0")
-set(GOSOL_VERSION "${GOSOL_VERSION_MAJOR}.${GOSOL_VERSION_MINOR}.${GOSOL_VERSION_MICRO}")
+project(GOSS)
+set(GOSS_VERSION_MAJOR "0")
+set(GOSS_VERSION_MINOR "9")
+set(GOSS_VERSION_MICRO "0")
+set(GOSS_VERSION "${GOSS_VERSION_MAJOR}.${GOSS_VERSION_MINOR}.${GOSS_VERSION_MICRO}")
 
 # Set special link option, see `cmake --help-policy CMP0003`
 if(COMMAND cmake_policy)
@@ -21,15 +21,15 @@ endif()
 #set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set location of our FindFoo.cmake modules
-set(GOSOL_CMAKE_DIR "${GOSOL_SOURCE_DIR}/cmake" CACHE INTERNAL "")
-#set(CMAKE_MODULE_PATH "${GOSOL_CMAKE_DIR}/modules")
+set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
+#set(CMAKE_MODULE_PATH "${GOSS_CMAKE_DIR}/modules")
 
 #------------------------------------------------------------------------------
 # Options
 
-option(GOSOL_ENABLE_PYTHON "Enable Python extensions." OFF)
-option(GOSOL_WITH_LIBRARY_VERSION "Build with library version information." ON)
-option(BUILD_SHARED_LIBS "Build GOSOL with shared libraries." ON)
+option(GOSS_ENABLE_PYTHON "Enable Python extensions." OFF)
+option(GOSS_WITH_LIBRARY_VERSION "Build with library version information." ON)
+option(BUILD_SHARED_LIBS "Build GOSS with shared libraries." ON)
 option(CMAKE_SKIP_RPATH "Do not add runtime paths when using shared libraries." OFF)
 option(CMAKE_INSTALL_RPATH_USE_LINK_PATH "Add paths to linker search and installed rpath." ON)
 option(CMAKE_USE_RELATIVE_PATHS "Use relative paths in makefiles and projects." OFF)
@@ -55,29 +55,29 @@ include(UseSWIG)
 # Get Python module path from distutils
 if (PYTHONINTERP_FOUND)
 
-  if (NOT DEFINED GOSOL_INSTALL_PYTHON_EXT_DIR)
+  if (NOT DEFINED GOSS_INSTALL_PYTHON_EXT_DIR)
     # Get path for platform-dependent Python modules (since we install a binary libary)
     execute_process(
       COMMAND ${PYTHON_EXECUTABLE} -c "import sys, distutils.sysconfig; sys.stdout.write(distutils.sysconfig.get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}'))"
-      OUTPUT_VARIABLE GOSOL_INSTALL_PYTHON_EXT_DIR
+      OUTPUT_VARIABLE GOSS_INSTALL_PYTHON_EXT_DIR
       )
     # Strip off CMAKE_INSTALL_PREFIX (is added later by CMake)
     string(REGEX REPLACE "${CMAKE_INSTALL_PREFIX}(/|\\\\)([^ ]*)" "\\2"
-      GOSOL_INSTALL_PYTHON_EXT_DIR "${GOSOL_INSTALL_PYTHON_EXT_DIR}")
-    set(GOSOL_INSTALL_PYTHON_EXT_DIR ${GOSOL_INSTALL_PYTHON_EXT_DIR}
+      GOSS_INSTALL_PYTHON_EXT_DIR "${GOSS_INSTALL_PYTHON_EXT_DIR}")
+    set(GOSS_INSTALL_PYTHON_EXT_DIR ${GOSS_INSTALL_PYTHON_EXT_DIR}
       CACHE PATH "Python extension module installation directory.")
   endif()
 
-  if (NOT DEFINED GOSOL_INSTALL_PYTHON_MODULE_DIR)
+  if (NOT DEFINED GOSS_INSTALL_PYTHON_MODULE_DIR)
     # Get path for pure Python modules
     execute_process(
       COMMAND ${PYTHON_EXECUTABLE} -c "import sys, distutils.sysconfig; sys.stdout.write(distutils.sysconfig.get_python_lib(plat_specific=False, prefix='${CMAKE_INSTALL_PREFIX}'))"
-      OUTPUT_VARIABLE GOSOL_INSTALL_PYTHON_MODULE_DIR
+      OUTPUT_VARIABLE GOSS_INSTALL_PYTHON_MODULE_DIR
       )
     # Strip off CMAKE_INSTALL_PREFIX (is added later by CMake)
     string(REGEX REPLACE "${CMAKE_INSTALL_PREFIX}(/|\\\\)([^ ]*)" "\\2"
-      GOSOL_INSTALL_PYTHON_MODULE_DIR "${GOSOL_INSTALL_PYTHON_MODULE_DIR}")
-    set(GOSOL_INSTALL_PYTHON_MODULE_DIR ${GOSOL_INSTALL_PYTHON_MODULE_DIR}
+      GOSS_INSTALL_PYTHON_MODULE_DIR "${GOSS_INSTALL_PYTHON_MODULE_DIR}")
+    set(GOSS_INSTALL_PYTHON_MODULE_DIR ${GOSS_INSTALL_PYTHON_MODULE_DIR}
       CACHE PATH "Python module installation directory.")
   endif()
 endif (PYTHONINTERP_FOUND)
@@ -85,11 +85,11 @@ endif (PYTHONINTERP_FOUND)
 #------------------------------------------------------------------------------
 # Build SWIG extension and install
 
-if (GOSOL_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
+if (GOSS_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
 
   # Check SWIG version
   if (${SWIG_VERSION} LESS 2.0)
-      message(ERROR " GOSOL requires SWIG version 2.0 or greater. You have version ${SWIG_VERSION}. Set GOSOL_ENABLE_PYTHON to False or install correct SWIG version.")
+      message(ERROR " GOSS requires SWIG version 2.0 or greater. You have version ${SWIG_VERSION}. Set GOSS_ENABLE_PYTHON to False or install correct SWIG version.")
     endif()
 
   # Default to release build (can be overridden by user)
@@ -107,10 +107,10 @@ if (GOSOL_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
   endif()
 
   # Include directories
-  include_directories(${GOSOL_SOURCE_DIR}/gosol/swig ${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+  include_directories(${GOSS_SOURCE_DIR}/goss/swig ${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
 
   # Set module name
-  set(SWIG_MODULE_NAME gosol)
+  set(SWIG_MODULE_NAME goss)
 
   # SWIG flags
   set(CMAKE_SWIG_FLAGS
@@ -130,27 +130,27 @@ if (GOSOL_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
     )
 
   # SWIG sources
-  set(SWIG_SOURCES gosol/swig/gosol.i)
-  set(SWIG_MODULE_${SWIG_MODULE_NAME}_EXTRA_DEPS ${GOSOL_H})
+  set(SWIG_SOURCES goss/swig/goss.i)
+  set(SWIG_MODULE_${SWIG_MODULE_NAME}_EXTRA_DEPS ${GOSS_H})
   set_source_files_properties(${SWIG_SOURCES} PROPERTIES CPLUSPLUS ON)
   swig_add_module(${SWIG_MODULE_NAME} python ${SWIG_SOURCES})
 
   # Is this required?
-  swig_link_libraries(gosol ${PYTHON_LIBRARIES})
-  get_target_property(SWIG_MODULE_LOCATION ${SWIG_MODULE_gosol_REAL_NAME} LOCATION)
+  swig_link_libraries(goss ${PYTHON_LIBRARIES})
+  get_target_property(SWIG_MODULE_LOCATION ${SWIG_MODULE_goss_REAL_NAME} LOCATION)
   message("SWIG_MODULE_LOCATION ${SWIG_MODULE_LOCATION}")
 
   # Install the swig file
   install(FILES SWIG_SOURCES
-    DESTINATION ${GOSOL_INCLUDE_DIR}/swig
+    DESTINATION ${GOSS_INCLUDE_DIR}/swig
     COMPONENT Development
     )
 
-  # Install _gosol.so and gosol.py
+  # Install _goss.so and goss.py
   install(FILES
     ${SWIG_MODULE_LOCATION}
-    ${CMAKE_CURRENT_BINARY_DIR}/gosol.py src/gosol/__init__.py
-    DESTINATION ${GOSOL_INSTALL_PYTHON_EXT_DIR}/gosol
+    ${CMAKE_CURRENT_BINARY_DIR}/goss.py src/goss/__init__.py
+    DESTINATION ${GOSS_INSTALL_PYTHON_EXT_DIR}/goss
     COMPONENT Development
     )
 
@@ -159,54 +159,54 @@ endif()
 #------------------------------------------------------------------------------
 # Installation of DOLFIN library
 
-# Set GOSOL install sub-directories
-#set(GOSOL_BIN_DIR "bin" CACHE PATH "Binary installation directory.")
-set(GOSOL_LIB_DIR "lib" CACHE PATH "Library installation directory.")
-set(GOSOL_INCLUDE_DIR "include" CACHE PATH "C/C++ header installation directory.")
-set(GOSOL_PKGCONFIG_DIR "lib/pkgconfig" CACHE PATH "pkg-config file installation directory.")
-#set(GOSOL_SHARE_DIR "share/gosol" CACHE PATH "Shared data installation directory.")
-#set(GOSOL_MAN_DIR "share/man" CACHE PATH "Manual page installation directory.")
-#set(GOSOL_DOC_DIR "${GOSOL_SHARE_DIR}/doc" CACHE PATH "GOSOL Documentation directory.")
+# Set GOSS install sub-directories
+#set(GOSS_BIN_DIR "bin" CACHE PATH "Binary installation directory.")
+set(GOSS_LIB_DIR "lib" CACHE PATH "Library installation directory.")
+set(GOSS_INCLUDE_DIR "include" CACHE PATH "C/C++ header installation directory.")
+set(GOSS_PKGCONFIG_DIR "lib/pkgconfig" CACHE PATH "pkg-config file installation directory.")
+#set(GOSS_SHARE_DIR "share/goss" CACHE PATH "Shared data installation directory.")
+#set(GOSS_MAN_DIR "share/man" CACHE PATH "Manual page installation directory.")
+#set(GOSS_DOC_DIR "${GOSS_SHARE_DIR}/doc" CACHE PATH "GOSS Documentation directory.")
 
 # Append the library version information to the library target properties
-if (GOSOL_WITH_LIBRARY_VERSION)
-  string(REPLACE "+" "" GOSOL_LIBRARY_VERSION ${GOSOL_VERSION})
+if (GOSS_WITH_LIBRARY_VERSION)
+  string(REPLACE "+" "" GOSS_LIBRARY_VERSION ${GOSS_VERSION})
   # This setting of SOVERSION assumes that any API change
   # will increment either the minor or major version number.
-  set(GOSOL_LIBRARY_PROPERTIES ${GOSOL_LIBRARY_PROPERTIES}
-    VERSION ${GOSOL_LIBRARY_VERSION}
-    SOVERSION ${GOSOL_VERSION_MAJOR}.${GOSOL_VERSION_MINOR}
+  set(GOSS_LIBRARY_PROPERTIES ${GOSS_LIBRARY_PROPERTIES}
+    VERSION ${GOSS_LIBRARY_VERSION}
+    SOVERSION ${GOSS_VERSION_MAJOR}.${GOSS_VERSION_MINOR}
   )
 endif()
 
 # Add source directory
-add_subdirectory(gosol)
+add_subdirectory(goss)
 
 #------------------------------------------------------------------------------
-# Generate GOSOLConfig.cmake file
+# Generate GOSSConfig.cmake file
 
-#configure_file(${GOSOL_CMAKE_DIR}/GOSOLConfig.cmake.in GOSOLConfig.cmake @ONLY)
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/GOSOLConfig.cmake
-#  DESTINATION ${GOSOL_CMAKE_CONFIG_DIR}
+#configure_file(${GOSS_CMAKE_DIR}/GOSSConfig.cmake.in GOSSConfig.cmake @ONLY)
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/GOSSConfig.cmake
+#  DESTINATION ${GOSS_CMAKE_CONFIG_DIR}
 #  COMPONENT Development
 #  )
 
 #------------------------------------------------------------------------------
-# Generate GOSOLConfigVersion.cmake file
+# Generate GOSSConfigVersion.cmake file
 
-#configure_file(${GOSOL_CMAKE_DIR}/GOSOLConfigVersion.cmake.in
-#  GOSOLConfigVersion.cmake @ONLY)
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/GOSOLConfigVersion.cmake
-#  DESTINATION ${GOSOL_CMAKE_CONFIG_DIR}
+#configure_file(${GOSS_CMAKE_DIR}/GOSSConfigVersion.cmake.in
+#  GOSSConfigVersion.cmake @ONLY)
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/GOSSConfigVersion.cmake
+#  DESTINATION ${GOSS_CMAKE_CONFIG_DIR}
 #  COMPONENT Development
 #  )
 
 #------------------------------------------------------------------------------
-# Generate pkg-config config file (gosol.pc)
+# Generate pkg-config config file (goss.pc)
 
-#configure_file(${GOSOL_CMAKE_DIR}/gosol.pc.in gosol.pc @ONLY)
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gosol.pc
-#  DESTINATION ${GOSOL_PKGCONFIG_DIR}
+#configure_file(${GOSS_CMAKE_DIR}/goss.pc.in goss.pc @ONLY)
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/goss.pc
+#  DESTINATION ${GOSS_PKGCONFIG_DIR}
 #  COMPONENT Development
 #  )
 
