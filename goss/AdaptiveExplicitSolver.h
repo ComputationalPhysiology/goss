@@ -13,11 +13,14 @@ namespace goss
     
   public:
 
+    // Default Constructor
+    AdaptiveExplicitSolver();
+
     // Constructor
     AdaptiveExplicitSolver (goss::ODE* ode_, double ldt=0.0, double dt=0.0);
 
     // Constructor
-    AdaptiveExplicitSolver(double ldt=0.0, double dt=0.0);
+    AdaptiveExplicitSolver(double ldt, double dt=0.0);
 
     // Destructor
     virtual ~AdaptiveExplicitSolver (){};

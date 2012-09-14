@@ -6,6 +6,12 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
+AdaptiveExplicitSolver::AdaptiveExplicitSolver() 
+  : ODESolver(), dt_v(0), accept_v(0)
+{
+  init();
+}
+//-----------------------------------------------------------------------------
 AdaptiveExplicitSolver::AdaptiveExplicitSolver (ODE* ode, double ldt, double dt)
   : ODESolver(ode, ldt, dt), dt_v(0), accept_v(0)
 { 
@@ -143,6 +149,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
 //-----------------------------------------------------------------------------
 void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, double t_end)
 {
+  // FIXME: Force this method to return the new time step
   double err = 0.0;
   double sk;
 
@@ -170,7 +177,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   if (std::isnan(err) || std::isinf(err))
     err = 2000.0;
 
-  // If the error is smaller then 1, the timestep is accepted, and we advance
+  // If the error is smaller than 1 the timestep is accepted, and we advance
   // If not, the timestep is rejected
   if (err <= 1.0)
   {
@@ -178,7 +185,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
     num_accepted += 1;
     step_accepted = true;
 
-    if (fabs(_t-t_end) < eps)
+    if (fabs(_t - t_end) < eps)
       reached_tend = true;
   }
   else
@@ -207,7 +214,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   // set the first timestp to half the distance to avoid the last timestep 
   // been very small
   if (_t + _dt >= t_end)
-    _dt = t_end-_t;
+    _dt = t_end - _t;
 
   else if (_t + 1.5*_dt >= t_end)
     _dt = (t_end - _t)/2.0;
