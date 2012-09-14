@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 2.6)
 #------------------------------------------------------------------------------
 # Set project name and version number
 
-project(GOSS)
+project(goss)
+
 set(GOSS_VERSION_MAJOR "0")
 set(GOSS_VERSION_MINOR "9")
 set(GOSS_VERSION_MICRO "0")
@@ -29,6 +30,7 @@ set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
 
 option(GOSS_ENABLE_PYTHON "Enable Python extensions." OFF)
 option(GOSS_WITH_LIBRARY_VERSION "Build with library version information." ON)
+option(GOSS_ENABLE_UNIT_TESTS "Build unit tests." ON)
 option(BUILD_SHARED_LIBS "Build GOSS with shared libraries." ON)
 option(CMAKE_SKIP_RPATH "Do not add runtime paths when using shared libraries." OFF)
 option(CMAKE_INSTALL_RPATH_USE_LINK_PATH "Add paths to linker search and installed rpath." ON)
@@ -181,6 +183,18 @@ endif()
 
 # Add source directory
 add_subdirectory(goss)
+
+#------------------------------------------------------------------------------
+# If enabling unit testing add test subdirectory
+
+if (GOSS_ENABLE_UNIT_TESTS)
+  add_subdirectory(test)
+  
+  # Add target "run_quicktest" for running only Python unit tests
+  add_custom_target(run_tests
+    COMMAND ode_test
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test")
+endif()
 
 #------------------------------------------------------------------------------
 # Generate GOSSConfig.cmake file
