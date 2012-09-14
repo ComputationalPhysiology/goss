@@ -19,7 +19,7 @@ if(COMMAND cmake_policy)
 endif()
 
 # Set verbose output while testing CMake
-#set(CMAKE_VERBOSE_MAKEFILE 1)
+set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set location of our FindFoo.cmake modules
 set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
@@ -31,10 +31,82 @@ set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
 option(GOSS_ENABLE_PYTHON "Enable Python extensions." OFF)
 option(GOSS_WITH_LIBRARY_VERSION "Build with library version information." ON)
 option(GOSS_ENABLE_UNIT_TESTS "Build unit tests." ON)
+option(GOSS_ENABLE_CODE_COVERAGE "Enable code coverage." OFF)
 option(BUILD_SHARED_LIBS "Build GOSS with shared libraries." ON)
 option(CMAKE_SKIP_RPATH "Do not add runtime paths when using shared libraries." OFF)
 option(CMAKE_INSTALL_RPATH_USE_LINK_PATH "Add paths to linker search and installed rpath." ON)
 option(CMAKE_USE_RELATIVE_PATHS "Use relative paths in makefiles and projects." OFF)
+
+#------------------------------------------------------------------------------
+# Compiler flags
+
+# Default build type (can be overridden by user)
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
+    "Choose the type of build, options are: Debug Developer MinSizeRel Release RelWithDebInfo." FORCE)
+endif()
+
+# Check for some compiler flags
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG(-pipe HAS_PIPE)
+if (HAS_PIPE)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-pipe ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+
+# Add some strict compiler checks
+CHECK_CXX_COMPILER_FLAG("-Wall -Werror -pedantic" HAS_PEDANTIC)
+if (HAS_PEDANTIC)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-Wall -Werror -pedantic ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+ 
+
+CHECK_CXX_COMPILER_FLAG("-Wshadow -Wextra" HAS_EXTRA)
+if (HAS_EXTRA)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-Wshadow -Wextra ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+
+CHECK_CXX_COMPILER_FLAG(-std=c++98 HAS_STD)
+if (HAS_STD AND CMAKE_COMPILER_IS_GNUCXX)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-std=c++98 ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+
+# Debug flags
+CHECK_CXX_COMPILER_FLAG(-g HAS_DEBUG)
+if (HAS_DEBUG)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-g ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+
+CHECK_CXX_COMPILER_FLAG(-O2 HAS_O2_OPTIMISATION)
+if (HAS_O2_OPTIMISATION)
+  set(GOSS_CXX_DEVELOPER_FLAGS "-O2 ${GOSS_CXX_DEVELOPER_FLAGS}")
+endif()
+
+# Set 'Developer' build type flags
+set(CMAKE_CXX_FLAGS_DEVELOPER "${GOSS_CXX_DEVELOPER_FLAGS}" CACHE STRING
+  "Flags used by the compiler during development." FORCE)
+
+# FIXME: Do we want to add -DDEBUG to RelWithDebInfo?
+# Add debug definitions
+if (CMAKE_BUILD_TYPE STREQUAL "Developer" OR CMAKE_BUILD_TYPE STREQUAL "Debug")
+  list(APPEND GOSS_CXX_DEFINITIONS "-DDEBUG")
+endif()
+
+# Add flags for generating code coverage reports
+if (GOSS_ENABLE_CODE_COVERAGE AND CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
+# Disable some warnings for Intel compilers
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd161,488,654,858,1125,1170")
+endif()
+
+# Set system include flags to get around CMake bug on OSX
+# See http://public.kitware.com/Bug/print_bug_page.php?bug_id=10837
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "-isystem ")
+endif()
 
 #------------------------------------------------------------------------------
 # Run tests to find required packages
@@ -159,7 +231,7 @@ if (GOSS_ENABLE_PYTHON AND SWIG_FOUND)# AND Boost_FOUND)
 endif()
 
 #------------------------------------------------------------------------------
-# Installation of DOLFIN library
+# Installation of GOSS library
 
 # Set GOSS install sub-directories
 #set(GOSS_BIN_DIR "bin" CACHE PATH "Binary installation directory.")
