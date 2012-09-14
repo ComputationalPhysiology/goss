@@ -9,7 +9,7 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
-  : ODESolver(0.0, 0.0), jac(0), f1(0), f2(0), yz(0), _b(0), dz(0), _prev(0),
+  : ODESolver(), jac(0), f1(0), f2(0), yz(0), _b(0), dz(0), _prev(0),
     _newton_tol(1.e-5), eta(1e-10), kappa(0.1), stages(0), newtonits(0), 
     maxits(10), rejects(0), jac_comp(0), min_dt(0.0), recompute_jacobian(true)
 {
@@ -33,12 +33,12 @@ ImplicitODESolver::~ImplicitODESolver ()
       delete[] jac[i];
   }
   
-  if (jac)  delete[] jac;
-  if (f1)   delete[] f1;
-  if (f2)   delete[] f2;
-  if (yz)   delete[] yz;
+  if (jac)   delete[] jac;
+  if (f1)    delete[] f1;
+  if (f2)    delete[] f2;
+  if (yz)    delete[] yz;
   if (_b)    delete[] _b; 
-  if (dz)   delete[] dz;
+  if (dz)    delete[] dz;
   if (_prev) delete[] _prev;
 }
 //-----------------------------------------------------------------------------
@@ -50,19 +50,19 @@ void ImplicitODESolver::init()
   // We need to compute the Jacobian the first time
   recompute_jacobian = true;
 
-  _b   = new double[_ode->size()]; 
-  dz   = new double[_ode->size()];
-  _prev = new double[_ode->size()];
+  _b    = new double[ode_size()]; 
+  dz    = new double[ode_size()];
+  _prev = new double[ode_size()];
 
-  yz   = new double[_ode->size()];
-  f1   = new double[_ode->size()];
-  f2   = new double[_ode->size()];
+  yz    = new double[ode_size()];
+  f1    = new double[ode_size()];
+  f2    = new double[ode_size()];
 
   // Init jacobian
-  jac_size = _ode->size();
-  jac  = new double*[_ode->size()];
-  for (uint i = 0; i < _ode->size(); ++i)
-    jac[i] = new double[_ode->size()];
+  jac_size = ode_size();
+  jac  = new double*[ode_size()];
+  for (uint i = 0; i < ode_size(); ++i)
+    jac[i] = new double[ode_size()];
 
   // Newton tolerance
   _newton_tol = 1.e-5;
@@ -75,7 +75,7 @@ void ImplicitODESolver::compute_jacobian(double t, double* y)
   double max, ysafe, delta;
   _ode->eval(y, t, f1);
   
-  for (i = 0; i < _ode->size(); ++i)
+  for (i = 0; i < ode_size(); ++i)
   {
     ysafe = y[i];
     max = 1e-5 > std::fabs(ysafe) ? 1e-5 : std::fabs(ysafe);
@@ -83,7 +83,7 @@ void ImplicitODESolver::compute_jacobian(double t, double* y)
     y[i] += delta;
     _ode->eval(y, t, f2);
     
-    for (j=0;j<_ode->size();++j)
+    for (j=0;j<ode_size();++j)
       jac[j][i]=(f2[j]-f1[j])/delta;
     
     y[i]=ysafe;
@@ -92,14 +92,14 @@ void ImplicitODESolver::compute_jacobian(double t, double* y)
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::mult(double fact, double** matrix)
 {
-  for (uint i = 0; i < _ode->size(); ++i)
-    for (uint j = 0; j < _ode->size(); ++j)
+  for (uint i = 0; i < ode_size(); ++i)
+    for (uint j = 0; j < ode_size(); ++j)
       matrix[i][j] *= fact;
 }
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::add_identity(double** matrix)
 {
-  for (uint i = 0; i < _ode->size(); ++i)
+  for (uint i = 0; i < ode_size(); ++i)
     matrix[i][i] += 1;
 }
 //-----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void ImplicitODESolver::lu_factorize(double** mat)
 {
   double sum;
 
-  for (uint k = 1; k < _ode->size(); k++)
+  for (uint k = 1; k < ode_size(); k++)
   {
 
     for (uint i = 0; i <= k-1; ++i)
@@ -145,7 +145,7 @@ void ImplicitODESolver::forward_backward_subst(const double * const * mat,
 
   x[0] = b[0];
 
-  for (uint i = 1; i < _ode->size(); ++i)
+  for (uint i = 1; i < ode_size(); ++i)
   {
     sum = 0.0;
     for (uint j = 0; j <= i-1; ++j)
@@ -154,12 +154,12 @@ void ImplicitODESolver::forward_backward_subst(const double * const * mat,
     x[i] = b[i] -sum;
   }
 
-  x[_ode->size()-1] = x[_ode->size()-1]/mat[_ode->size()-1][_ode->size()-1];
+  x[ode_size()-1] = x[ode_size()-1]/mat[ode_size()-1][ode_size()-1];
 
-  for (int i = _ode->size()-2; i >= 0; i--)
+  for (int i = ode_size()-2; i >= 0; i--)
   {
     sum = 0;
-    for (uint j = i + 1; j < _ode->size(); ++j)
+    for (uint j = i + 1; j < ode_size(); ++j)
       sum = sum +mat[i][j]*x[j];
   
     x[i] = (x[i]-sum)/mat[i][i];
@@ -177,11 +177,11 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 
   do
   {
-    for (i = 0; i < _ode->size(); ++i)
+    for (i = 0; i < ode_size(); ++i)
       yz[i] = y0[i] + z[i];
 
     _ode->eval(yz,t,f1);
-    for (i = 0; i < _ode->size(); ++i)
+    for (i = 0; i < ode_size(); ++i)
       _b[i] = -z[i] + dt*(prev[i] + alpha*f1[i]);
 
     forward_backward_subst(jac, _b, dz);
@@ -241,7 +241,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       break;
     }
     
-    for (i = 0; i <_ode->size(); ++i)
+    for (i = 0; i <ode_size(); ++i)
       z[i] += dz[i];
 
     prev_norm = z_norm;
@@ -256,7 +256,7 @@ double ImplicitODESolver::norm(double* vec)
 {
   double l2_norm = 0;
 
-  for (uint i = 0; i < _ode->size(); ++i)
+  for (uint i = 0; i < ode_size(); ++i)
     l2_norm += vec[i]*vec[i];
 
   l2_norm = std::sqrt(l2_norm);
