@@ -1,4 +1,3 @@
-//#include <stdlib.h>
 #include <iostream>
 #include <stdexcept>
 #include "ODE.h"
