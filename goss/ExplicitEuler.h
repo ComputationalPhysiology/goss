@@ -8,20 +8,36 @@
 namespace goss 
 {
 
+  // An Explicit Euler solver
   class ExplicitEuler : public ODESolver
   {
+    
     public:
-      ExplicitEuler(): ODESolver(0.0, 0.0), dFdt(0) {};
-      ExplicitEuler (goss::ODE* ode_, double _ldt=-1.0);
-      ExplicitEuler(double _ldt);
+    
+    // Default constructor
+    ExplicitEuler() : ODESolver(0.0, 0.0), _dFdt(0) {};
 
-      virtual void attach(goss::ODE* ode_);
-      void forward(double* y, double t, double interval);
-      ~ExplicitEuler () { free(dFdt); }
+    // Constructor
+    ExplicitEuler(goss::ODE* ode_, double _ldt=-1.0);
 
-    protected: 
-      double* dFdt; // state derivative, allocated in attach(ode)
+    // Constructor
+    ExplicitEuler(double _ldt);
+    
+    // Attach ODE to solver
+    virtual void attach(goss::ODE* ode);
+
+    // Step solver an interval in time forward
+    void forward(double* y, double t, double interval);
+
+    // Destructor
+    ~ExplicitEuler ();
+    
+  protected:
+
+    // State derivative, allocated in attach(ode)
+    double* _dFdt; 
+    
   };
-
+  
 }
 #endif
