@@ -40,13 +40,13 @@ namespace goss
     inline uint ode_size() const { return _ode->size(); }
 
     // Return the ODE
-    inline const goss::ODE* ode() const { return _ode; }
+    inline const goss::ODE* get_ode() const { return _ode; }
 
     // Return the internal time step
-    inline const double internal_time_step() const { return _ldt; }
+    inline double internal_time_step() const { return _ldt; }
 
     // Set the internal time step
-    inline void set_internal_time_step(double ldt) { _ldt=ldt; }
+    inline void set_internal_time_step(double ldt) { _ldt = ldt; }
 
   protected:
     
