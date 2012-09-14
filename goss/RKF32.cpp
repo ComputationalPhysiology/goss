@@ -82,12 +82,10 @@ RKF32::RKF32(double ldt)
 }
 //-----------------------------------------------------------------------------
 void RKF32::init() 
-  //-----------------------------------------------------------------------------
 {
   AdaptiveExplicitSolver::init();
   _iord = 3;
 }
-
 //-----------------------------------------------------------------------------
 RKF32::~RKF32() 
 {
@@ -102,7 +100,6 @@ RKF32::~RKF32()
 
 //-----------------------------------------------------------------------------
 void  RKF32::attach(ODE* ode)
-  //-----------------------------------------------------------------------------
 {
   // Store ode
   _ode = ode;
@@ -133,8 +130,6 @@ void  RKF32::attach(ODE* ode)
   num_accepted = 0;
   num_rejected = 0;
 }
-
-
 //-----------------------------------------------------------------------------
 void RKF32::forward(double* y, double t, double interval) 
 {
@@ -250,15 +245,13 @@ void RKF32::forward(double* y, double t, double interval)
   dt_v.pop_back();
 #endif
 }
-
-#ifdef DEBUG
 //-----------------------------------------------------------------------------
+#ifdef DEBUG
 void RKF32::log_data(double dt, bool accepted)
 {
   dt_v.push_back(dt);
   accept_v.push_back(accepted);
 }
-
 //-----------------------------------------------------------------------------
 void RKF32::dt_vector(DoubleVector *res)
 {
@@ -291,11 +284,10 @@ void RKF32::dt_vector(DoubleVector*)
 {
   std::cout << "DEBUG OFF!" << std::endl; 
 }
-
 //-----------------------------------------------------------------------------
 void RKF32::accepted_vector(DoubleVector*)
 {
   std::cout << "DEBUG OFF!" << std::endl; 
 }
-
+//-----------------------------------------------------------------------------
 #endif
