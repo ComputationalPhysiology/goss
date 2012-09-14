@@ -14,15 +14,21 @@ namespace goss
   public:
 
     // FIXME: Remove dt as variable...
+    // Default Constructor
+    ODESolver () : _ldt(-1.0), _dt(0.0), _ode(0)
+    {
+      // Do nothing
+    }
+
     // Constructor
-    ODESolver (goss::ODE* ode, double ldt=0.0, double dt=0.0)
+    ODESolver (goss::ODE* ode, double ldt=-1.0, double dt=0.0)
       : _ldt(ldt), _dt(dt), _ode(ode)
     {
       // Do nothing
     }
 
     // Constructor
-    ODESolver (double ldt=0.0, double dt=0.0) : _ldt(ldt), _dt(dt), _ode(0)
+    ODESolver (double ldt, double dt=0.0) : _ldt(ldt), _dt(dt), _ode(0)
     {
       // Do nothing
     }
