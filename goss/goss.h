@@ -3,7 +3,12 @@
 
 // GOSS interface
 
+// ODEs
 #include <goss/ODE.h>
+#include <goss/ParameterizedODE.h>
+#include <goss/LinearizedODE.h>
+
+// ODESolvers
 #include <goss/ODESolver.h>
 #include <goss/ImplicitODESolver.h>
 #include <goss/AdaptiveExplicitSolver.h>
@@ -22,3 +27,5 @@
 #include <goss/GRL1.h>
 #include <goss/GRL2.h>
 #include <goss/RL.h>
+
+#endif
