@@ -27,7 +27,7 @@ namespace goss
     void init();
 
     // Attach ODE
-    virtual void attach(goss::ODE* ode);
+    virtual void attach(ODE* ode);
 
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
@@ -37,16 +37,17 @@ namespace goss
     void log_data(double dt, bool accepted);
     
     // Return a vector of collected timesteps
-    void dt_vector(goss::DoubleVector *res);
+    void dt_vector(DoubleVector *res);
 
     // Return a record of accepted 
-    void accepted_vector(goss::DoubleVector *res);
+    void accepted_vector(DoubleVector *res);
 
     // Counters for the number of right hand side evaluations (nfevals) and 
     // the number of accepted and rejected timesteps (ndtsa, ndtsr)
     long nfevals, ndtsa, ndtsr; 
 
   private: 
+
     // RK coefficients
     const double a21, a32;
     

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "types.h"
 #include "RKF32.h"
 
 using namespace goss;
@@ -257,9 +258,8 @@ void RKF32::dt_vector(DoubleVector *res)
 {
   res->n    = dt_v.size();
   res->data = new double[dt_v.size()]; 
-  for( unsigned int i = 0; i < dt_v.size(); ++i ) {
+  for(uint i = 0; i < dt_v.size(); ++i)
     res->data[i] = dt_v[i];
-  }
 }
 
 //-----------------------------------------------------------------------------
@@ -267,9 +267,8 @@ void RKF32::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
   res->data = new double[accept_v.size()]; 
-  for( unsigned int i = 0; i < accept_v.size(); ++i ) {
+  for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
-  }
 }
 
 #else
