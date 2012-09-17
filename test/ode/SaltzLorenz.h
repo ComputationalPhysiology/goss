@@ -21,7 +21,7 @@ namespace goss
 
   public:
 
-    SaltzLorenz () : ODE(3, 0), rho(10.0), r(28.0), b(8.0/3.0)
+    SaltzLorenz () : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
     {}
     
     ~SaltzLorenz() {}
@@ -36,10 +36,10 @@ namespace goss
       f_vals[2] =  y1*y2-b*y3; 
     }
     
-    void getIC(goss::DoubleVector *res) const
+    void get_ic(goss::DoubleVector *res) const
     {
-      res->n = system_size;
-      res->data = new double[system_size];
+      res->n = _system_size;
+      res->data = new double[_system_size];
       res->data[0] = -8.0; 
       res->data[1] =  8.0;
       res->data[2] = 27.0;

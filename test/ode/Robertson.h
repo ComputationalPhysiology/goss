@@ -18,7 +18,7 @@ namespace goss
   {
   public:
     
-    Robertson () : ODE(3, 0) {}
+    Robertson () : ODE(3) {}
     ~Robertson() {}
     void eval(const double* y, double t, double* f_vals)
     {
@@ -30,10 +30,10 @@ namespace goss
       f_vals[2] =  3.0e7*y2*y2;
     }
     
-    void getIC(goss::DoubleVector *res) const
+    void get_ic(goss::DoubleVector *res) const
     {
-      res->n = system_size;
-      res->data = new double[system_size];
+      res->n = _system_size;
+      res->data = new double[_system_size];
       res->data[0] = 1.0; 
       res->data[1] = 0.0;
       res->data[2] = 0.0;

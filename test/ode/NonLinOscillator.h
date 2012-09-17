@@ -12,7 +12,7 @@ namespace goss
   public:
     double omega;
     
-    NonLinOscillator () : ODE(2, 0), omega(4*std::acos(0.0)) {}
+    NonLinOscillator () : ODE(2), omega(4*std::acos(0.0)) {}
     ~NonLinOscillator() {}
     void eval(const double* y, double t, double* f_vals)
     {
@@ -22,10 +22,10 @@ namespace goss
       f_vals[1] = y1+cos(y2)/6.0;
     }
     
-    void getIC(goss::DoubleVector *res) const
+    void get_ic(goss::DoubleVector *res) const
     {
-      res->n = system_size;
-      res->data = new double[system_size];
+      res->n = _system_size;
+      res->data = new double[_system_size];
       res->data[0] = 0.0; 
       res->data[1] = acos(-0.8);//omega; 
     }

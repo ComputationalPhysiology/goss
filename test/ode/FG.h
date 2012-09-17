@@ -33,7 +33,7 @@ namespace goss
   {
   public:
     
-    FG () : ODE(2, 0){}
+    FG () : ODE(2){}
     ~FG() {};
     void eval(const double* y, double t, double* f_vals)
     {
@@ -43,26 +43,26 @@ namespace goss
       f_vals[1] = 13.5*y1-10*z1;
     }
     
-    void getIC(goss::DoubleVector *res) const
+    void get_ic(goss::DoubleVector *res) const
     {
-      res->n = system_size;
-      res->data = new double[system_size];
+      res->n = _system_size;
+      res->data = new double[_system_size];
       exact(res->data,0.0); 
     }
 
     void exact(double* y, double t) const
     {
-      y[0]=2.0/3.0*std::exp(1)*(std::exp(-t)+std::exp(-19*t));
-      y[1]=std::exp(1)*(std::exp(-t)-std::exp(-19*t));
+      y[0] = 2.0/3.0*std::exp(1)*(std::exp(-t)+std::exp(-19*t));
+      y[1] = std::exp(1)*(std::exp(-t)-std::exp(-19*t));
     }
     
-  protected:
-    
-    virtual void add_descr()
-    {
-      state_descr[0] = "y(t) = 2/3*exp*(exp(-t) + exp(-19t))";
-      state_descr[1] = "z(t) =     exp*(exp(-t) - exp(-19t))";
-    }
+  //protected:
+  //  
+  //  virtual void add_descr()
+  //  {
+  //    state_descr[0] = "y(t) = 2/3*exp*(exp(-t) + exp(-19t))";
+  //    state_descr[1] = "z(t) =     exp*(exp(-t) - exp(-19t))";
+  //  }
   };
 }
 

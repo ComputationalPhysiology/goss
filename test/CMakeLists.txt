@@ -18,7 +18,6 @@ option(
 
 option(gtest_disable_pthreads "Disable uses of pthreads in gtest." OFF)
 
-
 ########################################################################
 #
 # Project-wide settings
@@ -36,6 +35,10 @@ option(gtest_disable_pthreads "Disable uses of pthreads in gtest." OFF)
 include(cmake/internal_utils.cmake)
 
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
+
+# Remove 
+#string(REGEX REPLACE "-std=c\\+\\+98" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+#string(REGEX REPLACE "-std=c\\+\\+98" " " CMAKE_CXX_FLAGS_DEVELOPER "${CMAKE_CXX_FLAGS_DEVELOPER}")
 
 # Where Google Test's .h files can be found.
 include_directories(

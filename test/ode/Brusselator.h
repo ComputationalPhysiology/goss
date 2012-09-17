@@ -9,7 +9,7 @@ namespace goss
   {
   public:
     
-    Brusselator () : ODE(2, 0) {}
+    Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
     void eval(const double* state, double t, double* f_vals)
@@ -22,8 +22,8 @@ namespace goss
 
     void getIC(goss::DoubleVector *res) const
     {
-      res->n = system_size;
-      res->data = new double[system_size];
+      res->n = _system_size;
+      res->data = new double[_system_size];
       res->data[0] = 1.5; 
       res->data[1] = 3.0; 
     }
