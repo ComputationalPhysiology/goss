@@ -17,8 +17,11 @@ namespace goss
     RK2();
 
     // Constructor
-    RK2(goss::ODE* ode_);
-    
+    RK2(double ldt=-1.0);
+
+    // Constructor
+    RK2(goss::ODE* ode, double ldt=-1.0);
+
     // Destructor
     ~RK2();
 
