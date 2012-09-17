@@ -8,7 +8,7 @@ namespace goss {
 
   // Class which provides an interface for ODE Solvers which need 
   // linearized terms
-  class LinearizedODE : virtual ODE
+  class LinearizedODE : public virtual ODE
   {
   public:
     
@@ -23,7 +23,7 @@ namespace goss {
     }
 
     // Populate indices with information about the linear terms
-    virtual void linear_terms(int* indices) const = 0;
+    virtual void linear_terms(uint* indices) const = 0;
 
     // Evaluate the linear derivatives
     virtual void linear_derivatives(const double* x, double t, double* y) const = 0;
