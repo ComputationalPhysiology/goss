@@ -58,8 +58,11 @@ void GRL2::attach(LinearizedODE* ode)
   std::fill(y0, y0 + ode_size(), 0.0);
 }
 //-----------------------------------------------------------------------------
-void GRL2::forward(double* y, double t, double dt)
+void GRL2::forward(double* y, double t, double interval)
 {
+  // Local timestep
+  const double dt = interval;
+
   // Copy start conditions
   std::memcpy(y0, y, nbytes); 
 

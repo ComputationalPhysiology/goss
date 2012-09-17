@@ -53,7 +53,6 @@ void GRL1::attach(LinearizedODE* ode)
 
 //-----------------------------------------------------------------------------
 void GRL1::forward(double* y, double t, double interval)
-//-----------------------------------------------------------------------------
 {
 
   // Local timestep

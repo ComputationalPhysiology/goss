@@ -31,7 +31,7 @@ namespace goss {
     virtual void attach(LinearizedODE* ode);
 
     // Step solver an interval in time forward
-    void forward(double* y, double t, double dt);
+    void forward(double* y, double t, double interval);
     
   private:
 
