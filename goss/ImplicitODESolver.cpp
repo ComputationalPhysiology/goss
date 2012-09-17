@@ -180,7 +180,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     for (i = 0; i < ode_size(); ++i)
       yz[i] = y0[i] + z[i];
 
-    _ode->eval(yz,t,f1);
+    _ode->eval(yz, t, f1);
     for (i = 0; i < ode_size(); ++i)
       _b[i] = -z[i] + dt*(prev[i] + alpha*f1[i]);
 

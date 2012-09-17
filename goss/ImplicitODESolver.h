@@ -53,7 +53,7 @@ namespace goss
 
     uint stages;
     int newtonits, maxits, rejects, jac_comp;
-    double  min_dt;
+    double min_dt;
     bool recompute_jacobian;
 
     // Compute jacobian using numerical approximation
