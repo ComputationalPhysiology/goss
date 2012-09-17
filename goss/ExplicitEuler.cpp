@@ -5,17 +5,17 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ExplicitEuler:: ExplicitEuler(ODE* ode, double ldt) : ODESolver(ode, ldt), _dFdt(0)
+ExplicitEuler::ExplicitEuler(ODE* ode, double ldt) : ODESolver(ode, ldt), _dFdt(0)
 { 
   attach(ode);
 } 
 //-----------------------------------------------------------------------------
-ExplicitEuler:: ExplicitEuler(double ldt) : ODESolver(ldt), _dFdt(0)
+ExplicitEuler::ExplicitEuler(double ldt) : ODESolver(ldt), _dFdt(0)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void  ExplicitEuler:: attach(ODE* ode)
+void  ExplicitEuler::attach(ODE* ode)
 {
   // Attach ODE
   _ode = ode;
@@ -29,7 +29,7 @@ void  ExplicitEuler:: attach(ODE* ode)
 
 }
 //-----------------------------------------------------------------------------
-void ExplicitEuler:: forward(double* y, double t, double interval) 
+void ExplicitEuler::forward(double* y, double t, double interval) 
 {
 
   assert(_ode);
