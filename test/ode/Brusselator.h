@@ -12,7 +12,7 @@ namespace goss
     Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
-    void eval(const double* state, double t, double* f_vals)
+    virtual void eval(const double* state, double t, double* f_vals)
     {
       const double y1 = state[0];
       const double y2 = state[1];
@@ -20,7 +20,7 @@ namespace goss
       f_vals[1] = 3*y1-y1*y1*y2;
     }
 
-    void getIC(goss::DoubleVector *res) const
+    virtual void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
       res->data = new double[_system_size];

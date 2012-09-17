@@ -16,13 +16,14 @@ namespace goss {
   class Arenstorf : public ODE
   {
   private:
-    double rval,rvalp;//parameters for the attractor
+    double rval, rvalp;//parameters for the attractor
 
   public:
 
     Arenstorf (): ODE(4), rval(0.012277471), rvalp(1.0-rval){}
     ~Arenstorf() {}
-    void eval(const double* y, double t, double* f_vals)
+
+    virtual void eval(const double* y, double t, double* f_vals)
     {
       const double y0 = y[0];
       const double y1 = y[1];
@@ -47,7 +48,7 @@ namespace goss {
       res->data[1] =  0.0;
       res->data[2] =  0.0;
       res->data[3] = -2.00158510637908252240537862224;
-    }    
+    }
   };
 }
 
