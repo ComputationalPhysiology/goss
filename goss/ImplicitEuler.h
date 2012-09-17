@@ -7,32 +7,37 @@
 namespace goss 
 {
 
-  class ImplicitEuler: public ImplicitODESolver{
-    public:
-      std::vector<int> newtonIter1;
-      std::vector<int> newtonAccepted1;
-      std::vector<double> dt_v;
+  // Implicit Euler
+  class ImplicitEuler : public ImplicitODESolver
+  {
+  public:
 
-      ImplicitEuler() : z1(0) {};
-      ImplicitEuler (goss::ODE* ode_, double _ldt=-1.0) : z1(0) { 
-        attach(ode_);
-        ldt = _ldt; 
-      } 
+    // Default constructor
+    ImplicitEuler();
 
-      ImplicitEuler(double _ldt) : z1(0) {
-        ldt = _ldt;
-      }
+    // Constructor
+    ImplicitEuler (ODE* ode, double ldt=-1.0);
 
-      ~ImplicitEuler () {free(z1);}
+    // Constructor
+    ImplicitEuler(double ldt);
 
-      virtual void attach(goss::ODE* ode_);
-      void forward(double* y, double t, double dt);
+    // Constructor
+    ~ImplicitEuler ();
 
-    protected:
-      double ldt; // local time step.
-      double* z1;
-      bool justrefined;
+    // Attach ODE
+    virtual void attach(ODE* ode);
 
+    // Step solver an interval of time forward
+    void forward(double* y, double t, double interval);
+
+    std::vector<int> newton_iter1;
+    std::vector<int> newton_accepted1;
+    std::vector<double> dt_v;
+
+  protected:
+
+    double* z1;
+    bool justrefined;
 
   };
 
