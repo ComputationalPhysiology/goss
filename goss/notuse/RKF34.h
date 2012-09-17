@@ -56,7 +56,6 @@ namespace goss
       double c1,c2,c3,c4; // RK nodes
       long nbytes; // System size in bytes
       double *ki,*f1,*f2f5,*f3,*f4, *yn, *e, *swap, *retPtr;// state derivative, allocated in attach(ode)
-      int itol;//parameter for scalar or vector tolerance computing
   };
 
 }
