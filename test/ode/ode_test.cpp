@@ -17,7 +17,7 @@ using namespace goss;
 template <class T>
 class ODETest : public testing::Test {
 protected:
-  ODETest() : ode(new T()), solver(new ExplicitEuler()) {}
+  ODETest() : ode(new T()), solver(new ExplicitEuler(ode)) {}
 
   virtual ~ODETest() { delete ode; delete solver;}
 
@@ -28,34 +28,41 @@ protected:
   
   void run_ode(const double dt, DoubleVector& x)
   {
-    ode->getIC(&x);
-    const double tstop = .1;
-    const int nstep = ceil(tstop/dt - 1.0E-12); 
-    double t = 0.0;
-    for (int i = 0; i < ode->size(); i++)
-      printf("var %d: %f", i, x.data[i]);
+    ode->get_ic(&x);
+    const double tstop = 10.;
+    const uint nstep = std::ceil(tstop/dt - 1.0E-12); 
     
-    for (int i = 0; i < nstep; i++)
+    double t = 0.0;
+    for (uint i = 0; i < ode->size(); i++)
+      printf("var %d: %f ", i, x.data[i]);
+    printf("\n");
+    
+    for (uint i = 0; i < nstep; i++)
     {
       solver->forward(x.data, t, dt);
       t += dt;
     }
+
+    for (uint i = 0; i < ode->size(); i++)
+      printf("var %d: %f ", i, x.data[i]);
+    printf("\n");
   }
 };
 
 // The list of types we want to test.
-typedef testing::Types<NonLinOscillator, Arenstorf, Brusselator, EulerRigidBody, FG, Robertson, SaltzLorenz, Sin, VDP> ODEs;
+typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody, \
+		       FG, Robertson, SaltzLorenz, Sin, VDP> ODEs;
 
 TYPED_TEST_CASE(ODETest, ODEs);
 
 TYPED_TEST(ODETest, IntegrationTest) {
 
   // Run coarse simulation
-  this->run_ode(0.05, this->x_coarse);
+  this->run_ode(0.0001, this->x_coarse);
 
   // Run fine simulation
-  //this->run_ode(0.001, this->x_fine);
+  this->run_ode(0.00001, this->x_fine);
 
-  //ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   
 }
