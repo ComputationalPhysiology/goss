@@ -15,6 +15,13 @@ ExplicitEuler::ExplicitEuler(double ldt) : ODESolver(ldt), _dFdt(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
+ExplicitEuler::~ExplicitEuler()
+{
+  // Clean
+  if (_dFdt)
+    delete[] _dFdt;
+}
+//-----------------------------------------------------------------------------
 void  ExplicitEuler::attach(ODE* ode)
 {
   // Attach ODE
