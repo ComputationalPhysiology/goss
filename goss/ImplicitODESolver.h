@@ -29,6 +29,31 @@ namespace goss
 
   protected: 
 
+    // Compute jacobian using numerical approximation
+    void compute_jacobian(double t, double* y);
+
+    // Scale a matrix
+    void mult(double fact, double** matrix);
+
+    // Add identity to matrix
+    void add_identity(double** matrix);
+
+    // LU Factorize matrix
+    void lu_factorize(double** mat);
+
+    // Forward/Backward supstituion of factories matrix
+    void forward_backward_subst(const double* const* mat, double* b, double* x);
+
+    // Init solver
+    void init(); 
+
+    // This function is designed for SDIRK and Backward Euler:
+    virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
+			      double dt, double alpha);
+
+    // Compute the norm of a vector
+    virtual double norm(double* vec);
+
     // Variables used in the jacobian evaluation
     double **jac;
     double *f1, *f2, *yz;
@@ -52,32 +77,12 @@ namespace goss
     uint jac_size;
 
     uint stages;
-    int newtonits, maxits, rejects, jac_comp, num_tsteps;
+    int newtonits, maxits, rejects, jac_comp;
+    ulong num_tsteps;
+
     double min_dt;
     bool recompute_jacobian;
 
-    // Compute jacobian using numerical approximation
-    void compute_jacobian(double t, double* y);
-
-    // Scale a matrix
-    void mult(double fact, double** matrix);
-
-    // Add identity to matrix
-    void add_identity(double** matrix);
-
-    // LU Factorize matrix
-    void lu_factorize(double** mat);
-
-    // Forward/Backward supstituion of factories matrix
-    void forward_backward_subst(const double* const* mat, double* b, double* x);
-
-    // Init solver
-    void init(); 
-
-    // This function is designed for SDIRK and Backward Euler:
-    virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
-			      double dt, double alpha);
-    virtual double norm(double* vec);
   };
 
 }

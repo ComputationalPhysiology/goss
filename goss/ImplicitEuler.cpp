@@ -83,7 +83,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     step_ok = newton_solve(z1, _prev, y, t + _dt, _dt, 1.0);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
-    dt_v.push_back(dt);
+    dt_v.push_back(_dt);
 #endif
     
     // Newton step OK

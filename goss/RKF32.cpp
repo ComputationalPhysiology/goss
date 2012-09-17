@@ -139,7 +139,7 @@ void RKF32::forward(double* y, double t, double interval)
   // We swap the result vektor if a timestep is accepted. We therefore need 
   // to store the pointer to the initial y-vector in order to ensure that 
   // this memory segment contains the final result when the end is reached ...
-  double* retPtr = y;
+  double* ret_ptr = y;
   double* swap;
 
   // End of interval
@@ -170,7 +170,7 @@ void RKF32::forward(double* y, double t, double interval)
 
 #ifdef DEBUG
   // log data
-  dt_v.push_back(dt);
+  dt_v.push_back(_dt);
 #endif
 
   while (!reached_tend)
@@ -203,7 +203,7 @@ void RKF32::forward(double* y, double t, double interval)
     new_time_step(y, yn, e, t_end);
 
 #ifdef DEBUG
-    logData(_dt, step_accepted);
+    log_data(_dt, step_accepted);
 #endif
 
     // If step
@@ -219,9 +219,9 @@ void RKF32::forward(double* y, double t, double interval)
 #ifdef DEBUG
       if (single_step_mode)
       {
-        if (retPtr ! =y)
+        if (ret_ptr != y)
 	{
-          memcpy(retPtr, y, nbytes);
+          memcpy(ret_ptr, y, nbytes);
           yn = y;
         }
         swap = 0;
@@ -236,9 +236,9 @@ void RKF32::forward(double* y, double t, double interval)
 
   // This is a copy to ensure that the input Ptr contains the final solution
   // This can probably be done in a more elegant way
-  if (retPtr!=y)
+  if (ret_ptr != y)
   {
-    memcpy(retPtr, y, nbytes);
+    memcpy(ret_ptr, y, nbytes);
     yn = y;
   }
 

@@ -139,7 +139,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
 #ifdef DEBUG
   // log data
-  dt_v.push_back(dt);
+  dt_v.push_back(_dt);
 #endif
 
   while (!reached_tend)
