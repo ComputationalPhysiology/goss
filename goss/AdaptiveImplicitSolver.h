@@ -2,54 +2,97 @@
 #define AdaptiveImplicitSolver_h_IS_INCLUDED
 
 #include "ImplicitODESolver.h"
-#include <math.h>
 #include <vector>
 #include <stdio.h>
 
 namespace goss 
 {
 
+  // Base class for adaptive implicit ODE solvers
   class AdaptiveImplicitSolver : public ImplicitODESolver
   {
 
-    public:
-      AdaptiveImplicitSolver (goss::ODE* ode_);
-      AdaptiveImplicitSolver();
-      ~AdaptiveImplicitSolver ();
+  public:
 
-      void init();
-      /*virtual void attach(goss::ODE* ode_);*/
-      virtual void forward(double* y, double t, double interval) = 0;
+    // Default constructor
+    AdaptiveImplicitSolver();
 
-      double getCurrentTime();
-      double getCurrentTimeStep();
-      long getNumAccepted(){return num_accepted;}
-      long getNumRejected(){return num_rejected;}
-      void logData(double dt, bool accepted);
-      void dtVector(goss::DoubleVector *res);
-      void acceptedVector(goss::DoubleVector *res);
-      int numJacComp(){return jac_comp;}
+    // Constructor
+    AdaptiveImplicitSolver (goss::ODE* ode_);
 
-      void setSingleStepMode(bool mode){single_step_mode=mode;}
-      void setTol(double atol_, double rtol_=1.0e-8);
-      void setIord(int iord_);
-      double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
-      void newTimeStep(double* y, double* yn, double* e, double t_end);
+    // Destructor
+    ~AdaptiveImplicitSolver ();
 
-    protected: 
-      long num_accepted, num_rejected;// a log of 1) the numer of steps, 2)the number of rejected steps
-      bool step_accepted, reached_tend;// a bool log of 1) timetep acceptec, 2) 
-      //#ifdef DEBUG
-      std::vector<double> dt_v;
-      std::vector<bool> accept_v;
-      //#endif
-      bool single_step_mode;
+    // Initialize data
+    void init();
+    
+    // Step solver an interval of time forward
+    virtual void forward(double* y, double t, double interval) = 0;
 
-      double t, dt_prev;
-      double atol, rtol, iord, facmin, facmax, facmaxb, stabfac; // local time step and tolerence.
-      double stabdown, stabup; // Added stability to reduce the number if Jacobian computations
-      double err_old, dt_old;
-      int itol; // Parameter for scalar or vector tolerance computing
+    // Return the current time
+    double get_current_time();
+
+    // Return the current time step
+    double get_current_time_step();
+
+    // Return number of accepted solutions
+    long get_num_accepted(){return num_accepted;}
+
+    // Return number of rejected solutions
+    long get_num_rejected(){return num_rejected;}
+
+    // FIXME: Where is this used!?
+    // Store timestep and accepted timestep
+    void log_data(double dt, bool accepted);
+    
+    // Return a vector of collected timesteps
+    void dt_vector(DoubleVector *res);
+
+    // Return a record of accepted 
+    void accepted_vector(DoubleVector *res);
+
+    // Set single step mode
+    void set_single_step_mode(bool mode) {single_step_mode = mode;}
+
+    // Set tolerance
+    void set_tol(double atol, double rtol=1.0e-8) {_atol = atol; _rtol = rtol;}
+    
+    // Set iord
+    void set_iord(int iord){_iord = iord;}
+
+    // FIXME: Should this be protected?
+    // Compute an initial time step guess
+    double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
+
+    // FIXME: Should this be protected?
+    // Compute new timestep 
+    void new_time_step(double* y, double* yn, double* e, double t_end);
+
+  protected: 
+    
+    // Log of 1) the numer of steps, 2) the number of rejected steps
+    long num_accepted, num_rejected;
+
+    // a bool log of 1) timetep accepted, 2) 
+    bool step_accepted, reached_tend;
+
+    std::vector<double> dt_v;
+    std::vector<bool> accept_v;
+
+    bool single_step_mode;
+    
+    double _t, _dt_prev;
+
+    // local time step and tolerence.
+    double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 
+
+    // Added stability to reduce the number of Jacobian computations
+    double stabdown, stabup; 
+    double err_old, dt_old;
+
+    // Parameter for scalar or vector tolerance computing
+    int _itol; 
+
   };
 
 }

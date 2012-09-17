@@ -1,86 +1,61 @@
 #include "AdaptiveImplicitSolver.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <stdio.h>
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver:: AdaptiveImplicitSolver (ODE* ode_) 
-  //-----------------------------------------------------------------------------
+AdaptiveImplicitSolver::AdaptiveImplicitSolver (ODE* ode_) 
 { 
   attach(ode_); 
   //init(); 
 } 
 
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver:: AdaptiveImplicitSolver() 
-  //-----------------------------------------------------------------------------
+AdaptiveImplicitSolver::AdaptiveImplicitSolver() 
 {
   //printf("AdaptiveImplicitSolver ()\n"); 
   //init(); 
 }
 
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver:: ~AdaptiveImplicitSolver ()
-  //-----------------------------------------------------------------------------
+AdaptiveImplicitSolver::~AdaptiveImplicitSolver ()
 {
   //printf("~AdaptiveImplicitSolver ()\n");
-  //free(blog);
-  //free(tvec);
-};
+}
 
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: init()
-  //-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::init()
 {
+  // FIXME: Flesh out constants and initialize in constructor
   printf("AdaptiveImplicitSolver::init\n");
   single_step_mode=false;
-  atol    = 1.0e-5;
-  rtol    = 1.0e-8;
-  facmin  = 0.5; // We can not choose the next timestep more then
-  // half of the previous timestep
-  facmaxb = 2.0; // We can not choose the next timestep more then 
-  // double of the previous timestep
+  _atol    = 1.0e-5;
+  _rtol    = 1.0e-8;
+  
+  // We can not choose the next timestep more then half of the previous 
+  // timestep
+  facmin  = 0.5; 
+  
+  // We can not choose the next timestep more then double of the previous 
+  // timestep  
+  facmaxb = 2.0; 
   facmax  = facmaxb;
-  stabfac = 0.9;//pow(0.25,1/(iord+1));
+  stabfac = 0.9; //std::pow(0.25,1/(iord+1));
   stabdown = 1.0;
   stabup   = 1.2;
   err_old  = -1.0;
   reached_tend = false;
-  num_accepted=0;
-  num_rejected=0;
+
+  num_accepted = 0;
+  num_rejected = 0;
   ImplicitODESolver::init();
 }
-
+// FIXME: Have a closer look of origin of pointers passed to this function.
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: setTol(double atol_, double rtol_)
-  //-----------------------------------------------------------------------------
-{
-  atol=atol_;
-  rtol=rtol_;
-}
-
-//-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: setIord(int iord_)
-  //-----------------------------------------------------------------------------
-{
-  iord=iord_;
-}
-
-/*
-//-----------------------------------------------------------------------------
-void  AdaptiveImplicitSolver:: attach(ODE* ode_)
-  //-----------------------------------------------------------------------------
-{
-  ode = ode_;
-  ode->size() = ode->evalSize();
-}
-*/
-
-//-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver:: dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord)
-  //-----------------------------------------------------------------------------
+double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1, 
+				      double* f0_, double* f1_, double iord)
 {
   // Computation of an initial step size guess
   //
@@ -91,233 +66,219 @@ double AdaptiveImplicitSolver:: dtinit(double t, double* y0, double* y1, double*
   // y1 and f1 are just pointers to contigous memory which this 
   // function borrows
 
-  int i;
+  uint i;
   double dnf = 0.0;
   double dny = 0.0;
-  double sk,dt,tmp;
-  //ode->eval(y0, t, f0);
-  for (i=0; i<ode->size();++i){
-    sk   = atol + rtol*fabs(y0[i]);
-    tmp  = f0[i]/sk;
+  double sk, dt, tmp;
+
+  // FIXME: Why is it not evaluated?
+  //_ode->eval(y0, t, f0_);
+  for (i=0; i<ode_size(); ++i)
+  {
+    sk   = _atol + _rtol*std::fabs(y0[i]);
+    tmp  = f0_[i]/sk;
     dnf += tmp*tmp;
     tmp  = y0[i]/sk;
     dny += tmp*tmp;
-    //dnf += pow(f0[i]/sk,2);
-    //dny += pow(y0[i]/sk,2); 
+    //dnf += std::pow(f0_[i]/sk, 2);
+    //dny += std::pow(y0[i]/sk, 2); 
   }
-  if (dnf <= 1.0e-10 || dny <= 1.0e-10){
+  
+  if (dnf <= 1.0e-10 || dny <= 1.0e-10)
     dt = 1.0e-6;
-  }else{
-    dt = 0.01*sqrt(dny/dnf);
-  }
+  else
+    dt = 0.01*std::sqrt(dny/dnf);
 
   // Should we have a dt_max??
 
   // Perform an explicit Euler step
-  for (i=0; i<ode->size();++i){
-    y1[i] = y0[i] + dt*f0[i];
-  }
-  ode->eval(y1, t+dt, f1);
+  for (i = 0; i < ode_size(); ++i)
+    y1[i] = y0[i] + dt*f0_[i];
+
+  _ode->eval(y1, t+dt, f1_);
 
   // Estimate the second derivative of the solution
   double der2 = 0.0;
-  for (i=0;i<ode->size();++i){
-    sk    = atol + rtol*fabs(y1[i]);
-    tmp   = ((f1[i]-f0[i])/sk);
+  for (i = 0; i < ode_size(); ++i)
+  {
+    sk    = _atol + _rtol*std::fabs(y1[i]);
+    tmp   = ((f1_[i]-f0_[i])/sk);
     der2 += tmp*tmp;
-    //der2 += pow(((f1[i]-f0[i])/sk),2);
+    //der2 += std::pow(((f1_[i]-f0_[i])/sk), 2);
   }
-  der2 = sqrt(der2)/dt;
+  der2 = std::sqrt(der2)/dt;
 
   // Step size is computed such that
-  // dt**iord*max(norm(f0),norm(der2)) = 0.01
+  // dt**iord*max(norm(f0_),norm(der2)) = 0.01
 
   double der12;
-  if (fabs(der2)>= sqrt(dnf)){
-    der12=fabs(der2);
-  }else{
-    der12=sqrt(dnf);
-  }
+  if (std::fabs(der2) >= std::sqrt(dnf))
+    der12 = std::fabs(der2);
+  else
+    der12 = std::sqrt(dnf);
+  
   double dt1;
-  if (der12 <= 1.0e-15){
-    if (1.0e-6 > fabs(dt)*1.0e-3){
+  if (der12 <= 1.0e-15)
+  {
+    if (1.0e-6 > std::fabs(dt)*1.0e-3)
       dt1 = 1.0e-6;
-    }else{
-      dt = fabs(dt)*1.0e-3;
-    }
-  }else{
-    dt1 = pow((0.01/der12),(1.0/iord));
+    else
+      dt1 = std::fabs(dt)*1.0e-3;
+  }
+  else
+  {
+    dt1 = std::pow((0.01/der12), (1.0/iord));
   }
 
-
-
-  if (100*fabs(dt)<dt1){
-    return 100*fabs(dt);
-  }else{
-    return dt1;
-  }
+  if (100*std::fabs(dt) < dt1)
+    return 100*std::fabs(dt);
+  
+  return dt1;
 }
 
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: newTimeStep(double* y, double* yn, double* e, double t_end)
-//-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, double t_end)
 {
+  uint i;
   double err = 0.0;
-  dt_prev=dt;
-  double sk;
+  _dt_prev = _dt;
   //bool done = false;
-  double eps = 1e-14;// A way to chech if we are at t_end.
-  double max;
-  double yi_abs, yni_abs, tmp;
+
+  // A way to check if we are at t_end.
+  const double eps = 1e-14;
   recompute_jacobian = true;
-  for (int i=0; i< ode->size(); ++i) {
-    yi_abs = fabs(y[i]);
-    yni_abs = fabs(yn[i]);
-    max = (yi_abs > yni_abs ? yi_abs : yni_abs);
-    sk   = atol+rtol*max;
+
+  double yi_abs, yni_abs, max, sk, tmp;
+  for (i = 0; i < ode_size(); ++i) 
+  {
+    yi_abs = std::fabs(y[i]);
+    yni_abs = std::fabs(yn[i]);
+    max = std::max(yi_abs, yni_abs);//(yi_abs > yni_abs ? yi_abs : yni_abs);
+    sk = _atol + _rtol*max;
     tmp = e[i]/sk;
     err += tmp*tmp;
   }
   
-  err=sqrt(err/ode->size());
+  err = std::sqrt(err/ode_size());
 
-  // If the error is smaller then 1, the timestep is accepted, and we advance
+  // If the error is smaller than 1, the timestep is accepted, and we advance
   // If not, the timestep is rejected
-  if (err<=1){
-    t+=dt;
-    num_accepted+=1;
-    step_accepted=true;
-    //std::cout << "fabs(t-t_end)="<<fabs(t-t_end)<<", t, t_end = " << t << "," << t_end <<std::endl;
-    if (fabs(t-t_end)<eps){
+  if (err <= 1)
+  {
+    _t += _dt;
+    num_accepted += 1;
+    step_accepted = true;
+    //std::cout << "std::fabs(t-t_end)="<<std::fabs(t-t_end)<<", t, t_end = " << t << "," << t_end <<std::endl;
+    if (std::fabs(_t - t_end) < eps)
+    {
       //std::cout << "done=true" << std::endl;
-      reached_tend=true;
+      reached_tend = true;
     }
-  } else {
+  } 
+  else 
+  {
     num_rejected += 1;
     step_accepted = false;
   }
 
   // Computation of dtnew
-  double lstabfac=stabfac*(2*maxits+1)/((double)(2*maxits+newtonits));
-  //printf("lstabfac=%1.2e\n",lstabfac);
-  double fac = lstabfac*pow((1.0/err),(1.0/(iord+1)));
-  if (facmin>fac){
-    fac=facmin;
-  }else if (fac>facmax){
-    fac=facmax;
-  }
+  const double lstabfac = stabfac*(2*maxits+1)/((2.0*maxits+newtonits));
+  
+  //printf("lstabfac=%1.2e\n", lstabfac);
+  double fac = lstabfac*std::pow((1.0/err), (1.0/(_iord+1)));
+  if (facmin > fac)
+    fac = facmin;
+
+  else if (fac > facmax)
+    fac = facmax;
+
   //if the timestep i rejected, we prevent the next timestep from increasing
-  if (!step_accepted){
-    facmax=1.0;
-  }else{
-    facmax=facmaxb;
-  }
-  if (err_old>0){
-    fac*=dt/dt_old*pow((err_old/err),(1.0/(iord+1)));
-  }
-  if (fac<stabup && fac>stabdown){
+  if (!step_accepted)
+    facmax = 1.0;
+  else
+    facmax = facmaxb;
+
+  if (err_old > 0)
+    fac *= _dt/dt_old*std::pow((err_old/err), (1.0/(_iord + 1)));
+  
+  if (fac < stabup && fac > stabdown){
     //printf("frac=%1.2e\n",fac);
-    fac=1.0;
+    fac = 1.0;
     recompute_jacobian = false;
   }
-  dt*=fac;
+  _dt *= fac;
 
   //std::cout << "t+dt="<<t+dt<<std::endl;
-  ldt=dt;// Saves the timestep to be used as initial guess for next macro step
-  if (t+dt>=t_end){
-    dt=t_end-t;
-  }
+  _ldt = _dt;// Saves the timestep to be used as initial guess for next macro step
 
-  dt_old = dt_prev;
+  if (_t + _dt >= t_end)
+    _dt = t_end - _t;
+  
+  dt_old = _dt_prev;
   err_old = err;
 }
-
-
-#ifdef DEBUG
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: logData(double dt, bool accepted)
-  //-----------------------------------------------------------------------------
+#ifdef DEBUG
+void AdaptiveImplicitSolver::log_data(double dt, bool accepted)
 {
   dt_v.push_back(dt);
   accept_v.push_back(accepted);
 }
-
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: dtVector(DoubleVector *res)
-  //-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::dt_vector(DoubleVector *res)
 {
-  //std::cout << "Size = " << dt_v.size() << std::endl;
-  //std::cout << "dt_v.end()="<<dt_v[dt_v.size()-2]<<std::std::endl;
-  res->n    = dt_v.size();
-  res->data = static_cast<double*>(malloc(sizeof(double)*(dt_v.size())));
-  for( unsigned int i = 0; i < dt_v.size(); ++i ) {
+  res->n = dt_v.size();
+  res->data = new double[dt_v.size()]; 
+  for(uint i = 0; i < dt_v.size(); ++i)
     res->data[i] = dt_v[i];
-  }
 }
-
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: acceptedVector(DoubleVector *res)
-  //-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
-  res->data = static_cast<double*>(malloc(sizeof(double)*(accept_v.size())));
-  for( unsigned int i = 0; i < accept_v.size(); ++i ) {
+  res->data = new double[accept_v.size()]; 
+  for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
-  }
 }
-
 //-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver::getCurrentTime()
-  //-----------------------------------------------------------------------------
+double AdaptiveImplicitSolver::get_current_time()
 {
-  return t;
+  return _t;
 }
-
 //-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver::getCurrentTimeStep()
-  //-----------------------------------------------------------------------------
+double AdaptiveImplicitSolver::get_current_time_step()
 {
-  return dt_prev;
+  return _dt_prev;
 }
-
 #else
 //-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver::getCurrentTime()
-  //-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::log_data(double, bool)
+{
+  std::cout << "DEBUG OFF!" << std::endl; 
+}
+//-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::dt_vector(DoubleVector*)
+{
+  std::cout << "DEBUG OFF!" << std::endl; 
+}
+//-----------------------------------------------------------------------------
+void AdaptiveImplicitSolver::accepted_vector(DoubleVector*)
+{
+  std::cout << "DEBUG OFF!" << std::endl; 
+}
+//-----------------------------------------------------------------------------
+double AdaptiveImplicitSolver::get_current_time()
 {
   printf("NOT IN DEBUG MODE\n");
-  return t;
+  return _t;
 }
-
 //-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver::getCurrentTimeStep()
-  //-----------------------------------------------------------------------------
+double AdaptiveImplicitSolver::get_current_time_step()
 {
   printf("NOT IN DEBUG MODE\n");
-  return dt; 
+  return _dt_prev;
 }
-
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: logData(double dt, bool accepted)
-  //-----------------------------------------------------------------------------
-{
-  printf("DEBUG OFF!\n");
-}
-
-//-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: dtVector(DoubleVector *res)
-  //-----------------------------------------------------------------------------
-{
-  printf("DEBUG OFF!\n");
-}
-
-//-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver:: acceptedVector(DoubleVector *res)
-  //-----------------------------------------------------------------------------
-{
-  printf("DEBUG OFF!\n");
-}
-
 #endif
 
 
