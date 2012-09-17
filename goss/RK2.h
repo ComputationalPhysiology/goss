@@ -2,33 +2,47 @@
 #define RK2_H_IS_INCLUDED
 
 #include "ODESolver.h"
-#include <math.h>
+#include "types.h"
 
 namespace goss 
 {
 
-  class RK2 : public ODESolver {
-    public:
-      RK2() {};
-      RK2(goss::ODE* ode_);
-      ~RK2();
+  // Explicit Runge Kutta solver of 2nd order
+  class RK2 : public ODESolver 
+  {
+  
+  public:
+    
+    // Default constructor
+    RK2();
 
-      virtual void attach(goss::ODE* ode_);
-      void forward(double* y, double t, double dt);
-      inline void add(double* x, double* y, double a, double* z);
+    // Constructor
+    RK2(goss::ODE* ode_);
+    
+    // Destructor
+    ~RK2();
 
-    protected: 
-      double *k1, *tmp;// state derivative, allocated in attach(ode)
+    // Attach ODE to solver
+    void attach(goss::ODE* ode_);
+
+    // Step solver an interval in time forward
+    virtual void forward(double* y, double t, double dt);
+
+  protected: 
+
+    // State derivative, allocated in attach(ode)
+    double *k1, *tmp;
+    
+    // Perform a weighted addition of y and z
+    inline void axpy(double* x, const double* y, double a, const double* z);
 
   };
-
-  inline void RK2:: add(double* x, double* y, double a, double* z)
-  {
-    for (int i=0; i < ode->size(); ++i) {
-      x[i] = y[i];
-      x[i] += a*z[i];
-    }
-  }
-
 }
+//-----------------------------------------------------------------------------
+inline void goss::RK2::axpy(double* x, const double* y, double a, const double* z)
+{
+  for (uint i = 0; i < ode_size(); ++i) 
+    x[i] = y[i] + a*z[i];
+}
+//-----------------------------------------------------------------------------
 #endif
