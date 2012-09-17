@@ -24,6 +24,9 @@ namespace goss
     // Set newton tolerance
     void set_newton_tol(double newton_tol){_newton_tol = newton_tol;}
 
+    // Return the number of recomputation of the jacobian
+    int num_jac_comp(){return jac_comp;}
+
   protected: 
 
     // Variables used in the jacobian evaluation
