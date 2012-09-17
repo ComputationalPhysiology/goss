@@ -110,7 +110,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   }
   else
   {
-    std::cout << " Not implemented yeat" << std::endl;
+    std::cout << " Not implemented yet" << std::endl;
     //for (i=0;i<_ode->size();++i){
     //    sk    = _atol[i] + _rtol[i]*fabs(y1[i]);
     //    der2 += pow(((f1[i]-f0[i])/sk),2);
@@ -122,7 +122,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   der2 = std::sqrt(der2)/dt;
 
   // Step size is computed such that
-  // dt**iord*max(norm(f0),norm(der2)) = 0.01
+  // dt**iord*max(norm(f0), norm(der2)) = 0.01
 
   double der12;
   if (fabs(der2) >= std::sqrt(dnf))
@@ -232,7 +232,6 @@ double AdaptiveExplicitSolver::get_current_time()
 #endif
   return _t;
 }
-
 //-----------------------------------------------------------------------------
 double AdaptiveExplicitSolver::get_current_time_step()
 {
@@ -243,4 +242,5 @@ double AdaptiveExplicitSolver::get_current_time_step()
   return _dt_prev;
 #endif
 }
+//-----------------------------------------------------------------------------
 
