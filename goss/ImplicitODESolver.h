@@ -52,7 +52,7 @@ namespace goss
     uint jac_size;
 
     uint stages;
-    int newtonits, maxits, rejects, jac_comp;
+    int newtonits, maxits, rejects, jac_comp, num_tsteps;
     double min_dt;
     bool recompute_jacobian;
 
