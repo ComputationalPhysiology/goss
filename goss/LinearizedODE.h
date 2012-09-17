@@ -7,7 +7,7 @@
 namespace goss {
 
   // Class which provides an interface for ODE Solvers which need 
-  // linearized terms
+  // linearized terms (GRLX)
   class LinearizedODE : public virtual ODE
   {
   public:
