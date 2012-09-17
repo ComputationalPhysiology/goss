@@ -2,43 +2,54 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2008-11-10
+// Last changed: 2012-09-17
 
 #ifndef GRL2_H_IS_INCLUDED
 #define GRL2_H_IS_INCLUDED
 
+#include "types.h"
 #include "ODESolver.h"
-#include <math.h>
-
-
-/* GRL2: Second order accurate Generalized Rush-Larsen ODE Solver
- *
- * A two step second order accurate ode solver.
- */
+#include "LinearizedODE.h"
 
 namespace goss {
 
-  class GRL2: public ODESolver
+  // Second order accurate Generalized Rush-Larsen ODE Solver
+  class GRL2 : public ODESolver
   {
-      public:
+  public:
 
-        /// Constructor
-        GRL2();
-        GRL2(goss::ODE* ode);
-        virtual void attach(goss::ODE* ode);
-        void forward(double* y, double t, double dt);
+    // Default Constructor
+    GRL2();
 
-        /// Destructor
-        ~GRL2();
+    // Constructor
+    GRL2(goss::LinearizedODE* ode);
+    
+    // Destructor
+    ~GRL2();
 
-      private:
-        double* y0; 
-        double* a;
-        double* b;
-        int* linear_terms;
-        const double delta;
-        int n;
+    // Attach ODE to solver
+    virtual void attach(LinearizedODE* ode);
+
+    // Step solver an interval in time forward
+    void forward(double* y, double t, double dt);
+    
+  private:
+
+    // Storage for the Linearized ODE
+    LinearizedODE* _lode;
+
+    // Pointers to intermediate values used while stepping
+    double* y0; 
+    double* a;
+    double* b;
+
+    uint* linear_terms;
+    const double delta;
+
+    // Number of bytes which will be copied each time step
+    uint nbytes;
+
   };
-
+  
 }
 #endif

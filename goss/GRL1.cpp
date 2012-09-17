@@ -2,67 +2,84 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2007-07-09
+// Last changed: 2012-09-17
 
-#include <iostream>
+#include <cmath>
 #include <cstdlib>
 #include "GRL1.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL1::GRL1()
-//-----------------------------------------------------------------------------
-  : ODESolver(0.0, 0.0), a(0), b(0), linear_terms(0), delta(1.0e-8)
+GRL1::GRL1() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0), 
+	       delta(1.0e-8)
 {
   // Do nothing
 }
-
 //-----------------------------------------------------------------------------
-GRL1:: GRL1(goss::ODE* ode)
-//-----------------------------------------------------------------------------
-  : ODESolver(ode, 0.0), a(0), b(0), linear_terms(0), delta(1.0e-8)
+GRL1::GRL1(LinearizedODE* ode) : ODESolver(ode, 0.0), _lode(0), a(0), b(0), 
+				 linear_terms(0), delta(1.0e-8)
 {
   attach(ode);
 }
-
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
-//-----------------------------------------------------------------------------
 { 
-  free(a); free(b); 
-  free(linear_terms);
+  if (a) delete[] a;
+  if (b) delete[] b;
+  if (linear_terms) delete[] linear_terms;
 }
 
 //-----------------------------------------------------------------------------
-void GRL1::attach(ODE* ode)
-//-----------------------------------------------------------------------------
+void GRL1::attach(LinearizedODE* ode)
 {
-  free(a); free(b);
-  this->ode = ode;
-  n = ode->size();
-  a = static_cast<double*>(malloc(n*sizeof*a));
-  b = static_cast<double*>(malloc(n*sizeof*b));
-  std::fill(a, a+n, static_cast<double>(0));
-  std::fill(b, b+n, static_cast<double>(0));
-  linear_terms = static_cast<int*>(malloc(n*sizeof*linear_terms));
-  ode->linearTerms(linear_terms);
+  if (a) delete[] a;
+  if (b) delete[] b;
+  if (linear_terms) delete[] linear_terms;
+
+  // Store Linearized and ordinary ODE
+  _ode = ode;
+  _lode = ode;
+  
+  // Initalize memory
+  a = new double[ode_size()];
+  b = new double[ode_size()];
+  linear_terms = new uint[ode_size()];
+  std::fill(b, b+ode_size(), static_cast<double>(0));
+  
+  // Get what terms are linear
+  _lode->linear_terms(linear_terms);
 }
 
 //-----------------------------------------------------------------------------
-void GRL1::forward(double* y, double t, double dt)
+void GRL1::forward(double* y, double t, double interval)
 //-----------------------------------------------------------------------------
 {
 
-  ode->eval(y, t, a);               // Evaluate full right hand side
-  ode->linearDerivatives(y, t, b);  // Exact derivatives for linear terms
-  for (int i=0; i<n; ++i) { 
-    if (linear_terms[i] == 0) {      // Numerical differentiation
+  // Local timestep
+  const double dt = interval;
+
+  // Evaluate full right hand side
+  _lode->eval(y, t, a);              
+
+  // Exact derivatives for linear terms 
+  _lode->linear_derivatives(y, t, b);
+
+  for (uint i = 0; i < ode_size(); ++i) 
+  { 
+    // Numerical differentiation for non linear terms
+    if (linear_terms[i] == 0) 
+    {      
       y[i] += delta; 
-      b[i] = (ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
+      
+      // Component i derivative
+      b[i] = (_lode->eval(i, y, t) - a[i])/delta;  
       y[i] -= delta;				        // Restore state i
     }
   }
-  for (int i=0; i<n; ++i) 
-    y[i] += (fabs(b[i]) > delta) ? a[i]/b[i]*(exp(b[i]*dt) - 1.0) : a[i]*dt;
+
+  // Integrate linear terms exactly
+  for (uint i = 0; i < ode_size(); ++i) 
+    y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) : a[i]*dt;
+
 }

@@ -2,39 +2,49 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2007-07-09
+// Last changed: 2012-09-17
 
 #ifndef GRL1_H_IS_INCLUDED
 #define GRL1_H_IS_INCLUDED
 
+#include "types.h"
 #include "ODESolver.h"
-#include <math.h>
-
-
-/// Documentation of class GRL1
+#include "LinearizedODE.h"
 
 namespace goss {
 
+  // First order accurate Generalized Rush-Larsen ODE Solver
   class GRL1: public ODESolver
   {
-      public:
+  public:
+    
+    // Default Constructor
+    GRL1();
 
-        /// Constructor
-        GRL1();
-        GRL1(goss::ODE* ode);
-        virtual void attach(goss::ODE* ode);
-        void forward(double* y, double t, double dt);
+    // Constructor
+    GRL1(goss::LinearizedODE* ode);
+    
+    // Destructor
+    ~GRL1();
 
-        /// Destructor
-        ~GRL1();
+    // Attach ODE to solver
+    virtual void attach(goss::LinearizedODE* ode);
 
-      private:
-        double* a;
-        double* b;
-        int* linear_terms;
-        const double delta;
-        int n;
+    // Step solver an interval in time forward
+    void forward(double* y, double t, double dt);
+    
+  private:
+
+    // Storage for the Linearized ODE
+    LinearizedODE* _lode;
+
+    // Pointers to intermediate values used while stepping
+    double* a;
+    double* b;
+
+    uint* linear_terms;
+    const double delta;
+
   };
-
 }
 #endif

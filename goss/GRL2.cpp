@@ -2,92 +2,123 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2007-10-29
+// Last changed: 2012-09-17
 
-#include <iostream>
-#include <cstdlib>
 #include <cstring>
+#include <cmath>
+
 #include "GRL2.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL2::GRL2()
-//-----------------------------------------------------------------------------
-  : ODESolver(0.0, 0.0), y0(0), a(0), b(0), linear_terms(0), delta(1.0e-8)
+GRL2::GRL2() : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), linear_terms(0), 
+	       delta(1.0e-8), nbytes(0)
 {
   // Do nothing
 }
-
 //-----------------------------------------------------------------------------
-GRL2:: GRL2(goss::ODE* ode)
-//-----------------------------------------------------------------------------
-  : ODESolver(ode, 0.0), y0(0), a(0), b(0), linear_terms(0), delta(1.0e-8)
+GRL2::GRL2(LinearizedODE* ode) : ODESolver(ode, 0.0), _lode(0), y0(0), a(0), b(0), 
+				 linear_terms(0), delta(1.0e-8), nbytes(0)
 {
   attach(ode);
 }
-
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()
-//-----------------------------------------------------------------------------
 { 
-  free(y0);
-  free(a); 
-  free(b); 
-  free(linear_terms);
+  if (y0) delete[] y0;
+  if (a) delete[] a;
+  if (b) delete[] b;
+  if (linear_terms) delete[] linear_terms;
 }
-
 //-----------------------------------------------------------------------------
-void GRL2::attach(ODE* ode)
-//-----------------------------------------------------------------------------
+void GRL2::attach(LinearizedODE* ode)
 {
-  free(a); free(b);
-  this->ode = ode;
-  n = ode->size();
-  y0 = static_cast<double*>(malloc(n*sizeof*y0));
-  a =  static_cast<double*>(malloc(n*sizeof*a));
-  b =  static_cast<double*>(malloc(n*sizeof*b));
-  linear_terms = static_cast<int*>(malloc(n*sizeof*linear_terms));
-  ode->linearTerms(linear_terms);
-  std::fill(a, a+n, static_cast<double>(0));
-  std::fill(b, b+n, static_cast<double>(0));
-  std::fill(y0, y0+n, static_cast<double>(0));
-}
+  if (y0) delete[] y0;
+  if (a) delete[] a;
+  if (b) delete[] b;
+  if (linear_terms) delete[] linear_terms;
 
+  // Store Linearized and ordinary ODE
+  _ode = ode;
+  _lode = ode;
+  
+  // Initalize memory
+  y0 = new double[ode_size()];
+  a = new double[ode_size()];
+  b = new double[ode_size()];
+  linear_terms = new uint[ode_size()];
+  
+  // Get what terms are linear
+  _lode->linear_terms(linear_terms);
+
+  nbytes  = ode_size()*sizeof(double);
+  std::fill(a, a + ode_size(), 0.0);
+  std::fill(b, b + ode_size(), 0.0);
+  std::fill(y0, y0 + ode_size(), 0.0);
+}
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double dt)
-//-----------------------------------------------------------------------------
 {
-  double yi;					        // Local variable to store comp i
-  memcpy(y0, y, n*sizeof*y0); // Copy start conditions
+  // Copy start conditions
+  std::memcpy(y0, y, nbytes); 
 
   // First step
-  ode->eval(y, t, a);               // Evaluate full right hand side
-  ode->linearDerivatives(y, t, b);  // Exact derivatives for linear terms
-  for (int i=0; i<n; ++i) { 
-    if (linear_terms[i] == 0) {      // Numerical differentiation
+
+  // Evaluate full right hand side
+  _lode->eval(y, t, a);
+
+  // Exact derivatives for linear terms
+  _lode->linear_derivatives(y, t, b);  
+  
+  for (uint i = 0; i < ode_size(); ++i) 
+  { 
+    // Numerical differentiation
+    if (linear_terms[i] == 0) 
+    {
       y[i] += delta; 
-      b[i] = (ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
+      b[i] = (_ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
       y[i] -= delta;				        // Restore state i
     }
   }
-  for (int i=0; i<n; ++i) 
-    y[i] += (fabs(b[i]) > delta) ? a[i]/b[i]*(exp(b[i]*dt*0.5) - 1.0) : a[i]*dt*0.5;
+
+  for (uint i = 0; i < ode_size(); ++i) 
+    y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt*0.5) - 1.0) : 
+      a[i]*dt*0.5;
 
   // Second step
-  //ode->linearDerivatives(y, t, b);  // Exact derivatives for linear terms
-  for (int i=0; i<n; ++i) {        
-    yi = y[i];				              // Store original value of comp i
-    y[i] = y0[i];                   // Use y0[i] at diagonal
-    a[i] = ode->eval(i, y, t);      // Evaluate right hand side after changing comp i 
+  
+  // Exact derivatives for linear terms
+  //_lode->linear_derivatives(y, t, b);
 
-//    if (not linear_terms[i]) {  // Numerical differentiation for non-linear terms
+  // Local variable to store comp i
+  double yi;					        
+  for (uint i = 0; i < ode_size(); ++i) 
+  {        
+    // Store original value of comp i
+    yi = y[i];
+
+    // Use y0[i] at diagonal
+    y[i] = y0[i];
+
+    // Evaluate right hand side after changing comp i    
+    a[i] = _ode->eval(i, y, t);
+
+//    if (not linear_terms[i]) 
+//    {  
+      // Numerical differentiation for non-linear terms
       y[i] += delta; 
-      b[i] = (ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
-//    }
-    y[i] = yi;                  // Restore state i
-  }
-  for (int i=0; i<n; ++i)
-    y[i] = (fabs(b[i]) > delta) ? y0[i] + a[i]/b[i]*(exp(b[i]*dt) - 1.0) : y0[i] + a[i]*dt;
-}
 
+      // Component i derivative
+      b[i] = (_ode->eval(i, y, t) - a[i])/delta;
+//    }
+
+    // Restore state i
+    y[i] = yi;
+  }
+
+  for (uint i = 0; i < ode_size(); ++i) 
+    y[i] = (std::fabs(b[i]) > delta) ? y0[i] + a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) :
+      y0[i] + a[i]*dt;
+}
+//-----------------------------------------------------------------------------
