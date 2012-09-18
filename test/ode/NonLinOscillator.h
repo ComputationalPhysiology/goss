@@ -18,7 +18,7 @@ namespace goss
     {
       const double y1 = y[0];
       const double y2 = y[1];
-      f_vals[0] =  sin(y2)*(y1-6.0)/6.0;
+      f_vals[0] = sin(y2)*(y1-6.0)/6.0;
       f_vals[1] = y1+cos(y2)/6.0;
     }
     

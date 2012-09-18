@@ -9,6 +9,7 @@
 #include <cstdlib>
 
 #include "GRL1.h"
+#include "LinearizedODE.h"
 
 using namespace goss;
 
@@ -19,8 +20,8 @@ GRL1::GRL1() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0),
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(LinearizedODE* ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
-				 linear_terms(0), delta(1.0e-8)
+GRL1::GRL1(ODE* ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
+		       linear_terms(0), delta(1.0e-8)
 {
   attach(ode);
 }
@@ -33,7 +34,7 @@ GRL1::~GRL1()
 }
 
 //-----------------------------------------------------------------------------
-void GRL1::attach(LinearizedODE* ode)
+void GRL1::attach(ODE* ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);
@@ -43,7 +44,8 @@ void GRL1::attach(LinearizedODE* ode)
   if (linear_terms) delete[] linear_terms;
 
   // Store Linearized ODE
-  _lode = ode;
+  _lode = dynamic_cast<LinearizedODE*>(ode);
+  assert(_lode);
   
   // Initalize memory
   a = new double[ode_size()];

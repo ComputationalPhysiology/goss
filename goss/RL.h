@@ -9,9 +9,12 @@
 
 #include "types.h"
 #include "ODESolver.h"
-#include "LinearizedODE.h"
+#include "ODE.h"
 
 namespace goss {
+
+  // Forward declaration
+  class LinearizedODE;
 
   // First order accurate Generalized Rush-Larsen ODE Solver
   class RL: public ODESolver
@@ -22,13 +25,13 @@ namespace goss {
     RL();
 
     // Constructor
-    RL(LinearizedODE* ode);
+    RL(ODE* ode);
     
     // Destructor
     ~RL();
 
     // Attach ODE to solver
-    virtual void attach(LinearizedODE* ode);
+    virtual void attach(ODE* ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);
