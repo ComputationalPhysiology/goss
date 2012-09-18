@@ -2,10 +2,12 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-17
+// Last changed: 2012-09-18
 
+#include <cassert>
 #include <cmath>
 #include <cstdlib>
+
 #include "RL.h"
 
 using namespace goss;
@@ -16,7 +18,7 @@ RL::RL() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-RL::RL(LinearizedODE* ode) : ODESolver(ode, 0.0), _lode(0), a(0), b(0), 
+RL::RL(LinearizedODE* ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
 			     linear_terms(0)
 {
   attach(ode);
@@ -31,12 +33,14 @@ RL::~RL()
 //-----------------------------------------------------------------------------
 void RL::attach(LinearizedODE* ode)
 {
+  // Attach ode using base class
+  ODESolver::attach(ode);
+  
   if (a) delete[] a;
   if (b) delete[] b;
   if (linear_terms) delete[] linear_terms;
 
-  // Store Linearized and ordinary ODE
-  _ode = ode;
+  // Store Linearized ODE
   _lode = ode;
   
   // Initalize memory
@@ -51,6 +55,8 @@ void RL::attach(LinearizedODE* ode)
 //-----------------------------------------------------------------------------
 void RL::forward(double* y, double t, double interval)
 {
+
+  assert(_lode);
 
   // Local timestep
   const double dt = interval;

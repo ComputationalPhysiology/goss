@@ -21,13 +21,6 @@ namespace goss
     }
 
     // Constructor
-    ODESolver (goss::ODE* ode, double ldt=-1.0, double dt=0.0)
-      : _ldt(ldt), _dt(dt), _ode(ode)
-    {
-      // Do nothing
-    }
-
-    // Constructor
     ODESolver (double ldt, double dt=0.0) : _ldt(ldt), _dt(dt), _ode(0)
     {
       // Do nothing
@@ -36,8 +29,12 @@ namespace goss
     // Destructor
     virtual ~ODESolver () { /* Do nothing */ }
 
-    // Attach ODE to solver
-    virtual void attach(goss::ODE* ode) {_ode = ode;}
+    // Attach ODE and reset solver 
+    virtual void attach(goss::ODE* ode) 
+    { _ode = ode; reset();}
+
+    // Reset solver 
+    virtual void reset() { /* Do nothing */ }
 
     // Step solver an interval of time forward
     virtual void forward(double* y, double t, double interval) = 0;

@@ -9,11 +9,34 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32()
+  : AdaptiveImplicitSolver(),
+    gamma(0.43586652150845899942), 
+    a21(gamma), 
+    a22(gamma), 
+    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
+    a32((-2*gamma+1)/(4*gamma)), 
+    a33(gamma), 
+    a41((6*gamma-1)/(12*gamma)), 
+    a42(-1/((24*gamma-12)*gamma)), 
+    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
+    a44(gamma), 
+    b1(a41), 
+    b2(a42), 
+    b3(a43), 
+    b4(a44), 
+    bh1(a31), 
+    bh2(a32), 
+    bh3(a33), 
+    c2(2.0*gamma), 
+    c3(1.0), 
+    c4(1.0),
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
 {
+  _iord = 3;
 }
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32(ODE* ode, double ldt)
-  : AdaptiveImplicitSolver(),
+  : AdaptiveImplicitSolver(ldt),
     gamma(0.43586652150845899942), 
     a21(gamma), 
     a22(gamma), 
@@ -36,14 +59,12 @@ ESDIRK4O32::ESDIRK4O32(ODE* ode, double ldt)
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
 {
+  _iord = 3;
   attach(ode);
-  _ldt = ldt; 
-  init();
-  AdaptiveImplicitSolver::init();
 } 
 //-----------------------------------------------------------------------------
-ESDIRK4O32::ESDIRK4O32(double ldt) 
-  : AdaptiveImplicitSolver(),
+ESDIRK4O32::ESDIRK4O32(double ldt)
+  : AdaptiveImplicitSolver(ldt),
     gamma(0.43586652150845899942), 
     a21(gamma), 
     a22(gamma), 
@@ -66,9 +87,7 @@ ESDIRK4O32::ESDIRK4O32(double ldt)
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
 {
-  _ldt = ldt;
-  init();
-  AdaptiveImplicitSolver::init();
+  _iord = 3;
 }
 //-----------------------------------------------------------------------------
 ESDIRK4O32::~ESDIRK4O32() 
@@ -87,7 +106,8 @@ ESDIRK4O32::~ESDIRK4O32()
 void  ESDIRK4O32::attach(ODE* ode)
 {
 
-  _ode = ode;
+  // Use base classes to actually attach ode
+  ImplicitODESolver::attach(ode);
 
   if (z1) delete z1;
   if (z2) delete z2;
@@ -103,9 +123,17 @@ void  ESDIRK4O32::attach(ODE* ode)
   yn = new double[ode_size()];
   yh = new double[ode_size()];
 
+}
+//-----------------------------------------------------------------------------
+void ESDIRK4O32::reset()
+{
+  // Reset counters
   nfevals = 0;
   ndtsa = 0;
   ndtsr = 0;
+
+  // Reset bases
+  AdaptiveImplicitSolver::reset();
 }
 //-----------------------------------------------------------------------------
 void ESDIRK4O32::forward(double* y, double t, double interval) 

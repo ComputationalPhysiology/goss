@@ -2,8 +2,9 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-17
+// Last changed: 2012-09-18
 
+#include <cassert>
 #include <cstring>
 #include <cmath>
 
@@ -18,7 +19,7 @@ GRL2::GRL2() : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), linear_terms(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-GRL2::GRL2(LinearizedODE* ode) : ODESolver(ode, 0.0), _lode(0), y0(0), a(0), b(0), 
+GRL2::GRL2(LinearizedODE* ode) : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), 
 				 linear_terms(0), delta(1.0e-8), nbytes(0)
 {
   attach(ode);
@@ -34,13 +35,15 @@ GRL2::~GRL2()
 //-----------------------------------------------------------------------------
 void GRL2::attach(LinearizedODE* ode)
 {
+  // Attach ode using base class
+  ODESolver::attach(ode);
+
   if (y0) delete[] y0;
   if (a) delete[] a;
   if (b) delete[] b;
   if (linear_terms) delete[] linear_terms;
 
-  // Store Linearized and ordinary ODE
-  _ode = ode;
+  // Store Linearized ODE
   _lode = ode;
   
   // Initalize memory
@@ -60,6 +63,9 @@ void GRL2::attach(LinearizedODE* ode)
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double interval)
 {
+  
+  assert(_lode);
+  
   // Local timestep
   const double dt = interval;
 

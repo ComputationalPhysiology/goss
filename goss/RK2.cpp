@@ -1,9 +1,16 @@
+
+#include <cassert>
 #include <cmath>
 
 #include "RK2.h"
 
 using namespace goss;
 
+//-----------------------------------------------------------------------------
+RK2::RK2() : ODESolver(), k1(0), tmp(0)
+{
+  // Do nothing
+}
 //-----------------------------------------------------------------------------
 RK2::RK2(double ldt) : ODESolver(ldt), k1(0), tmp(0)
 {
@@ -23,7 +30,9 @@ RK2::~RK2 ()
 //-----------------------------------------------------------------------------
 void RK2::attach(ODE* ode)
 {
-  this->_ode = ode;
+  
+  ODESolver::attach(ode);
+
   if (k1) delete[] k1;
   if (tmp) delete[] tmp;
 
@@ -33,6 +42,9 @@ void RK2::attach(ODE* ode)
 //-----------------------------------------------------------------------------
 void RK2::forward(double* y, double t, double interval) 
 {
+
+  assert(_ode);
+
   // Calculate number of steps and size of timestep based on _ldt
   const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
   const double dt = interval/nsteps;

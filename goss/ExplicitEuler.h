@@ -15,14 +15,14 @@ namespace goss
     public:
     
     // Default constructor
-    ExplicitEuler() : ODESolver(0.0, 0.0), _dFdt(0) {};
-
-    // Constructor
-    ExplicitEuler(goss::ODE* ode_, double _ldt=-1.0);
+    ExplicitEuler();
 
     // Constructor
     ExplicitEuler(double _ldt);
     
+    // Constructor
+    ExplicitEuler(goss::ODE* ode_, double _ldt=-1.0);
+
     // Attach ODE to solver
     virtual void attach(goss::ODE* ode);
 

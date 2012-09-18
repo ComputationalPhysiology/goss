@@ -12,7 +12,7 @@ namespace goss
   
   public:
   
-    // Constructor
+    // Default constructor
     ImplicitODESolver();
   
     // Constructor
@@ -21,11 +21,20 @@ namespace goss
     // Destructor
     virtual ~ImplicitODESolver ();
 
+    // Reset solver
+    virtual void reset();
+
+    // Attach ode
+    virtual void attach(ODE* ode);
+
+    // Step solver an interval of time forward
+    virtual void forward(double* y, double t, double interval) = 0;
+
     // Set newton tolerance
-    void set_newton_tol(double newton_tol){_newton_tol = newton_tol;}
+    void set_newton_tol(double newton_tol){ _newton_tol = newton_tol; }
 
     // Return the number of recomputation of the jacobian
-    int num_jac_comp(){return jac_comp;}
+    int num_jac_comp(){ return jac_comp; }
 
   protected: 
 
@@ -43,9 +52,6 @@ namespace goss
 
     // Forward/Backward supstituion of factories matrix
     void forward_backward_subst(const double* const* mat, double* b, double* x);
-
-    // Init solver
-    void init(); 
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 

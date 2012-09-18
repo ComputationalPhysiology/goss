@@ -13,29 +13,34 @@
 
 using namespace goss;
 
-// Test fixture class template.
-template <class T>
-class ODETest : public testing::Test {
-protected:
-  ODETest() : ode(new T()), solver(new ExplicitEuler(ode)) {}
 
-  virtual ~ODETest() { delete ode; delete solver;}
+// Test fixture class template.
+template <class O, class S>
+class ODESolverTest : public testing::Test {
+protected:
+  ODESolverTest() : ode(new O()), solver(new S()) {}
+
+  virtual ~ODESolverTest() { delete ode; delete solver; 
+    delete[] x_coarse.data; delete[] x_fine.data;}
 
   // ODE and solver
   ODE* ode;
   ODESolver* solver;
   DoubleVector x_coarse, x_fine;
   
-  void run_ode(const double dt, DoubleVector& x)
+  void run_ode(double dt, double tstop, DoubleVector& x)
   {
+
+    // Attach ode while reseting solver
+    solver->attach(ode);
     ode->get_ic(&x);
-    const double tstop = 10.;
+
     const uint nstep = std::ceil(tstop/dt - 1.0E-12); 
     
     double t = 0.0;
-    for (uint i = 0; i < ode->size(); i++)
-      printf("var %d: %f ", i, x.data[i]);
-    printf("\n");
+    //for (uint i = 0; i < ode->size(); i++)
+    //  printf("var %d: %f ", i, x.data[i]);
+    //printf("\n");
     
     for (uint i = 0; i < nstep; i++)
     {
@@ -43,25 +48,80 @@ protected:
       t += dt;
     }
 
-    for (uint i = 0; i < ode->size(); i++)
-      printf("var %d: %f ", i, x.data[i]);
-    printf("\n");
+    //for (uint i = 0; i < ode->size(); i++)
+    //  printf("var %d: %f ", i, x.data[i]);
+    //printf("\n");
   }
 };
 
-// The list of types we want to test.
+// Inherit to partially specialize
+template<class O>
+class ODETester : public ODESolverTest<O, ExplicitEuler>
+{
+public :
+  ODETester() : ODESolverTest<O, ExplicitEuler>() {}
+};
+
+template<class S>
+class ImplicitTester : public ODESolverTest<EulerRigidBody, S>
+{
+public :
+  ImplicitTester() : ODESolverTest<EulerRigidBody, S>() {}
+};
+
+template<class S>
+class ExplicitTester : public ODESolverTest<Arenstorf, S>
+{
+public :
+  ExplicitTester() : ODESolverTest<Arenstorf, S>() {}
+};
+
+// The list of ODEs we want to test.
 typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody, \
-		       FG, Robertson, SaltzLorenz, Sin, VDP> ODEs;
+		       FG, Robertson, Sin, VDP> ODEs; // SaltzLorenz, 
 
-TYPED_TEST_CASE(ODETest, ODEs);
+// The list of Explicit solvers we want to test.
+typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers; 
 
-TYPED_TEST(ODETest, IntegrationTest) {
+typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
+
+TYPED_TEST_CASE(ODETester, ODEs);
+TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
+TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
+
+TYPED_TEST(ODETester, IntegrationTest) 
+{
 
   // Run coarse simulation
-  this->run_ode(0.0001, this->x_coarse);
+  this->run_ode(0.0001, 10.0, this->x_coarse);
 
   // Run fine simulation
-  this->run_ode(0.00001, this->x_fine);
+  this->run_ode(0.00001, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+}
+
+TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
+{
+
+  // Run coarse simulation
+  this->run_ode(0.0001, 10.0, this->x_coarse);
+
+  // Run fine simulation
+  this->run_ode(0.00001, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+}
+
+TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
+{
+
+  // Run coarse simulation
+  this->run_ode(0.01, 10.0, this->x_coarse);
+
+  // Run fine simulation
+  this->run_ode(0.001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   

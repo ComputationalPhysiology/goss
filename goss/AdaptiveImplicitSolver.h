@@ -18,13 +18,13 @@ namespace goss
     AdaptiveImplicitSolver();
 
     // Constructor
-    AdaptiveImplicitSolver (goss::ODE* ode_);
+    AdaptiveImplicitSolver (double ldt);
 
     // Destructor
-    ~AdaptiveImplicitSolver ();
+    virtual ~AdaptiveImplicitSolver ();
 
     // Initialize data
-    void init();
+    virtual void reset();
     
     // Step solver an interval of time forward
     virtual void forward(double* y, double t, double interval) = 0;

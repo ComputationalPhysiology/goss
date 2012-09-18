@@ -7,24 +7,24 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 AdaptiveExplicitSolver::AdaptiveExplicitSolver() 
-  : ODESolver(), dt_v(0), accept_v(0)
+  : ODESolver(), num_accepted(0), num_rejected(0), _t(0.), _dt_prev(0.),
+    _atol(1.e-5), _rtol(1.e-8), _iord(1), facmin(0.5), facmax(2.0), 
+    facmaxb(facmax), stabfac(0.9), step_accepted(false), reached_tend(false),
+    _itol(0), dt_v(0), accept_v(0), single_step_mode(false)
 {
-  init();
+  // Do nothing
 }
-//-----------------------------------------------------------------------------
-AdaptiveExplicitSolver::AdaptiveExplicitSolver (ODE* ode, double ldt, double dt)
-  : ODESolver(ode, ldt, dt), dt_v(0), accept_v(0)
-{ 
-  init();
-} 
 //-----------------------------------------------------------------------------
 AdaptiveExplicitSolver::AdaptiveExplicitSolver(double ldt, double dt) 
-  : ODESolver(ldt, dt), dt_v(0), accept_v(0)
+  : ODESolver(ldt, dt), num_accepted(0), num_rejected(0), _t(0.), _dt_prev(0.),
+    _atol(1.e-5), _rtol(1.e-8), _iord(1), facmin(0.5), facmax(2.0), 
+    facmaxb(facmax), stabfac(0.9), step_accepted(false), reached_tend(false),
+    _itol(0), dt_v(0), accept_v(0), single_step_mode(false)
 {
-  init();
+  // Do nothing
 }
 //-----------------------------------------------------------------------------
-void AdaptiveExplicitSolver::init()
+void AdaptiveExplicitSolver::reset()
 {
   single_step_mode = false;
   reached_tend     = false;

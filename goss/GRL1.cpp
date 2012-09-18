@@ -2,10 +2,12 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-17
+// Last changed: 2012-09-18
 
+#include <cassert>
 #include <cmath>
 #include <cstdlib>
+
 #include "GRL1.h"
 
 using namespace goss;
@@ -17,7 +19,7 @@ GRL1::GRL1() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0),
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(LinearizedODE* ode) : ODESolver(ode, 0.0), _lode(0), a(0), b(0), 
+GRL1::GRL1(LinearizedODE* ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
 				 linear_terms(0), delta(1.0e-8)
 {
   attach(ode);
@@ -33,12 +35,14 @@ GRL1::~GRL1()
 //-----------------------------------------------------------------------------
 void GRL1::attach(LinearizedODE* ode)
 {
+  // Attach ode using base class
+  ODESolver::attach(ode);
+  
   if (a) delete[] a;
   if (b) delete[] b;
   if (linear_terms) delete[] linear_terms;
 
-  // Store Linearized and ordinary ODE
-  _ode = ode;
+  // Store Linearized ODE
   _lode = ode;
   
   // Initalize memory
@@ -54,6 +58,8 @@ void GRL1::attach(LinearizedODE* ode)
 //-----------------------------------------------------------------------------
 void GRL1::forward(double* y, double t, double interval)
 {
+
+  assert(_lode);
 
   // Local timestep
   const double dt = interval;

@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-17
+// Last changed: 2012-09-18
 
 #ifndef RL_H_IS_INCLUDED
 #define RL_H_IS_INCLUDED
@@ -22,13 +22,13 @@ namespace goss {
     RL();
 
     // Constructor
-    RL(goss::LinearizedODE* ode);
+    RL(LinearizedODE* ode);
     
     // Destructor
     ~RL();
 
     // Attach ODE to solver
-    virtual void attach(goss::LinearizedODE* ode);
+    virtual void attach(LinearizedODE* ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);

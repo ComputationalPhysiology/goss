@@ -7,7 +7,7 @@ namespace goss
 {
 
   // Adaptive and explicit RungeKutta Solver
-  class RKF32 : public  AdaptiveExplicitSolver
+  class RKF32 : public AdaptiveExplicitSolver
   {
   public:
 
@@ -15,19 +15,19 @@ namespace goss
     RKF32();
 
     // Constructor
-    RKF32 (goss::ODE* ode, double ldt=-1.0);
+    RKF32(double _ldt);
 
     // Constructor
-    RKF32(double _ldt);
+    RKF32 (goss::ODE* ode, double ldt=-1.0);
 
     // Constructor
     virtual ~RKF32();
     
-    // Init protected variables
-    void init();
-
     // Attach ODE
     virtual void attach(ODE* ode);
+
+    // Reset solver
+    virtual void reset();
 
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);

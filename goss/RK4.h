@@ -17,7 +17,7 @@ namespace goss
     RK4();
 
     // Constructor
-    RK4(double ldt=-1.0);
+    RK4(double ldt);
 
     // Constructor
     RK4(goss::ODE* ode, double ldt=-1.0);

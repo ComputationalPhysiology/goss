@@ -27,6 +27,9 @@ namespace goss
     // Attach ODE
     virtual void attach(ODE* ode);
 
+    // Reset ODE
+    virtual void reset();
+
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
 

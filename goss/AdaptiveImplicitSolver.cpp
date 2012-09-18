@@ -6,37 +6,42 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver::AdaptiveImplicitSolver (ODE* ode_) 
-{ 
-  attach(ode_); 
-  //init(); 
-} 
-
-//-----------------------------------------------------------------------------
-AdaptiveImplicitSolver::AdaptiveImplicitSolver() 
+AdaptiveImplicitSolver::AdaptiveImplicitSolver() : 
+  ImplicitODESolver(), num_accepted(0), num_rejected(0), step_accepted(false), 
+  reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
+  _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
+  facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
+  dt_old(0.0), _itol(0)
 {
-  //printf("AdaptiveImplicitSolver ()\n"); 
-  //init(); 
+  // Do nothing
 }
-
+//-----------------------------------------------------------------------------
+AdaptiveImplicitSolver::AdaptiveImplicitSolver(double ldt) : 
+  ImplicitODESolver(ldt), num_accepted(0), num_rejected(0), step_accepted(false), 
+  reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
+  _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
+  facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
+  dt_old(0.0), _itol(0)
+{
+  // Do nothing
+}
 //-----------------------------------------------------------------------------
 AdaptiveImplicitSolver::~AdaptiveImplicitSolver ()
 {
-  //printf("~AdaptiveImplicitSolver ()\n");
+  // Do nothing
 }
-
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver::init()
+void AdaptiveImplicitSolver::reset()
 {
   // FIXME: Flesh out constants and initialize in constructor
   printf("AdaptiveImplicitSolver::init\n");
-  single_step_mode=false;
+  single_step_mode = false;
   _atol    = 1.0e-5;
   _rtol    = 1.0e-8;
   
-  // We can not choose the next timestep more then half of the previous 
+  // We cannot choose the next timestep more then half of the previous 
   // timestep
-  facmin  = 0.5; 
+  facmin = 0.5; 
   
   // We can not choose the next timestep more then double of the previous 
   // timestep  
@@ -50,7 +55,9 @@ void AdaptiveImplicitSolver::init()
 
   num_accepted = 0;
   num_rejected = 0;
-  ImplicitODESolver::init();
+  
+  // Reset bases
+  ImplicitODESolver::reset();
 }
 // FIXME: Have a closer look of origin of pointers passed to this function.
 //-----------------------------------------------------------------------------
@@ -73,7 +80,7 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
 
   // FIXME: Why is it not evaluated?
   //_ode->eval(y0, t, f0_);
-  for (i=0; i<ode_size(); ++i)
+  for (i = 0; i < ode_size(); ++i)
   {
     sk   = _atol + _rtol*std::fabs(y0[i]);
     tmp  = f0_[i]/sk;

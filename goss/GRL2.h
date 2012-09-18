@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-17
+// Last changed: 2012-09-18
 
 #ifndef GRL2_H_IS_INCLUDED
 #define GRL2_H_IS_INCLUDED
@@ -22,7 +22,7 @@ namespace goss {
     GRL2();
 
     // Constructor
-    GRL2(goss::LinearizedODE* ode);
+    GRL2(LinearizedODE* ode);
     
     // Destructor
     ~GRL2();

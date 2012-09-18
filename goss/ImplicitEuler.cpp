@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cassert>
 #include <cmath>
 
 #include "ImplicitEuler.h"
@@ -35,12 +35,10 @@ ImplicitEuler::~ImplicitEuler()
 //-----------------------------------------------------------------------------
 void ImplicitEuler::attach(ODE* ode)
 {
-  _ode = ode;
-  justrefined = false;
-  num_tsteps = 0;
 
-  init();
-  stages = 1;
+  // Attach ode using bases
+  ImplicitODESolver::attach(ode);
+
   if (z1) delete[] z1;
 
   // Init memory
@@ -48,11 +46,29 @@ void ImplicitEuler::attach(ODE* ode)
 
 }
 //-----------------------------------------------------------------------------
+void ImplicitEuler::reset()
+{
+  
+  justrefined = false;
+  num_tsteps = 0;
+
+  stages = 1;
+  newton_iter1.clear();
+  newton_accepted1.clear();
+  dt_v.clear();
+  
+  ImplicitODESolver::reset();
+}
+//-----------------------------------------------------------------------------
 void ImplicitEuler::forward(double* y, double t, double interval) 
 {
+
+  assert(_ode);
+
   uint i;
   const double t_end = t + interval;
-  _dt = _ldt;
+
+  _dt = _ldt > 0 ? _ldt : interval;
   
   for (i = 0; i < ode_size(); ++i)
     _prev[i] = 0.0;
@@ -68,14 +84,18 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     
     if (recompute_jacobian)
     {
-      compute_jacobian(t,y);
+      compute_jacobian(t, y);
+
+      // Build Euler discretization of jacobian
       mult(-_dt, jac);
       add_identity(jac);
+
+      // Factorize jacobian
       lu_factorize(jac);
       jac_comp += 1;
     }
 
-    // Use 0.0 z1:
+    // Use 0.0 as initial guess
     for (i = 0; i < ode_size(); ++i)
       z1[i] = 0.0;
 
@@ -89,6 +109,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     // Newton step OK
     if (step_ok)
     {
+      //std::cout << "Newton step OK: " << std::endl;
       t += _dt;
       if (std::fabs(t - t_end) < eps)
       {
@@ -128,6 +149,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     }
     else
     {
+      std::cout << "Newton step NOT OK: " << std::endl;
       _dt /= 2.0;
       justrefined = true;
 #ifdef DEBUG

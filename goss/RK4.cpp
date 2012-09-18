@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cmath>
 
 #include "RK4.h"
@@ -5,11 +6,15 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
+RK4::RK4() : ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
+{
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 RK4::RK4(double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
   // Do nothing
 }
-
 //-----------------------------------------------------------------------------
 RK4::RK4(ODE *ode, double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
@@ -27,7 +32,10 @@ RK4::~RK4 ()
 //-----------------------------------------------------------------------------
 void RK4::attach(ODE* ode)
 {
-  _ode = ode;
+
+  // Attach ode using base class
+  ODESolver::attach(ode);
+  
   if (k1) delete[] k1;
   if (k2) delete[] k2;
   if (k3) delete[] k3;
@@ -39,10 +47,14 @@ void RK4::attach(ODE* ode)
   k3  = new double[ode_size()];
   k4  = new double[ode_size()];
   tmp = new double[ode_size()];
+
 }
 //-----------------------------------------------------------------------------
 void RK4::forward(double* y, double t, double interval) 
 {
+
+  assert(_ode);
+
   // Calculate number of steps and size of timestep based on _ldt
   const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
   const double dt = interval/nsteps;

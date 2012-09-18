@@ -17,16 +17,13 @@ namespace goss
     AdaptiveExplicitSolver();
 
     // Constructor
-    AdaptiveExplicitSolver (goss::ODE* ode_, double ldt=0.0, double dt=0.0);
-
-    // Constructor
     AdaptiveExplicitSolver(double ldt, double dt=0.0);
 
     // Destructor
     virtual ~AdaptiveExplicitSolver (){};
     
     // Initialize Solver
-    void init();
+    virtual void reset();
 
     // Return the current time
     double get_current_time();
@@ -35,19 +32,20 @@ namespace goss
     double get_current_time_step();
 
     // Return number of accepted solutions
-    long get_num_accepted(){return num_accepted;}
+    long get_num_accepted(){ return num_accepted; }
 
     // Return number of rejected solutions
-    long get_num_rejected(){return num_rejected;}
+    long get_num_rejected(){ return num_rejected; }
 
     // Set single step mode
-    void set_single_step_mode(bool mode) {single_step_mode = mode;}
+    void set_single_step_mode(bool mode) { single_step_mode = mode; }
 
     // Set tolerance
-    void set_tol(double atol, double rtol=1.0e-8) {_atol = atol; _rtol = rtol;}
+    void set_tol(double atol, double rtol=1.0e-8) 
+    { _atol = atol; _rtol = rtol; }
     
     // Set iord
-    void set_iord(int iord){_iord = iord;}
+    void set_iord(int iord){ _iord = iord; }
 
     // FIXME: Should this be protected?
     // Compute an initial time step guess

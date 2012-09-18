@@ -30,32 +30,7 @@ RKF32::RKF32()
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
 {
-  init();
-}
-//-----------------------------------------------------------------------------
-RKF32::RKF32(ODE* ode, double ldt) 
-  : AdaptiveExplicitSolver(ode, ldt, 0.0), 
-    nfevals(0), ndtsa(0), ndtsr(0),
-    a21(1.0/2.0), 
-    a32(3.0/4.0), 
-    b1(2.0/9.0), 
-    b2(1.0/3.0), 
-    b3(4.0/9.0), 
-    bh1(7.0/24.0), 
-    bh2(1.0/4.0), 
-    bh3(1.0/3.0), 
-    bh4(1.0/8.0), 
-    d1(b1-bh1), 
-    d2(b2-bh2), 
-    d3(b3-bh3), 
-    d4(-bh4), 
-    c2(1.0/2.0), 
-    c3(3.0/4.0), 
-    nbytes(0),
-    ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
-{ 
-  init();
-  attach(ode);
+  _iord = 3;
 }
 //-----------------------------------------------------------------------------
 RKF32::RKF32(double ldt) 
@@ -79,13 +54,32 @@ RKF32::RKF32(double ldt)
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
 {
-  init();
+  _iord = 3;
 }
 //-----------------------------------------------------------------------------
-void RKF32::init() 
-{
-  AdaptiveExplicitSolver::init();
+RKF32::RKF32(ODE* ode, double ldt) 
+  : AdaptiveExplicitSolver(ldt, 0.0), 
+    nfevals(0), ndtsa(0), ndtsr(0),
+    a21(1.0/2.0), 
+    a32(3.0/4.0), 
+    b1(2.0/9.0), 
+    b2(1.0/3.0), 
+    b3(4.0/9.0), 
+    bh1(7.0/24.0), 
+    bh2(1.0/4.0), 
+    bh3(1.0/3.0), 
+    bh4(1.0/8.0), 
+    d1(b1-bh1), 
+    d2(b2-bh2), 
+    d3(b3-bh3), 
+    d4(-bh4), 
+    c2(1.0/2.0), 
+    c3(3.0/4.0), 
+    nbytes(0),
+    ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
+{ 
   _iord = 3;
+  attach(ode);
 }
 //-----------------------------------------------------------------------------
 RKF32::~RKF32() 
@@ -100,11 +94,13 @@ RKF32::~RKF32()
 }
 
 //-----------------------------------------------------------------------------
-void  RKF32::attach(ODE* ode)
+void RKF32::attach(ODE* ode)
 {
-  // Store ode
-  _ode = ode;
+  // Attach ode using base class. 
+  // NOTE: This will trigger call to reset
+  ODESolver::attach(ode);
 
+  // Delete memory if excist
   if (ki) delete[] ki;
   if (k1) delete[] k1;
   if (k2) delete[] k2;
@@ -122,14 +118,21 @@ void  RKF32::attach(ODE* ode)
   yn = new double[ode_size()];
   e  = new double[ode_size()];
 
+  nbytes  = ode_size()*sizeof(double);
+}
+//-----------------------------------------------------------------------------
+void RKF32::reset()
+{
   first = true;
 
-  nbytes  = ode_size()*sizeof(double);
   nfevals = 0;
   ndtsa   = 0;
   ndtsr   = 0;
   num_accepted = 0;
   num_rejected = 0;
+
+  // Reset base classes
+  AdaptiveExplicitSolver::reset();
 }
 //-----------------------------------------------------------------------------
 void RKF32::forward(double* y, double t, double interval) 

@@ -16,19 +16,16 @@ namespace goss
     ESDIRK4O32();
     
     // Constructor
-    ESDIRK4O32 (ODE* ode, double ldt=-1.0);
-
-    // Constructor
     ESDIRK4O32(double _ldt);
 
-    // Initilize data
-    void init()
-    {
-      _iord = 3;
-    }
+    // Constructor
+    ESDIRK4O32 (ODE* ode, double ldt=-1.0);
 
     // Attach ODE
-    virtual void attach(ODE* ode_);
+    virtual void attach(ODE* ode);
+    
+    // Reset ODE
+    virtual void reset();
     
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
