@@ -35,31 +35,24 @@ protected:
     solver->attach(ode);
     ode->get_ic(&x);
 
-    const uint nstep = std::ceil(tstop/dt - 1.0E-12); 
+    const uint nstep = std::ceil(tstop/dt - 1.0E-12);
     
     double t = 0.0;
-    //for (uint i = 0; i < ode->size(); i++)
-    //  printf("var %d: %f ", i, x.data[i]);
-    //printf("\n");
     
     for (uint i = 0; i < nstep; i++)
     {
       solver->forward(x.data, t, dt);
       t += dt;
     }
-
-    //for (uint i = 0; i < ode->size(); i++)
-    //  printf("var %d: %f ", i, x.data[i]);
-    //printf("\n");
   }
 };
 
 // Inherit to partially specialize
 template<class O>
-class ODETester : public ODESolverTest<O, ExplicitEuler>
+class ODETester : public ODESolverTest<O, RK4>
 {
 public :
-  ODETester() : ODESolverTest<O, ExplicitEuler>() {}
+  ODETester() : ODESolverTest<O, RK4>() {}
 };
 
 template<class S>
@@ -85,7 +78,7 @@ public :
 
 // The list of ODEs we want to test.
 typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody, \
-		       FG, Robertson, Sin, VDP> ODEs; // SaltzLorenz, 
+		       FG, Robertson, Sin, VDP, SaltzLorenz> ODEs;
 
 // Different list of Solvers
 typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers; 
@@ -97,6 +90,7 @@ TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
 TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
 TYPED_TEST_CASE(RLTester, RLODESolvers);
 
+// Run all included 
 TYPED_TEST(ODETester, IntegrationTest) 
 {
 
