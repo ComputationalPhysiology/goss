@@ -30,7 +30,7 @@ ESDIRK4O32::ESDIRK4O32()
     c2(2.0*gamma), 
     c3(1.0), 
     c4(1.0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
   _iord = 3;
 }
@@ -57,7 +57,7 @@ ESDIRK4O32::ESDIRK4O32(ODE* ode, double ldt)
     c2(2.0*gamma), 
     c3(1.0), 
     c4(1.0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
   _iord = 3;
   attach(ode);
@@ -85,22 +85,43 @@ ESDIRK4O32::ESDIRK4O32(double ldt)
     c2(2.0*gamma), 
     c3(1.0), 
     c4(1.0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), swap(0), ret_ptr(0)
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
+{
+  _iord = 3;
+}
+//-----------------------------------------------------------------------------
+ESDIRK4O32::ESDIRK4O32(const ESDIRK4O32& solver)
+  : AdaptiveImplicitSolver(solver),
+    gamma(0.43586652150845899942), 
+    a21(gamma), 
+    a22(gamma), 
+    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
+    a32((-2*gamma+1)/(4*gamma)), 
+    a33(gamma), 
+    a41((6*gamma-1)/(12*gamma)), 
+    a42(-1/((24*gamma-12)*gamma)), 
+    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
+    a44(gamma), 
+    b1(a41), 
+    b2(a42), 
+    b3(a43), 
+    b4(a44), 
+    bh1(a31), 
+    bh2(a32), 
+    bh3(a33), 
+    c2(2.0*gamma), 
+    c3(1.0), 
+    c4(1.0),
+    z1(new double[solver.ode_size()]), z2(new double[solver.ode_size()]), 
+    z3(new double[solver.ode_size()]), z4(new double[solver.ode_size()]), 
+    yn(new double[solver.ode_size()]), yh(new double[solver.ode_size()])
 {
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
 ESDIRK4O32::~ESDIRK4O32() 
 {
-  swap = 0;
-  ret_ptr = 0;
-
-  if (z1) delete z1;
-  if (z2) delete z2;
-  if (z3) delete z3;
-  if (z4) delete z4;
-  if (yn) delete yn;
-  if (yh) delete yh;
+  // Do nothing
 }
 //-----------------------------------------------------------------------------
 void  ESDIRK4O32::attach(ODE* ode)
@@ -109,19 +130,12 @@ void  ESDIRK4O32::attach(ODE* ode)
   // Use base classes to actually attach ode
   ImplicitODESolver::attach(ode);
 
-  if (z1) delete z1;
-  if (z2) delete z2;
-  if (z3) delete z3;
-  if (z4) delete z4;
-  if (yn) delete yn;
-  if (yh) delete yh;
-
-  z1 = new double[ode_size()];
-  z2 = new double[ode_size()];
-  z3 = new double[ode_size()];
-  z4 = new double[ode_size()];
-  yn = new double[ode_size()];
-  yh = new double[ode_size()];
+  z1.reset(new double[ode_size()]);
+  z2.reset(new double[ode_size()]);
+  z3.reset(new double[ode_size()]);
+  z4.reset(new double[ode_size()]);
+  yn.reset(new double[ode_size()]);
+  yh.reset(new double[ode_size()]);
 
 }
 //-----------------------------------------------------------------------------
@@ -144,6 +158,12 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   uint i;
   const double t_end = _t + interval;
 
+  double* ret_ptr = y;
+  double* swap, *yn0;
+
+  // Use the raw pointer instead of the scoped_array, enabling pointer swap
+  yn0 = yn.get();
+
   //if (ldt>0) 
   //{
   //    // Calculates a local time step that is <= ldt,
@@ -157,11 +177,10 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   bool step_ok; // done = false;
   reached_tend = false;
 
-  ret_ptr = y;
   if (_dt < 0)
   {
-    _ode->eval(y, _t, z1);
-    _dt = dtinit(_t, y, yn, z1, z2, _iord);
+    _ode->eval(y, _t, z1.get());
+    _dt = dtinit(_t, y, yn0, z1.get(), z2.get(), _iord);
     nfevals += 2;
   }
 
@@ -189,7 +208,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     }
 
     // Computes the first node explicitly
-    _ode->eval(y, _t, z1);
+    _ode->eval(y, _t, z1.get());
     nfevals += 1;
 
     // printf("z2=");
@@ -201,7 +220,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       //printf("%1.2e, ",z2[i]);
     }
 
-    step_ok = newton_solve(z2, _prev, y, _t + c2*_dt, _dt, a22);    
+    step_ok = newton_solve(z2.get(), _prev.get(), y, _t + c2*_dt, _dt, a22);    
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -221,7 +240,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       z3[i] = z2[i] + y[i];
     
     //printf(" before eval\n");
-    _ode->eval(z2, _t + c2*_dt, f1);
+    _ode->eval(z2.get(), _t + c2*_dt, f1.get());
     nfevals += 1;
 
     // Computes the third node, implicitly
@@ -235,7 +254,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     }
     //printf(" after eval\n");
 
-    step_ok = newton_solve(z3, _prev, y, _t + c3*_dt, _dt, a33);
+    step_ok = newton_solve(z3.get(), _prev.get(), y, _t + c3*_dt, _dt, a33);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -253,7 +272,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < ode_size(); ++i)
       z3[i] += y[i];
 
-    _ode->eval(z3, _t + c3*_dt, f1);
+    _ode->eval(z3.get(), _t + c3*_dt, f1.get());
     nfevals += 1;
 
     // Computes the error estimate
@@ -271,7 +290,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       _prev[i] = a41*z1[i] + a42*z2[i] + a43*z3[i];
     }
 
-    step_ok = newton_solve(z4, _prev, y, _t + c4*_dt, _dt, a44);
+    step_ok = newton_solve(z4.get(), _prev.get(), y, _t + c4*_dt, _dt, a44);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -289,7 +308,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < ode_size(); ++i)
       z4[i] += y[i];
     
-    _ode->eval(z4, _t + c4*_dt, f1);
+    _ode->eval(z4.get(), _t + c4*_dt, f1.get());
     nfevals += 1;
 
     for (i = 0; i < ode_size(); ++i)
@@ -300,7 +319,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       yh[i] -= yn[i];//use this as the error vector
     }
 
-    new_time_step(y, yn, yh, t_end);//,blog);
+    new_time_step(y, yn0, yh.get(), t_end);//,blog);
     //recompute_jacobian=true;
 
     //done=blog[1];
@@ -310,8 +329,8 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     if (step_accepted)
     {
       swap = y;
-      y = yn;
-      yn = swap;
+      y = yn0;
+      yn0 = swap;
 #ifdef DEBUG
       if (single_step_mode)
       {
@@ -320,10 +339,9 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
           for (i = 0; i < ode_size(); ++i)
             ret_ptr[i] = y[i];
 	  
-          yn = y;
+          yn0 = y;
         }
 	
-        swap = 0;
         return;
       }
 #endif
@@ -337,7 +355,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < ode_size(); ++i)
       ret_ptr[i] = y[i];
     
-    yn = y;
+    yn0 = y;
     //printf("Accepted at t=%1.4e, with dt=%1.4e\n",t,dt);
   }
 

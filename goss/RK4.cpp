@@ -21,13 +21,18 @@ RK4::RK4(ODE *ode, double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp
   attach(ode);
 }
 //-----------------------------------------------------------------------------
+RK4::RK4(const RK4& solver) : ODESolver(solver), k1(new double[solver.ode_size()]),
+			      k2(new double[solver.ode_size()]),
+			      k3(new double[solver.ode_size()]),
+			      k4(new double[solver.ode_size()]),
+			      tmp(new double[solver.ode_size()])
+{
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 RK4::~RK4 ()
 {
-  if (k1) delete[] k1;
-  if (k2) delete[] k2;
-  if (k3) delete[] k3;
-  if (k4) delete[] k4;
-  if (tmp) delete[] tmp;
+  // Do nothing
 }
 //-----------------------------------------------------------------------------
 void RK4::attach(ODE* ode)
@@ -36,17 +41,11 @@ void RK4::attach(ODE* ode)
   // Attach ode using base class
   ODESolver::attach(ode);
   
-  if (k1) delete[] k1;
-  if (k2) delete[] k2;
-  if (k3) delete[] k3;
-  if (k4) delete[] k4;
-  if (tmp) delete[] tmp;
-
-  k1  = new double[ode_size()];
-  k2  = new double[ode_size()];
-  k3  = new double[ode_size()];
-  k4  = new double[ode_size()];
-  tmp = new double[ode_size()];
+  k1.reset(new double[ode_size()]);
+  k2.reset(new double[ode_size()]);
+  k3.reset(new double[ode_size()]);
+  k4.reset(new double[ode_size()]);
+  tmp.reset(new double[ode_size()]);
 
 }
 //-----------------------------------------------------------------------------
@@ -64,18 +63,18 @@ void RK4::forward(double* y, double t, double interval)
   for (ulong j = 0; j < nsteps; ++j) 
   {
     // Evaluate rhs and calculate intermediate derivatives
-    _ode->eval(y    , lt     , k1);
+    _ode->eval(y, lt, k1.get());
 
     // Explicit Euler step
-    axpy(tmp, y, 0.5*dt, k1);
+    axpy(tmp.get(), y, 0.5*dt, k1.get());
 
-    _ode->eval(tmp, lt+0.5*dt, k2);
-    axpy(tmp, y, 0.5*dt, k2);
+    _ode->eval(tmp.get(), lt + 0.5*dt, k2.get());
+    axpy(tmp.get(), y, 0.5*dt, k2.get());
 
-    _ode->eval(tmp, lt+0.5*dt, k3);
-    axpy(tmp, y, dt, k3);
+    _ode->eval(tmp.get(), lt + 0.5*dt, k3.get());
+    axpy(tmp.get(), y, dt, k3.get());
     
-    _ode->eval(tmp, lt+    dt, k4);
+    _ode->eval(tmp.get(), lt + dt, k4.get());
 
     for (uint i = 0; i < ode_size(); ++i)
       y[i] += dt*(k1[i] + 2.0*k2[i] + 2.0*k3[i] + k4[i])/6.0;

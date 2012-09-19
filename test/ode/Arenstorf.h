@@ -20,8 +20,16 @@ namespace goss {
 
   public:
 
-    Arenstorf (): ODE(4), rval(0.012277471), rvalp(1.0-rval){}
-    ~Arenstorf() {}
+    Arenstorf (): ODE(4), rval(0.012277471), rvalp(1.0-rval)
+    {}
+
+    ~Arenstorf() 
+    {}
+
+    ODE* copy() const
+    {
+      return new Arenstorf();
+    }
 
     virtual void eval(const double* y, double t, double* f_vals)
     {
@@ -40,10 +48,10 @@ namespace goss {
       f_vals[3] = y1 - 2*y2 - rvalp*y1/r1 - rval*y1/r2;
     }
     
-    void get_ic(goss::DoubleVector *res) const
+    void get_ic(DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
+      res->data.reset(new double[_system_size]);
       res->data[0] =  0.994;
       res->data[1] =  0.0;
       res->data[2] =  0.0;

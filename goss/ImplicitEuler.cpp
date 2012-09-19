@@ -28,9 +28,17 @@ ImplicitEuler::ImplicitEuler(double ldt) : ImplicitODESolver(ldt), newton_iter1(
   // Do nothing
 }
 //-----------------------------------------------------------------------------
+ImplicitEuler::ImplicitEuler(const ImplicitEuler& solver) : 
+  ImplicitODESolver(solver), newton_iter1(solver.newton_iter1), 
+  newton_accepted1(solver.newton_accepted1), dt_v(solver.dt_v), 
+  z1(new double[solver.ode_size()]), justrefined(solver.justrefined)
+{
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 ImplicitEuler::~ImplicitEuler()
 {
-  if (z1) delete[] z1;
+  // Do nothing
 }
 //-----------------------------------------------------------------------------
 void ImplicitEuler::attach(ODE* ode)
@@ -39,10 +47,8 @@ void ImplicitEuler::attach(ODE* ode)
   // Attach ode using bases
   ImplicitODESolver::attach(ode);
 
-  if (z1) delete[] z1;
-
   // Init memory
-  z1 = new double[ode_size()];
+  z1.reset(new double[ode_size()]);
 
 }
 //-----------------------------------------------------------------------------
@@ -100,7 +106,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
       z1[i] = 0.0;
 
     // Solve for increment
-    step_ok = newton_solve(z1, _prev, y, t + _dt, _dt, 1.0);    
+    step_ok = newton_solve(z1.get(), _prev.get(), y, t + _dt, _dt, 1.0);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
     dt_v.push_back(_dt);

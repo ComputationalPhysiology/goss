@@ -2,10 +2,12 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-18
+// Last changed: 2012-09-19
 
 #ifndef GRL2_H_IS_INCLUDED
 #define GRL2_H_IS_INCLUDED
+
+#include <boost/scoped_array.hpp>
 
 #include "types.h"
 #include "ODESolver.h"
@@ -27,6 +29,9 @@ namespace goss {
     // Constructor
     GRL2(ODE* ode);
     
+    // Copy constructor
+    GRL2(const GRL2& solver);
+    
     // Destructor
     ~GRL2();
 
@@ -42,11 +47,11 @@ namespace goss {
     LinearizedODE* _lode;
 
     // Pointers to intermediate values used while stepping
-    double* y0; 
-    double* a;
-    double* b;
+    boost::scoped_array<double> y0; 
+    boost::scoped_array<double> a;
+    boost::scoped_array<double> b;
 
-    uint* linear_terms;
+    boost::scoped_array<uint> linear_terms;
     const double delta;
 
     // Number of bytes which will be copied each time step

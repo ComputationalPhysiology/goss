@@ -12,6 +12,11 @@ namespace goss
     Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
+    ODE* copy() const
+    {
+      return new Brusselator();
+    }
+
     virtual void eval(const double* state, double t, double* f_vals)
     {
       const double y1 = state[0];
@@ -23,7 +28,7 @@ namespace goss
     virtual void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
+      res->data.reset(new double[_system_size]);
       res->data[0] = 1.5; 
       res->data[1] = 3.0; 
     }

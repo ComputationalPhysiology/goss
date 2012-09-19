@@ -1,6 +1,7 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
+#include <boost/scoped_ptr.hpp>
 #include <iostream>
 
 #include "ODE.h"
@@ -26,12 +27,19 @@ namespace goss
       // Do nothing
     }
 
+    // Copy constructor (Uses default copy constructor of ODE)
+    ODESolver (const ODESolver& solver) : _ldt(solver._ldt), _dt(solver._dt), 
+					  _ode(solver._ode->copy())
+    {
+      // Do nothing
+    }
+
     // Destructor
     virtual ~ODESolver () { /* Do nothing */ }
 
     // Attach ODE and reset solver 
-    virtual void attach(goss::ODE* ode) 
-    { _ode = ode; reset();}
+    virtual void attach(ODE* ode) 
+    { _ode.reset(ode); reset();}
 
     // Reset solver 
     virtual void reset() { /* Do nothing */ }
@@ -43,7 +51,7 @@ namespace goss
     inline uint ode_size() const { return _ode->size(); }
 
     // Return the ODE
-    inline const goss::ODE* get_ode() const { return _ode; }
+    inline const goss::ODE* get_ode() const { return _ode.get(); }
 
     // Return the internal time step
     inline double internal_time_step() const { return _ldt; }
@@ -59,8 +67,8 @@ namespace goss
     // Variable local time step.
     double _dt;
     
-    // Pointer to ode
-    goss::ODE* _ode;
+    // Pointer to ode (Onced assigned the ODESolver owe the ODE)
+    boost::scoped_ptr<ODE> _ode;
 
   };
 

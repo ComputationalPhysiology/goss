@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-18
+// Last changed: 2012-09-19
 
 #include <cassert>
 #include <cstring>
@@ -26,12 +26,24 @@ GRL2::GRL2(ODE* ode) : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0),
   attach(ode);
 }
 //-----------------------------------------------------------------------------
+GRL2::GRL2(const GRL2& solver) : ODESolver(solver), _lode(0), 
+				 y0(new double[solver.ode_size()]), 
+				 a(new double[solver.ode_size()]), 
+				 b(new double[solver.ode_size()]), 
+				 linear_terms(new uint[solver.ode_size()]),
+				 delta(solver.delta)
+{
+  // Store Linearized ODE
+  _lode = dynamic_cast<LinearizedODE*>(_ode.get());
+  assert(_lode);
+
+  // Get what terms are linear
+  _lode->linear_terms(linear_terms.get());
+}
+//-----------------------------------------------------------------------------
 GRL2::~GRL2()
 { 
-  if (y0) delete[] y0;
-  if (a) delete[] a;
-  if (b) delete[] b;
-  if (linear_terms) delete[] linear_terms;
+  // Do nothing
 }
 //-----------------------------------------------------------------------------
 void GRL2::attach(ODE* ode)
@@ -39,28 +51,24 @@ void GRL2::attach(ODE* ode)
   // Attach ode using base class
   ODESolver::attach(ode);
 
-  if (y0) delete[] y0;
-  if (a) delete[] a;
-  if (b) delete[] b;
-  if (linear_terms) delete[] linear_terms;
-
    // Store Linearized ODE
   _lode = dynamic_cast<LinearizedODE*>(ode);
   assert(_lode);
   
   // Initalize memory
-  y0 = new double[ode_size()];
-  a = new double[ode_size()];
-  b = new double[ode_size()];
-  linear_terms = new uint[ode_size()];
+  y0.reset(new double[ode_size()]);
+  a.reset(new double[ode_size()]);
+  b.reset(new double[ode_size()]);
+  linear_terms.reset(new uint[ode_size()]);
+  std::fill(b.get(), b.get()+ode_size(), static_cast<double>(0));
   
   // Get what terms are linear
-  _lode->linear_terms(linear_terms);
-
+  _lode->linear_terms(linear_terms.get());
+  
   nbytes  = ode_size()*sizeof(double);
-  std::fill(a, a + ode_size(), 0.0);
-  std::fill(b, b + ode_size(), 0.0);
-  std::fill(y0, y0 + ode_size(), 0.0);
+  std::fill(a.get(), a.get() + ode_size(), 0.0);
+  std::fill(b.get(), b.get() + ode_size(), 0.0);
+  std::fill(y0.get(), y0.get() + ode_size(), 0.0);
 }
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double interval)
@@ -72,15 +80,15 @@ void GRL2::forward(double* y, double t, double interval)
   const double dt = interval;
 
   // Copy start conditions
-  std::memcpy(y0, y, nbytes); 
+  std::memcpy(y0.get(), y, nbytes); 
 
   // First step
 
   // Evaluate full right hand side
-  _lode->eval(y, t, a);
+  _lode->eval(y, t, a.get());
 
   // Exact derivatives for linear terms
-  _lode->linear_derivatives(y, t, b);  
+  _lode->linear_derivatives(y, t, b.get());  
   
   for (uint i = 0; i < ode_size(); ++i) 
   { 

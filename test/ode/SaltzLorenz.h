@@ -21,9 +21,14 @@ namespace goss
 
   public:
 
-    SaltzLorenz () : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
+    SaltzLorenz() : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
     {}
     
+    ODE* copy() const
+    {
+      return new SaltzLorenz();
+    }
+
     ~SaltzLorenz() {}
 
     void eval(const double* y, double t, double* f_vals)
@@ -39,7 +44,7 @@ namespace goss
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
+      res->data.reset(new double[_system_size]);
       res->data[0] = -8.0; 
       res->data[1] =  8.0;
       res->data[2] = 27.0;

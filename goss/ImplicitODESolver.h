@@ -1,6 +1,7 @@
 #ifndef ImplicitODESolver_h_IS_INCLUDED
 #define ImplicitODESolver_h_IS_INCLUDED
 
+#include <boost/scoped_array.hpp>
 #include "ODESolver.h"
 
 namespace goss 
@@ -17,6 +18,9 @@ namespace goss
   
     // Constructor
     ImplicitODESolver(double ldt);
+
+    // Copy constructor
+    ImplicitODESolver(const ImplicitODESolver& solver);
 
     // Destructor
     virtual ~ImplicitODESolver ();
@@ -42,16 +46,18 @@ namespace goss
     void compute_jacobian(double t, double* y);
 
     // Scale a matrix
-    void mult(double fact, double** matrix);
+    void mult(double fact, boost::scoped_array<boost::scoped_array<double> >& matrix);
 
     // Add identity to matrix
-    void add_identity(double** matrix);
+    void add_identity(boost::scoped_array<boost::scoped_array<double> >& matrix);
 
     // LU Factorize matrix
-    void lu_factorize(double** mat);
+    void lu_factorize(boost::scoped_array<boost::scoped_array<double> >& matrix);
 
     // Forward/Backward supstituion of factories matrix
-    void forward_backward_subst(const double* const* mat, double* b, double* x);
+    void forward_backward_subst(
+            const boost::scoped_array<boost::scoped_array<double> >& mat, 
+	    double* b, double* x);
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
@@ -61,15 +67,14 @@ namespace goss
     virtual double norm(double* vec);
 
     // Variables used in the jacobian evaluation
-    double **jac;
-    double *f1, *f2, *yz;
-    double dt_old;
+    boost::scoped_array<boost::scoped_array<double> > jac;
+    boost::scoped_array<double> f1, f2, yz;
 
     // Right hand side and solution of the linear system
-    double *_b, *dz;
+    boost::scoped_array<double> _b, dz;
 
     // Previous stages, used by DIRK methods
-    double *_prev;
+    boost::scoped_array<double> _prev;
 
     // Newton tolerance
     double _newton_tol;

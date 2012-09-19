@@ -1,6 +1,8 @@
 #ifndef RK2_H_IS_INCLUDED
 #define RK2_H_IS_INCLUDED
 
+#include <boost/scoped_array.hpp>
+
 #include "ODESolver.h"
 #include "types.h"
 
@@ -20,13 +22,16 @@ namespace goss
     RK2(double ldt);
 
     // Constructor
-    RK2(goss::ODE* ode, double ldt=-1.0);
+    RK2(ODE* ode, double ldt=-1.0);
+
+    // Copy constructor
+    RK2(const RK2& solver);
 
     // Destructor
     ~RK2();
 
     // Attach ODE to solver
-    void attach(goss::ODE* ode_);
+    void attach(goss::ODE* ode);
 
     // Step solver an interval in time forward
     virtual void forward(double* y, double t, double dt);
@@ -34,7 +39,7 @@ namespace goss
   protected: 
 
     // State derivative, allocated in attach(ode)
-    double *k1, *tmp;
+    boost::scoped_array<double> k1, tmp;
     
     // Perform a weighted addition of y and z
     inline void axpy(double* x, const double* y, double a, const double* z);

@@ -19,6 +19,9 @@ namespace goss
     // Constructor
     AdaptiveExplicitSolver(double ldt, double dt=0.0);
 
+    // Copy constructor
+    AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver);
+
     // Destructor
     virtual ~AdaptiveExplicitSolver (){};
     

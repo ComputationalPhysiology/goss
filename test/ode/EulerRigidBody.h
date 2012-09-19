@@ -10,8 +10,14 @@ namespace goss
   {
   public:
     double I1, I2, I3, pi;
-    EulerRigidBody () : ODE(3), I1(0.5), I2(2.0), I3(3.0), pi(2*acos(0.0))
+    EulerRigidBody() : ODE(3), I1(0.5), I2(2.0), I3(3.0), pi(2*acos(0.0))
     {}
+
+    ODE* copy() const
+    {
+      return new EulerRigidBody();
+    }
+
     ~EulerRigidBody() {}
     
     void eval(const double* state, double t, double* f_vals)
@@ -30,10 +36,10 @@ namespace goss
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
-      res->data[0] = 1.0; 
-      res->data[1] = 0.0; 
-      res->data[2] = 0.9; 
+      res->data.reset(new double[_system_size]);
+      res->data[0] = 1.0;
+      res->data[1] = 0.0;
+      res->data[2] = 0.9;
     }
   };
 }

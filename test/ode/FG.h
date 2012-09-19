@@ -34,7 +34,14 @@ namespace goss
   public:
     
     FG () : ODE(2){}
+
+    ODE* copy() const 
+    {
+      return new FG();
+    }
+
     ~FG() {};
+
     void eval(const double* y, double t, double* f_vals)
     {
       const double y1 = y[0];
@@ -46,8 +53,8 @@ namespace goss
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
-      exact(res->data,0.0); 
+      res->data.reset(new double[_system_size]);
+      exact(res->data.get(), 0.0); 
     }
 
     void exact(double* y, double t) const

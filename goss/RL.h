@@ -2,10 +2,12 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-18
+// Last changed: 2012-09-19
 
 #ifndef RL_H_IS_INCLUDED
 #define RL_H_IS_INCLUDED
+
+#include <boost/scoped_array.hpp>
 
 #include "types.h"
 #include "ODESolver.h"
@@ -26,6 +28,9 @@ namespace goss {
 
     // Constructor
     RL(ODE* ode);
+
+    // Copy constructor
+    RL(const RL& solver);
     
     // Destructor
     ~RL();
@@ -42,10 +47,10 @@ namespace goss {
     LinearizedODE* _lode;
 
     // Pointers to intermediate values used while stepping
-    double* a;
-    double* b;
+    boost::scoped_array<double> a;
+    boost::scoped_array<double> b;
 
-    uint* linear_terms;
+    boost::scoped_array<uint> linear_terms;
   
   };
 

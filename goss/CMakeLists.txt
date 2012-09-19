@@ -22,11 +22,16 @@ foreach(_HEADER ${HEADERS})
 endforeach()
 
 #------------------------------------------------------------------------------
+# Add include directories and libs of required packages
+# Boost
+list(APPEND GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+
+#------------------------------------------------------------------------------
 # Set compiler flags, include directories and library dependencies
 
 # Add compiler include directories
-# include_directories(${GOSS_SOURCE_DIR} ${GOSS_DEP_INCLUDE_DIRECTORIES})
-# include_directories(SYSTEM ${GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES})
+include_directories(${GOSS_SOURCE_DIR} ${GOSS_DEP_INCLUDE_DIRECTORIES})
+include_directories(SYSTEM ${GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES})
 
 # Add CXX defintions
 add_definitions(${GOSS_CXX_DEFINITIONS})

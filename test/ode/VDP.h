@@ -13,8 +13,14 @@ namespace goss
     double mu;
 
     VDP() : ODE(2), LinearizedODE(2), mu(10.0) {}
+
     virtual ~VDP() {}
     
+    ODE* copy() const
+    {
+      return new VDP();
+    }
+
     void eval(const double* y, double t, double* f_vals)
     {
       const double y1 = y[0];
@@ -44,7 +50,7 @@ namespace goss
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
+      res->data.reset(new double[_system_size]);
       res->data[0] = 2.0;
       res->data[1] = 0.0;
     }

@@ -1,6 +1,8 @@
 #ifndef ESDIRK4O32_h_IS_INCLUDED
 #define ESDIRK4O32_h_IS_INCLUDED
 
+#include <boost/scoped_array.hpp>
+
 #include "AdaptiveImplicitSolver.h"
 
 namespace goss 
@@ -19,7 +21,10 @@ namespace goss
     ESDIRK4O32(double _ldt);
 
     // Constructor
-    ESDIRK4O32 (ODE* ode, double ldt=-1.0);
+    ESDIRK4O32(ODE* ode, double ldt=-1.0);
+
+    // Copy constructor
+    ESDIRK4O32(const ESDIRK4O32& solver);
 
     // Attach ODE
     virtual void attach(ODE* ode);
@@ -52,7 +57,7 @@ namespace goss
     double c2, c3, c4;
 
     // State derivatives, allocated in attach(ode)
-    double *z1, *z2, *z3, *z4, *yn, *yh, *swap, *ret_ptr; 
+    boost::scoped_array<double> z1, z2, z3, z4, yn, yh; 
 
   };
 

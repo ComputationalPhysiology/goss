@@ -24,6 +24,18 @@ AdaptiveExplicitSolver::AdaptiveExplicitSolver(double ldt, double dt)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
+AdaptiveExplicitSolver::AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver) 
+  : ODESolver(solver), num_accepted(solver.num_accepted), 
+    num_rejected(solver.num_rejected), _t(solver._t), _dt_prev(solver._dt_prev),
+    _atol(solver._atol), _rtol(solver._rtol), _iord(solver._iord), 
+    facmin(solver.facmin), facmax(solver.facmax), facmaxb(solver.facmaxb), 
+    stabfac(solver.stabfac), step_accepted(solver.step_accepted), 
+    reached_tend(solver.reached_tend), _itol(solver._itol), dt_v(solver.dt_v), 
+    accept_v(solver.accept_v), single_step_mode(solver.single_step_mode)
+{
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 void AdaptiveExplicitSolver::reset()
 {
   single_step_mode = false;

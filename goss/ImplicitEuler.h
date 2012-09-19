@@ -1,8 +1,10 @@
 #ifndef ImplicitEuler_h_IS_INCLUDED
 #define ImplicitEuler_h_IS_INCLUDED
 
-#include "ImplicitODESolver.h"
+#include <boost/scoped_array.hpp>
 #include <vector>
+
+#include "ImplicitODESolver.h"
 
 namespace goss 
 {
@@ -20,6 +22,9 @@ namespace goss
 
     // Constructor
     ImplicitEuler(double ldt);
+
+    // Copy constructor
+    ImplicitEuler(const ImplicitEuler& solver);
 
     // Constructor
     ~ImplicitEuler ();
@@ -39,7 +44,7 @@ namespace goss
 
   protected:
 
-    double* z1;
+    boost::scoped_array<double> z1;
     bool justrefined;
 
   };

@@ -82,15 +82,36 @@ RKF32::RKF32(ODE* ode, double ldt)
   attach(ode);
 }
 //-----------------------------------------------------------------------------
+RKF32::RKF32(const RKF32& solver) 
+  : AdaptiveExplicitSolver(solver), 
+    nfevals(solver.nfevals), ndtsa(solver.ndtsa), ndtsr(solver.ndtsr),
+    a21(1.0/2.0), 
+    a32(3.0/4.0), 
+    b1(2.0/9.0), 
+    b2(1.0/3.0), 
+    b3(4.0/9.0), 
+    bh1(7.0/24.0), 
+    bh2(1.0/4.0), 
+    bh3(1.0/3.0), 
+    bh4(1.0/8.0), 
+    d1(b1-bh1), 
+    d2(b2-bh2), 
+    d3(b3-bh3), 
+    d4(-bh4), 
+    c2(1.0/2.0), 
+    c3(3.0/4.0), 
+    nbytes(solver.ode_size()*sizeof(double)),
+    ki(new double[solver.ode_size()]), k1(new double[solver.ode_size()]), 
+    k2(new double[solver.ode_size()]), k3(new double[solver.ode_size()]), 
+    k4(new double[solver.ode_size()]), yn(new double[solver.ode_size()]), 
+    e(new double[solver.ode_size()])
+{ 
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 RKF32::~RKF32() 
 {
-  if (ki) delete[] ki;
-  if (k1) delete[] k1;
-  if (k2) delete[] k2;
-  if (k3) delete[] k3;
-  if (k4) delete[] k4;
-  if (yn) delete[] yn;
-  if (e)  delete[] e;
+  // Do nothing
 }
 
 //-----------------------------------------------------------------------------
@@ -100,23 +121,14 @@ void RKF32::attach(ODE* ode)
   // NOTE: This will trigger call to reset
   ODESolver::attach(ode);
 
-  // Delete memory if excist
-  if (ki) delete[] ki;
-  if (k1) delete[] k1;
-  if (k2) delete[] k2;
-  if (k3) delete[] k3;
-  if (k4) delete[] k4;
-  if (yn) delete[] yn;
-  if (e)  delete[] e;
-
   // Initilize RK increments
-  ki = new double[ode_size()]; 
-  k1 = new double[ode_size()];
-  k2 = new double[ode_size()];
-  k3 = new double[ode_size()];
-  k4 = new double[ode_size()];
-  yn = new double[ode_size()];
-  e  = new double[ode_size()];
+  ki.reset(new double[ode_size()]); 
+  k1.reset(new double[ode_size()]);
+  k2.reset(new double[ode_size()]);
+  k3.reset(new double[ode_size()]);
+  k4.reset(new double[ode_size()]);
+  yn.reset(new double[ode_size()]);
+  e .reset(new double[ode_size()]);
 
   nbytes  = ode_size()*sizeof(double);
 }
@@ -139,11 +151,14 @@ void RKF32::forward(double* y, double t, double interval)
 {
   uint i;
 
-  // We swap the result vektor if a timestep is accepted. We therefore need 
+  // We swap the result vector if a timestep is accepted. We therefore need 
   // to store the pointer to the initial y-vector in order to ensure that 
   // this memory segment contains the final result when the end is reached ...
   double* ret_ptr = y;
-  double* swap;
+  double* swap, *yn0;
+
+  // Use the raw pointer instead of the scoped_array, enabling pointer swap
+  yn0 = yn.get();
 
   // End of interval
   const double t_end = t + interval;
@@ -156,14 +171,14 @@ void RKF32::forward(double* y, double t, double interval)
   // FIXME: first i always true
   if (first) 
   {
-    _ode->eval(y, t, k1);
+    _ode->eval(y, t, k1.get());
     nfevals += 1;
   }
 
   // Set initial time step
   if (_ldt < 0) 
   {
-    _dt = dtinit(t, y, yn, k1, k2, _iord);
+    _dt = dtinit(t, y, yn0, k1.get(), k2.get(), _iord);
     nfevals += 1;
   } 
   else 
@@ -182,20 +197,20 @@ void RKF32::forward(double* y, double t, double interval)
     for (i = 0; i < ode_size(); ++i)
       ki[i] = y[i] + _dt*a21*k1[i];
 
-    _ode->eval(ki, t + c2*_dt, k2);
+    _ode->eval(ki.get(), t + c2*_dt, k2.get());
     
     for (i = 0; i < ode_size(); ++i)
       ki[i] = y[i] + _dt*a32*k2[i];
 
-    _ode->eval(ki, t + c3*_dt, k3);
+    _ode->eval(ki.get(), t + c3*_dt, k3.get());
 
     // We assemble the new y
     for (i = 0; i < ode_size(); ++i)
-      yn[i] = y[i] + _dt*(b1*k1[i] + b2*k2[i] + b3*k3[i]);
+      yn0[i] = y[i] + _dt*(b1*k1[i] + b2*k2[i] + b3*k3[i]);
     //yn[i] = y[i] + _dt*(bh1*k1[i]+bh2*k2[i]+bh3*k3[i]+bh4*k4[i]);
 
     // We compute the first quadrature node for the next iteration (FSAL)
-    _ode->eval(yn, t + _dt, k4);
+    _ode->eval(yn0, t + _dt, k4.get());
     nfevals += 3;
 
     // We compute the error vector
@@ -203,7 +218,7 @@ void RKF32::forward(double* y, double t, double interval)
       e[i] = _dt*(d1*k1[i] + d2*k2[i] + d3*k3[i] + d4*k4[i]);
 
     // Compute new time step and check if it is rejected
-    new_time_step(y, yn, e, t_end);
+    new_time_step(y, yn0, e.get(), t_end);
 
 #ifdef DEBUG
     log_data(_dt, step_accepted);
@@ -214,18 +229,16 @@ void RKF32::forward(double* y, double t, double interval)
     {
       ndtsa += 1;
       swap = y;
-      y    = yn;
-      yn   = swap;
-      swap = k1;
-      k1   = k4;
-      k4   = swap;
+      y = yn0;
+      yn0 = swap;
+      k4.swap(k1);
 #ifdef DEBUG
       if (single_step_mode)
       {
         if (ret_ptr != y)
 	{
           memcpy(ret_ptr, y, nbytes);
-          yn = y;
+          yn0 = y;
         }
         swap = 0;
         return;
@@ -242,7 +255,7 @@ void RKF32::forward(double* y, double t, double interval)
   if (ret_ptr != y)
   {
     memcpy(ret_ptr, y, nbytes);
-    yn = y;
+    yn0 = y;
   }
 
 #ifdef DEBUG
@@ -260,7 +273,7 @@ void RKF32::log_data(double dt, bool accepted)
 void RKF32::dt_vector(DoubleVector *res)
 {
   res->n    = dt_v.size();
-  res->data = new double[dt_v.size()]; 
+  res->data.reset(new double[dt_v.size()]);
   for(uint i = 0; i < dt_v.size(); ++i)
     res->data[i] = dt_v[i];
 }
@@ -269,7 +282,7 @@ void RKF32::dt_vector(DoubleVector *res)
 void RKF32::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
-  res->data = new double[accept_v.size()]; 
+  res->data.reset(new double[accept_v.size()]); 
   for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
 }

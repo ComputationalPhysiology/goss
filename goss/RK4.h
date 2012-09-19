@@ -1,6 +1,8 @@
 #ifndef RK4_h_IS_INCLUDED
 #define RK4_h_IS_INCLUDED
 
+#include <boost/scoped_array.hpp>
+
 #include "ODESolver.h"
 #include "types.h"
 
@@ -22,6 +24,9 @@ namespace goss
     // Constructor
     RK4(goss::ODE* ode, double ldt=-1.0);
 
+    // Copy constructor
+    RK4(const RK4& solver);
+
     // Destructor
     ~RK4();
 
@@ -34,7 +39,7 @@ namespace goss
   protected: 
     
     // State derivative, allocated in attach(ode)
-    double *k1, *k2, *k3, *k4, *tmp;
+    boost::scoped_array<double> k1, k2, k3, k4, tmp;
 
     // Perform a weighted addition of y and z
     inline void axpy(double* x, const double* y, double a, const double* z);

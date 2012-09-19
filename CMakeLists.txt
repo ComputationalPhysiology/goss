@@ -118,10 +118,11 @@ find_package(PythonLibs QUIET)
 find_package(SWIG QUIET)
 include(UseSWIG)
 
-# Look for Boost (shared_ptr support for Python wrappers)
-#set(Boost_ADDITIONAL_VERSIONS 1.43 1.43.0)
-#set(BOOST_ROOT $ENV{BOOST_DIR})
-#find_package(Boost 1.36 QUIET)
+# Look for Boost (scoped_array support)
+set(Boost_ADDITIONAL_VERSIONS 1.43 1.43.0 1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 
+    1.46.1 1.47 1.47.0 1.48 1.48.0 1.49 1.49.0 1.50 1.50.0)
+set(BOOST_ROOT $ENV{BOOST_DIR})
+find_package(Boost 1.36 QUIET)
 
 #------------------------------------------------------------------------------
 # Get installation path for Python modules

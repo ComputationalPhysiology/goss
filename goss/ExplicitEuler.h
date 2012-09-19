@@ -1,9 +1,11 @@
 #ifndef ExplicitEuler_h_IS_INCLUDED
 #define ExplicitEuler_h_IS_INCLUDED
 
-#include "ODESolver.h"
+#include <boost/scoped_array.hpp>
 #include <math.h>
 #include <cstdlib>
+
+#include "ODESolver.h"
 
 namespace goss 
 {
@@ -21,7 +23,10 @@ namespace goss
     ExplicitEuler(double _ldt);
     
     // Constructor
-    ExplicitEuler(goss::ODE* ode_, double _ldt=-1.0);
+    ExplicitEuler(ODE* ode_, double _ldt=-1.0);
+
+    // Copy constructor
+    ExplicitEuler(const ExplicitEuler& solver);
 
     // Attach ODE to solver
     virtual void attach(goss::ODE* ode);
@@ -35,7 +40,7 @@ namespace goss
   protected:
 
     // State derivative, allocated in attach(ode)
-    double* _dFdt; 
+    boost::scoped_array<double> _dFdt; 
     
   };
   

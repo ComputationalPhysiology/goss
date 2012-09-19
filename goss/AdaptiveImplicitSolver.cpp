@@ -26,6 +26,19 @@ AdaptiveImplicitSolver::AdaptiveImplicitSolver(double ldt) :
   // Do nothing
 }
 //-----------------------------------------------------------------------------
+AdaptiveImplicitSolver::AdaptiveImplicitSolver(const AdaptiveImplicitSolver& solver) 
+  : ImplicitODESolver(solver), num_accepted(solver.num_accepted), 
+    num_rejected(solver.num_rejected), step_accepted(solver.step_accepted), 
+    reached_tend(solver.reached_tend), dt_v(solver.dt_v), accept_v(solver.accept_v), 
+    single_step_mode(solver.single_step_mode), _t(solver._t), _dt_prev(solver._dt_prev), 
+    _atol(solver._atol), _rtol(solver._rtol), _iord(solver._iord), facmin(solver.facmin), 
+    facmax(solver.facmax), facmaxb(solver.facmaxb), stabfac(solver.stabfac), 
+    stabdown(solver.stabdown), stabup(solver.stabup), err_old(solver.err_old), 
+    dt_old(solver.dt_old), _itol(solver._itol)
+{
+  // Do nothing
+}
+//-----------------------------------------------------------------------------
 AdaptiveImplicitSolver::~AdaptiveImplicitSolver ()
 {
   // Do nothing
@@ -34,7 +47,7 @@ AdaptiveImplicitSolver::~AdaptiveImplicitSolver ()
 void AdaptiveImplicitSolver::reset()
 {
   // FIXME: Flesh out constants and initialize in constructor
-  printf("AdaptiveImplicitSolver::init\n");
+  //printf("AdaptiveImplicitSolver::init\n");
   single_step_mode = false;
   _atol    = 1.0e-5;
   _rtol    = 1.0e-8;

@@ -34,6 +34,9 @@ namespace goss {
     // Get default initial conditions
     virtual void get_ic(goss::DoubleVector *res) const = 0;
 
+    // Return a copy of the ODE
+    virtual ODE* copy() const = 0;
+
   protected: 
     
     // ODE size

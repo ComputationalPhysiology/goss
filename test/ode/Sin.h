@@ -11,8 +11,16 @@ namespace goss
   {
     public:
     double omega;
+
     Sin () : ODE(2), omega(4*std::acos(0.0)) {}
+
+    ODE* copy() const
+    {
+      return new Sin();
+    }
+
     ~Sin() {}
+
     void eval(const double* y, double t, double* f_vals)
     {
       double y1 = y[0];
@@ -24,7 +32,7 @@ namespace goss
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _system_size;
-      res->data = new double[_system_size];
+      res->data.reset(new double[_system_size]);
       res->data[0] = 0.0; 
       res->data[1] = 1.0;//omega; 
     }

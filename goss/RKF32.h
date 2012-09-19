@@ -1,6 +1,8 @@
 #ifndef RKF32_h_IS_INCLUDED
 #define RKF32_h_IS_INCLUDED
 
+#include <boost/scoped_array.hpp>
+
 #include "AdaptiveExplicitSolver.h"
 
 namespace goss 
@@ -19,6 +21,9 @@ namespace goss
 
     // Constructor
     RKF32 (goss::ODE* ode, double ldt=-1.0);
+
+    // Copy constructor
+    RKF32(const RKF32& solver);
 
     // Constructor
     virtual ~RKF32();
@@ -64,7 +69,7 @@ namespace goss
     ulong nbytes; 
 
     // State derivatives, allocated in attach(ode)
-    double *ki, *k1, *k2, *k3, *k4, *yn, *e;
+    boost::scoped_array<double> ki, k1, k2, k3, k4, yn, e;
 
     // Parameter for scalar or vector tolerance computing
     bool first;
