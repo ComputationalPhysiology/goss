@@ -89,43 +89,43 @@ TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
 TYPED_TEST_CASE(RLTester, RLODESolvers);
 
 // Run all included 
-//TYPED_TEST(ODETester, IntegrationTest) 
-//{
-//
-//  // Run coarse simulation
-//  this->run_ode(0.0001, 10.0, this->x_coarse);
-//
-//  // Run fine simulation
-//  this->run_ode(0.00001, 10.0, this->x_fine);
-//
-//  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-//  
-//}
+TYPED_TEST(ODETester, IntegrationTest) 
+{
 
-//TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
-//{
-//
-//  // Run coarse simulation
-//  this->run_ode(0.0001, 10.0, this->x_coarse);
-//
-//  // Run fine simulation
-//  this->run_ode(0.00001, 10.0, this->x_fine);
-//
-//  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-//}
+  // Run coarse simulation
+  this->run_ode(0.0001, 10.0, this->x_coarse);
 
-//TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
-//{
-//
-//  // Run coarse simulation
-//  this->run_ode(0.1, 10.0, this->x_coarse);
-//
-//  // Run fine simulation
-//  this->run_ode(0.01, 10.0, this->x_fine);
-//
-//  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-//  
-//}
+  // Run fine simulation
+  this->run_ode(0.00001, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+}
+
+TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
+{
+
+  // Run coarse simulation
+  this->run_ode(0.0001, 10.0, this->x_coarse);
+
+  // Run fine simulation
+  this->run_ode(0.00001, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+}
+
+TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
+{
+
+  // Run coarse simulation
+  this->run_ode(0.1, 10.0, this->x_coarse);
+
+  // Run fine simulation
+  this->run_ode(0.01, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+}
 
 TYPED_TEST(RLTester, RLSolverTest) 
 {
