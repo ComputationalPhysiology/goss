@@ -22,8 +22,8 @@ RK2::RK2(ODE* ode, double ldt) : ODESolver(ldt), k1(0), tmp(0)
   attach(ode);
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(const RK2& solver) : ODESolver(solver), k1(new double[solver.ode_size()]),
-			      tmp(new double[solver.ode_size()])
+RK2::RK2(const RK2& solver) : ODESolver(solver), k1(new double[solver.num_states()]),
+			      tmp(new double[solver.num_states()])
 {
   // Do nothing
 }
@@ -38,8 +38,8 @@ void RK2::attach(ODE* ode)
   
   ODESolver::attach(ode);
 
-  k1.reset(new double[ode_size()]);
-  tmp.reset(new double[ode_size()]);
+  k1.reset(new double[num_states()]);
+  tmp.reset(new double[num_states()]);
 }
 //-----------------------------------------------------------------------------
 void RK2::forward(double* y, double t, double interval) 
@@ -65,7 +65,7 @@ void RK2::forward(double* y, double t, double interval)
     _ode->eval(tmp.get(), lt+0.5*dt, k1.get());
 
     // Use midpoint derivative for explicit Euler step
-    for (uint i = 0; i < ode_size(); ++i)
+    for (uint i = 0; i < num_states(); ++i)
       y[i] += dt*k1[i];
 
     // Update local time

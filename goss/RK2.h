@@ -49,7 +49,7 @@ namespace goss
 //-----------------------------------------------------------------------------
 inline void goss::RK2::axpy(double* x, const double* y, double a, const double* z)
 {
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
     x[i] = y[i] + a*z[i];
 }
 //-----------------------------------------------------------------------------

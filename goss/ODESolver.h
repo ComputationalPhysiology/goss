@@ -48,13 +48,13 @@ namespace goss
     virtual void forward(double* y, double t, double interval) = 0;
 
     // The size of the ODE
-    inline uint ode_size() const { return _ode->size(); }
+    inline uint num_states() const { return _ode->num_states(); }
 
     // Return the ODE
     inline const goss::ODE* get_ode() const { return _ode.get(); }
 
     // Return the internal time step
-    inline double internal_time_step() const { return _ldt; }
+    inline double get_internal_time_step() const { return _ldt; }
 
     // Set the internal time step
     inline void set_internal_time_step(double ldt) { _ldt = ldt; }

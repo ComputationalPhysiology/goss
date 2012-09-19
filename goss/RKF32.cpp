@@ -100,11 +100,11 @@ RKF32::RKF32(const RKF32& solver)
     d4(-bh4), 
     c2(1.0/2.0), 
     c3(3.0/4.0), 
-    nbytes(solver.ode_size()*sizeof(double)),
-    ki(new double[solver.ode_size()]), k1(new double[solver.ode_size()]), 
-    k2(new double[solver.ode_size()]), k3(new double[solver.ode_size()]), 
-    k4(new double[solver.ode_size()]), yn(new double[solver.ode_size()]), 
-    e(new double[solver.ode_size()])
+    nbytes(solver.num_states()*sizeof(double)),
+    ki(new double[solver.num_states()]), k1(new double[solver.num_states()]), 
+    k2(new double[solver.num_states()]), k3(new double[solver.num_states()]), 
+    k4(new double[solver.num_states()]), yn(new double[solver.num_states()]), 
+    e(new double[solver.num_states()])
 { 
   // Do nothing
 }
@@ -122,15 +122,15 @@ void RKF32::attach(ODE* ode)
   ODESolver::attach(ode);
 
   // Initilize RK increments
-  ki.reset(new double[ode_size()]); 
-  k1.reset(new double[ode_size()]);
-  k2.reset(new double[ode_size()]);
-  k3.reset(new double[ode_size()]);
-  k4.reset(new double[ode_size()]);
-  yn.reset(new double[ode_size()]);
-  e .reset(new double[ode_size()]);
+  ki.reset(new double[num_states()]); 
+  k1.reset(new double[num_states()]);
+  k2.reset(new double[num_states()]);
+  k3.reset(new double[num_states()]);
+  k4.reset(new double[num_states()]);
+  yn.reset(new double[num_states()]);
+  e .reset(new double[num_states()]);
 
-  nbytes  = ode_size()*sizeof(double);
+  nbytes  = num_states()*sizeof(double);
 }
 //-----------------------------------------------------------------------------
 void RKF32::reset()
@@ -194,18 +194,18 @@ void RKF32::forward(double* y, double t, double interval)
   while (!reached_tend)
   {
     
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a21*k1[i];
 
     _ode->eval(ki.get(), t + c2*_dt, k2.get());
     
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a32*k2[i];
 
     _ode->eval(ki.get(), t + c3*_dt, k3.get());
 
     // We assemble the new y
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       yn0[i] = y[i] + _dt*(b1*k1[i] + b2*k2[i] + b3*k3[i]);
     //yn[i] = y[i] + _dt*(bh1*k1[i]+bh2*k2[i]+bh3*k3[i]+bh4*k4[i]);
 
@@ -214,7 +214,7 @@ void RKF32::forward(double* y, double t, double interval)
     nfevals += 3;
 
     // We compute the error vector
-    for (i=0; i < ode_size(); ++i)
+    for (i=0; i < num_states(); ++i)
       e[i] = _dt*(d1*k1[i] + d2*k2[i] + d3*k3[i] + d4*k4[i]);
 
     // Compute new time step and check if it is rejected

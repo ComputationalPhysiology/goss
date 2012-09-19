@@ -26,9 +26,9 @@ RL::RL(ODE* ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0),
 }
 //-----------------------------------------------------------------------------
 RL::RL(const RL& solver) : ODESolver(solver), _lode(0), 
-			   a(new double[solver.ode_size()]), 
-			   b(new double[solver.ode_size()]), 
-			   linear_terms(new uint[solver.ode_size()])
+			   a(new double[solver.num_states()]), 
+			   b(new double[solver.num_states()]), 
+			   linear_terms(new uint[solver.num_states()])
 {
   // Store Linearized ODE
   _lode = dynamic_cast<LinearizedODE*>(_ode.get());
@@ -53,10 +53,10 @@ void RL::attach(ODE* ode)
   assert(_lode);
   
   // Initalize memory
-  a.reset(new double[ode_size()]);
-  b.reset(new double[ode_size()]);
-  linear_terms.reset(new uint[ode_size()]);
-  std::fill(b.get(), b.get()+ode_size(), static_cast<double>(0));
+  a.reset(new double[num_states()]);
+  b.reset(new double[num_states()]);
+  linear_terms.reset(new uint[num_states()]);
+  std::fill(b.get(), b.get()+num_states(), static_cast<double>(0));
   
   // Get what terms are linear
   _lode->linear_terms(linear_terms.get());
@@ -77,7 +77,7 @@ void RL::forward(double* y, double t, double interval)
   _lode->linear_derivatives(y, t, b.get());
 
   // Integrate linear terms exactly
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
     y[i] += (linear_terms[i]==1) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) : a[i]*dt;
 
 }

@@ -16,10 +16,10 @@ namespace goss {
   public:
 
     // Constructor
-    ParameterizedODE(uint system_size, uint num_parameters_, uint num_field_states_, 
+    ParameterizedODE(uint num_states_, uint num_parameters_, uint num_field_states_, 
 		     uint num_field_parameters_, uint num_intermediates_) : 
-      ODE(system_size), 
-      _state_names(system_size, ""), 
+      ODE(num_states_), 
+      _state_names(num_states_, ""), 
       _field_state_names(num_field_states_, ""), 
       _parameter_names(num_parameters_, ""), 
       _field_parameter_names(num_field_parameters_, ""), 

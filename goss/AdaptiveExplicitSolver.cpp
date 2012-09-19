@@ -73,7 +73,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   double sk, dt, tmp;
   if (_itol == 0)
   {
-    for (i = 0; i < _ode->size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       sk   = _atol + _rtol*fabs(y0[i]);
       tmp  = f0[i]/sk;
@@ -85,7 +85,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   else 
   {
     std::cout << " Not implemented yet " << std::endl;
-    //for (i=0; i<_ode->size();++i){
+    //for (i=0; i<num_states();++i){
     //    sk   = _atol[i] + _rtol[i]*fabs(y0[i]);
     //    dnf += pow(f0[i]/sk,2);
     //    dny += pow(y0[i]/sk,2); 
@@ -104,7 +104,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
 
   // Should we have a dt_max??
   // Perform an explicit Euler step
-  for (i = 0; i < _ode->size(); ++i)
+  for (i = 0; i < num_states(); ++i)
     y1[i] = y0[i] + dt*f0[i];
 
   _ode->eval(y1, t + dt, f1);
@@ -113,7 +113,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   double der2 = 0.0;
   if (_itol == 0)
   {
-    for (i = 0; i < _ode->size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       sk    = _atol + _rtol*fabs(y1[i]);
       tmp   = (f1[i] - f0[i])/sk;
@@ -123,7 +123,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   else
   {
     std::cout << " Not implemented yet" << std::endl;
-    //for (i=0;i<_ode->size();++i){
+    //for (i=0;i<num_states();++i){
     //    sk    = _atol[i] + _rtol[i]*fabs(y1[i]);
     //    der2 += pow(((f1[i]-f0[i])/sk),2);
     //}
@@ -171,7 +171,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   double yi_abs, yni_abs, tmp;
   _dt_prev = _dt;
 
-  for (uint i = 0; i < _ode->size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
   {
     yi_abs  = fabs(y[i]);
     yni_abs = fabs(yn[i]);
@@ -181,7 +181,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
     err += tmp*tmp;
   }
   
-  err = std::sqrt(err/_ode->size());
+  err = std::sqrt(err/num_states());
 
   // Sanity check to ensure algorithm does not break down.
   // If we encounter strange values in the error, set it large to enforce a

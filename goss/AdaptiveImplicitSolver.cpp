@@ -93,7 +93,7 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
 
   // FIXME: Why is it not evaluated?
   //_ode->eval(y0, t, f0_);
-  for (i = 0; i < ode_size(); ++i)
+  for (i = 0; i < num_states(); ++i)
   {
     sk   = _atol + _rtol*std::fabs(y0[i]);
     tmp  = f0_[i]/sk;
@@ -112,14 +112,14 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
   // Should we have a dt_max??
 
   // Perform an explicit Euler step
-  for (i = 0; i < ode_size(); ++i)
+  for (i = 0; i < num_states(); ++i)
     y1[i] = y0[i] + dt*f0_[i];
 
   _ode->eval(y1, t+dt, f1_);
 
   // Estimate the second derivative of the solution
   double der2 = 0.0;
-  for (i = 0; i < ode_size(); ++i)
+  for (i = 0; i < num_states(); ++i)
   {
     sk    = _atol + _rtol*std::fabs(y1[i]);
     tmp   = ((f1_[i]-f0_[i])/sk);
@@ -169,7 +169,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   recompute_jacobian = true;
 
   double yi_abs, yni_abs, max, sk, tmp;
-  for (i = 0; i < ode_size(); ++i) 
+  for (i = 0; i < num_states(); ++i) 
   {
     yi_abs = std::fabs(y[i]);
     yni_abs = std::fabs(yn[i]);
@@ -179,7 +179,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, dou
     err += tmp*tmp;
   }
   
-  err = std::sqrt(err/ode_size());
+  err = std::sqrt(err/num_states());
 
   // If the error is smaller than 1, the timestep is accepted, and we advance
   // If not, the timestep is rejected

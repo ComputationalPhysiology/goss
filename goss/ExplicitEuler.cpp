@@ -21,7 +21,7 @@ ExplicitEuler::ExplicitEuler(ODE* ode, double ldt) : ODESolver(ldt), _dFdt(0)
 } 
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler(const ExplicitEuler& solver) : 
-  ODESolver(solver), _dFdt(new double[solver.ode_size()])
+  ODESolver(solver), _dFdt(new double[solver.num_states()])
 { 
   // Do nothing
 } 
@@ -37,7 +37,7 @@ void ExplicitEuler::attach(ODE* ode)
   ODESolver::attach(ode);
 
   // Create memory for derivative evaluation
-  _dFdt.reset(new double[ode->size()]);
+  _dFdt.reset(new double[num_states()]);
 
 }
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void ExplicitEuler::forward(double* y, double t, double interval)
     _ode->eval(y, lt, _dFdt.get());
 
     // Update states
-    for (uint i = 0; i < ode_size(); ++i)
+    for (uint i = 0; i < num_states(); ++i)
       y[i] += dt*_dFdt[i];
 
     // Increase time

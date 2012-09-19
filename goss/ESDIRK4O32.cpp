@@ -112,9 +112,9 @@ ESDIRK4O32::ESDIRK4O32(const ESDIRK4O32& solver)
     c2(2.0*gamma), 
     c3(1.0), 
     c4(1.0),
-    z1(new double[solver.ode_size()]), z2(new double[solver.ode_size()]), 
-    z3(new double[solver.ode_size()]), z4(new double[solver.ode_size()]), 
-    yn(new double[solver.ode_size()]), yh(new double[solver.ode_size()])
+    z1(new double[solver.num_states()]), z2(new double[solver.num_states()]), 
+    z3(new double[solver.num_states()]), z4(new double[solver.num_states()]), 
+    yn(new double[solver.num_states()]), yh(new double[solver.num_states()])
 {
   _iord = 3;
 }
@@ -130,12 +130,12 @@ void  ESDIRK4O32::attach(ODE* ode)
   // Use base classes to actually attach ode
   ImplicitODESolver::attach(ode);
 
-  z1.reset(new double[ode_size()]);
-  z2.reset(new double[ode_size()]);
-  z3.reset(new double[ode_size()]);
-  z4.reset(new double[ode_size()]);
-  yn.reset(new double[ode_size()]);
-  yh.reset(new double[ode_size()]);
+  z1.reset(new double[num_states()]);
+  z2.reset(new double[num_states()]);
+  z3.reset(new double[num_states()]);
+  z4.reset(new double[num_states()]);
+  yn.reset(new double[num_states()]);
+  yh.reset(new double[num_states()]);
 
 }
 //-----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     if (recompute_jacobian)
     {
       compute_jacobian(t, y);
-      nfevals += ode_size();
+      nfevals += num_states();
 
       // compute_jacobian(t + c2*dt, y);
       mult(-_dt*a22, jac);
@@ -213,7 +213,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
     // printf("z2=");
     // Computes the second node implicitly
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       _prev[i] = a21*z1[i];
       z2[i] = 0.0; //z1[i]-y[i]; // Ola comment: What happens here??
@@ -236,7 +236,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     }
 
     //printf("z2=");
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       z3[i] = z2[i] + y[i];
     
     //printf(" before eval\n");
@@ -246,7 +246,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     // Computes the third node, implicitly
     // Use pointer swap instead of copy!!
     //printf("z2=");
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       //printf("%1.2e, ",f1[i]);
       z2[i] = f1[i];
@@ -269,7 +269,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       continue;
     }
 
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       z3[i] += y[i];
 
     _ode->eval(z3.get(), _t + c3*_dt, f1.get());
@@ -277,14 +277,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
     // Computes the error estimate
     // Use pointer swap instead of copy!!
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       z3[i] = f1[i];
       yh[i] = y[i] + _dt*(bh1*z1[i] + bh2*z2[i] + bh3*z3[i]);
     }
 
     // Computes the fourth node, implicitly
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       z4[i] = yh[i] - y[i];
       _prev[i] = a41*z1[i] + a42*z2[i] + a43*z3[i];
@@ -305,13 +305,13 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       continue;
     }
 
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       z4[i] += y[i];
     
     _ode->eval(z4.get(), _t + c4*_dt, f1.get());
     nfevals += 1;
 
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
     {
       //printf("i=%d, dt=%1.4e, b1=%1.4e, b2=%1.4e, b3=%1.4e, b4=%1.4e\n",i,dt,b1,b2,b3,b4);
       //printf("yn=%1.4e, y=%1.4e, z1=%1.4e, z2=%1.4e, z3=%1.4e, z4=%1.4e\n",yn[i],y[i],z1[i] ,z2[i] ,z3[i] ,f1[i]); 
@@ -336,7 +336,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       {
         if (ret_ptr != y)
 	{
-          for (i = 0; i < ode_size(); ++i)
+          for (i = 0; i < num_states(); ++i)
             ret_ptr[i] = y[i];
 	  
           yn0 = y;
@@ -352,7 +352,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   // This can probably be done in a more elegant way
   if (ret_ptr != y)
   {
-    for (i = 0; i < ode_size(); ++i)
+    for (i = 0; i < num_states(); ++i)
       ret_ptr[i] = y[i];
     
     yn0 = y;

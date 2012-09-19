@@ -11,8 +11,8 @@ namespace goss {
   public:
 
     // Base class for an ODE
-    ODE(uint system_size) : 
-      _system_size(system_size)
+    ODE(uint num_states_) : 
+      _num_states(num_states_)
     { 
       // Do nothing
     } 
@@ -23,7 +23,7 @@ namespace goss {
     }
 
     // Return the size of the ODE
-    inline uint size() const { return _system_size; }
+    inline uint num_states() const { return _num_states; }
 
     // Evaluate rhs of the ODE
     virtual void eval(const double* state, double t, double* f_vals) = 0;
@@ -40,7 +40,7 @@ namespace goss {
   protected: 
     
     // ODE size
-    const uint _system_size;
+    const uint _num_states;
 
   };
 }

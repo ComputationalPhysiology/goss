@@ -35,8 +35,8 @@ namespace goss
     
     void get_ic(goss::DoubleVector *res) const
     {
-      res->n = _system_size;
-      res->data.reset(new double[_system_size]);
+      res->n = _num_states;
+      res->data.reset(new double[_num_states]);
       res->data[0] = 1.0;
       res->data[1] = 0.0;
       res->data[2] = 0.9;

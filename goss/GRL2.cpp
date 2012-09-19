@@ -27,10 +27,10 @@ GRL2::GRL2(ODE* ode) : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0),
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(const GRL2& solver) : ODESolver(solver), _lode(0), 
-				 y0(new double[solver.ode_size()]), 
-				 a(new double[solver.ode_size()]), 
-				 b(new double[solver.ode_size()]), 
-				 linear_terms(new uint[solver.ode_size()]),
+				 y0(new double[solver.num_states()]), 
+				 a(new double[solver.num_states()]), 
+				 b(new double[solver.num_states()]), 
+				 linear_terms(new uint[solver.num_states()]),
 				 delta(solver.delta)
 {
   // Store Linearized ODE
@@ -56,19 +56,19 @@ void GRL2::attach(ODE* ode)
   assert(_lode);
   
   // Initalize memory
-  y0.reset(new double[ode_size()]);
-  a.reset(new double[ode_size()]);
-  b.reset(new double[ode_size()]);
-  linear_terms.reset(new uint[ode_size()]);
-  std::fill(b.get(), b.get()+ode_size(), static_cast<double>(0));
+  y0.reset(new double[num_states()]);
+  a.reset(new double[num_states()]);
+  b.reset(new double[num_states()]);
+  linear_terms.reset(new uint[num_states()]);
+  std::fill(b.get(), b.get()+num_states(), static_cast<double>(0));
   
   // Get what terms are linear
   _lode->linear_terms(linear_terms.get());
   
-  nbytes  = ode_size()*sizeof(double);
-  std::fill(a.get(), a.get() + ode_size(), 0.0);
-  std::fill(b.get(), b.get() + ode_size(), 0.0);
-  std::fill(y0.get(), y0.get() + ode_size(), 0.0);
+  nbytes  = num_states()*sizeof(double);
+  std::fill(a.get(), a.get() + num_states(), 0.0);
+  std::fill(b.get(), b.get() + num_states(), 0.0);
+  std::fill(y0.get(), y0.get() + num_states(), 0.0);
 }
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double interval)
@@ -90,7 +90,7 @@ void GRL2::forward(double* y, double t, double interval)
   // Exact derivatives for linear terms
   _lode->linear_derivatives(y, t, b.get());  
   
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
   { 
     // Numerical differentiation
     if (linear_terms[i] == 0) 
@@ -101,7 +101,7 @@ void GRL2::forward(double* y, double t, double interval)
     }
   }
 
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
     y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt*0.5) - 1.0) : 
       a[i]*dt*0.5;
 
@@ -112,7 +112,7 @@ void GRL2::forward(double* y, double t, double interval)
 
   // Local variable to store comp i
   double yi;					        
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
   {        
     // Store original value of comp i
     yi = y[i];
@@ -136,7 +136,7 @@ void GRL2::forward(double* y, double t, double interval)
     y[i] = yi;
   }
 
-  for (uint i = 0; i < ode_size(); ++i) 
+  for (uint i = 0; i < num_states(); ++i) 
     y[i] = (std::fabs(b[i]) > delta) ? y0[i] + a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) :
       y0[i] + a[i]*dt;
 }
