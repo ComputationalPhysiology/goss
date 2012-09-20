@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "types.h"
 #include "ODE.h"
@@ -24,12 +25,13 @@ namespace goss {
       _parameter_names(num_parameters_, ""), 
       _field_parameter_names(num_field_parameters_, ""), 
       _field_state_indices(num_field_states_, 0), 
-      _intermediate_names(num_intermediates_, "")
+      _intermediate_names(num_intermediates_, ""),
+      _param_to_value()
     { 
       // Do nothing
     } 
 
-    virtual ~ParameterizedODE() 
+    virtual ~ParameterizedODE()
     {
       // Do nothing
     }
@@ -53,13 +55,15 @@ namespace goss {
     virtual double eval_intermediate(uint i, const double* x, double t) const = 0;
 
     // Set all field parameters
-    virtual void set_field_parameters(const double* values) = 0;
+    void set_field_parameters(const double* values) = 0;
 
     // Set a parameter
-    virtual void set_parameter(std::string name, double value) = 0;
+    void set_parameter(std::string name, double value)
+    { *_find_parameter(name) = value;}
 
     // Get a parameter value
-    virtual double get_parameter(std::string name) const = 0;
+    double get_parameter(std::string name) const
+    { return *_find_parameter(name);}
 
     // Get all state names
     const std::vector<std::string>& get_state_names() const
@@ -107,6 +111,25 @@ namespace goss {
 
     // Vector with intermediate names
     std::vector<std::string> _intermediate_names;
+
+    // A map between parameter name and its value
+    std::map<std::string, double*> _param_to_value;
+
+  private:
+
+    // Find a parameter value
+    inline double* _find_parameter(std::string name) const 
+    {
+      // Search parameter map
+      std::map<std::string, double*>::const_iterator it = \
+	_param_to_value.find(name);
+      if (it == _value_receivers.end())
+	throw std::runtime_error("\"" + name + "\" is not a parameter in  "
+				 "this ODE.");
+      
+      // Return value pointer
+      return it->second;
+    }
     
   };
 }

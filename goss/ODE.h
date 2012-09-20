@@ -26,13 +26,13 @@ namespace goss {
     inline uint num_states() const { return _num_states; }
 
     // Evaluate rhs of the ODE
-    virtual void eval(const double* state, double t, double* f_vals) = 0;
+    virtual void eval(const double* states, double t, double* values) = 0;
 
     // Evaluate component idx of the rhs of the ODE
-    virtual double eval(uint idx, const double* state, double t);
+    virtual double eval(uint idx, const double* states, double t);
 
     // Get default initial conditions
-    virtual void get_ic(goss::DoubleVector *res) const = 0;
+    virtual void get_ic(goss::DoubleVector *values) const = 0;
 
     // Return a copy of the ODE
     virtual ODE* copy() const = 0;
