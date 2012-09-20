@@ -16,7 +16,7 @@ namespace goss
 
     ODE* copy() const
     {
-      return new Sin();
+      return new Sin(*this);
     }
 
     ~Sin() {}

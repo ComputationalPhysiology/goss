@@ -16,7 +16,7 @@ namespace goss
 
     ODE* copy() const
     {
-      return new NonLinOscillator();
+      return new NonLinOscillator(*this);
     }
 
     ~NonLinOscillator() {}

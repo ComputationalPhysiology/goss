@@ -22,7 +22,7 @@ namespace goss
 
     ODE* copy() const
     {
-      return new Robertson();
+      return new Robertson(*this);
     }
 
     ~Robertson() {}

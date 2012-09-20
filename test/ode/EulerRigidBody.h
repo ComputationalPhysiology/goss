@@ -15,7 +15,7 @@ namespace goss
 
     ODE* copy() const
     {
-      return new EulerRigidBody();
+      return new EulerRigidBody(*this);
     }
 
     ~EulerRigidBody() {}

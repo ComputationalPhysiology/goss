@@ -18,7 +18,7 @@ namespace goss
     
     ODE* copy() const
     {
-      return new VDP();
+      return new VDP(*this);
     }
 
     void eval(const double* y, double t, double* f_vals)

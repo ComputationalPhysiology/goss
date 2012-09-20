@@ -28,7 +28,7 @@ namespace goss {
 
     ODE* copy() const
     {
-      return new Arenstorf();
+      return new Arenstorf(*this);
     }
 
     virtual void eval(const double* y, double t, double* f_vals)

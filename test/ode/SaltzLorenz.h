@@ -26,7 +26,7 @@ namespace goss
     
     ODE* copy() const
     {
-      return new SaltzLorenz();
+      return new SaltzLorenz(*this);
     }
 
     ~SaltzLorenz() {}

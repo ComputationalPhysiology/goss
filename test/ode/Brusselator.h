@@ -14,7 +14,7 @@ namespace goss
 
     ODE* copy() const
     {
-      return new Brusselator();
+      return new Brusselator(*this);
     }
 
     virtual void eval(const double* state, double t, double* f_vals)

@@ -37,7 +37,7 @@ namespace goss
 
     ODE* copy() const 
     {
-      return new FG();
+      return new FG(*this);
     }
 
     ~FG() {};
