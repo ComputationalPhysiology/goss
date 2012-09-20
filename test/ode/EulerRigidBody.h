@@ -28,7 +28,9 @@ namespace goss
       f_vals[0] = (I2 - I3)/I1*y2*y3;
       f_vals[1] = (I3 - I1)/I2*y3*y1;
       f_vals[2] = (I1 - I2)/I3*y1*y2;
-      if (t>=3*pi && t<=4*pi){
+      
+      if (t>=3*pi && t<=4*pi)
+      {
 	f_vals[2] += 0.25*pow(sin(t),2);
       }
     }
