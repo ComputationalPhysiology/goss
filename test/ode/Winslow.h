@@ -548,15 +548,20 @@ namespace goss {
     // Evaluate the intermediates
     void eval_intermediates(const double* x, double t, double* y) const
     {
+
       // No intermediates
-      throw std::runtime_error("No intermediates in \'winslow\'.");
+      throw std::runtime_error("No intermediates in the \'Winslow\' model.");
+
     }
 
     // Evaluate componentwise intermediates
     double eval_intermediate(uint i, const double* x, double t) const
     {
+
       // No intermediates
-      throw std::runtime_error("No intermediates in \'winslow\'.");      return 0.0;
+      throw std::runtime_error("No intermediates in the \'Winslow\' model.");
+      return 0.0;
+
     }
 
     // Set all field parameters
