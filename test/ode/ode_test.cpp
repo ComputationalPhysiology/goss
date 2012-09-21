@@ -166,6 +166,7 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
   // Run fine simulation
   this->run_ode(0.01, 10.0, this->x_fine);
 
+  double old_fine = this->x_fine.data[0];
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   
   // Change parameters
@@ -194,5 +195,7 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
   this->run_ode(0.01, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+  ASSERT_FALSE(std::fabs(old_fine - this->x_fine.data[0]) < .1);
 
 }
