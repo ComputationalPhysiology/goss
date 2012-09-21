@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <stdexcept>
 
 #include "types.h"
 #include "ODE.h"
@@ -55,7 +56,7 @@ namespace goss {
     virtual double eval_intermediate(uint i, const double* x, double t) const = 0;
 
     // Set all field parameters
-    void set_field_parameters(const double* values) = 0;
+    virtual void set_field_parameters(const double* values) = 0;
 
     // Set a parameter
     void set_parameter(std::string name, double value)
@@ -123,7 +124,7 @@ namespace goss {
       // Search parameter map
       std::map<std::string, double*>::const_iterator it = \
 	_param_to_value.find(name);
-      if (it == _value_receivers.end())
+      if (it == _param_to_value.end())
 	throw std::runtime_error("\"" + name + "\" is not a parameter in  "
 				 "this ODE.");
       

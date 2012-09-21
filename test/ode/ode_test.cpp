@@ -8,6 +8,7 @@
 #include "SaltzLorenz.h"
 #include "Sin.h"
 #include "VDP.h"
+#include "Winslow.h"
 
 #include "gtest/gtest.h"
 
