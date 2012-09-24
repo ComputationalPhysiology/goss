@@ -273,17 +273,23 @@ namespace goss {
       // Na+ current I_Na
       const double E_Na = RTonF*log(Na_o/Na_i);
       const double I_Na = G_NaMax*h*j*(m*m*m)*(-E_Na + V);
-      const double a_h = (-40 <= V ? 0 : 0.135*exp(-0.147058823529412*V -
-        11.7647058823529));
-      const double b_h = (-40 <= V ? 1.0/(0.13*exp(-0.0900900900900901*V -
-        0.96036036036036) + 0.13) : 3.56*exp(0.079*V) + 310000.0*exp(0.35*V));
-      const double a_j = (-40 <= V ? 0 : (V + 37.78)*(-127140.0*exp(0.2444*V)
-        - 3.474e-5*exp(-0.04391*V))/(exp(0.311*V + 24.64053) + 1.0));
-      const double b_j = (-40 <= V ? 0.3*exp(-2.535e-7*V)/(exp(-0.1*V - 3.2)
-        + 1.0) : 0.1212*exp(-0.01052*V)/(exp(-0.1378*V - 5.531292) + 1.0));
-      const double a_m = (0.32*V + 15.0816)/(-exp(-0.1*V - 4.713) + 1.0);
-      const double b_m = 0.08*exp(-V/11);
-      const double dm = (-90 <= V ? a_m*(-m + 1.0) - b_m*m : 0);
+      const double a_h = 0.135*exp(-0.147058823529412*V -
+        11.7647058823529)/(exp(-1.0*V - 40.0) + 1.0);
+      const double b_h = (1.0 - 1.0/(exp(-1.0*V - 40.0) +
+        1.0))/(0.13*exp(-0.0900900900900901*V - 0.96036036036036) + 0.13) +
+        (3.56*exp(0.079*V) + 310000.0*exp(0.35*V))/(exp(-1.0*V - 40.0) + 1.0);
+      const double a_j = (V + 37.78)*(-127140.0*exp(0.2444*V) -
+        3.474e-5*exp(-0.04391*V))/((exp(-1.0*V - 40.0) + 1.0)*(exp(0.311*V +
+        24.64053) + 1.0));
+      const double b_j = 0.3*(1.0 - 1.0/(exp(-1.0*V - 40.0) +
+        1.0))*exp(-2.535e-7*V)/(exp(-0.1*V - 3.2) + 1.0) +
+        0.1212*exp(-0.01052*V)/((exp(-1.0*V - 40.0) + 1.0)*(exp(-0.1378*V -
+        5.531292) + 1.0));
+      const double a_m = (fabs(V + 47.13) <= 1.0e-6 ? 1.0/(-0.005*V -
+        0.13565) : (0.32*V + 15.0816)/(-exp(-0.1*V - 4.713) + 1.0));
+      const double b_m = 0.08*exp(-V/11.0);
+      const double dm = (1.0 - 1.0/(exp(-1.0*V - 90.0) + 1.0))*(a_m*(-m +
+        1.0) - b_m*m);
 
       // Rapid-activating delayed rectifier K+ current I_Kr
       const double k12 = exp(0.1691*V - 5.495);
@@ -293,7 +299,7 @@ namespace goss {
       const double dxKr = (-xKr + xKr_inf)/tau_xKr;
       const double E_k = RTonF*log(K_o/K_i);
       const double R_V = 1.0/(1.4945*exp(0.0446*V) + 1.0);
-      const double f_k = sqrt(K_o)/2;
+      const double f_k = sqrt(K_o)/2.0;
       const double I_Kr = G_KrMax*R_V*f_k*xKr*(-E_k + V);
 
       // Slow-activating delayed rectifier K+ current I_Ks
@@ -317,7 +323,7 @@ namespace goss {
       const double I_to = G_toMax*xto1*yto1*(-E_k + V);
 
       // Time-Independent K+ current I_ti
-      const double K_tiUnlim = 1.0/(exp(FonRT*(-1.5*E_k + 1.5*V)) + 2);
+      const double K_tiUnlim = 1.0/(exp(FonRT*(-1.5*E_k + 1.5*V)) + 2.0);
       const double I_ti = G_tiMax*K_o*K_tiUnlim*(-E_k + V)/(K_mK1 + K_o);
 
       // Plateau current I_Kp
@@ -327,7 +333,7 @@ namespace goss {
 
       // NCX Current I_NaCa
       const double I_NaCa =
-        5000*k_NaCa*(-Ca_i*(Na_o*Na_o*Na_o)*exp(VFonRT*(eta - 1.0)) +
+        5000.0*k_NaCa*(-Ca_i*(Na_o*Na_o*Na_o)*exp(VFonRT*(eta - 1.0)) +
         Ca_o*(Na_i*Na_i*Na_i)*exp(VFonRT*eta))/((Ca_o +
         K_mCa)*((K_mNa*K_mNa*K_mNa) +
         (Na_o*Na_o*Na_o))*(k_sat*exp(FonRT*V*(eta - 1.0)) + 1.0));
@@ -343,7 +349,7 @@ namespace goss {
       const double I_pCa = Ca_i*I_pCaMax/(Ca_i + K_mpCa);
 
       // Ca2+ background current I_bCa
-      const double E_Ca = RTonF*log(Ca_o/Ca_i)/2;
+      const double E_Ca = RTonF*log(Ca_o/Ca_i)/2.0;
       const double I_bCa = G_bCaMax*(-E_Ca + V);
 
       // Na+ background current I_bNa
@@ -470,14 +476,14 @@ namespace goss {
       values[5] = dxKs;
       values[6] = dxto1;
       values[7] = dyto1;
-      values[8] = A_cap*C_sc*(-I_CaK - I_Kp - I_Kr - I_Ks + 2*I_NaK - I_ti -
-        I_to)/(1000*F*V_myo);
+      values[8] = A_cap*C_sc*(-I_CaK - I_Kp - I_Kr - I_Ks + 2.0*I_NaK - I_ti
+        - I_to)/(1000.0*F*V_myo);
       values[9] = beta_JSR*(-J_rel + J_tr);
       values[10] = -J_tr*V_JSR/V_NSR + J_up*V_myo/V_NSR;
-      values[11] = beta_i*(-A_cap*C_sc*(-2*I_NaCa + I_bCa +
-        I_pCa)/(2000*F*V_myo) - J_trpn - J_up + J_xfer);
-      values[12] = beta_ss*(-A_cap*C_sc*I_Ca/(2000*F*V_ss) + J_rel*V_JSR/V_ss
-        - J_xfer*V_myo/V_ss);
+      values[11] = beta_i*(-A_cap*C_sc*(-2.0*I_NaCa + I_bCa +
+        I_pCa)/(2000.0*F*V_myo) - J_trpn - J_up + J_xfer);
+      values[12] = beta_ss*(-A_cap*C_sc*I_Ca/(2000.0*F*V_ss) +
+        J_rel*V_JSR/V_ss - J_xfer*V_myo/V_ss);
       values[13] = dC1_RyR;
       values[14] = dC2_RyR;
       values[15] = dO1_RyR;
