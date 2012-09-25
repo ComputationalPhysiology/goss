@@ -59,6 +59,9 @@ namespace goss
     // Set the internal time step
     inline void set_internal_time_step(double ldt) { _ldt = ldt; }
 
+    // Return true if the Solver is adaptive
+    virtual bool is_adaptive() const { return false; }
+
   protected:
     
     // Local time step.

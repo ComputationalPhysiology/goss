@@ -58,6 +58,9 @@ namespace goss
     // Compute new timestep 
     void new_time_step(double* y, double* yn, double* e, double t_end);
 
+    // Return true if the Solver is adaptive
+    bool is_adaptive() const { return true; }
+
   protected: 
 
     // Log of 1) the numer of steps, 2) the number of rejected steps
