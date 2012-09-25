@@ -178,8 +178,8 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
   ASSERT_EQ(lode.get_parameter(param), value*0.9);
 
   // Set field parameters
-  std::vector<double> values(lode.num_field_states(), 0.0);
-  for (uint i = 0; i < lode.num_field_states(); i++)
+  std::vector<double> values(lode.num_field_parameters(), 0.0);
+  for (uint i = 0; i < lode.num_field_parameters(); i++)
   {
     param = lode.get_field_parameter_names()[i];
     values[i] = lode.get_parameter(param)*0.9;
