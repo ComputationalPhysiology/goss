@@ -50,8 +50,11 @@ namespace goss
     // The size of the ODE
     inline uint num_states() const { return _ode->num_states(); }
 
-    // Return the ODE
+    // Return the ODE (const version)
     inline const goss::ODE* get_ode() const { return _ode.get(); }
+
+    // Return the ODE
+    inline goss::ODE* get_ode() { return _ode.get(); }
 
     // Return the internal time step
     inline double get_internal_time_step() const { return _ldt; }
