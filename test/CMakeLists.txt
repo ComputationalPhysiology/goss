@@ -70,7 +70,7 @@ target_link_libraries(gtest_main gtest)
 # gtest_build_samples option to ON.  You can do it by running ccmake
 # or specifying the -Dbuild_gtest_samples=ON flag when running cmake.
 
-set(GOSS_TEST_LIBS gtest_main ${PROJECT_NAME} ${GOSS_TARGET_LINK_LIBRARIES})
+set(GOSS_TEST_LIBS gtest_main ${PROJECT_NAME_LOWER} ${GOSS_TARGET_LINK_LIBRARIES})
 set(GOSS_TESTS ode_test)
 
 cxx_executable(ode_test ode "${GOSS_TEST_LIBS}")

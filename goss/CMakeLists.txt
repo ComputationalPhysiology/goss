@@ -26,6 +26,16 @@ endforeach()
 # Boost
 list(APPEND GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
 
+# OpenMP
+if (GOSS_ENABLE_OPENMP AND OPENMP_FOUND)
+  list(APPEND GOSS_CXX_DEFINITIONS "-DHAS_OPENMP")
+  set(GOSS_CXX_FLAGS "${GOSS_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+  if (MINGW)
+    list(APPEND GOSS_LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+  endif()
+
+endif()
 #------------------------------------------------------------------------------
 # Set compiler flags, include directories and library dependencies
 

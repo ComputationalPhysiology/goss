@@ -6,12 +6,13 @@ cmake_minimum_required(VERSION 2.6)
 #------------------------------------------------------------------------------
 # Set project name and version number
 
-project(goss)
+project(GOSS)
 
 set(GOSS_VERSION_MAJOR "0")
 set(GOSS_VERSION_MINOR "9")
 set(GOSS_VERSION_MICRO "0")
 set(GOSS_VERSION "${GOSS_VERSION_MAJOR}.${GOSS_VERSION_MINOR}.${GOSS_VERSION_MICRO}")
+string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER) 
 
 # Set special link option, see `cmake --help-policy CMP0003`
 if(COMMAND cmake_policy)
@@ -23,12 +24,13 @@ endif()
 
 # Set location of our FindFoo.cmake modules
 set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
-#set(CMAKE_MODULE_PATH "${GOSS_CMAKE_DIR}/modules")
+set(CMAKE_MODULE_PATH "${GOSS_CMAKE_DIR}/modules")
 
 #------------------------------------------------------------------------------
 # Options
 
 option(GOSS_ENABLE_PYTHON "Enable Python extensions." OFF)
+option(GOSS_ENABLE_OPENMP "Enable OpenMP extensions." ON)
 option(GOSS_WITH_LIBRARY_VERSION "Build with library version information." ON)
 option(GOSS_ENABLE_UNIT_TESTS "Build unit tests." ON)
 option(GOSS_ENABLE_CODE_COVERAGE "Enable code coverage." OFF)
@@ -111,18 +113,38 @@ endif()
 #------------------------------------------------------------------------------
 # Run tests to find required packages
 
-find_package(PythonInterp QUIET)
-find_package(PythonLibs QUIET)
+find_package(PythonInterp)
+if (GOSS_ENABLE_PYTHON)
+  find_package(PythonLibs)
 
-# Find SWIG
-find_package(SWIG QUIET)
-include(UseSWIG)
+  # If Python is found, check for NumPy and SWIG
+  if (PYTHONINTERP_FOUND AND PYTHONLIBS_FOUND)
+    find_package(NumPy REQUIRED)
+
+    find_package(SWIG REQUIRED)
+    if (${SWIG_VERSION} LESS 2.0)
+      message(FATAL_ERROR " GOSS requires SWIG version 2.0 or greater. You have version ${SWIG_VERSION}. Set GOSS_ENABLE_PYTHON to False or install correct SWIG version.")
+    endif()
+    include(UseSWIG)
+    set(PYTHON_FOUND TRUE)
+  endif()
+endif()
 
 # Look for Boost (scoped_array support)
 set(Boost_ADDITIONAL_VERSIONS 1.43 1.43.0 1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 
     1.46.1 1.47 1.47.0 1.48 1.48.0 1.49 1.49.0 1.50 1.50.0)
 set(BOOST_ROOT $ENV{BOOST_DIR})
 find_package(Boost 1.36 QUIET)
+
+# Check for OpenMP
+if (GOSS_ENABLE_OPENMP)
+  find_package(OpenMP)
+  include(CheckOpenMP)
+  check_openmp_unsigned_int_loop_control_variable(OPENMP_UINT_TEST_RUNS)
+  if (NOT OPENMP_UINT_TEST_RUNS)
+    set(OPENMP_FOUND FALSE)
+  endif()
+endif()
 
 #------------------------------------------------------------------------------
 # Get installation path for Python modules
