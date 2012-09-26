@@ -35,7 +35,10 @@ namespace goss
     }
 
     // Destructor
-    virtual ~ODESolver () { /* Do nothing */ }
+    virtual ~ODESolver () 
+    { 
+      // Do nothing
+    }
 
     // Attach ODE and reset solver 
     virtual void attach(ODE* ode) 
