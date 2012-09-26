@@ -38,6 +38,12 @@ namespace goss
     // reset System variables
     void reset_default();
 
+    // Set the number of threads
+    inline void set_num_threads(uint num_threads);
+    
+    // Get the number of threads
+    inline uint get_num_threads();
+    
   private:
 
     // Help functions used in normal and OpenMP runs

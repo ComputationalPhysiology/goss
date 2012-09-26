@@ -1,6 +1,10 @@
 #include <iostream>
 #include <stdexcept>
 
+#ifdef HAS_OPENMP
+#include <omp.h>
+#endif
+
 #include "ODESystemSolver.h"
 #include "ParameterizedODE.h"
 #include "ODESolver.h"
@@ -26,12 +30,16 @@ ODESystemSolver::ODESystemSolver(uint num_nodes, ODESolver* solver,
 void ODESystemSolver::forward(double t, double interval)
 {
 
+  // Local solver pointer
+  ODESolver* solver = _solver.get();
+  const uint num_threads = get_num_threads();
+
   // Iterate over all nodes
   // FIXME: Move if tests outside update loop?
+  #pragma omp parallel for if(num_threads > 0) schedule(guided, 20) firstprivate(solver)
   for (uint node = 0; node < _num_nodes; node++)
-    _forward_node(_solver.get(), node, t, interval);
+    _forward_node(solver, node, t, interval);
 
-  
 }
 //-----------------------------------------------------------------------------
 void ODESystemSolver::get_field_states(double* values, bool tangled_storage) const
@@ -81,6 +89,24 @@ void ODESystemSolver::reset_default()
   for (uint node = 0; node < _num_nodes; node++)
     _reset_default_node(node, default_ic, default_field_params);
   
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::set_num_threads(uint num_threads)
+{
+#ifdef HAS_OPENMP
+  omp_set_num_threads(num_threads);
+#else
+  numthreads;
+#endif
+}
+//-----------------------------------------------------------------------------
+uint ODESystemSolver::get_num_threads()
+{
+#ifdef HAS_OPENMP
+  return omp_get_num_threads();
+#else
+  return 0;
+#endif
 }
 //-----------------------------------------------------------------------------
 void ODESystemSolver::_reset_default_node(uint node, const DoubleVector& default_ic,
