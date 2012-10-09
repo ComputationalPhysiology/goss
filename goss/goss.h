@@ -28,4 +28,7 @@
 #include <goss/GRL2.h>
 #include <goss/RL.h>
 
+// ODESystem
+#include <goss/ODESystemSolver.h>
+
 #endif

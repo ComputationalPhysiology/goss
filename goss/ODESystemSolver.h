@@ -13,7 +13,7 @@ namespace goss
   class ParameterizedODE;
   class ODESolver;
 
-  // class to handle the update of 
+  // class to handle the update systems of the same ODE
   class ODESystemSolver
   {
     
@@ -77,7 +77,7 @@ namespace goss
     // Local pointer to ODE (No ownership. Solver owes ODE)
     ParameterizedODE* _ode;
     
-    // Solution array for the solution for all nodes
+    // Solution array with the solution for all nodes
     std::vector<double> _states;
     
     // Field parameters
@@ -86,7 +86,7 @@ namespace goss
     // Storage of local time step for each node
     std::vector<double> _ldt_vec;
 
-    // Flag for having adaptive solver
+    // Flag for having adaptive ODE solver
     const bool _is_adaptive;
 
     // Flag for having field parameters

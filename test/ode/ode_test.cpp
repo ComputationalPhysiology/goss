@@ -11,6 +11,11 @@
 #include "Sin.h"
 #include "VDP.h"
 #include "Winslow.h"
+#include "WinslowCSE.h"
+#include "WinslowCSEArray.h"
+#include "Panfilov.h"
+#include "PanfilovCSE.h"
+#include "PanfilovCSEArray.h"
 
 #include "gtest/gtest.h"
 
@@ -94,7 +99,8 @@ typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers;
 //typedef testing::Types<ImplicitEuler, ESDIRK4O32> ImplicitODESolvers;
 typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
 typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
-typedef testing::Types<Winslow> ParameterizedODEs;
+typedef testing::Types<Winslow, WinslowCSE, WinslowCSEArray, Panfilov, PanfilovCSE, \
+		       PanfilovCSEArray> ParameterizedODEs;
 
 TYPED_TEST_CASE(ODETester, ODEs);
 TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
@@ -185,17 +191,20 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
     values[i] = lode.get_parameter(param)*0.9;
   }
   
-  lode.set_field_parameters(&values[0]);
-  ASSERT_EQ(lode.get_parameter(param), values[values.size()-1]);
-  
+  // Set field parameters if any
+  if (lode.num_field_parameters() > 0)
+  {
+    lode.set_field_parameters(&values[0]);
+    ASSERT_EQ(lode.get_parameter(param), values[values.size()-1]);
+  }  
+
   // Run coarse simulation
-  this->run_ode(0.1, 10.0, this->x_coarse);
+  this->run_ode(0.1, 100.0, this->x_coarse);
 
   // Run fine simulation
-  this->run_ode(0.01, 10.0, this->x_fine);
+  this->run_ode(0.01, 100.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
-  ASSERT_FALSE(std::fabs(old_fine - this->x_fine.data[0]) < .1);
+  ASSERT_FALSE(std::fabs(old_fine - this->x_fine.data[0]) < .001);
 
 }
