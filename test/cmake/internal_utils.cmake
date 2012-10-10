@@ -148,10 +148,10 @@ endfunction()
 # is built from the given source files with the given compiler flags.
 function(cxx_executable_with_flags name cxx_flags libs)
   add_executable(${name} ${ARGN})
-  if (cxx_flags)
+  if (cxx_flags OR CMAKE_CXX_FLAGS)
     set_target_properties(${name}
       PROPERTIES
-      COMPILE_FLAGS "${cxx_flags}")
+      COMPILE_FLAGS "${cxx_flags} ${CMAKE_CXX_FLAGS}")
   endif()
   if (BUILD_SHARED_LIBS)
     set_target_properties(${name}
@@ -184,7 +184,7 @@ find_package(PythonInterp)
 # from the given source files with the given compiler flags.
 function(cxx_test_with_flags name cxx_flags libs)
   cxx_executable_with_flags(${name} "${cxx_flags}" "${libs}" ${ARGN})
-  add_test(${name} ${name})
+  add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
 # cxx_test(name libs srcs...)
@@ -194,7 +194,7 @@ endfunction()
 # test/name.cc is already implicitly included in the source file list.
 function(cxx_test name libs)
   cxx_test_with_flags("${name}" "${cxx_default}" "${libs}"
-    "test/${name}.cc" ${ARGN})
+    "${name}.cpp" ${ARGN})
 endfunction()
 
 # py_test(name)

@@ -1,4 +1,7 @@
+#include "gtest/gtest.h"
+
 #include <string>
+#include <cmath>
 
 #include "goss/goss.h"
 #include "NonLinOscillator.h"
@@ -11,13 +14,13 @@
 #include "Sin.h"
 #include "VDP.h"
 #include "Winslow.h"
+#include "WinslowNoIntermediates.h"
 #include "WinslowCSE.h"
 #include "WinslowCSEArray.h"
 #include "Panfilov.h"
+#include "PanfilovNoIntermediates.h"
 #include "PanfilovCSE.h"
 #include "PanfilovCSEArray.h"
-
-#include "gtest/gtest.h"
 
 using namespace goss;
 
@@ -99,8 +102,9 @@ typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers;
 //typedef testing::Types<ImplicitEuler, ESDIRK4O32> ImplicitODESolvers;
 typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
 typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
-typedef testing::Types<Winslow, WinslowCSE, WinslowCSEArray, Panfilov, PanfilovCSE, \
-		       PanfilovCSEArray> ParameterizedODEs;
+typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE, 
+		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates, 
+		       PanfilovCSE, PanfilovCSEArray> ParameterizedODEs;
 
 TYPED_TEST_CASE(ODETester, ODEs);
 TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);

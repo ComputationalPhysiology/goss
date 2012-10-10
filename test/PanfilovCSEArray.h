@@ -1,7 +1,8 @@
-#ifndef PANFILOV_H_IS_INCLUDED
-#define PANFILOV_H_IS_INCLUDED
+#ifndef PANFILOVCSEARRAY_H_IS_INCLUDED
+#define PANFILOVCSEARRAY_H_IS_INCLUDED
 
 #include <stdexcept>
+#include <cmath>
 
 #include "goss/ParameterizedODE.h"
 #include "goss/LinearizedODE.h"
@@ -9,12 +10,12 @@
 namespace goss {
 
   // Implementation of gotran generated ODE
-  class Panfilov : public ParameterizedODE 
+  class PanfilovCSEArray : public ParameterizedODE 
   {
   public:
 
     // Constructor
-    Panfilov() : ODE(2),
+    PanfilovCSEArray() : ODE(2),
       ParameterizedODE(2, 3, 1, 0, 0), 
       time_constant(1.0), v_peak(35.0), v_rest(-85.0)
       
@@ -47,19 +48,17 @@ namespace goss {
     {
 
       // Assign states
-      const double e = states[0];
-      const double g = states[1];
-      const double a = 0.1;
-      const double gs = 8.0;
-      const double ga = gs;
-      const double M1 = 0.07;
-      const double M2 = 0.3;
-      const double eps1 = 0.01;
-      const double E = (e - v_rest)/(v_peak - v_rest);
-      const double eps = M1*g/(M2 + e) + eps1;
-      values[0] = -time_constant*(v_peak - v_rest)*(E*g + E*ga*(E - 1.0)*(E -
-        a));
-      values[1] = eps*time_constant*(-e*gs*(E - a - 1.0) - g);
+
+      // Common Sub Expressions
+      const double cse_0 = -v_rest;
+      const double cse_1 = cse_0 + states[0];
+      const double cse_2 = v_peak + cse_0;
+      const double cse_3 = 1.0/cse_2;
+      const double cse_4 = cse_1*cse_3;
+      values[0] = -time_constant*cse_2*(cse_4*states[1] + 8.0*cse_4*(cse_4 -
+        1.0)*(cse_4 - 0.1));
+      values[1] = time_constant*(-8.0*states[0]*(cse_4 - 1.1) -
+        states[1])*(0.07*states[1]/(states[0] + 0.3) + 0.01);
 
     }
 
@@ -77,7 +76,7 @@ namespace goss {
     // Return a copy of the ODE
     ODE* copy() const
     {
-      return new Panfilov(*this);
+      return new PanfilovCSEArray(*this);
     }
 
     // Evaluate the intermediates
@@ -85,7 +84,7 @@ namespace goss {
     {
 
       // No intermediates
-      throw std::runtime_error("No intermediates in the \'Panfilov\' model.");
+      throw std::runtime_error("No intermediates in the \'Panfilovcsearray\' model.");
 
     }
 
@@ -94,7 +93,7 @@ namespace goss {
     {
 
       // No intermediates
-      throw std::runtime_error("No intermediates in the \'Panfilov\' model.");
+      throw std::runtime_error("No intermediates in the \'Panfilovcsearray\' model.");
       return 0.0;
 
     }

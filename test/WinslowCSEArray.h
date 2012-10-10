@@ -1,7 +1,8 @@
-#ifndef WINSLOWCSE_H_IS_INCLUDED
-#define WINSLOWCSE_H_IS_INCLUDED
+#ifndef WINSLOWCSEARRAY_H_IS_INCLUDED
+#define WINSLOWCSEARRAY_H_IS_INCLUDED
 
 #include <stdexcept>
+#include <cmath>
 
 #include "goss/ParameterizedODE.h"
 #include "goss/LinearizedODE.h"
@@ -9,12 +10,12 @@
 namespace goss {
 
   // Implementation of gotran generated ODE
-  class WinslowCSE : public ParameterizedODE 
+  class WinslowCSEArray : public ParameterizedODE 
   {
   public:
 
     // Constructor
-    WinslowCSE() : ODE(31),
+    WinslowCSEArray() : ODE(31),
       ParameterizedODE(31, 68, 1, 2, 0), 
       A_cap(0.0001534), C_sc(1.0), V_JSR(1.6e-07), V_NSR(2.1e-06),
         V_myo(2.584e-05), V_ss(1.2e-09), ist(0), Ca_o(2.0), K_o(4.0),
@@ -225,211 +226,203 @@ namespace goss {
     {
 
       // Assign states
-      const double V = states[0];
-      const double h = states[1];
-      const double j = states[2];
-      const double m = states[3];
-      const double xKr = states[4];
-      const double xKs = states[5];
-      const double xto1 = states[6];
-      const double yto1 = states[7];
-      const double K_i = states[8];
-      const double Ca_JSR = states[9];
-      const double Ca_NSR = states[10];
-      const double Ca_i = states[11];
-      const double Ca_ss = states[12];
-      const double C1_RyR = states[13];
-      const double C2_RyR = states[14];
-      const double O1_RyR = states[15];
-      const double O2_RyR = states[16];
-      const double C0 = states[17];
-      const double C1 = states[18];
-      const double C2 = states[19];
-      const double C3 = states[20];
-      const double C4 = states[21];
-      const double CCa0 = states[22];
-      const double CCa1 = states[23];
-      const double CCa2 = states[24];
-      const double CCa3 = states[25];
-      const double CCa4 = states[26];
-      const double Open = states[27];
-      const double yCa = states[28];
-      const double HTRPNCa = states[29];
-      const double LTRPNCa = states[30];
 
       // Common Sub Expressions
-      const double cse_0 = (Na_o*Na_o*Na_o);
-      const double cse_1 = K_o/K_i;
+      const double cse_0 = K_o/states[8];
+      const double cse_1 = (Na_o*Na_o*Na_o);
       const double cse_2 = 1.0/Na_i;
-      const double cse_3 = 1.0/tau_tr;
-      const double cse_4 = -Ca_JSR + Ca_NSR;
-      const double cse_5 = 1.0/V_NSR;
+      const double cse_3 = 1.0/V_NSR;
+      const double cse_4 = 1.0/tau_tr;
+      const double cse_5 = states[10] - states[9];
       const double cse_6 = 1.0/V_myo;
-      const double cse_7 = 1.0/V_ss;
-      const double cse_8 = 1.0/tau_xfer;
-      const double cse_9 = -Ca_i + Ca_ss;
-      const double cse_10 = Ca_JSR - Ca_ss;
-      const double cse_11 = O1_RyR + O2_RyR;
-      const double cse_12 = 1000.0*Ca_ss;
+      const double cse_7 = states[15] + states[16];
+      const double cse_8 = -states[12] + states[9];
+      const double cse_9 = 1.0/V_ss;
+      const double cse_10 = 1.0/tau_xfer;
+      const double cse_11 = -states[11] + states[12];
+      const double cse_12 = 1000.0*states[12];
       const double cse_13 = 1.0/bL;
       const double cse_14 = (aL*aL);
-      const double cse_15 = pow(cse_14, 3/2);
-      const double cse_16 = pow(cse_15, 4/3);
-      const double cse_17 = 0.2*V;
-      const double cse_18 = 0.10375*Ca_ss;
-      const double cse_19 = O1_RyR*kaminus;
-      const double cse_20 = -yto1;
-      const double cse_21 = C2_RyR*kcminus;
-      const double cse_22 = CMDNtot*KmCMDN;
-      const double cse_23 = O2_RyR*kbminus;
-      const double cse_24 = 0.0374417034617086*V;
-      const double cse_25 = -Ca_i;
-      const double cse_26 = omega*cse_13;
-      const double cse_27 = A_cap*C_sc;
-      const double cse_28 = O1_RyR*kcplus;
-      const double cse_29 = Open*yCa;
-      const double cse_30 = -HTRPNCa;
-      const double cse_31 = Open*gL;
-      const double cse_32 = -h;
-      const double cse_33 = -LTRPNCa;
-      const double cse_34 = -j;
-      const double cse_35 = exp(0.0748834069234172*V);
-      const double cse_36 = exp(cse_24);
-      const double cse_37 = -1.0*V;
-      const double cse_38 = -0.1*V;
-      const double cse_39 = 1.0/(K_mKo + K_o);
-      const double cse_40 = pow(Ca_i/K_fb, N_fb);
-      const double cse_41 = pow(Ca_NSR/K_rb, N_rb);
-      const double cse_42 = 1.0/(Ca_i + K_mpCa);
-      const double cse_43 = 1.0/(Ca_o + K_mCa);
-      const double cse_44 = pow(cse_12, ncoop);
-      const double cse_45 = pow(cse_12, mcoop);
-      const double cse_46 = (cse_13*cse_13);
-      const double cse_47 = pow(cse_46, 3/2);
-      const double cse_49 = cse_13*cse_26;
-      const double cse_50 = cse_26*cse_46;
-      const double cse_51 = cse_26*cse_47;
-      const double cse_52 = cse_3*cse_4;
-      const double cse_53 = cse_8*cse_9;
-      const double cse_54 = exp(0.1691*V - 5.495);
-      const double cse_55 = exp(cse_17 + 6.7);
-      const double cse_56 = exp(0.1*V + 0.2);
-      const double cse_57 = Ca_i*I_pCaMax*cse_42;
-      const double cse_58 = exp(cse_24*(eta - 1.0));
-      const double cse_59 = V - 26.7081865284974*log(cse_1);
-      const double cse_60 = 1.0/(cse_35 - 1.0);
-      const double cse_61 = V - 26.7081865284974*log(Na_o*cse_2);
-      const double cse_62 = exp(-0.2*V - 6.7);
-      const double cse_63 = 1.0/(pow(K_mNai*cse_2, 1.5) + 1.0);
-      const double cse_64 = 1.0/((K_mNa*K_mNa*K_mNa) + cse_0);
-      const double cse_65 = V - 13.3540932642487*log(Ca_o/Ca_i);
-      const double cse_66 = exp(-0.0769230769230769*V - 0.153846153846154);
+      const double cse_15 = std::pow(cse_14, 3/2);
+      const double cse_16 = std::pow(cse_15, 4/3);
+      const double cse_17 = 0.2*states[0];
+      const double cse_18 = 0.10375*states[12];
+      const double cse_19 = A_cap*C_sc;
+      const double cse_20 = kbminus*states[16];
+      const double cse_21 = CMDNtot*KmCMDN;
+      const double cse_22 = 0.0374417034617086*states[0];
+      const double cse_23 = -states[7];
+      const double cse_24 = -states[15];
+      const double cse_25 = -states[29];
+      const double cse_26 = -states[11];
+      const double cse_27 = gL*states[27];
+      const double cse_28 = cse_13*states[23];
+      const double cse_29 = -states[1];
+      const double cse_30 = -states[30];
+      const double cse_31 = -states[2];
+      const double cse_32 = kcminus*states[14];
+      const double cse_33 = std::exp(0.0748834069234172*states[0]);
+      const double cse_34 = std::exp(cse_22);
+      const double cse_35 = -1.0*states[0];
+      const double cse_36 = -0.1*states[0];
+      const double cse_37 = 1.0/(K_mKo + K_o);
+      const double cse_38 = std::pow(states[10]/K_rb, N_rb);
+      const double cse_39 = std::pow(states[11]/K_fb, N_fb);
+      const double cse_40 = 1.0/(K_mpCa + states[11]);
+      const double cse_41 = 1.0/(Ca_o + K_mCa);
+      const double cse_42 = std::pow(cse_12, ncoop);
+      const double cse_43 = std::pow(cse_12, mcoop);
+      const double cse_44 = (cse_13*cse_13);
+      const double cse_45 = std::pow(cse_44, 3/2);
+      const double cse_46 = std::pow(cse_45, 4/3);
+      const double cse_47 = omega*cse_45;
+      const double cse_48 = cse_10*cse_11;
+      const double cse_49 = -1.0*K_o;
+      const double cse_50 = cse_4*cse_5;
+      const double cse_51 = omega*cse_44;
+      const double cse_52 = omega*cse_46;
+      const double cse_53 = I_pCaMax*cse_40;
+      const double cse_54 = std::exp(0.1691*states[0] - 5.495);
+      const double cse_55 = std::exp(cse_17 + 6.7);
+      const double cse_56 = std::exp(0.1*states[0] + 0.2);
+      const double cse_57 = kbplus*cse_43;
+      const double cse_58 = states[0] - 26.7081865284974*std::log(cse_0);
+      const double cse_59 = std::exp(cse_22*(eta - 1.0));
+      const double cse_60 = 1.0/(cse_33 - 1.0);
+      const double cse_61 = states[0] - 26.7081865284974*std::log(Na_o*cse_2);
+      const double cse_62 = std::exp(-0.2*states[0] - 6.7);
+      const double cse_63 = 1.0/(std::pow(K_mNai*cse_2, 1.5) + 1.0);
+      const double cse_64 = states[0] -
+        13.3540932642487*std::log(Ca_o/states[11]);
+      const double cse_65 = 1.0/((K_mNa*K_mNa*K_mNa) + cse_1);
+      const double cse_66 = std::exp(-0.0769230769230769*states[0] -
+        0.153846153846154);
+      const double cse_67 = 1.6*cse_56;
       const double cse_68 = aL*cse_56;
-      const double cse_69 = 0.8*cse_56;
-      const double cse_70 = C1_RyR*kaplus*cse_44;
+      const double cse_69 = 0.4*cse_56;
+      const double cse_70 = 0.8*cse_56;
       const double cse_71 = 1.2*cse_56;
-      const double cse_72 = 0.4*cse_56;
-      const double cse_73 = v_1*cse_10*cse_11;
-      const double cse_74 = 1.6*cse_56;
-      const double cse_75 = O1_RyR*kbplus*cse_45;
-      const double cse_76 = -0.341*Ca_o + 0.001*cse_35;
-      const double cse_77 = 1.0/(1.0 + 0.1245*exp(-0.00374417034617086*V));
-      const double cse_78 = Ca_i*khtrpn_plus*(cse_30 + 1.0) +
-        khtrpn_minus*cse_30;
-      const double cse_79 = Ca_i*kltrpn_plus*(cse_33 + 1.0) +
-        kltrpn_minus*cse_33;
-      const double cse_80 = cse_13*cse_66;
+      const double cse_72 = kaplus*cse_42*states[13];
+      const double cse_73 = v_1*cse_7*cse_8;
+      const double cse_74 = -0.341*Ca_o + 0.001*cse_33;
+      const double cse_75 = 1.0/(1.0 +
+        0.1245*std::exp(-0.00374417034617086*states[0]));
+      const double cse_76 = khtrpn_minus*cse_25 +
+        khtrpn_plus*states[11]*(cse_25 + 1.0);
+      const double cse_77 = kltrpn_minus*cse_30 +
+        kltrpn_plus*states[11]*(cse_30 + 1.0);
+      const double cse_78 = 0.1*cse_66;
+      const double cse_79 = G_bCaMax*cse_64;
+      const double cse_80 = 0.05*cse_66;
+      const double cse_81 = 0.2*cse_66;
       const double cse_82 = 0.15*cse_66;
-      const double cse_83 = 0.05*cse_66;
-      const double cse_84 = 0.1*cse_66;
-      const double cse_85 = G_bCaMax*cse_65;
-      const double cse_86 = 0.2*cse_66;
-      const double cse_87 = 1.0/(exp(cse_37 - 40.0) + 1.0);
-      const double cse_88 = 1.0/(k_sat*cse_58 + 1.0);
-      const double cse_89 = 1.0/(cse_40 + cse_41 + 1.0);
-      const double cse_90 = v_maxf*cse_40 - v_maxr*cse_41;
-      const double cse_91 = G_toMax*xto1*cse_20*cse_59;
-      const double cse_92 = 1.0/(cse_54 + exp(-0.0128*V - 7.677));
-      const double cse_93 = PCa*V*cse_60*cse_76;
-      const double cse_94 = -G_KsMax*(xKs*xKs)*(V - 26.7081865284974*log((K_o
-        + 0.01833*Na_o)/(K_i + 0.01833*Na_i)));
-      const double cse_95 = -1.0*G_KpMax*cse_59/(exp(-0.167224080267559*V +
+      const double cse_83 = 1.0/(std::exp(cse_35 - 40.0) + 1.0);
+      const double cse_84 = 1.0/(k_sat*cse_59 + 1.0);
+      const double cse_85 = 1.0/(cse_38 + cse_39 + 1.0);
+      const double cse_86 = v_maxf*cse_39 - v_maxr*cse_38;
+      const double cse_87 = G_toMax*cse_23*cse_58*states[6];
+      const double cse_88 = 1.0/(cse_54 + std::exp(-0.0128*states[0] - 7.677));
+      const double cse_89 = I_NaKMax*cse_37*cse_63*cse_75;
+      const double cse_90 =
+        -1.0*G_KpMax*cse_58/(std::exp(-0.167224080267559*states[0] +
         1.25217391304348) + 1.0);
-      const double cse_96 = I_NaKMax*K_o*cse_39*cse_63*cse_77;
-      const double cse_97 = Ca_o*exp(eta*cse_24)/(cse_2*cse_2*cse_2) +
-        cse_0*cse_25*cse_58;
-      const double cse_98 = K_SR*cse_89*cse_90;
-      const double cse_99 =
-        -0.5*G_KrMax*sqrt(K_o)*xKr*cse_59/(1.4945*exp(0.0446*V) + 1.0);
-      const double cse_100 = -1.0*G_tiMax*K_o*cse_59/((K_mK1 +
-        K_o)*(pow(cse_1, -1.5)*exp(0.0561625551925629*V) + 2.0));
-      const double cse_101 = k_NaCa*cse_43*cse_64*cse_88*cse_97;
-      const double cse_102 = -3613.12438405488*PK*V*cse_29*(K_i*cse_36 -
-        K_o)/((1.0 + fmin(0, 14452.4975362195*cse_93)/ICahalf)*(cse_36 -
-        1.0));
-      const double cse_103 = cse_100 + cse_102 + cse_91 + cse_94 + cse_95 +
-        cse_99;
-      values[0] = G_NaMax*j*(m*m*m)*cse_32*cse_61 - G_bNaMax*cse_61 +
-        I_pCaMax*cse_25*cse_42 - ist - 5000.0*cse_101 + cse_103 -
-        14452.4975362195*cse_29*cse_93 - cse_85 - 1.0*cse_96;
-      values[1] = cse_32*(cse_87*(3.56*exp(0.079*V) + 310000.0*exp(0.35*V)) +
-        (-1.0*cse_87 + 1.0)/(0.13*exp(-0.0900900900900901*V -
-        0.96036036036036) + 0.13)) + 0.135*cse_87*(cse_32 +
-        1.0)*exp(-0.147058823529412*V - 11.7647058823529);
-      values[2] = cse_34*(0.1212*cse_87*exp(-0.01052*V)/(exp(-0.1378*V -
-        5.531292) + 1.0) + (-0.3*cse_87 + 0.3)*exp(-2.535e-7*V)/(exp(cse_38 -
-        3.2) + 1.0)) + cse_87*(V + 37.78)*(cse_34 +
-        1.0)*(-127140.0*exp(0.2444*V) -
-        3.474e-5*exp(-0.04391*V))/(exp(0.311*V + 24.64053) + 1.0);
-      values[3] = (1.0 - 1.0/(exp(cse_37 - 90.0) +
-        1.0))*(-0.08*m*exp(-0.0909090909090909*V) + (-m + 1.0)*(fabs(V +
-        47.13) <= 1.0e-6 ? 1.0/(-0.005*V - 0.13565) : (0.32*V +
-        15.0816)/(-exp(cse_38 - 4.713) + 1.0)));
-      values[4] = (-xKr + cse_54*cse_92)/(1.0*cse_92 + 27.0);
-      values[5] = (-xKs + 1.0/(exp(-0.0735294117647059*V + 1.81617647058824)
-        + 1.0))*(1.0*(7.19e-5*V - 0.000719)/(-exp(-0.148*V + 1.48) + 1.0) +
-        1.0*(0.000131*V - 0.00131)/(exp(0.0687*V - 0.687) - 1.0));
-      values[6] = -0.0989*xto1*exp(-0.06237*V) + 0.04516*(-xto1 +
-        1.0)*exp(0.03577*V);
-      values[7] = -0.005415*yto1*cse_55/(0.051335*cse_55 + 1.0) +
-        0.005415*cse_62*(cse_20 + 1.0)/(0.051335*cse_62 + 1.0);
-      values[8] = 1.03626943005181e-5*cse_27*cse_6*(cse_103 + 2.0*cse_96);
-      values[9] = 1.0*(cse_52 - cse_73)/(CSQNtot*KmCSQN*pow(Ca_JSR + KmCSQN,
-        -2.0) + 1.0);
-      values[10] = -V_JSR*cse_5*cse_52 + V_myo*cse_5*cse_98;
-      values[11] = 1.0*(-HTRPNtot*cse_78 - LTRPNtot*cse_79 -
-        5.18134715025907e-6*cse_27*cse_6*(-10000.0*cse_101 + cse_57 + cse_85)
-        + cse_53 - cse_98)/(cse_22*pow(Ca_i + KmCMDN, -2.0) + 1.0);
-      values[12] = 1.0*(V_JSR*cse_7*cse_73 - V_myo*cse_53*cse_7 -
-        0.0748834069234172*cse_27*cse_29*cse_7*cse_93)/(cse_22*pow(Ca_ss +
-        KmCMDN, -2.0) + 1.0);
-      values[13] = cse_19 - cse_70;
-      values[14] = -cse_21 + cse_28;
-      values[15] = -cse_19 + cse_21 + cse_23 - cse_28 + cse_70 - cse_75;
-      values[16] = -cse_23 + cse_75;
-      values[17] = -C0*(cse_18 + cse_74) + C1*cse_83 + CCa0*omega;
-      values[18] = C0*cse_74 - C1*(aL*cse_18 + cse_71 + cse_83) + C2*cse_84 +
-        CCa1*cse_26;
-      values[19] = C1*cse_71 - C2*(cse_14*cse_18 + cse_69 + cse_84) +
-        C3*cse_82 + CCa2*cse_49;
-      values[20] = C2*cse_69 - C3*(cse_15*cse_18 + cse_72 + cse_82) +
-        C4*cse_86 + CCa3*cse_50;
-      values[21] = C3*cse_72 - C4*(fL + cse_16*cse_18 + cse_86) + CCa4*cse_51
-        + cse_31;
-      values[22] = C0*cse_18 - CCa0*(omega + 1.6*cse_68) + 0.05*CCa1*cse_80;
-      values[23] = C1*aL*cse_18 + 1.6*CCa0*cse_68 - CCa1*(cse_26 + 1.2*cse_68
-        + 0.05*cse_80) + 0.1*CCa2*cse_80;
-      values[24] = C2*cse_14*cse_18 + 1.2*CCa1*cse_68 - CCa2*(cse_49 +
-        0.8*cse_68 + 0.1*cse_80) + 0.15*CCa3*cse_80;
-      values[25] = C3*cse_15*cse_18 + 0.8*CCa2*cse_68 - CCa3*(cse_50 +
-        0.4*cse_68 + 0.15*cse_80) + 0.2*CCa4*cse_80;
-      values[26] = C4*cse_16*cse_18 + 0.4*CCa3*cse_68 - CCa4*(cse_51 +
-        0.2*cse_80);
-      values[27] = C4*fL - cse_31;
-      values[28] = (-yCa + 0.2 + 0.8/(exp(cse_17 + 2.5) + 1.0))/(20.0 +
-        600.0/(exp(0.105263157894737*V + 2.10526315789474) + 1.0));
-      values[29] = cse_78;
-      values[30] = cse_79;
+      const double cse_91 = -G_KsMax*(states[5]*states[5])*(states[0] -
+        26.7081865284974*std::log((K_o + 0.01833*Na_o)/(0.01833*Na_i +
+        states[8])));
+      const double cse_92 = PCa*cse_60*cse_74*states[0]*states[27]*states[28];
+      const double cse_93 = Ca_o*std::exp(eta*cse_22)/(cse_2*cse_2*cse_2) +
+        cse_1*cse_26*cse_59;
+      const double cse_94 = K_SR*cse_85*cse_86;
+      const double cse_95 =
+        -0.5*G_KrMax*std::sqrt(K_o)*cse_58*states[4]/(1.4945*std::exp(0.0446*states[0])
+        + 1.0);
+      const double cse_96 = G_tiMax*cse_49*cse_58/((K_mK1 +
+        K_o)*(std::pow(cse_0, -1.5)*std::exp(0.0561625551925629*states[0]) +
+        2.0));
+      const double cse_97 = k_NaCa*cse_41*cse_65*cse_84*cse_93;
+      const double cse_98 =
+        -3613.12438405488*PK*states[0]*states[27]*states[28]*(cse_34*states[8]
+        + cse_49)/((1.0 + fmin(14452.4975362195*PCa*cse_60*cse_74*states[0],
+        0)/ICahalf)*(cse_34 - 1.0));
+      const double cse_99 = cse_87 + cse_90 + cse_91 + cse_95 + cse_96 +
+        cse_98;
+      values[0] =
+        G_NaMax*cse_29*cse_61*states[2]*(states[3]*states[3]*states[3]) -
+        G_bNaMax*cse_61 - ist + cse_26*cse_53 + cse_49*cse_89 - cse_79 -
+        14452.4975362195*cse_92 - 5000.0*cse_97 + cse_99;
+      values[1] = cse_29*(cse_83*(3.56*std::exp(0.079*states[0]) +
+        310000.0*std::exp(0.35*states[0])) + (-1.0*cse_83 +
+        1.0)/(0.13*std::exp(-0.0900900900900901*states[0] - 0.96036036036036)
+        + 0.13)) + 0.135*cse_83*(cse_29 +
+        1.0)*std::exp(-0.147058823529412*states[0] - 11.7647058823529);
+      values[2] =
+        cse_31*(0.1212*cse_83*std::exp(-0.01052*states[0])/(std::exp(-0.1378*states[0]
+        - 5.531292) + 1.0) + (-0.3*cse_83 +
+        0.3)*std::exp(-2.535e-7*states[0])/(std::exp(cse_36 - 3.2) + 1.0)) +
+        cse_83*(cse_31 + 1.0)*(states[0] +
+        37.78)*(-127140.0*std::exp(0.2444*states[0]) -
+        3.474e-5*std::exp(-0.04391*states[0]))/(std::exp(0.311*states[0] +
+        24.64053) + 1.0);
+      values[3] = (1.0 - 1.0/(std::exp(cse_35 - 90.0) +
+        1.0))*(-0.08*states[3]*std::exp(-0.0909090909090909*states[0]) +
+        (-states[3] + 1.0)*(std::fabs(states[0] + 47.13) <= 1.0e-6 ?
+        1.0/(-0.005*states[0] - 0.13565) : (0.32*states[0] +
+        15.0816)/(-std::exp(cse_36 - 4.713) + 1.0)));
+      values[4] = (cse_54*cse_88 - states[4])/(1.0*cse_88 + 27.0);
+      values[5] = (-states[5] + 1.0/(std::exp(-0.0735294117647059*states[0] +
+        1.81617647058824) + 1.0))*(1.0*(7.19e-5*states[0] -
+        0.000719)/(-std::exp(-0.148*states[0] + 1.48) + 1.0) +
+        1.0*(0.000131*states[0] - 0.00131)/(std::exp(0.0687*states[0] -
+        0.687) - 1.0));
+      values[6] = -0.0989*states[6]*std::exp(-0.06237*states[0]) +
+        0.04516*(-states[6] + 1.0)*std::exp(0.03577*states[0]);
+      values[7] = -0.005415*cse_55*states[7]/(0.051335*cse_55 + 1.0) +
+        0.005415*cse_62*(cse_23 + 1.0)/(0.051335*cse_62 + 1.0);
+      values[8] = 1.03626943005181e-5*cse_19*cse_6*(2.0*K_o*cse_89 + cse_99);
+      values[9] = 1.0*(cse_50 - cse_73)/(CSQNtot*KmCSQN*std::pow(KmCSQN +
+        states[9], -2.0) + 1.0);
+      values[10] = -V_JSR*cse_3*cse_50 + V_myo*cse_3*cse_94;
+      values[11] = 1.0*(-HTRPNtot*cse_76 - LTRPNtot*cse_77 -
+        5.18134715025907e-6*cse_19*cse_6*(cse_53*states[11] + cse_79 -
+        10000.0*cse_97) + cse_48 - cse_94)/(cse_21*std::pow(KmCMDN +
+        states[11], -2.0) + 1.0);
+      values[12] = 1.0*(V_JSR*cse_73*cse_9 - V_myo*cse_48*cse_9 -
+        0.0748834069234172*cse_19*cse_9*cse_92)/(cse_21*std::pow(KmCMDN +
+        states[12], -2.0) + 1.0);
+      values[13] = kaminus*states[15] - cse_72;
+      values[14] = kcplus*states[15] - cse_32;
+      values[15] = kaminus*cse_24 + kcplus*cse_24 + cse_20 + cse_24*cse_57 +
+        cse_32 + cse_72;
+      values[16] = -cse_20 + cse_57*states[15];
+      values[17] = omega*states[22] + cse_80*states[18] - states[17]*(cse_18
+        + cse_67);
+      values[18] = omega*cse_28 + cse_67*states[17] + cse_78*states[19] -
+        states[18]*(aL*cse_18 + cse_71 + cse_80);
+      values[19] = cse_51*states[24] + cse_71*states[18] + cse_82*states[20]
+        - states[19]*(cse_14*cse_18 + cse_70 + cse_78);
+      values[20] = cse_47*states[25] + cse_70*states[19] + cse_81*states[21]
+        - states[20]*(cse_15*cse_18 + cse_69 + cse_82);
+      values[21] = cse_27 + cse_52*states[26] + cse_69*states[20] -
+        states[21]*(fL + cse_16*cse_18 + cse_81);
+      values[22] = cse_18*states[17] + cse_28*cse_80 - states[22]*(aL*cse_67
+        + omega);
+      values[23] = aL*cse_18*states[18] + aL*cse_67*states[22] +
+        cse_13*cse_78*states[24] - states[23]*(omega*cse_13 + cse_13*cse_80 +
+        1.2*cse_68);
+      values[24] = cse_13*cse_82*states[25] + cse_14*cse_18*states[19] +
+        1.2*cse_68*states[23] - states[24]*(cse_13*cse_78 + cse_51 +
+        0.8*cse_68);
+      values[25] = cse_13*cse_81*states[26] + cse_15*cse_18*states[20] +
+        0.8*cse_68*states[24] - states[25]*(cse_13*cse_82 + cse_47 +
+        0.4*cse_68);
+      values[26] = cse_16*cse_18*states[21] + 0.4*cse_68*states[25] -
+        states[26]*(cse_13*cse_81 + cse_52);
+      values[27] = fL*states[21] - cse_27;
+      values[28] = (-states[28] + 0.2 + 0.8/(std::exp(cse_17 + 2.5) +
+        1.0))/(20.0 + 600.0/(std::exp(0.105263157894737*states[0] +
+        2.10526315789474) + 1.0));
+      values[29] = cse_76;
+      values[30] = cse_77;
 
     }
 
@@ -476,7 +469,7 @@ namespace goss {
     // Return a copy of the ODE
     ODE* copy() const
     {
-      return new WinslowCSE(*this);
+      return new WinslowCSEArray(*this);
     }
 
     // Evaluate the intermediates
@@ -484,7 +477,7 @@ namespace goss {
     {
 
       // No intermediates
-      throw std::runtime_error("No intermediates in the \'Winslowcse\' model.");
+      throw std::runtime_error("No intermediates in the \'Winslowcsearray\' model.");
 
     }
 
@@ -493,7 +486,7 @@ namespace goss {
     {
 
       // No intermediates
-      throw std::runtime_error("No intermediates in the \'Winslowcse\' model.");
+      throw std::runtime_error("No intermediates in the \'Winslowcsearray\' model.");
       return 0.0;
 
     }

@@ -2,6 +2,7 @@
 #define WINSLOW_H_IS_INCLUDED
 
 #include <stdexcept>
+#include <cmath>
 
 #include "goss/ParameterizedODE.h"
 #include "goss/LinearizedODE.h"
@@ -266,90 +267,93 @@ namespace goss {
 
       // Help variables
       const double VFonRT = FonRT*V;
-      const double expVFonRT = exp(VFonRT);
+      const double expVFonRT = std::exp(VFonRT);
 
       // I Membrane currents
 
       // Na+ current I_Na
-      const double E_Na = RTonF*log(Na_o/Na_i);
+      const double E_Na = RTonF*std::log(Na_o/Na_i);
       const double I_Na = G_NaMax*h*j*(m*m*m)*(-E_Na + V);
-      const double a_h = 0.135*exp(-0.147058823529412*V -
-        11.7647058823529)/(exp(-1.0*V - 40.0) + 1.0);
-      const double b_h = (1.0 - 1.0/(exp(-1.0*V - 40.0) +
-        1.0))/(0.13*exp(-0.0900900900900901*V - 0.96036036036036) + 0.13) +
-        (3.56*exp(0.079*V) + 310000.0*exp(0.35*V))/(exp(-1.0*V - 40.0) + 1.0);
-      const double a_j = (V + 37.78)*(-127140.0*exp(0.2444*V) -
-        3.474e-5*exp(-0.04391*V))/((exp(-1.0*V - 40.0) + 1.0)*(exp(0.311*V +
-        24.64053) + 1.0));
-      const double b_j = 0.3*(1.0 - 1.0/(exp(-1.0*V - 40.0) +
-        1.0))*exp(-2.535e-7*V)/(exp(-0.1*V - 3.2) + 1.0) +
-        0.1212*exp(-0.01052*V)/((exp(-1.0*V - 40.0) + 1.0)*(exp(-0.1378*V -
-        5.531292) + 1.0));
-      const double a_m = (fabs(V + 47.13) <= 1.0e-6 ? 1.0/(-0.005*V -
-        0.13565) : (0.32*V + 15.0816)/(-exp(-0.1*V - 4.713) + 1.0));
-      const double b_m = 0.08*exp(-V/11.0);
-      const double dm = (1.0 - 1.0/(exp(-1.0*V - 90.0) + 1.0))*(a_m*(-m +
-        1.0) - b_m*m);
+      const double a_h = 0.135*std::exp(-0.147058823529412*V -
+        11.7647058823529)/(std::exp(-1.0*V - 40.0) + 1.0);
+      const double b_h = (1.0 - 1.0/(std::exp(-1.0*V - 40.0) +
+        1.0))/(0.13*std::exp(-0.0900900900900901*V - 0.96036036036036) +
+        0.13) + (3.56*std::exp(0.079*V) +
+        310000.0*std::exp(0.35*V))/(std::exp(-1.0*V - 40.0) + 1.0);
+      const double a_j = (V + 37.78)*(-127140.0*std::exp(0.2444*V) -
+        3.474e-5*std::exp(-0.04391*V))/((std::exp(-1.0*V - 40.0) +
+        1.0)*(std::exp(0.311*V + 24.64053) + 1.0));
+      const double b_j = 0.3*(1.0 - 1.0/(std::exp(-1.0*V - 40.0) +
+        1.0))*std::exp(-2.535e-7*V)/(std::exp(-0.1*V - 3.2) + 1.0) +
+        0.1212*std::exp(-0.01052*V)/((std::exp(-1.0*V - 40.0) +
+        1.0)*(std::exp(-0.1378*V - 5.531292) + 1.0));
+      const double a_m = (std::fabs(V + 47.13) <= 1.0e-6 ? 1.0/(-0.005*V -
+        0.13565) : (0.32*V + 15.0816)/(-std::exp(-0.1*V - 4.713) + 1.0));
+      const double b_m = 0.08*std::exp(-V/11.0);
+      const double dm = (1.0 - 1.0/(std::exp(-1.0*V - 90.0) + 1.0))*(a_m*(-m
+        + 1.0) - b_m*m);
 
       // Rapid-activating delayed rectifier K+ current I_Kr
-      const double k12 = exp(0.1691*V - 5.495);
-      const double k21 = exp(-0.0128*V - 7.677);
+      const double k12 = std::exp(0.1691*V - 5.495);
+      const double k21 = std::exp(-0.0128*V - 7.677);
       const double xKr_inf = k12/(k12 + k21);
       const double tau_xKr = 27.0 + 1.0/(k12 + k21);
       const double dxKr = (-xKr + xKr_inf)/tau_xKr;
-      const double E_k = RTonF*log(K_o/K_i);
-      const double R_V = 1.0/(1.4945*exp(0.0446*V) + 1.0);
-      const double f_k = sqrt(K_o)/2.0;
+      const double E_k = RTonF*std::log(K_o/K_i);
+      const double R_V = 1.0/(1.4945*std::exp(0.0446*V) + 1.0);
+      const double f_k = std::sqrt(K_o)/2.0;
       const double I_Kr = G_KrMax*R_V*f_k*xKr*(-E_k + V);
 
       // Slow-activating delayed rectifier K+ current I_Ks
-      const double xKs_inf = 1.0/(exp(-0.0735294117647059*V +
+      const double xKs_inf = 1.0/(std::exp(-0.0735294117647059*V +
         1.81617647058824) + 1.0);
-      const double tau_xKs = 1.0/((7.19e-5*V - 0.000719)/(-exp(-0.148*V +
-        1.48) + 1.0) + (0.000131*V - 0.00131)/(exp(0.0687*V - 0.687) - 1.0));
+      const double tau_xKs = 1.0/((7.19e-5*V - 0.000719)/(-std::exp(-0.148*V
+        + 1.48) + 1.0) + (0.000131*V - 0.00131)/(std::exp(0.0687*V - 0.687) -
+        1.0));
       const double dxKs = (-xKs + xKs_inf)/tau_xKs;
-      const double E_Ks = RTonF*log((K_o + 0.01833*Na_o)/(K_i + 0.01833*Na_i));
+      const double E_Ks = RTonF*std::log((K_o + 0.01833*Na_o)/(K_i +
+        0.01833*Na_i));
       const double I_Ks = G_KsMax*(xKs*xKs)*(-E_Ks + V);
 
       // Transient outward K+ current I_to
-      const double alpha_xto1 = 0.04516*exp(0.03577*V);
-      const double beta_xto1 = 0.0989*exp(-0.06237*V);
-      double a1 = 0.051335*exp(-0.2*V - 6.7) + 1.0;
-      const double alpha_yto1 = 0.005415*exp(-0.2*V - 6.7)/a1;
-      a1 = 0.051335*exp(0.2*V + 6.7) + 1.0;
-      const double beta_yto1 = 0.005415*exp(0.2*V + 6.7)/a1;
+      const double alpha_xto1 = 0.04516*std::exp(0.03577*V);
+      const double beta_xto1 = 0.0989*std::exp(-0.06237*V);
+      double a1 = 0.051335*std::exp(-0.2*V - 6.7) + 1.0;
+      const double alpha_yto1 = 0.005415*std::exp(-0.2*V - 6.7)/a1;
+      a1 = 0.051335*std::exp(0.2*V + 6.7) + 1.0;
+      const double beta_yto1 = 0.005415*std::exp(0.2*V + 6.7)/a1;
       const double dxto1 = alpha_xto1*(-xto1 + 1.0) - beta_xto1*xto1;
       const double dyto1 = alpha_yto1*(-yto1 + 1.0) - beta_yto1*yto1;
       const double I_to = G_toMax*xto1*yto1*(-E_k + V);
 
       // Time-Independent K+ current I_ti
-      const double K_tiUnlim = 1.0/(exp(FonRT*(-1.5*E_k + 1.5*V)) + 2.0);
+      const double K_tiUnlim = 1.0/(std::exp(FonRT*(-1.5*E_k + 1.5*V)) + 2.0);
       const double I_ti = G_tiMax*K_o*K_tiUnlim*(-E_k + V)/(K_mK1 + K_o);
 
       // Plateau current I_Kp
-      const double K_p = 1.0/(exp(-0.167224080267559*V + 1.25217391304348) +
-        1.0);
+      const double K_p = 1.0/(std::exp(-0.167224080267559*V +
+        1.25217391304348) + 1.0);
       const double I_Kp = G_KpMax*K_p*(-E_k + V);
 
       // NCX Current I_NaCa
       const double I_NaCa =
-        5000.0*k_NaCa*(-Ca_i*(Na_o*Na_o*Na_o)*exp(VFonRT*(eta - 1.0)) +
-        Ca_o*(Na_i*Na_i*Na_i)*exp(VFonRT*eta))/((Ca_o +
+        5000.0*k_NaCa*(-Ca_i*(Na_o*Na_o*Na_o)*std::exp(VFonRT*(eta - 1.0)) +
+        Ca_o*(Na_i*Na_i*Na_i)*std::exp(VFonRT*eta))/((Ca_o +
         K_mCa)*((K_mNa*K_mNa*K_mNa) +
-        (Na_o*Na_o*Na_o))*(k_sat*exp(FonRT*V*(eta - 1.0)) + 1.0));
+        (Na_o*Na_o*Na_o))*(k_sat*std::exp(FonRT*V*(eta - 1.0)) + 1.0));
 
       // Na+-K+ pump current I_NaK
       const double sigma = 0;
-      const double f_NaK = 1.0/(0.0365*sigma*exp(-VFonRT) + 1.0 +
-        0.1245*exp(-0.1*VFonRT));
+      const double f_NaK = 1.0/(0.0365*sigma*std::exp(-VFonRT) + 1.0 +
+        0.1245*std::exp(-0.1*VFonRT));
       const double I_NaK = I_NaKMax*K_o*f_NaK/((K_mKo +
-        K_o)*(pow(K_mNai/Na_i, 1.5) + 1.0));
+        K_o)*(std::pow(K_mNai/Na_i, 1.5) + 1.0));
 
       // Sarcolemmal Ca2+ pump current I_pCa
       const double I_pCa = Ca_i*I_pCaMax/(Ca_i + K_mpCa);
 
       // Ca2+ background current I_bCa
-      const double E_Ca = RTonF*log(Ca_o/Ca_i)/2.0;
+      const double E_Ca = RTonF*std::log(Ca_o/Ca_i)/2.0;
       const double I_bCa = G_bCaMax*(-E_Ca + V);
 
       // Na+ background current I_bNa
@@ -358,8 +362,9 @@ namespace goss {
       // II Ca2+ handling mechanisms
 
       // L-type Ca2+ current I_Ca
-      const double alpha = 0.4*exp(0.1*V + 0.2);
-      const double beta = 0.05*exp(-0.0769230769230769*V - 0.153846153846154);
+      const double alpha = 0.4*std::exp(0.1*V + 0.2);
+      const double beta = 0.05*std::exp(-0.0769230769230769*V -
+        0.153846153846154);
       const double alpha_prime = aL*alpha;
       const double beta_prime = beta/bL;
       double gamma = 0.10375*Ca_ss;
@@ -421,13 +426,13 @@ namespace goss {
       a1 = CCa4*(CCa4_to_C4 + CCa4_to_CCa3);
       a2 = C4*C4_to_CCa4 + CCa3*CCa3_to_CCa4;
       const double dCCa4 = -a1 + a2;
-      const double yCa_inf = 0.2 + 0.8/(exp(0.2*V + 2.5) + 1.0);
-      const double tau_yCa = 20.0 + 600.0/(exp(0.105263157894737*V +
+      const double yCa_inf = 0.2 + 0.8/(std::exp(0.2*V + 2.5) + 1.0);
+      const double tau_yCa = 20.0 + 600.0/(std::exp(0.105263157894737*V +
         2.10526315789474) + 1.0);
       const double dyCa = (-yCa + yCa_inf)/tau_yCa;
       const double VFsqonRT = 1000.0*F*VFonRT;
-      a1 = -0.341*Ca_o + 0.001*exp(2.0*VFonRT);
-      a2 = exp(2.0*VFonRT) - 1.0;
+      a1 = -0.341*Ca_o + 0.001*std::exp(2.0*VFonRT);
+      a2 = std::exp(2.0*VFonRT) - 1.0;
       const double ICamax = 4.0*PCa*VFsqonRT*a1/a2;
       const double I_Ca = ICamax*Open*yCa;
       const double PKprime = PK/(1.0 + fmin(ICamax, 0)/ICahalf);
@@ -436,8 +441,8 @@ namespace goss {
       const double I_CaK = Open*PKprime*VFsqonRT*a1*yCa/a2;
 
       // RyR Channel
-      a1 = pow(1000.0*Ca_ss, mcoop);
-      a2 = pow(1000.0*Ca_ss, ncoop);
+      a1 = std::pow(1000.0*Ca_ss, mcoop);
+      a2 = std::pow(1000.0*Ca_ss, ncoop);
       const double dC1_RyR = -C1_RyR*a2*kaplus + O1_RyR*kaminus;
       const double dO2_RyR = O1_RyR*a1*kbplus - O2_RyR*kbminus;
       const double dC2_RyR = -C2_RyR*kcminus + O1_RyR*kcplus;
@@ -445,8 +450,8 @@ namespace goss {
       const double J_rel = v_1*(Ca_JSR - Ca_ss)*(O1_RyR + O2_RyR);
 
       // SERCA2a Pump
-      const double f_b = pow(Ca_i/K_fb, N_fb);
-      const double r_b = pow(Ca_NSR/K_rb, N_rb);
+      const double f_b = std::pow(Ca_i/K_fb, N_fb);
+      const double r_b = std::pow(Ca_NSR/K_rb, N_rb);
       const double J_up = K_SR*(f_b*v_maxf - r_b*v_maxr)/(f_b + r_b + 1.0);
 
       // Intracellular Ca fluxes
@@ -457,11 +462,11 @@ namespace goss {
       a1 = HTRPNCa*khtrpn_minus;
       const double dHTRPNCa = Ca_i*khtrpn_plus*(-HTRPNCa + 1.0) - a1;
       const double J_trpn = HTRPNtot*dHTRPNCa + LTRPNtot*dLTRPNCa;
-      a1 = CMDNtot*KmCMDN*pow(Ca_ss + KmCMDN, -2.0);
+      a1 = CMDNtot*KmCMDN*std::pow(Ca_ss + KmCMDN, -2.0);
       const double beta_ss = 1.0/(a1 + 1.0);
-      a1 = CSQNtot*KmCSQN*pow(Ca_JSR + KmCSQN, -2.0);
+      a1 = CSQNtot*KmCSQN*std::pow(Ca_JSR + KmCSQN, -2.0);
       const double beta_JSR = 1.0/(a1 + 1.0);
-      a1 = CMDNtot*KmCMDN*pow(Ca_i + KmCMDN, -2.0);
+      a1 = CMDNtot*KmCMDN*std::pow(Ca_i + KmCMDN, -2.0);
       const double beta_i = 1.0/(a1 + 1.0);
 
       // initial stimulating current I_st
