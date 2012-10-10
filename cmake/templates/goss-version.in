@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Helper file to print the version of GOSS
+echo @GOSS_VERSION@
