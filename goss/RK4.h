@@ -27,6 +27,9 @@ namespace goss
     // Copy constructor
     RK4(const RK4& solver);
 
+    // Return a copy of itself
+    ODESolver* copy() const { return new RK4(*this); }
+
     // Destructor
     ~RK4();
 

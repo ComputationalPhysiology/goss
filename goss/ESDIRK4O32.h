@@ -26,6 +26,9 @@ namespace goss
     // Copy constructor
     ESDIRK4O32(const ESDIRK4O32& solver);
 
+    // Return a copy of itself
+    ODESolver* copy() const { return new ESDIRK4O32(*this); }
+
     // Attach ODE
     virtual void attach(ODE* ode);
     

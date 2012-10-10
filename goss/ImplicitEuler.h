@@ -26,6 +26,9 @@ namespace goss
     // Copy constructor
     ImplicitEuler(const ImplicitEuler& solver);
 
+    // Return a copy of itself
+    ODESolver* copy() const { return new ImplicitEuler(*this); }
+
     // Constructor
     ~ImplicitEuler ();
 

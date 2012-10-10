@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 
 #include "ExplicitEuler.h"
 
@@ -47,7 +48,7 @@ void ExplicitEuler::forward(double* y, double t, double interval)
   assert(_ode);
   
   // Calculate number of steps and size of timestep based on _ldt
-  const ulong nsteps = _ldt > 0 ? ceil(interval/_ldt - 1.0E-12) : 1;
+  const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
   const double dt = interval/nsteps;
 
   // Local time

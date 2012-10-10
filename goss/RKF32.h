@@ -25,6 +25,9 @@ namespace goss
     // Copy constructor
     RKF32(const RKF32& solver);
 
+    // Return a copy of itself
+    ODESolver* copy() const { return new RKF32(*this); }
+
     // Constructor
     virtual ~RKF32();
     

@@ -40,6 +40,9 @@ namespace goss
       // Do nothing
     }
 
+    // Return a copy of itself
+    virtual ODESolver* copy() const = 0;
+
     // Attach ODE and reset solver 
     virtual void attach(ODE* ode) 
     { _ode.reset(ode); reset();}

@@ -155,7 +155,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     }
     else
     {
-      std::cout << "Newton step NOT OK: " << std::endl;
+      //std::cout << "Newton step NOT OK: " << std::endl;
       _dt /= 2.0;
       justrefined = true;
 #ifdef DEBUG

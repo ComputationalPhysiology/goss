@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-19
+// Last changed: 2012-10-10
 
 #ifndef GRL2_H_IS_INCLUDED
 #define GRL2_H_IS_INCLUDED
@@ -32,6 +32,9 @@ namespace goss {
     // Copy constructor
     GRL2(const GRL2& solver);
     
+    // Return a copy of itself
+    ODESolver* copy() const { return new GRL2(*this); }
+
     // Destructor
     ~GRL2();
 

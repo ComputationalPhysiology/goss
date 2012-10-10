@@ -2,7 +2,6 @@
 #define ExplicitEuler_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
-#include <math.h>
 #include <cstdlib>
 
 #include "ODESolver.h"
@@ -27,6 +26,9 @@ namespace goss
 
     // Copy constructor
     ExplicitEuler(const ExplicitEuler& solver);
+
+    // Return a copy of itself
+    ODESolver* copy() const { return new ExplicitEuler(*this); }
 
     // Attach ODE to solver
     virtual void attach(goss::ODE* ode);
