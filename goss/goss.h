@@ -3,6 +3,10 @@
 
 // GOSS interface
 
+// Common
+#include <goss/types.h>
+#include <goss/DoubleVector.h>
+
 // ODEs
 #include <goss/ODE.h>
 #include <goss/ParameterizedODE.h>

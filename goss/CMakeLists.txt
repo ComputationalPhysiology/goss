@@ -31,3 +31,13 @@ string(STRIP GOSS_TARGET_LINK_LIBRARIES "${GOSS_TARGET_LINK_LIBRARIES}")
 
 # Add GOSS target libraries
 target_link_libraries(goss ${GOSS_TARGET_LINK_LIBRARIES})
+
+#------------------------------------------------------------------------------
+# SWIG
+
+if (ENABLE_PYTHON_EXTENSION_MODULE)
+
+  # If suitble UFC SWIG extension is found, add SWIG subdirectory
+  add_subdirectory(swig)
+
+endif()

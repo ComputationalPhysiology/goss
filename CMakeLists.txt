@@ -20,7 +20,7 @@ if(COMMAND cmake_policy)
 endif()
 
 # Set verbose output while testing CMake
-set(CMAKE_VERBOSE_MAKEFILE 0)
+set(CMAKE_VERBOSE_MAKEFILE 1)
 
 # Set location of our FindFoo.cmake modules
 set(GOSS_CMAKE_DIR "${GOSS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
@@ -29,7 +29,7 @@ set(CMAKE_MODULE_PATH "${GOSS_CMAKE_DIR}/modules")
 #------------------------------------------------------------------------------
 # Options
 
-option(GOSS_ENABLE_PYTHON "Enable Python extensions." OFF)
+option(GOSS_ENABLE_PYTHON "Enable Python extensions." ON)
 option(GOSS_ENABLE_OPENMP "Enable OpenMP extensions." ON)
 option(GOSS_WITH_LIBRARY_VERSION "Build with library version information." ON)
 option(GOSS_ENABLE_UNIT_TESTS "Build unit tests." ON)
@@ -142,6 +142,15 @@ include(cmake/dependencies.cmake)
 
 # Add source directory
 add_subdirectory(goss)
+
+if (ENABLE_PYTHON_EXTENSION_MODULE)
+  install(DIRECTORY
+    ${CMAKE_SOURCE_DIR}/site-packages/goss
+    DESTINATION ${GOSS_INSTALL_PYTHON_MODULE_DIR}
+    USE_SOURCE_PERMISSIONS
+    COMPONENT RuntimeLibraries
+    )
+endif()
 
 #------------------------------------------------------------------------------
 # If enabling unit testing add test subdirectory
