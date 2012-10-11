@@ -27,7 +27,7 @@ protected:
   ODESystemSolver* system_solver;
   DoubleVector x_coarse, x_fine;
   
-  void run_system(double dt, double tstop, DoubleVector& x, uint num_threads=0)
+  double run_system(double dt, double tstop, DoubleVector& x, uint num_threads=0)
   {
 
     // Init ODESystemSolver
@@ -44,6 +44,9 @@ protected:
     // Fill solution vector with inital values
     system_solver->get_field_states(x.data.get());
 
+    // Get init value
+    const double init_value = x.data.get()[0];
+
     // Step solver and update field solution
     const uint nstep = std::ceil(tstop/dt - 1.0E-12);
     double t = 0.0;
@@ -57,6 +60,9 @@ protected:
 
     // Clean up
     delete system_solver;
+
+    // Return init value for check
+    return init_value;
   }
 };
 
@@ -123,15 +129,24 @@ TYPED_TEST(ODETester, IntegrationTest)
   const uint nodes(100);
   this->x_coarse.data.reset(new double[nodes]);
   this->x_coarse.n = nodes;
-  this->run_system(0.01, 10.0, this->x_coarse);
+  const double init_coarse = this->run_system(0.01, 10.0, this->x_coarse);
 
   // Run fine simulation
   this->x_fine.data.reset(new double[nodes]);
   this->x_fine.n = nodes;
-  this->run_system(0.001, 10.0, this->x_fine);
+  const double init_fine = this->run_system(0.001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   
+  // Check all of the data points are the same but not the same as the init
+  for (uint i=1; i < this->x_fine.n; i++)
+  {
+    ASSERT_FLOAT_EQ(this->x_fine.data[0], this->x_fine.data[i]);
+    ASSERT_FLOAT_EQ(this->x_coarse.data[0], this->x_coarse.data[i]);
+
+    ASSERT_NE(init_fine, this->x_fine.data[i]);
+    ASSERT_NE(init_coarse, this->x_coarse.data[i]);
+  }
 }
 
 TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
@@ -141,14 +156,24 @@ TYPED_TEST(ExplicitTester, ExplicitSolverTest)
   const uint nodes(100);
   this->x_coarse.data.reset(new double[nodes]);
   this->x_coarse.n = nodes;
-  this->run_system(0.01, 10.0, this->x_coarse);
+  const double init_coarse = this->run_system(0.01, 10.0, this->x_coarse);
 
   // Run fine simulation
   this->x_fine.data.reset(new double[nodes]);
   this->x_fine.n = nodes;
-  this->run_system(0.001, 10.0, this->x_fine);
+  const double init_fine = this->run_system(0.001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+  // Check all of the data points are the same but not the same as the init
+  for (uint i=1; i < this->x_fine.n; i++)
+  {
+    ASSERT_FLOAT_EQ(this->x_fine.data[0], this->x_fine.data[i]);
+    ASSERT_FLOAT_EQ(this->x_coarse.data[0], this->x_coarse.data[i]);
+
+    ASSERT_NE(init_fine, this->x_fine.data[i]);
+    ASSERT_NE(init_coarse, this->x_coarse.data[i]);
+  }
 }
 
 TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
@@ -158,15 +183,24 @@ TYPED_TEST(ImplicitTester, ImplicitSolverTest)
   const uint nodes(100);
   this->x_coarse.data.reset(new double[nodes]);
   this->x_coarse.n = nodes;
-  this->run_system(0.1, 10.0, this->x_coarse);
+  const double init_coarse = this->run_system(0.1, 10.0, this->x_coarse);
 
   // Run fine simulation
   this->x_fine.data.reset(new double[nodes]);
   this->x_fine.n = nodes;
-  this->run_system(0.01, 10.0, this->x_fine);
+  const double init_fine = this->run_system(0.01, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   
+  // Check all of the data points are the same but not the same as the init
+  for (uint i=1; i < this->x_fine.n; i++)
+  {
+    ASSERT_NEAR(this->x_fine.data[0], this->x_fine.data[i], 0.001);
+    ASSERT_NEAR(this->x_coarse.data[0], this->x_coarse.data[i], 0.001);
+
+    ASSERT_NE(init_fine, this->x_fine.data[i]);
+    ASSERT_NE(init_coarse, this->x_coarse.data[i]);
+  }
 }
 
 TYPED_TEST(OpenMPTester, OpenMPSolverTester) 
@@ -176,15 +210,24 @@ TYPED_TEST(OpenMPTester, OpenMPSolverTester)
   const uint nodes(100);
   this->x_coarse.data.reset(new double[nodes]);
   this->x_coarse.n = nodes;
-  this->run_system(0.1, 10.0, this->x_coarse, 4);
+  const double init_coarse = this->run_system(0.1, 10.0, this->x_coarse, 4);
 
   // Run fine simulation
   this->x_fine.data.reset(new double[nodes]);
   this->x_fine.n = nodes;
-  this->run_system(0.01, 10.0, this->x_fine, 4);
+  const double init_fine = this->run_system(0.01, 10.0, this->x_fine, 4);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   
+  // Check all of the data points are the same but not the same as the init
+  for (uint i=1; i < this->x_fine.n; i++)
+  {
+    ASSERT_NEAR(this->x_fine.data[0], this->x_fine.data[i], 0.001);
+    ASSERT_NEAR(this->x_coarse.data[0], this->x_coarse.data[i], 0.001);
+
+    ASSERT_NE(init_fine, this->x_fine.data[i]);
+    ASSERT_NE(init_coarse, this->x_coarse.data[i]);
+  }
 }
 
 //TYPED_TEST(RLTester, RLSolverTest) 
