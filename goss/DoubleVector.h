@@ -3,6 +3,8 @@
 
 #include <boost/scoped_array.hpp>
 
+#include "types.h"
+
 namespace goss {
 
   // A small wrapper around a double pointer
@@ -10,7 +12,7 @@ namespace goss {
   {
 
     boost::scoped_array<double> data;
-    int n;
+    uint n;
 
   };
 
@@ -19,8 +21,8 @@ namespace goss {
   {
 
     boost::scoped_array<double> data;
-    int m;
-    int n;
+    uint m;
+    uint n;
 
   };
 
