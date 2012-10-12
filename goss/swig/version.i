@@ -14,9 +14,6 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
-//
-// First added:  2012-10-11
-// Last changed: 2012-10-11
 
 //-----------------------------------------------------------------------------
 // Include code to generate a __swigversion__ and a __gossversion__ 
