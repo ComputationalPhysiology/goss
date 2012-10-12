@@ -10,8 +10,9 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ODESystemSolver::ODESystemSolver(uint num_nodes, ODESolver* solver, 
-				 ParameterizedODE* ode) :
+ODESystemSolver::ODESystemSolver(uint num_nodes, 
+				 boost::shared_ptr<ODESolver> solver, 
+				 boost::shared_ptr<ParameterizedODE> ode) :
   _num_nodes(num_nodes), _num_threads(0), _solver(solver), 
   _threaded_solvers(0), _ode(ode), _states(num_nodes*ode->num_states()),
   _field_parameters(num_nodes*ode->num_field_parameters()),
@@ -31,27 +32,24 @@ ODESystemSolver::ODESystemSolver(uint num_nodes, ODESolver* solver,
 //-----------------------------------------------------------------------------
 ODESystemSolver::~ODESystemSolver()
 { 
-  for (uint i = 0; i < _threaded_solvers.size(); i++)
-    delete _threaded_solvers[i];
+//  for (uint i = 0; i < _threaded_solvers.size(); i++)
+//    delete _threaded_solvers[i];
 }
 //-----------------------------------------------------------------------------
 void ODESystemSolver::forward(double t, double interval)
 {
-
-  // Local solver pointer
-  ODESolver* solver = _solver.get();
 
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
 #pragma omp parallel for schedule(guided, 20) 
    for (uint node = 0; node < _num_nodes; node++)
-      _forward_node(_threaded_solvers[omp_get_thread_num()], node, t, interval);
+      _forward_node(*_threaded_solvers[omp_get_thread_num()], node, t, interval);
   }
   else
   {
     for (uint node = 0; node < _num_nodes; node++)
-      _forward_node(solver, node, t, interval);
+      _forward_node(*_solver, node, t, interval);
   }
 }
 //-----------------------------------------------------------------------------
@@ -150,8 +148,8 @@ void ODESystemSolver::set_num_threads(uint num_threads)
   omp_set_num_threads(num_threads);
 
   // Delete and resize
-  for (uint i = 0; i < _threaded_solvers.size(); i++)
-    delete _threaded_solvers[i];
+  //for (uint i = 0; i < _threaded_solvers.size(); i++)
+  //  delete _threaded_solvers[i];
   _threaded_solvers.resize(num_threads);
 
   // Re-create threaded solvers
@@ -162,6 +160,7 @@ void ODESystemSolver::set_num_threads(uint num_threads)
   
   // Keeps the compiler happy
   _num_threads = num_threads*0;
+
 #endif
 }
 //-----------------------------------------------------------------------------

@@ -31,11 +31,11 @@ class ODESolverTest : public testing::Test {
 protected:
   ODESolverTest() : ode(new O()), solver(new S(ode)) {}
 
-  virtual ~ODESolverTest() { delete solver; }
+  virtual ~ODESolverTest() { }
 
   // ODE and solver
-  ODE* ode;
-  ODESolver* solver;
+  boost::shared_ptr<ODE> ode;
+  boost::shared_ptr<ODESolver> solver;
   DoubleVector x_coarse, x_fine;
   
   void run_ode(double dt, double tstop, DoubleVector& x)
@@ -168,7 +168,7 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
 {
 
   // Local version
-  ParameterizedODE& lode = *dynamic_cast<ParameterizedODE*>(this->ode);
+  ParameterizedODE& lode = dynamic_cast<ParameterizedODE&>(*this->ode);
 
   // Run coarse simulation
   this->run_ode(0.1, 10.0, this->x_coarse);

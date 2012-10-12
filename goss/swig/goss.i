@@ -31,6 +31,10 @@ import_array();
 // Include information about swig version
 %include "goss/swig/version.i"
 
+// Enable automatic docstring generation
+// FIXME: Consider generate from C++
+%feature("autodoc", "1");
+
 // Include the interface with pre and post modifications
 %include "goss/swig/pre.i"
 %include "goss/swig/goss_interface.i"

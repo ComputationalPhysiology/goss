@@ -2,7 +2,7 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-09-19
+// Last changed: 2012-10-11
 
 #include <cassert>
 #include <cstring>
@@ -20,8 +20,9 @@ GRL2::GRL2() : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), linear_terms(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-GRL2::GRL2(ODE* ode) : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), 
-		       linear_terms(0), delta(1.0e-8), nbytes(0)
+GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), _lode(0), 
+					 y0(0), a(0), b(0), linear_terms(0), 
+					 delta(1.0e-8), nbytes(0)
 {
   attach(ode);
 }
@@ -46,13 +47,13 @@ GRL2::~GRL2()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void GRL2::attach(ODE* ode)
+void GRL2::attach(boost::shared_ptr<ODE> ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);
 
    // Store Linearized ODE
-  _lode = dynamic_cast<LinearizedODE*>(ode);
+  _lode = dynamic_cast<LinearizedODE*>(ode.get());
   assert(_lode);
   
   // Initalize memory

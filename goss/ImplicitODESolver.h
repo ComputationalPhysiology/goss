@@ -2,6 +2,7 @@
 #define ImplicitODESolver_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
 #include "ODESolver.h"
 
 namespace goss 
@@ -29,7 +30,7 @@ namespace goss
     virtual void reset();
 
     // Attach ode
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval of time forward
     virtual void forward(double* y, double t, double interval) = 0;

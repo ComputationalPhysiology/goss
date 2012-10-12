@@ -2,6 +2,8 @@
 #define RKF32_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include "AdaptiveExplicitSolver.h"
 
@@ -20,19 +22,19 @@ namespace goss
     RKF32(double _ldt);
 
     // Constructor
-    RKF32 (goss::ODE* ode, double ldt=-1.0);
+    RKF32 (boost::shared_ptr<ODE> ode, double ldt=-1.0);
 
     // Copy constructor
     RKF32(const RKF32& solver);
 
     // Return a copy of itself
-    ODESolver* copy() const { return new RKF32(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RKF32>(*this); }
 
     // Constructor
     virtual ~RKF32();
     
     // Attach ODE
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Reset solver
     virtual void reset();

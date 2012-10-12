@@ -2,6 +2,8 @@
 #define ESDIRK4O32_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include "AdaptiveImplicitSolver.h"
 
@@ -21,16 +23,17 @@ namespace goss
     ESDIRK4O32(double _ldt);
 
     // Constructor
-    ESDIRK4O32(ODE* ode, double ldt=-1.0);
+    ESDIRK4O32(boost::shared_ptr<ODE> ode, double ldt=-1.0);
 
     // Copy constructor
     ESDIRK4O32(const ESDIRK4O32& solver);
 
     // Return a copy of itself
-    ODESolver* copy() const { return new ESDIRK4O32(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<ESDIRK4O32>(*this); }
 
     // Attach ODE
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
     
     // Reset ODE
     virtual void reset();

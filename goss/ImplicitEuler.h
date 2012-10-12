@@ -2,6 +2,8 @@
 #define ImplicitEuler_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <vector>
 
 #include "ImplicitODESolver.h"
@@ -18,7 +20,7 @@ namespace goss
     ImplicitEuler();
 
     // Constructor
-    ImplicitEuler (ODE* ode, double ldt=-1.0);
+    ImplicitEuler (boost::shared_ptr<ODE> ode, double ldt=-1.0);
 
     // Constructor
     ImplicitEuler(double ldt);
@@ -27,13 +29,14 @@ namespace goss
     ImplicitEuler(const ImplicitEuler& solver);
 
     // Return a copy of itself
-    ODESolver* copy() const { return new ImplicitEuler(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<ImplicitEuler>(*this); }
 
     // Constructor
     ~ImplicitEuler ();
 
     // Attach ODE
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Reset ODE
     virtual void reset();

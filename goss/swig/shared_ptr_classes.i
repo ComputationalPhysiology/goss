@@ -44,3 +44,30 @@
 #define SWIG_SHARED_PTR_QNAMESPACE boost
 %}
 
+%shared_ptr(goss::ODE)
+%shared_ptr(goss::ParameterizedODE)
+%shared_ptr(goss::LinearizedODE)
+
+// ODESolvers
+%shared_ptr(goss::ODESolver)
+%shared_ptr(goss::ImplicitODESolver)
+%shared_ptr(goss::AdaptiveExplicitSolver)
+%shared_ptr(goss::AdaptiveImplicitSolver)
+%shared_ptr(goss::ExplicitEuler)
+%shared_ptr(goss::RK4)
+%shared_ptr(goss::RK2)
+
+//%shared_ptr(goss::RKF34)
+
+%shared_ptr(goss::RKF32)
+%shared_ptr(goss::ImplicitEuler)
+
+//%shared_ptr(goss::ThetaSolver)
+//%shared_ptr(goss::ImplicitMidPointSolver)
+//%shared_ptr(goss::SDIRK2O2)
+//%shared_ptr(goss::SDIRK2O3)
+
+%shared_ptr(goss::ESDIRK4O32)
+%shared_ptr(goss::GRL1)
+%shared_ptr(goss::GRL2)
+%shared_ptr(goss::RL)

@@ -1,7 +1,7 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
-#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 
 #include "ODE.h"
@@ -16,13 +16,14 @@ namespace goss
 
     // FIXME: Remove dt as variable...
     // Default Constructor
-    ODESolver () : _ldt(-1.0), _dt(0.0), _ode(0)
+    ODESolver () : _ldt(-1.0), _dt(0.0), _ode(static_cast<ODE*>(0))
     {
       // Do nothing
     }
 
     // Constructor
-    ODESolver (double ldt, double dt=0.0) : _ldt(ldt), _dt(dt), _ode(0)
+    ODESolver (double ldt, double dt=0.0) : _ldt(ldt), _dt(dt), 
+					    _ode(static_cast<ODE*>(0))
     {
       // Do nothing
     }
@@ -41,11 +42,11 @@ namespace goss
     }
 
     // Return a copy of itself
-    virtual ODESolver* copy() const = 0;
+    virtual boost::shared_ptr<ODESolver> copy() const = 0;
 
     // Attach ODE and reset solver 
-    virtual void attach(ODE* ode) 
-    { _ode.reset(ode); reset();}
+    virtual void attach(boost::shared_ptr<ODE> ode) 
+    { _ode = ode; reset();}
 
     // Reset solver 
     virtual void reset() { /* Do nothing */ }
@@ -57,10 +58,10 @@ namespace goss
     inline uint num_states() const { return _ode->num_states(); }
 
     // Return the ODE (const version)
-    inline const goss::ODE* get_ode() const { return _ode.get(); }
+    inline const boost::shared_ptr<ODE> get_ode() const { return _ode; }
 
     // Return the ODE
-    inline goss::ODE* get_ode() { return _ode.get(); }
+    inline boost::shared_ptr<ODE> get_ode() { return _ode; }
 
     // Return the internal time step
     inline double get_internal_time_step() const { return _ldt; }
@@ -79,8 +80,8 @@ namespace goss
     // Variable local time step.
     double _dt;
     
-    // Pointer to ode (Onced assigned the ODESolver owe the ODE)
-    boost::scoped_ptr<ODE> _ode;
+    // Shared pointer to ode 
+    boost::shared_ptr<ODE> _ode;
 
   };
 

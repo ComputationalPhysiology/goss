@@ -1,4 +1,3 @@
-
 #include <cassert>
 #include <cmath>
 
@@ -17,7 +16,7 @@ RK2::RK2(double ldt) : ODESolver(ldt), k1(0), tmp(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(ODE* ode, double ldt) : ODESolver(ldt), k1(0), tmp(0)
+RK2::RK2(boost::shared_ptr<ODE> ode, double ldt) : ODESolver(ldt), k1(0), tmp(0)
 {
   attach(ode);
 }
@@ -33,7 +32,7 @@ RK2::~RK2 ()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void RK2::attach(ODE* ode)
+void RK2::attach(boost::shared_ptr<ODE> ode)
 {
   
   ODESolver::attach(ode);

@@ -2,6 +2,8 @@
 #define ExplicitEuler_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <cstdlib>
 
 #include "ODESolver.h"
@@ -22,16 +24,17 @@ namespace goss
     ExplicitEuler(double _ldt);
     
     // Constructor
-    ExplicitEuler(ODE* ode_, double _ldt=-1.0);
+    ExplicitEuler(boost::shared_ptr<ODE> ode, double _ldt=-1.0);
 
     // Copy constructor
     ExplicitEuler(const ExplicitEuler& solver);
 
     // Return a copy of itself
-    ODESolver* copy() const { return new ExplicitEuler(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<ExplicitEuler>(*this); }
 
     // Attach ODE to solver
-    virtual void attach(goss::ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);

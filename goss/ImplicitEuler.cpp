@@ -13,10 +13,9 @@ ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), newton_iter1(0),
   // Do nothing
 } 
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler(ODE* ode, double ldt) : ImplicitODESolver(ldt), 
-						     newton_iter1(0), 
-						     newton_accepted1(0), dt_v(0), 
-						     z1(0), justrefined(false)
+ImplicitEuler::ImplicitEuler(boost::shared_ptr<ODE> ode, double ldt) : 
+  ImplicitODESolver(ldt), newton_iter1(0), newton_accepted1(0), dt_v(0), 
+  z1(0), justrefined(false)
 { 
   attach(ode);
 } 
@@ -41,7 +40,7 @@ ImplicitEuler::~ImplicitEuler()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void ImplicitEuler::attach(ODE* ode)
+void ImplicitEuler::attach(boost::shared_ptr<ODE> ode)
 {
 
   // Attach ode using bases

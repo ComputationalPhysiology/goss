@@ -2,12 +2,14 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-10-10
+// Last changed: 2012-10-11
 
 #ifndef RL_H_IS_INCLUDED
 #define RL_H_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include "types.h"
 #include "ODESolver.h"
@@ -27,19 +29,19 @@ namespace goss {
     RL();
 
     // Constructor
-    RL(ODE* ode);
+    RL(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     RL(const RL& solver);
     
     // Return a copy of itself
-    ODESolver* copy() const { return new RL(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RL>(*this); }
 
     // Destructor
     ~RL();
 
     // Attach ODE to solver
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);

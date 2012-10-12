@@ -57,7 +57,7 @@ RKF32::RKF32(double ldt)
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-RKF32::RKF32(ODE* ode, double ldt) 
+RKF32::RKF32(boost::shared_ptr<ODE> ode, double ldt) 
   : AdaptiveExplicitSolver(ldt, 0.0), 
     nfevals(0), ndtsa(0), ndtsr(0),
     a21(1.0/2.0), 
@@ -115,7 +115,7 @@ RKF32::~RKF32()
 }
 
 //-----------------------------------------------------------------------------
-void RKF32::attach(ODE* ode)
+void RKF32::attach(boost::shared_ptr<ODE> ode)
 {
   // Attach ode using base class. 
   // NOTE: This will trigger call to reset

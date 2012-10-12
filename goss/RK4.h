@@ -2,6 +2,8 @@
 #define RK4_h_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include "ODESolver.h"
 #include "types.h"
@@ -22,19 +24,19 @@ namespace goss
     RK4(double ldt);
 
     // Constructor
-    RK4(goss::ODE* ode, double ldt=-1.0);
+    RK4(boost::shared_ptr<ODE> ode, double ldt=-1.0);
 
     // Copy constructor
     RK4(const RK4& solver);
 
     // Return a copy of itself
-    ODESolver* copy() const { return new RK4(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RK4>(*this); }
 
     // Destructor
     ~RK4();
 
     // Attach ODE to solver
-    virtual void attach(goss::ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);

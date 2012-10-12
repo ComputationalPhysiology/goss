@@ -2,7 +2,7 @@
 #define ODESYSTEMSOLVER_h_IS_INCLUDED
 
 #include <vector>
-#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "types.h"
 #include "DoubleVector.h"
@@ -21,7 +21,8 @@ namespace goss
   public:
     
     // Constructor
-    ODESystemSolver(uint nodes, ODESolver* solver, ParameterizedODE* ode);
+    ODESystemSolver(uint nodes, boost::shared_ptr<ODESolver> solver, 
+		    boost::shared_ptr<ParameterizedODE> ode);
     
     // Destructor
     ~ODESystemSolver();
@@ -58,7 +59,7 @@ namespace goss
 				    const std::vector<double>& default_field_params);
 
     // Forward states for a given node
-    inline void _forward_node(ODESolver* solver, uint node, double t, double interval);
+    inline void _forward_node(ODESolver& solver, uint node, double t, double interval);
 
     // Set field states for a given node
     inline void _set_field_states_node(uint node, const double* values, 
@@ -79,13 +80,13 @@ namespace goss
     uint _num_threads;
 
     // The ODE solver
-    boost::scoped_ptr<ODESolver> _solver;
+    boost::shared_ptr<ODESolver> _solver;
 
     // Solvers used in OpenMP threaded runs
-    std::vector<ODESolver* > _threaded_solvers;
+    std::vector<boost::shared_ptr<ODESolver> > _threaded_solvers;
 
     // Local pointer to ODE (No ownership. Solver owes ODE)
-    ParameterizedODE* _ode;
+    boost::shared_ptr<ParameterizedODE> _ode;
     
     // Solution array with the solution for all nodes
     std::vector<double> _states;
@@ -131,7 +132,8 @@ namespace goss
     
   }
   //-----------------------------------------------------------------------------
-  void ODESystemSolver::_forward_node(ODESolver* solver, uint node, double t, double interval)
+  void ODESystemSolver::_forward_node(ODESolver& solver, uint node, double t, 
+				      double interval)
   {
     
   // Update field parameters if any
@@ -140,20 +142,20 @@ namespace goss
       
       // Get local ode. Nead to grab ode from solver so it also works in a 
       // threader version
-    ParameterizedODE* ode = dynamic_cast<ParameterizedODE*>(solver->get_ode());
-    ode->set_field_parameters(&_field_parameters[node*ode->num_field_parameters()]);
+      ParameterizedODE& ode = dynamic_cast<ParameterizedODE&>(*solver.get_ode());
+      ode.set_field_parameters(&_field_parameters[node*ode.num_field_parameters()]);
     }
     
     // Set internal time step if adaptive
     if (_is_adaptive)
-      solver->set_internal_time_step(_ldt_vec[node]);
+      solver.set_internal_time_step(_ldt_vec[node]);
     
     // Forward solver
-    solver->forward(&_states[node*_ode->num_states()], t, interval);
+    solver.forward(&_states[node*_ode->num_states()], t, interval);
     
     // Get internal time step if adaptive
     if (_is_adaptive)
-      _ldt_vec[node] = solver->get_internal_time_step();
+      _ldt_vec[node] = solver.get_internal_time_step();
     
   }
   //-----------------------------------------------------------------------------
@@ -170,9 +172,9 @@ namespace goss
     }
     
   }
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
   void ODESystemSolver::_get_field_states_node(uint node, double* values, 
-					     bool tangled_storage) const
+					       bool tangled_storage) const
   {
     uint ind = 0;
     
@@ -186,7 +188,7 @@ namespace goss
     }
     
   }
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
   void ODESystemSolver::_set_field_parameters_node(uint node, const double* values, 
 						   bool tangled_storage)
   {

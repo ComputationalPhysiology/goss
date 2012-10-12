@@ -2,12 +2,14 @@
 // All rights reserved.
 //
 // First added:  2007-07-09
-// Last changed: 2012-10-10
+// Last changed: 2012-10-11
 
 #ifndef GRL1_H_IS_INCLUDED
 #define GRL1_H_IS_INCLUDED
 
 #include <boost/scoped_array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include "types.h"
 #include "ODESolver.h"
@@ -27,26 +29,26 @@ namespace goss {
     GRL1();
 
     // Constructor
-    GRL1(ODE* ode);
+    GRL1(boost::shared_ptr<ODE> ode);
     
     // Copy constructor
     GRL1(const GRL1& solver);
     
     // Return a copy of itself
-    ODESolver* copy() const { return new GRL1(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<GRL1>(*this); }
 
     // Destructor
     ~GRL1();
 
     // Attach ODE to solver
-    virtual void attach(ODE* ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);
     
   private:
 
-    // Storage for the Linearized ODE
+    // Store a downcasted pointer to the Linearized ODE
     LinearizedODE* _lode;
 
     // Pointers to intermediate values used while stepping

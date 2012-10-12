@@ -16,7 +16,8 @@ RK4::RK4(double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-RK4::RK4(ODE *ode, double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
+RK4::RK4(boost::shared_ptr<ODE> ode, double ldt) : 
+  ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
   attach(ode);
 }
@@ -35,7 +36,7 @@ RK4::~RK4 ()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void RK4::attach(ODE* ode)
+void RK4::attach(boost::shared_ptr<ODE> ode)
 {
 
   // Attach ode using base class

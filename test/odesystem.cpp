@@ -1,5 +1,7 @@
 #include <string>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "goss/goss.h"
 #include "Winslow.h"
@@ -17,23 +19,21 @@ using namespace goss;
 template <class O, class S>
 class ODESystemSolverTest : public testing::Test {
 protected:
-  ODESystemSolverTest() {}
+  ODESystemSolverTest() : ode(new O()), solver(new S()){}
 
   virtual ~ODESystemSolverTest() {}
 
   // ODE and solver
-  ParameterizedODE* ode;
-  ODESolver* solver;
-  ODESystemSolver* system_solver;
+  boost::shared_ptr<ParameterizedODE> ode;
+  boost::shared_ptr<ODESolver> solver;
+  boost::scoped_ptr<ODESystemSolver> system_solver;
   DoubleVector x_coarse, x_fine;
   
   double run_system(double dt, double tstop, DoubleVector& x, uint num_threads=0)
   {
 
     // Init ODESystemSolver
-    ode = new O();
-    solver = new S();
-    system_solver = new ODESystemSolver(x.n, solver, ode);
+    system_solver.reset(new ODESystemSolver(x.n, solver, ode));
 
     // Reseting system solver
     system_solver->reset_default();
@@ -57,9 +57,6 @@ protected:
       system_solver->get_field_states(x.data.get());
       t += dt;
     }
-
-    // Clean up
-    delete system_solver;
 
     // Return init value for check
     return init_value;
