@@ -19,7 +19,7 @@ import_array();
 
 // Global exceptions
 %include <exception.i>
- //%include "goss/swig/exceptions.i"
+%include "goss/swig/exceptions.i"
 
 // Do not expand default arguments in C++ by generating an extra
 // function in the SWIG layer. This reduces code bloat.
