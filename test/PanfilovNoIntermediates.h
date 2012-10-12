@@ -75,27 +75,17 @@ namespace goss {
       return new PanfilovNoIntermediates(*this);
     }
 
-    // Evaluate the intermediates
-    void eval_intermediates(const double* x, double t, double* y) const
+    // Evaluate the monitored intermediates
+    void eval_monitored(const double* states, double t, double* monitored) const
     {
 
-      // No intermediates
-      throw std::runtime_error("No intermediates in the \'Panfilovnointermediates\' model.");
-
-    }
-
-    // Evaluate componentwise intermediates
-    double eval_intermediate(uint i, const double* x, double t) const
-    {
-
-      // No intermediates
-      throw std::runtime_error("No intermediates in the \'Panfilovnointermediates\' model.");
-      return 0.0;
+      // No monitored
+      throw std::runtime_error("No monitored in the \'Panfilovnointermediates\' model.");
 
     }
 
     // Set all field parameters
-    void set_field_parameters(const double* values)
+    void set_field_parameters(const double* field_params)
     {
 
     }

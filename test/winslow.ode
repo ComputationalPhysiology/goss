@@ -354,7 +354,8 @@ a1 = CMDNtot*KmCMDN/((Ca_i+KmCMDN)**2.e0)
 #a2 = 0
 beta_i = 1.0/(1.0+a1)#+a2)
 
-comment("initial stimulating current I_st")
+# Monitor some currents
+monitor(I_Ca, I_CaK, I_NaCa, I_pCa)
 
 comment("The ODE system")
 

@@ -16,7 +16,7 @@ namespace goss {
 
     // Constructor
     WinslowCSE() : ODE(31),
-      ParameterizedODE(31, 68, 1, 2, 0), 
+      ParameterizedODE(31, 68, 1, 2, 4), 
       A_cap(0.0001534), C_sc(1.0), V_JSR(1.6e-07), V_NSR(2.1e-06),
         V_myo(2.584e-05), V_ss(1.2e-09), ist(0), Ca_o(2.0), K_o(4.0),
         Na_i(10.0), Na_o(138.0), G_KpMax(0.002216), G_KrMax(0.0034),
@@ -148,6 +148,12 @@ namespace goss {
       // Field parameter names
       _field_parameter_names[0] = "G_KrMax";
       _field_parameter_names[1] = "G_KsMax";
+
+      // Monitored names
+      _monitored_names[0] = "I_Ca";
+      _monitored_names[1] = "I_CaK";
+      _monitored_names[2] = "I_NaCa";
+      _monitored_names[3] = "I_pCa";
 
       // Parameter to value map
       _param_to_value["A_cap"] = &A_cap;
@@ -487,32 +493,46 @@ namespace goss {
       return new WinslowCSE(*this);
     }
 
-    // Evaluate the intermediates
-    void eval_intermediates(const double* x, double t, double* y) const
+    // Evaluate the monitored intermediates
+    void eval_monitored(const double* states, double t, double* monitored) const
     {
 
-      // No intermediates
-      throw std::runtime_error("No intermediates in the \'Winslowcse\' model.");
+      // Assign states
+      const double V = states[0];
+      const double K_i = states[8];
+      const double Ca_i = states[11];
+      const double Open = states[27];
+      const double yCa = states[28];
 
-    }
+      // Common Sub Expressions for monitored intermediates
+      const double cse_0 = (Na_o*Na_o*Na_o);
+      const double cse_1 = 0.0374417034617086*V;
+      const double cse_2 = std::exp(0.0748834069234172*V);
+      const double cse_3 = std::exp(cse_1);
+      const double cse_4 = Open*V*yCa;
+      const double cse_5 = 1.0/(cse_2 - 1.0);
+      const double cse_6 = std::exp(cse_1*(eta - 1.0));
+      const double cse_7 = -0.341*Ca_o + 0.001*cse_2;
+      const double cse_8 = 14452.4975362195*PCa*cse_5*cse_7;
 
-    // Evaluate componentwise intermediates
-    double eval_intermediate(uint i, const double* x, double t) const
-    {
-
-      // No intermediates
-      throw std::runtime_error("No intermediates in the \'Winslowcse\' model.");
-      return 0.0;
+      // Monitored intermediates
+      monitored[1] = cse_4*cse_8;
+      monitored[2] = 3613.12438405488*PK*cse_4*(K_i*cse_3 - K_o)/((1.0 +
+        fmin(V*cse_8, 0)/ICahalf)*(cse_3 - 1.0));
+      monitored[3] = 5000.0*k_NaCa*(-Ca_i*cse_0*cse_6 +
+        Ca_o*(Na_i*Na_i*Na_i)*std::exp(eta*cse_1))/((Ca_o +
+        K_mCa)*((K_mNa*K_mNa*K_mNa) + cse_0)*(k_sat*cse_6 + 1.0));
+      monitored[4] = Ca_i*I_pCaMax/(Ca_i + K_mpCa);
 
     }
 
     // Set all field parameters
-    void set_field_parameters(const double* values)
+    void set_field_parameters(const double* field_params)
     {
 
       // Set field parameters
-      G_KrMax = values[0];
-      G_KsMax = values[1];
+      G_KrMax = field_params[0];
+      G_KsMax = field_params[1];
 
     }
 

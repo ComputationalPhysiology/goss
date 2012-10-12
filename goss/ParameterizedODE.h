@@ -36,14 +36,14 @@ namespace goss {
 
     // Constructor
     ParameterizedODE(uint num_states_, uint num_parameters_, uint num_field_states_, 
-		     uint num_field_parameters_, uint num_intermediates_) : 
+		     uint num_field_parameters_, uint num_monitored_) : 
       ODE(num_states_), 
       _state_names(num_states_, ""), 
       _field_state_names(num_field_states_, ""), 
       _parameter_names(num_parameters_, ""), 
       _field_parameter_names(num_field_parameters_, ""), 
       _field_state_indices(num_field_states_, 0), 
-      _intermediate_names(num_intermediates_, ""),
+      _monitored_names(num_monitored_, ""),
       _param_to_value()
     { 
       // Do nothing
@@ -64,14 +64,11 @@ namespace goss {
     inline uint num_field_parameters() const { return _field_parameter_names.size(); }
 
     // The number of field parameters
-    inline uint num_intermediates() const { return _intermediate_names.size(); }
+    inline uint num_monitored() const { return _monitored_names.size(); }
 
-    // Evaluate the intermediates
-    virtual void eval_intermediates(const double* x, double t, double* y) const = 0;
+    // Evaluate the monitored
+    virtual void eval_monitored(const double* states, double t, double* monitored) const = 0;
     
-    // Evaluate componentwise intermediates
-    virtual double eval_intermediate(uint i, const double* x, double t) const = 0;
-
     // Set all field parameters
     virtual void set_field_parameters(const double* values) = 0;
 
@@ -103,9 +100,9 @@ namespace goss {
     const std::vector<uint>& get_field_state_indices() const
     { return _field_state_indices; }
 
-    // Get intermediate names
-    const std::vector<std::string>& get_intermediate_names() const
-    { return _intermediate_names; }
+    // Get monitored names
+    const std::vector<std::string>& get_monitored_names() const
+    { return _monitored_names; }
 
   protected: 
     
@@ -127,8 +124,8 @@ namespace goss {
     // Vector with field state indices
     std::vector<uint> _field_state_indices;
 
-    // Vector with intermediate names
-    std::vector<std::string> _intermediate_names;
+    // Vector with monitored names
+    std::vector<std::string> _monitored_names;
 
     // A map between parameter name and its value
     std::map<std::string, double*> _param_to_value;
