@@ -1,8 +1,10 @@
 #ifndef VDP_h_IS_INCLUDED
 #define VDP_h_IS_INCLUDED
 
-#include <goss/LinearizedODE.h>
+#include <boost/make_shared.hpp>
 #include <stdexcept>
+
+#include <goss/LinearizedODE.h>
 
 namespace goss 
 {
@@ -16,9 +18,9 @@ namespace goss
 
     virtual ~VDP() {}
     
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new VDP(*this);
+      return boost::make_shared<VDP>(*this);
     }
 
     void eval(const double* y, double t, double* f_vals)

@@ -13,6 +13,8 @@ string(REGEX REPLACE "-Werror" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(REGEX REPLACE "-Werror" " " CMAKE_CXX_FLAGS_DEVELOPER "${CMAKE_CXX_FLAGS_DEVELOPER}")
 string(REGEX REPLACE "-pedantic" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(REGEX REPLACE "-pedantic" " " CMAKE_CXX_FLAGS_DEVELOPER "${CMAKE_CXX_FLAGS_DEVELOPER}")
+string(REGEX REPLACE "-Wshadows" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REGEX REPLACE "-Wshadows" " " CMAKE_CXX_FLAGS_DEVELOPER "${CMAKE_CXX_FLAGS_DEVELOPER}")
 
 # Set common include directoris
 include_directories(${GOSS_SOURCE_DIR} ${GOSS_SOURCE_DIR}/goss/swig ${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR})
@@ -20,18 +22,7 @@ include_directories(${GOSS_SOURCE_DIR} ${GOSS_SOURCE_DIR}/goss/swig ${PYTHON_INC
 # Set SWIG flags 
 set(CMAKE_SWIG_FLAGS
   -module ${SWIG_MODULE_NAME}
-  -shadow
-  -modern
-  -modernargs
-  -fastdispatch
-  -fvirtual
-  -nosafecstrings
-  -noproxydel
-  -fastproxy
-  -fastinit
-  -fastunpack
-  -fastquery
-  -nobuildnone
+  -O
   -Iinclude/swig
   ${GOSS_CXX_DEFINITIONS}
   )
@@ -39,11 +30,11 @@ set(CMAKE_SWIG_FLAGS
 # Get all SWIG interface files
 
 # All header files are dependencies
-file(GLOB GOSS_HEADERS RELATIVE ${CMAKE_SOURCE_DIR} ../*.h)
+file(GLOB GOSS_HEADERS ${CMAKE_SOURCE_DIR} ../*.h)
 file(GLOB GLOBAL_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.i)
 
-list(APPEND GOSS_INTERFACE ${GOSS_HEADERS})
-list(APPEND GOSS_INTERFACE ${GLOBAL_INTERFACE_FILES})
+list(APPEND GOSS_SWIG_DEPENDENCIES ${GOSS_HEADERS})
+list(APPEND GOSS_SWIG_DEPENDENCIES ${GLOBAL_INTERFACE_FILES})
 
 # This prevents swig being run unnecessarily
 set_source_files_properties(goss.i PROPERTIES SWIG_MODULE_NAME ${SWIG_MODULE_NAME})

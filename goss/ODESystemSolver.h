@@ -47,14 +47,14 @@ namespace goss
     // Step all nodes an interval of time forward
     void forward(double t, double interval);
 
-    // Return field state values
-    void get_field_states(double* values, bool tangled_storage=true) const;
+    // Return system field state values
+    void get_field_states(double* system_field_states, bool tangled_storage=true) const;
 
-    // Set field state values
-    void set_field_states(const double* values, bool tangled_storage=true);
+    // Set system field state values
+    void set_field_states(const double* system_field_states, bool tangled_storage=true);
     
-    // Set field parameter values
-    void set_field_parameters(const double* values, bool tangled_storage);
+    // Set system field parameter values
+    void set_field_parameters(const double* system_field_params, bool tangled_storage);
     
     // Use initial condition and initial values of field parameters to 
     // reset System variables

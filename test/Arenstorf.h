@@ -1,8 +1,10 @@
 #ifndef Arenstorf_h_IS_INCLUDED
 #define Arenstorf_h_IS_INCLUDED
 
-#include <goss/ODE.h>
+#include <boost/make_shared.hpp>
 #include <cmath>
+
+#include <goss/ODE.h>
 
 namespace goss {
   /*
@@ -26,9 +28,9 @@ namespace goss {
     ~Arenstorf() 
     {}
 
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new Arenstorf(*this);
+      return boost::make_shared<Arenstorf>(*this);
     }
 
     virtual void eval(const double* y, double t, double* f_vals)

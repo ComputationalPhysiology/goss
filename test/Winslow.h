@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <cmath>
+#include <boost/make_shared.hpp>
 
 #include "goss/ParameterizedODE.h"
 #include "goss/LinearizedODE.h"
@@ -555,9 +556,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new Winslow(*this);
+      return boost::make_shared<Winslow>(*this);
     }
 
     // Evaluate the monitored intermediates

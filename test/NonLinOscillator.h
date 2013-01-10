@@ -1,8 +1,10 @@
 #ifndef NonLinOscillator_h_IS_INCLUDED
 #define NonLinOscillator_h_IS_INCLUDED
 
-#include <goss/ODE.h>
+#include <boost/make_shared.hpp>
 #include <cmath>
+
+#include <goss/ODE.h>
 
 namespace goss 
 {
@@ -14,9 +16,9 @@ namespace goss
     
     NonLinOscillator() : ODE(2), omega(4*std::acos(0.0)) {}
 
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new NonLinOscillator(*this);
+      return boost::make_shared<NonLinOscillator>(*this);
     }
 
     ~NonLinOscillator() {}

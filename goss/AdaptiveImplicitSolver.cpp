@@ -267,7 +267,7 @@ void AdaptiveImplicitSolver::log_data(double dt, bool accepted)
 void AdaptiveImplicitSolver::dt_vector(DoubleVector *res)
 {
   res->n = dt_v.size();
-  res->data = new double[dt_v.size()]; 
+  res->data.reset(new double[dt_v.size()]); 
   for(uint i = 0; i < dt_v.size(); ++i)
     res->data[i] = dt_v[i];
 }
@@ -275,7 +275,7 @@ void AdaptiveImplicitSolver::dt_vector(DoubleVector *res)
 void AdaptiveImplicitSolver::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
-  res->data = new double[accept_v.size()]; 
+  res->data.reset(new double[accept_v.size()]); 
   for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
 }

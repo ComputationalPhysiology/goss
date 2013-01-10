@@ -1,6 +1,7 @@
 #ifndef Robertson_h_IS_INCLUDED
 #define Robertson_h_IS_INCLUDED
 
+#include <boost/make_shared.hpp>
 #include <goss/ODE.h>
 
 namespace goss 
@@ -20,9 +21,9 @@ namespace goss
     
     Robertson () : ODE(3) {}
 
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new Robertson(*this);
+      return boost::make_shared<Robertson>(*this);
     }
 
     ~Robertson() {}

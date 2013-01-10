@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cmath>
+#include <cstdio>
 
 #include "ImplicitEuler.h"
 

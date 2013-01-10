@@ -5,7 +5,7 @@
 
 find_package(PythonInterp)
 if (GOSS_ENABLE_PYTHON)
-  find_package(PythonLibs)
+  find_package(PythonLibs ${PYTHON_VERSION_STRING} EXACT)
 
   # If Python is found, check for NumPy and SWIG
   if (PYTHONINTERP_FOUND AND PYTHONLIBS_FOUND)

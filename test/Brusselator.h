@@ -1,6 +1,7 @@
 #ifndef Brusselator_h_IS_INCLUDED
 #define Brusselator_h_IS_INCLUDED
 
+#include <boost/make_shared.hpp>
 #include <goss/ODE.h>
 
 namespace goss 
@@ -12,9 +13,9 @@ namespace goss
     Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new Brusselator(*this);
+      return boost::make_shared<Brusselator>(*this);
     }
 
     virtual void eval(const double* state, double t, double* f_vals)

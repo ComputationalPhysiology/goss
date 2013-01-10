@@ -1,6 +1,7 @@
 #ifndef WINSLOWCSEARRAY_H_IS_INCLUDED
 #define WINSLOWCSEARRAY_H_IS_INCLUDED
 
+#include <boost/make_shared.hpp>
 #include <stdexcept>
 #include <cmath>
 
@@ -473,9 +474,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    ODE* copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return new WinslowCSEArray(*this);
+      return boost::make_shared<WinslowCSEArray>(*this);
     }
 
     // Evaluate the monitored intermediates

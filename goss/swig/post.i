@@ -16,3 +16,38 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 
+//%{
+//  // Type conversion function for state and values in ODE::eval
+//  SWIGINTERNINLINE double* _state_array_typemap(ODE* self, PyObject* input)
+//  {
+//    // Check type
+//    if (!PyArray_Check(input))
+//      SWIG_exception(SWIG_TypeError, "Numpy array expected");
+//
+//  // Get PyArrayObject
+//  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+//
+//  // Check data type
+//  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+//    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+//           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+//
+//  // Check size of passed array
+//  if ( PyArray_SIZE(xa) != self->num_states() )
+//    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+//		   "as number of states.");
+//  
+//  $1 = (double *)PyArray_DATA(xa);
+//
+//  }
+//
+//%}
+//
+//
+//%extend goss::ODE
+//{
+//  void eval(PyObject* states, double t, PyObject* values)
+//  {
+//    
+//  }
+//}

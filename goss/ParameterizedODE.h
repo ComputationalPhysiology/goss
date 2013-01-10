@@ -70,7 +70,7 @@ namespace goss {
     virtual void eval_monitored(const double* states, double t, double* monitored) const = 0;
     
     // Set all field parameters
-    virtual void set_field_parameters(const double* values) = 0;
+    virtual void set_field_parameters(const double* field_params) = 0;
 
     // Set a parameter
     void set_parameter(std::string name, double value)
@@ -96,7 +96,7 @@ namespace goss {
     const std::vector<std::string>& get_field_parameter_names() const
     { return _field_parameter_names; }
 
-    // Get field parameter names
+    // Get field state indices
     const std::vector<uint>& get_field_state_indices() const
     { return _field_state_indices; }
 

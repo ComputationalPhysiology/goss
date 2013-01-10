@@ -20,6 +20,8 @@
 #ifndef ODE_H_IS_INCLUDED
 #define ODE_H_IS_INCLUDED
 
+#include <boost/shared_ptr.hpp>
+
 #include "types.h"
 #include "DoubleVector.h"
 
@@ -51,10 +53,10 @@ namespace goss {
     virtual double eval(uint idx, const double* states, double t);
 
     // Get default initial conditions
-    virtual void get_ic(goss::DoubleVector *values) const = 0;
+    virtual void get_ic(goss::DoubleVector* values) const = 0;
 
     // Return a copy of the ODE
-    virtual ODE* copy() const = 0;
+    virtual boost::shared_ptr<ODE> copy() const = 0;
 
   protected: 
     

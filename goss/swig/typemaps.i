@@ -16,3 +16,127 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 
+%typemap(in) const double* states
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_states() )
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of states.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) double* monitored
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_monitored() )
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of monitored intermediates.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) double* field_params
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_field_parameters() )
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of field parameters.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+// Apply typemap to const
+%apply double* field_params { const double* field_params }
+
+// The typecheck
+%typecheck(SWIG_TYPECHECK_DOUBLE_ARRAY) double *
+{
+    $1 = PyArray_Check($input) ? 1 : 0;
+}
+
+%typecheck(SWIG_TYPECHECK_DOUBLE_ARRAY) const double *
+{
+    $1 = PyArray_Check($input) ? 1 : 0;
+}
+
+//-----------------------------------------------------------------------------
+// Out typemap for const std::vector<std::string>
+//-----------------------------------------------------------------------------
+%typemap(out) const std::vector<std::string>&
+{
+  int size = $1->size();
+  PyObject* ret = PyList_New(size);
+  PyObject* tmp_Py_str = 0;
+  for (int i=0; i < size; i++)
+  {
+    tmp_Py_str = PyString_FromString((*$1)[i].c_str());
+    if (PyList_SetItem(ret, i, tmp_Py_str)<0)
+    {
+      PyErr_SetString(PyExc_ValueError,"something wrong happened when copying std::string to Python");
+      return NULL;
+    }
+  }
+
+  $result = ret;
+}
+
+//-----------------------------------------------------------------------------
+// Out typemap for const std::vector<goss::uint>&
+//-----------------------------------------------------------------------------
+%typemap(out) const std::vector<goss::uint>&
+{
+  int size = $1->size();
+  PyObject* ret = PyList_New(size);
+  PyObject* tmp_Py_int = 0;
+  for (int i=0; i < size; i++)
+  {
+    tmp_Py_int = PyInt_FromLong(static_cast<long>((*$1)[i]));
+    if (PyList_SetItem(ret, i, tmp_Py_int) < 0)
+    {
+      PyErr_SetString(PyExc_ValueError, "something wrong happened when copying uint to Python");
+      return NULL;
+    }
+  }
+
+  $result = ret;
+}
+
+
+
