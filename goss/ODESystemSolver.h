@@ -54,7 +54,7 @@ namespace goss
     void set_field_states(const double* system_field_states, bool tangled_storage=true);
     
     // Set system field parameter values
-    void set_field_parameters(const double* system_field_params, bool tangled_storage);
+    void set_field_parameters(const double* system_field_params, bool tangled_storage=true);
     
     // Use initial condition and initial values of field parameters to 
     // reset System variables
@@ -64,7 +64,16 @@ namespace goss
     void set_num_threads(uint num_threads);
     
     // Get the number of threads
-    inline uint get_num_threads() const; 
+    inline uint get_num_threads() const;
+
+    // Get the ParameterizedODE
+    inline boost::shared_ptr<ParameterizedODE> ode() {return _ode;}
+    
+    // Get the ODESolver
+    inline boost::shared_ptr<ODESolver> solver() {return _solver;}
+    
+    // Get the number of nodes
+    inline uint num_nodes() {return _num_nodes;}
     
   private:
 
@@ -216,8 +225,7 @@ namespace goss
     {
       ind = tangled_storage ? node*_ode->num_field_parameters() + i :	\
 	_num_nodes*i + node;
-      _field_parameters[node*_ode->num_field_parameters() +		\
-			_ode->get_field_state_indices()[i]] = values[ind];
+      _field_parameters[node*_ode->num_field_parameters() + i] = values[ind];
     }
     
   }

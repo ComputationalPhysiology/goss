@@ -16,6 +16,72 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 
+%typemap(in) double* system_field_states
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_nodes()*arg1->ode()->num_field_states() )
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of field states times the number of nodes.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) const double* system_field_states
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_nodes()*arg1->ode()->num_field_states() )
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of field states times the number of nodes.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) const double* system_field_params
+{
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  if ( PyArray_SIZE(xa) != arg1->num_nodes()*arg1->ode()->num_field_parameters())
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as number of field parameters times the number of nodes.");
+  
+  $1 = (double *)PyArray_DATA(xa);
+}
+
 %typemap(in) const double* states
 {
   // Check type

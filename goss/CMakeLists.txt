@@ -41,3 +41,12 @@ if (ENABLE_PYTHON_EXTENSION_MODULE)
   add_subdirectory(swig)
 
 endif()
+
+#------------------------------------------------------------------------------
+# Install library
+
+install(TARGETS goss
+  RUNTIME DESTINATION ${GOSS_LIB_DIR} COMPONENT RuntimeExecutables
+  LIBRARY DESTINATION ${GOSS_LIB_DIR} COMPONENT RuntimeLibraries
+  ARCHIVE DESTINATION ${GOSS_LIB_DIR} COMPONENT Development
+  )
