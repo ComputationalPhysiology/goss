@@ -39,6 +39,7 @@ config_compiler_and_linker()  # Defined in internal_utils.cmake.
 # Where Google Test's .h files can be found.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/gtest/gtest
+  ${CMAKE_CURRENT_SOURCE_DIR}/gtest
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR})
 
