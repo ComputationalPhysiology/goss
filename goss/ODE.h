@@ -20,6 +20,7 @@
 #ifndef ODE_H_IS_INCLUDED
 #define ODE_H_IS_INCLUDED
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 #include "types.h"
@@ -27,17 +28,15 @@
 
 namespace goss {
 
+  // Base class for an ODE
   class ODE 
   {
   public:
 
-    // Base class for an ODE
-    ODE(uint num_states_) : 
-      _num_states(num_states_)
-    { 
-      // Do nothing
-    } 
+    // Constructor
+    ODE(uint num_states_);
 
+    // Destructor
     virtual ~ODE() 
     {
       // Do nothing
@@ -58,10 +57,25 @@ namespace goss {
     // Return a copy of the ODE
     virtual boost::shared_ptr<ODE> copy() const = 0;
 
+    // Compute numerical jacobian
+    virtual void compute_jacobian(double t, double* states, double* jac);
+    
+    // In place LU Factorize matrix (jacobian)
+    virtual void lu_factorize(double* mat);
+    
+    // Forward/Backward substitution of factoriesed matrix
+    virtual void forward_backward_subst(const double* mat, double* b, double* x);
+
   protected: 
     
     // ODE size
     const uint _num_states;
+
+    
+  private:
+
+    // Temporaries used to compute jacobian
+    std::vector<double> _f1, _f2;
 
   };
 }
