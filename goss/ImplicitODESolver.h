@@ -66,18 +66,17 @@ namespace goss
     void compute_jacobian(double t, double* y);
 
     // Scale a matrix
-    void mult(double fact, boost::scoped_array<boost::scoped_array<double> >& matrix);
+    void mult(double fact, boost::scoped_array<double>& matrix);
 
     // Add identity to matrix
-    void add_identity(boost::scoped_array<boost::scoped_array<double> >& matrix);
+    void add_identity(boost::scoped_array<double>& matrix);
 
     // LU Factorize matrix
-    void lu_factorize(boost::scoped_array<boost::scoped_array<double> >& matrix);
+    void lu_factorize(boost::scoped_array<double>& matrix);
 
     // Forward/Backward supstituion of factories matrix
-    void forward_backward_subst(
-            const boost::scoped_array<boost::scoped_array<double> >& mat, 
-	    double* b, double* x);
+    void forward_backward_subst(const boost::scoped_array<double>& matrix, 
+				double* b, double* x);
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
@@ -87,7 +86,7 @@ namespace goss
     virtual double norm(double* vec);
 
     // Variables used in the jacobian evaluation
-    boost::scoped_array<boost::scoped_array<double> > jac;
+    boost::scoped_array<double> jac;
     boost::scoped_array<double> f1, f2, yz;
 
     // Right hand side and solution of the linear system

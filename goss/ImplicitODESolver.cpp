@@ -59,10 +59,9 @@ ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
   f2.reset(new double[num_states()]);
 
   // Init jacobian
-  jac_size = num_states();
-  jac.reset(new boost::scoped_array<double>[num_states()]);
-  for (uint i = 0; i < num_states(); ++i)
-    jac[i].reset(new double[num_states()]);
+  jac_size = num_states()*num_states();
+  jac.reset(new double[jac_size]);
+
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::~ImplicitODESolver ()
@@ -88,10 +87,8 @@ void ImplicitODESolver::attach(boost::shared_ptr<ODE> ode)
   f2.reset(new double[num_states()]);
 
   // Init jacobian
-  jac_size = num_states();
-  jac.reset(new boost::scoped_array<double>[num_states()]);
-  for (uint i = 0; i < num_states(); ++i)
-    jac[i].reset(new double[num_states()]);
+  jac_size = num_states()*num_states();
+  jac.reset(new double[jac_size]);
 
 }
 //-----------------------------------------------------------------------------
@@ -126,30 +123,27 @@ void ImplicitODESolver::compute_jacobian(double t, double* y)
     y[i] += delta;
     _ode->eval(y, t, f2.get());
     
-    for (j=0;j<num_states();++j)
-      jac[j][i]=(f2[j]-f1[j])/delta;
+    for (j = 0; j < num_states(); ++j)
+      jac[j*num_states()+i]=(f2[j]-f1[j])/delta;
     
-    y[i]=ysafe;
+    y[i] = ysafe;
   } 
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::mult(double fact, 
-                     boost::scoped_array<boost::scoped_array<double> >& matrix)
+void ImplicitODESolver::mult(double scale, boost::scoped_array<double>& matrix)
 {
   for (uint i = 0; i < num_states(); ++i)
     for (uint j = 0; j < num_states(); ++j)
-      matrix[i][j] *= fact;
+      matrix[i*num_states()+j] *= scale;
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::add_identity(
-                     boost::scoped_array<boost::scoped_array<double> >& matrix)
+void ImplicitODESolver::add_identity(boost::scoped_array<double>& matrix)
 {
   for (uint i = 0; i < num_states(); ++i)
-    matrix[i][i] += 1;
+    matrix[i*num_states()+i] += 1;
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::lu_factorize(
-                     boost::scoped_array<boost::scoped_array<double> >& matrix)
+void ImplicitODESolver::lu_factorize(boost::scoped_array<double>& matrix)
 {
   double sum;
   int i, k, r;
@@ -162,29 +156,29 @@ void ImplicitODESolver::lu_factorize(
     {
       sum = 0.0;
       for (r = 0; r <= i-1; r++)
-        sum += matrix[i][r]*matrix[r][k];
+        sum += matrix[i*num_states()+r]*matrix[r*num_states()+k];
 
-      matrix[i][k] -=sum;
+      matrix[i*num_states()+k] -=sum;
       sum = 0.0;
 
       for (r = 0; r <= i-1; r++)
-        sum += matrix[k][r]*matrix[r][i];
+        sum += matrix[k*num_states()+r]*matrix[r*num_states()+i];
     
-      matrix[k][i] = (matrix[k][i]-sum)/matrix[i][i];
+      matrix[k*num_states()+i] = (matrix[k*num_states()+i]-sum)/matrix[i*num_states()+i];
 
     }
 
     sum = 0.0;
     for (r = 0; r <= k-1; r++)
-      sum += matrix[k][r]*matrix[r][k];
+      sum += matrix[k*num_states()+r]*matrix[r*num_states()+k];
 
-    matrix[k][k] -= sum;
+    matrix[k*num_states()+k] -= sum;
 
   }
 }
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::forward_backward_subst(
-          const boost::scoped_array<boost::scoped_array<double> >& matrix, 
+          const boost::scoped_array<double>& matrix, 
           double* b, double* x)
 {
   // solves Ax = b with forward backward substitution, provided that 
@@ -198,20 +192,21 @@ void ImplicitODESolver::forward_backward_subst(
   {
     sum = 0.0;
     for (uint j = 0; j <= i-1; ++j)
-      sum = sum + matrix[i][j]*x[j];
+      sum = sum + matrix[i*num_states()+j]*x[j];
 
     x[i] = b[i] -sum;
   }
 
-  x[num_states()-1] = x[num_states()-1]/matrix[num_states()-1][num_states()-1];
+  const uint num_minus_1 = num_states()-1;
+  x[num_minus_1] = x[num_minus_1]/matrix[num_minus_1*num_states()+num_minus_1];
 
   for (int i = num_states() - 2; i >= 0; i--)
   {
     sum = 0;
     for (uint j = i + 1; j < num_states(); ++j)
-      sum = sum +matrix[i][j]*x[j];
+      sum = sum +matrix[i*num_states()+j]*x[j];
   
-    x[i] = (x[i]-sum)/matrix[i][i];
+    x[i] = (x[i]-sum)/matrix[i*num_states()+i];
   }
 }
 //-----------------------------------------------------------------------------
