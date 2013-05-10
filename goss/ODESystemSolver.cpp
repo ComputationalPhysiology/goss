@@ -27,20 +27,20 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ODESystemSolver::ODESystemSolver(uint num_nodes, 
-				 boost::shared_ptr<ODESolver> solver, 
-				 boost::shared_ptr<ParameterizedODE> ode) :
-  _num_nodes(num_nodes), _num_threads(0), _solver(solver), 
-  _threaded_solvers(0), _ode(ode), _states(num_nodes*ode->num_states()),
-  _field_parameters(num_nodes*ode->num_field_parameters()),
-  _ldt_vec(solver->is_adaptive() ? num_nodes : 0, solver->get_internal_time_step()),
-  _is_adaptive(solver->is_adaptive()), 
-  _has_field_parameters(ode->num_field_parameters() > 0)
+ODESystemSolver::ODESystemSolver(uint num_nodes_, 
+				 boost::shared_ptr<ODESolver> solver_, 
+				 boost::shared_ptr<ParameterizedODE> ode_) :
+  _num_nodes(num_nodes_), _num_threads(0), _solver(solver_), 
+  _threaded_solvers(0), _ode(ode_), _states(num_nodes_*ode_->num_states()),
+  _field_parameters(num_nodes_*ode_->num_field_parameters()),
+  _ldt_vec(solver_->is_adaptive() ? num_nodes_ : 0, solver_->get_internal_time_step()),
+  _is_adaptive(solver_->is_adaptive()), 
+  _has_field_parameters(ode_->num_field_parameters() > 0)
 { 
   
 
   // Attach ODE to solver
-  _solver->attach(ode);
+  _solver->attach(ode_);
 
   // Reset values for the field parameters and the states
   reset_default();
