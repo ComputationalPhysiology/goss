@@ -64,7 +64,7 @@ namespace goss {
     virtual void lu_factorize(double* mat);
     
     // Forward/Backward substitution of factoriesed matrix
-    virtual void forward_backward_subst(const double* mat, double* b, double* x);
+    virtual void forward_backward_subst(const double* mat, const double* b, double* x);
 
   protected: 
     
