@@ -118,7 +118,7 @@ typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody,
 // Different list of Solvers
 typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers; 
 //typedef testing::Types<ImplicitEuler, ESDIRK4O32> ImplicitODESolvers;
-typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
+typedef testing::Types<ImplicitEuler, ThetaSolver> ImplicitODESolvers;
 typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
 typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE, 
 		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates, 
