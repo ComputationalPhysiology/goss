@@ -23,7 +23,6 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <vector>
 
 #include "ImplicitODESolver.h"
 
@@ -39,7 +38,7 @@ namespace goss
     ImplicitEuler();
 
     // Constructor
-    ImplicitEuler (boost::shared_ptr<ODE> ode, double ldt=-1.0);
+    ImplicitEuler(boost::shared_ptr<ODE> ode, double ldt=-1.0);
 
     // Constructor
     ImplicitEuler(double ldt);
@@ -51,14 +50,14 @@ namespace goss
     boost::shared_ptr<ODESolver> copy() const 
     { return boost::make_shared<ImplicitEuler>(*this); }
 
-    // Constructor
+    // Destructor
     ~ImplicitEuler ();
 
     // Attach ODE
-    virtual void attach(boost::shared_ptr<ODE> ode);
+    void attach(boost::shared_ptr<ODE> ode);
 
     // Reset ODE
-    virtual void reset();
+    void reset();
 
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
