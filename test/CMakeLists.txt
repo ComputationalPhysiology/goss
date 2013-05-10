@@ -36,6 +36,13 @@ include(cmake/internal_utils.cmake)
 
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
 
+#string(REGEX REPLACE "-ansi" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REGEX REPLACE "-pedantic" " " CMAKE_CXX_FLAGS_DEVELOPER "${CMAKE_CXX_FLAGS_DEVELOPER}")
+string(REGEX REPLACE "-pedantic" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+
+message("CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
+
 # Where Google Test's .h files can be found.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/gtest/gtest
