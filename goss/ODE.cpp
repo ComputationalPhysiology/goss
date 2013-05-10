@@ -31,7 +31,7 @@ double ODE::eval(uint idx, const double* states, double t)
 //-----------------------------------------------------------------------------
 void ODE::compute_jacobian(double t, double* states, double* jac)
 {
-  std::cout << "Calling base class ODE::compute_jacobian." << std::endl;
+  //std::cout << "Calling base class ODE::compute_jacobian." << std::endl;
   uint i, j;
   double max, ysafe, delta;
   eval(states, t, &_f1[0]);
@@ -53,7 +53,7 @@ void ODE::compute_jacobian(double t, double* states, double* jac)
 //-----------------------------------------------------------------------------
 void ODE::lu_factorize(double* mat)
 {
-  std::cout << "Calling base class ODE::lu_factorize_subst." << std::endl;
+  //std::cout << "Calling base class ODE::lu_factorize_subst." << std::endl;
   double sum;
   int i, k, r;
   int lnum_states = _num_states;
@@ -90,7 +90,7 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
 {
   // solves Ax = b with forward backward substitution, provided that 
   // A is already LU factorized
-  std::cout << "Calling base class ODE::forward_backward_subst." << std::endl;
+  //std::cout << "Calling base class ODE::forward_backward_subst." << std::endl;
 
   double sum;
 
