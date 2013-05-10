@@ -20,7 +20,7 @@
 #ifndef RKF32_h_IS_INCLUDED
 #define RKF32_h_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -93,7 +93,7 @@ namespace goss
     ulong nbytes; 
 
     // State derivatives, allocated in attach(ode)
-    boost::scoped_array<double> ki, k1, k2, k3, k4, yn, e;
+    std::vector<double> ki, k1, k2, k3, k4, yn, e;
 
     // Parameter for scalar or vector tolerance computing
     bool first;

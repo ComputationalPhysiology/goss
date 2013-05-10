@@ -31,7 +31,7 @@ ImplicitEuler::ImplicitEuler(double ldt) : ImplicitODESolver(ldt), newton_iter1(
 ImplicitEuler::ImplicitEuler(const ImplicitEuler& solver) : 
   ImplicitODESolver(solver), newton_iter1(solver.newton_iter1), 
   newton_accepted1(solver.newton_accepted1), dt_v(solver.dt_v), 
-  z1(new double[solver.num_states()]), justrefined(solver.justrefined)
+  z1(solver.num_states()), justrefined(solver.justrefined)
 {
   // Do nothing
 }
@@ -48,7 +48,7 @@ void ImplicitEuler::attach(boost::shared_ptr<ODE> ode)
   ImplicitODESolver::attach(ode);
 
   // Init memory
-  z1.reset(new double[num_states()]);
+  z1.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
@@ -90,14 +90,14 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     
     if (recompute_jacobian)
     {
-      compute_jacobian(t, y);
+      _ode->compute_jacobian(t, y, &jac[0]);
 
       // Build Euler discretization of jacobian
-      mult(-_dt, jac);
-      add_identity(jac);
+      mult(-_dt, &jac[0]);
+      add_identity(&jac[0]);
 
       // Factorize jacobian
-      lu_factorize(jac);
+      _ode->lu_factorize(&jac[0]);
       jac_comp += 1;
     }
 
@@ -106,7 +106,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
       z1[i] = 0.0;
 
     // Solve for increment
-    step_ok = newton_solve(z1.get(), _prev.get(), y, t + _dt, _dt, 1.0);    
+    step_ok = newton_solve(&z1[0], &_prev[0], y, t + _dt, _dt, 1.0);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
     dt_v.push_back(_dt);

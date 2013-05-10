@@ -41,11 +41,11 @@ RK4::RK4(boost::shared_ptr<ODE> ode, double ldt) :
   attach(ode);
 }
 //-----------------------------------------------------------------------------
-RK4::RK4(const RK4& solver) : ODESolver(solver), k1(new double[solver.num_states()]),
-			      k2(new double[solver.num_states()]),
-			      k3(new double[solver.num_states()]),
-			      k4(new double[solver.num_states()]),
-			      tmp(new double[solver.num_states()])
+RK4::RK4(const RK4& solver) : ODESolver(solver), k1(solver.num_states()),
+			      k2(solver.num_states()),
+			      k3(solver.num_states()),
+			      k4(solver.num_states()),
+			      tmp(solver.num_states())
 {
   // Do nothing
 }
@@ -61,11 +61,11 @@ void RK4::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using base class
   ODESolver::attach(ode);
   
-  k1.reset(new double[num_states()]);
-  k2.reset(new double[num_states()]);
-  k3.reset(new double[num_states()]);
-  k4.reset(new double[num_states()]);
-  tmp.reset(new double[num_states()]);
+  k1.resize(num_states());
+  k2.resize(num_states());
+  k3.resize(num_states());
+  k4.resize(num_states());
+  tmp.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
@@ -83,18 +83,18 @@ void RK4::forward(double* y, double t, double interval)
   for (ulong j = 0; j < nsteps; ++j) 
   {
     // Evaluate rhs and calculate intermediate derivatives
-    _ode->eval(y, lt, k1.get());
+    _ode->eval(y, lt, &k1[0]);
 
     // Explicit Euler step
-    axpy(tmp.get(), y, 0.5*dt, k1.get());
+    axpy(&tmp[0], y, 0.5*dt, &k1[0]);
 
-    _ode->eval(tmp.get(), lt + 0.5*dt, k2.get());
-    axpy(tmp.get(), y, 0.5*dt, k2.get());
+    _ode->eval(&tmp[0], lt + 0.5*dt, &k2[0]);
+    axpy(&tmp[0], y, 0.5*dt, &k2[0]);
 
-    _ode->eval(tmp.get(), lt + 0.5*dt, k3.get());
-    axpy(tmp.get(), y, dt, k3.get());
+    _ode->eval(&tmp[0], lt + 0.5*dt, &k3[0]);
+    axpy(&tmp[0], y, dt, &k3[0]);
     
-    _ode->eval(tmp.get(), lt + dt, k4.get());
+    _ode->eval(&tmp[0], lt + dt, &k4[0]);
 
     for (uint i = 0; i < num_states(); ++i)
       y[i] += dt*(k1[i] + 2.0*k2[i] + 2.0*k3[i] + k4[i])/6.0;

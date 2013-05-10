@@ -120,10 +120,10 @@ RKF32::RKF32(const RKF32& solver)
     c2(1.0/2.0), 
     c3(3.0/4.0), 
     nbytes(solver.num_states()*sizeof(double)),
-    ki(new double[solver.num_states()]), k1(new double[solver.num_states()]), 
-    k2(new double[solver.num_states()]), k3(new double[solver.num_states()]), 
-    k4(new double[solver.num_states()]), yn(new double[solver.num_states()]), 
-    e(new double[solver.num_states()])
+    ki(solver.num_states()), k1(solver.num_states()), 
+    k2(solver.num_states()), k3(solver.num_states()), 
+    k4(solver.num_states()), yn(solver.num_states()), 
+    e(solver.num_states())
 { 
   // Do nothing
 }
@@ -141,13 +141,13 @@ void RKF32::attach(boost::shared_ptr<ODE> ode)
   ODESolver::attach(ode);
 
   // Initilize RK increments
-  ki.reset(new double[num_states()]); 
-  k1.reset(new double[num_states()]);
-  k2.reset(new double[num_states()]);
-  k3.reset(new double[num_states()]);
-  k4.reset(new double[num_states()]);
-  yn.reset(new double[num_states()]);
-  e .reset(new double[num_states()]);
+  ki.resize(num_states()); 
+  k1.resize(num_states());
+  k2.resize(num_states());
+  k3.resize(num_states());
+  k4.resize(num_states());
+  yn.resize(num_states());
+  e.resize(num_states());
 
   nbytes  = num_states()*sizeof(double);
 }
@@ -176,8 +176,8 @@ void RKF32::forward(double* y, double t, double interval)
   double* ret_ptr = y;
   double* swap, *yn0;
 
-  // Use the raw pointer instead of the scoped_array, enabling pointer swap
-  yn0 = yn.get();
+  // Use the raw pointer enabling pointer swap
+  yn0 = &yn[0];
 
   // End of interval
   const double t_end = t + interval;
@@ -190,14 +190,14 @@ void RKF32::forward(double* y, double t, double interval)
   // FIXME: first i always true
   if (first) 
   {
-    _ode->eval(y, t, k1.get());
+    _ode->eval(y, t, &k1[0]);
     nfevals += 1;
   }
 
   // Set initial time step
   if (_ldt < 0) 
   {
-    _dt = dtinit(t, y, yn0, k1.get(), k2.get(), _iord);
+    _dt = dtinit(t, y, yn0, &k1[0], &k2[0], _iord);
     nfevals += 1;
   } 
   else 
@@ -216,12 +216,12 @@ void RKF32::forward(double* y, double t, double interval)
     for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a21*k1[i];
 
-    _ode->eval(ki.get(), t + c2*_dt, k2.get());
+    _ode->eval(&ki[0], t + c2*_dt, &k2[0]);
     
     for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a32*k2[i];
 
-    _ode->eval(ki.get(), t + c3*_dt, k3.get());
+    _ode->eval(&ki[0], t + c3*_dt, &k3[0]);
 
     // We assemble the new y
     for (i = 0; i < num_states(); ++i)
@@ -229,7 +229,7 @@ void RKF32::forward(double* y, double t, double interval)
     //yn[i] = y[i] + _dt*(bh1*k1[i]+bh2*k2[i]+bh3*k3[i]+bh4*k4[i]);
 
     // We compute the first quadrature node for the next iteration (FSAL)
-    _ode->eval(yn0, t + _dt, k4.get());
+    _ode->eval(yn0, t + _dt, &k4[0]);
     nfevals += 3;
 
     // We compute the error vector
@@ -237,7 +237,7 @@ void RKF32::forward(double* y, double t, double interval)
       e[i] = _dt*(d1*k1[i] + d2*k2[i] + d3*k3[i] + d4*k4[i]);
 
     // Compute new time step and check if it is rejected
-    new_time_step(y, yn0, e.get(), t_end);
+    new_time_step(y, yn0, &e[0], t_end);
 
 #ifdef DEBUG
     log_data(_dt, step_accepted);

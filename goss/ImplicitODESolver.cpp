@@ -27,7 +27,7 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
-  : ODESolver(), jac(0), f1(0), f2(0), yz(0), _b(0), dz(0), _prev(0),
+  : ODESolver(), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
     _newton_tol(1.e-5), eta(1e-10), kappa(0.1), stages(0), newtonits(0), 
     maxits(10), rejects(0), jac_comp(0), min_dt(0.0), recompute_jacobian(true)
 {
@@ -35,7 +35,7 @@ ImplicitODESolver::ImplicitODESolver()
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(double ldt)
-  : ODESolver(ldt), jac(0), f1(0), f2(0), yz(0), _b(0), dz(0), _prev(0),
+  : ODESolver(ldt), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
     _newton_tol(1.e-5), eta(1e-10), kappa(0.1), stages(0), newtonits(0), 
     maxits(10), rejects(0), jac_comp(0), min_dt(0.0), recompute_jacobian(true)
 {
@@ -43,24 +43,24 @@ ImplicitODESolver::ImplicitODESolver(double ldt)
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
-  : ODESolver(solver), jac(0), f1(0), f2(0), yz(0), _b(0), dz(0), _prev(0),
+  : ODESolver(solver), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
     _newton_tol(solver._newton_tol), eta(solver.eta), kappa(solver.kappa), 
     stages(solver.stages), newtonits(solver.newtonits), 
     maxits(solver.maxits), rejects(solver.rejects), jac_comp(solver.jac_comp), 
     min_dt(solver.min_dt), recompute_jacobian(solver.recompute_jacobian)
 {
   // Initialize memory
-  _b.reset(new double[num_states()]);
-  dz.reset(new double[num_states()]);
-  _prev.reset(new double[num_states()]);
+  _b.resize(num_states());
+  _dz.resize(num_states());
+  _prev.resize(num_states());
 
-  yz.reset(new double[num_states()]);
-  f1.reset(new double[num_states()]);
-  f2.reset(new double[num_states()]);
+  _yz.resize(num_states());
+  _f1.resize(num_states());
+  _f2.resize(num_states());
 
   // Init jacobian
   jac_size = num_states()*num_states();
-  jac.reset(new double[jac_size]);
+  jac.resize(jac_size);
 
 }
 //-----------------------------------------------------------------------------
@@ -78,17 +78,17 @@ void ImplicitODESolver::attach(boost::shared_ptr<ODE> ode)
   ODESolver::attach(ode);
 
   // Initialize memory
-  _b.reset(new double[num_states()]);
-  dz.reset(new double[num_states()]);
-  _prev.reset(new double[num_states()]);
+  _b.resize(num_states());
+  _dz.resize(num_states());
+  _prev.resize(num_states());
 
-  yz.reset(new double[num_states()]);
-  f1.reset(new double[num_states()]);
-  f2.reset(new double[num_states()]);
+  _yz.resize(num_states());
+  _f1.resize(num_states());
+  _f2.resize(num_states());
 
   // Init jacobian
   jac_size = num_states()*num_states();
-  jac.reset(new double[jac_size]);
+  jac.resize(jac_size);
 
 }
 //-----------------------------------------------------------------------------
@@ -108,106 +108,17 @@ void ImplicitODESolver::reset()
 }
 
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::compute_jacobian(double t, double* y)
-{
-  //std::cout << "Computing Jacobian" << std::endl;
-  uint i, j;
-  double max, ysafe, delta;
-  _ode->eval(y, t, f1.get());
-  
-  for (i = 0; i < num_states(); ++i)
-  {
-    ysafe = y[i];
-    max = 1e-5 > std::fabs(ysafe) ? 1e-5 : std::fabs(ysafe);
-    delta = std::sqrt(1e-15*max);
-    y[i] += delta;
-    _ode->eval(y, t, f2.get());
-    
-    for (j = 0; j < num_states(); ++j)
-      jac[j*num_states()+i]=(f2[j]-f1[j])/delta;
-    
-    y[i] = ysafe;
-  } 
-}
-//-----------------------------------------------------------------------------
-void ImplicitODESolver::mult(double scale, boost::scoped_array<double>& matrix)
+void ImplicitODESolver::mult(double scale, double* mat)
 {
   for (uint i = 0; i < num_states(); ++i)
     for (uint j = 0; j < num_states(); ++j)
-      matrix[i*num_states()+j] *= scale;
+      mat[i*num_states()+j] *= scale;
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::add_identity(boost::scoped_array<double>& matrix)
+void ImplicitODESolver::add_identity(double* mat)
 {
   for (uint i = 0; i < num_states(); ++i)
-    matrix[i*num_states()+i] += 1;
-}
-//-----------------------------------------------------------------------------
-void ImplicitODESolver::lu_factorize(boost::scoped_array<double>& matrix)
-{
-  double sum;
-  int i, k, r;
-  const int lnum_states = num_states();
-
-  for (k = 1; k < lnum_states; k++)
-  {
-
-    for (i = 0; i <= k-1; ++i)
-    {
-      sum = 0.0;
-      for (r = 0; r <= i-1; r++)
-        sum += matrix[i*num_states()+r]*matrix[r*num_states()+k];
-
-      matrix[i*num_states()+k] -=sum;
-      sum = 0.0;
-
-      for (r = 0; r <= i-1; r++)
-        sum += matrix[k*num_states()+r]*matrix[r*num_states()+i];
-    
-      matrix[k*num_states()+i] = (matrix[k*num_states()+i]-sum)/matrix[i*num_states()+i];
-
-    }
-
-    sum = 0.0;
-    for (r = 0; r <= k-1; r++)
-      sum += matrix[k*num_states()+r]*matrix[r*num_states()+k];
-
-    matrix[k*num_states()+k] -= sum;
-
-  }
-}
-//-----------------------------------------------------------------------------
-void ImplicitODESolver::forward_backward_subst(
-          const boost::scoped_array<double>& matrix, 
-          double* b, double* x)
-{
-  // solves Ax = b with forward backward substitution, provided that 
-  // A is already L1U factorized
-
-  double sum;
-
-  x[0] = b[0];
-
-  for (uint i = 1; i < num_states(); ++i)
-  {
-    sum = 0.0;
-    for (uint j = 0; j <= i-1; ++j)
-      sum = sum + matrix[i*num_states()+j]*x[j];
-
-    x[i] = b[i] -sum;
-  }
-
-  const uint num_minus_1 = num_states()-1;
-  x[num_minus_1] = x[num_minus_1]/matrix[num_minus_1*num_states()+num_minus_1];
-
-  for (int i = num_states() - 2; i >= 0; i--)
-  {
-    sum = 0;
-    for (uint j = i + 1; j < num_states(); ++j)
-      sum = sum +matrix[i*num_states()+j]*x[j];
-  
-    x[i] = (x[i]-sum)/matrix[i*num_states()+i];
-  }
+    mat[i*num_states()+i] += 1;
 }
 //-----------------------------------------------------------------------------
 bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double t,
@@ -224,18 +135,18 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 
     // Compute solution 
     for (i = 0; i < num_states(); ++i)
-      yz[i] = y0[i] + z[i];
+      _yz[i] = y0[i] + z[i];
 
     // Evaluate ODE using computed solution
-    _ode->eval(yz.get(), t, f1.get());
+    _ode->eval(&_yz[0], t, &_f1[0]);
     
     // Build rhs for linear solve
     for (i = 0; i < num_states(); ++i)
-      _b[i] = -z[i] + dt*(prev[i] + alpha*f1[i]);
+      _b[i] = -z[i] + dt*(prev[i] + alpha*_f1[i]);
 
     // Linear solve on factorized jacobian
-    forward_backward_subst(jac, _b.get(), dz.get());
-    z_norm = norm(dz.get());
+    _ode->forward_backward_subst(&jac[0], &_b[0], &_dz[0]);
+    z_norm = norm(&_dz[0]);
 
     // 2nd time around
     if (newtonits > 0) 
@@ -301,7 +212,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     
     // Update solution
     for (i = 0; i <num_states(); ++i)
-      z[i] += dz[i];
+      z[i] += _dz[i];
 
     prev_norm = z_norm;
     newtonits++;

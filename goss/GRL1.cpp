@@ -34,15 +34,15 @@ GRL1::GRL1() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0),
 }
 //-----------------------------------------------------------------------------
 GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
-					 linear_terms(0), delta(1.0e-8)
+                                         linear_terms(0), delta(1.0e-8)
 {
   attach(ode);
 }
 //-----------------------------------------------------------------------------
 GRL1::GRL1(const GRL1& solver) : ODESolver(solver), _lode(0), 
-				 a(new double[solver.num_states()]), 
-				 b(new double[solver.num_states()]), 
-				 linear_terms(new uint[solver.num_states()]),
+                                 a(solver.num_states()), 
+                                 b(solver.num_states(), 0.0), 
+                                 linear_terms(solver.num_states()),
 				 delta(solver.delta)
 {
   // Store Linearized ODE
@@ -50,7 +50,7 @@ GRL1::GRL1(const GRL1& solver) : ODESolver(solver), _lode(0),
   assert(_lode);
 
   // Get what terms are linear
-  _lode->linear_terms(linear_terms.get());
+  _lode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
@@ -69,13 +69,12 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
   assert(_lode);
   
   // Initalize memory
-  a.reset(new double[num_states()]);
-  b.reset(new double[num_states()]);
-  linear_terms.reset(new uint[num_states()]);
-  std::fill(b.get(), b.get()+num_states(), static_cast<double>(0));
+  a.resize(num_states());
+  b.resize(num_states(), 0.0);
+  linear_terms.resize(num_states());
   
   // Get what terms are linear
-  _lode->linear_terms(linear_terms.get());
+  _lode->linear_terms(&linear_terms[0]);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,10 +87,10 @@ void GRL1::forward(double* y, double t, double interval)
   const double dt = interval;
 
   // Evaluate full right hand side
-  _lode->eval(y, t, a.get());              
+  _lode->eval(y, t, &a[0]);              
 
   // Exact derivatives for linear terms 
-  _lode->linear_derivatives(y, t, b.get());
+  _lode->linear_derivatives(y, t, &b[0]);
 
   for (uint i = 0; i < num_states(); ++i) 
   { 
@@ -111,3 +110,4 @@ void GRL1::forward(double* y, double t, double interval)
     y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) : a[i]*dt;
 
 }
+//-----------------------------------------------------------------------------

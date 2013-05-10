@@ -127,9 +127,9 @@ ESDIRK4O32::ESDIRK4O32(const ESDIRK4O32& solver)
     c2(2.0*gamma), 
     c3(1.0), 
     c4(1.0),
-    z1(new double[solver.num_states()]), z2(new double[solver.num_states()]), 
-    z3(new double[solver.num_states()]), z4(new double[solver.num_states()]), 
-    yn(new double[solver.num_states()]), yh(new double[solver.num_states()])
+    z1(solver.num_states()), z2(solver.num_states()), 
+    z3(solver.num_states()), z4(solver.num_states()), 
+    yn(solver.num_states()), yh(solver.num_states())
 {
   _iord = 3;
 }
@@ -145,12 +145,12 @@ void  ESDIRK4O32::attach(boost::shared_ptr<ODE> ode)
   // Use base classes to actually attach ode
   ImplicitODESolver::attach(ode);
 
-  z1.reset(new double[num_states()]);
-  z2.reset(new double[num_states()]);
-  z3.reset(new double[num_states()]);
-  z4.reset(new double[num_states()]);
-  yn.reset(new double[num_states()]);
-  yh.reset(new double[num_states()]);
+  z1.resize(num_states());
+  z2.resize(num_states());
+  z3.resize(num_states());
+  z4.resize(num_states());
+  yn.resize(num_states());
+  yh.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
@@ -176,8 +176,8 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   double* ret_ptr = y;
   double* swap, *yn0;
 
-  // Use the raw pointer instead of the scoped_array, enabling pointer swap
-  yn0 = yn.get();
+  // Use the raw pointer enabling pointer swap
+  yn0 = &yn[0];
 
   //if (ldt>0) 
   //{
@@ -194,8 +194,8 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
   if (_dt < 0)
   {
-    _ode->eval(y, _t, z1.get());
-    _dt = dtinit(_t, y, yn0, z1.get(), z2.get(), _iord);
+    _ode->eval(y, _t, &z1[0]);
+    _dt = dtinit(_t, y, yn0, &z1[0], &z2[0], _iord);
     nfevals += 2;
   }
 
@@ -210,20 +210,20 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     //Jacobian recomputed once for each local step
     if (recompute_jacobian)
     {
-      compute_jacobian(t, y);
+      _ode->compute_jacobian(t, y, &jac[0]);
       nfevals += num_states();
 
       // compute_jacobian(t + c2*dt, y);
-      mult(-_dt*a22, jac);
-      add_identity(jac);
-      lu_factorize(jac);
+      mult(-_dt*a22, &jac[0]);
+      add_identity(&jac[0]);
+      _ode->lu_factorize(&jac[0]);
       jac_comp += 1;
       recompute_jacobian = false;
       //printf("Recomputed jac at t=%1.4e with dt=%1.4e\n",t,dt);
     }
 
     // Computes the first node explicitly
-    _ode->eval(y, _t, z1.get());
+    _ode->eval(y, _t, &z1[0]);
     nfevals += 1;
 
     // printf("z2=");
@@ -235,7 +235,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       //printf("%1.2e, ",z2[i]);
     }
 
-    step_ok = newton_solve(z2.get(), _prev.get(), y, _t + c2*_dt, _dt, a22);    
+    step_ok = newton_solve(&z2[0], &_prev[0], &y[0], _t + c2*_dt, _dt, a22);    
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -255,7 +255,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       z3[i] = z2[i] + y[i];
     
     //printf(" before eval\n");
-    _ode->eval(z2.get(), _t + c2*_dt, f1.get());
+    _ode->eval(&z2[0], _t + c2*_dt, &_f1[0]);
     nfevals += 1;
 
     // Computes the third node, implicitly
@@ -264,12 +264,12 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < num_states(); ++i)
     {
       //printf("%1.2e, ",f1[i]);
-      z2[i] = f1[i];
+      z2[i] = _f1[i];
       _prev[i] = a31*z1[i] + a32*z2[i];
     }
     //printf(" after eval\n");
 
-    step_ok = newton_solve(z3.get(), _prev.get(), y, _t + c3*_dt, _dt, a33);
+    step_ok = newton_solve(&z3[0], &_prev[0], y, _t + c3*_dt, _dt, a33);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -287,14 +287,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < num_states(); ++i)
       z3[i] += y[i];
 
-    _ode->eval(z3.get(), _t + c3*_dt, f1.get());
+    _ode->eval(&z3[0], _t + c3*_dt, &_f1[0]);
     nfevals += 1;
 
     // Computes the error estimate
     // Use pointer swap instead of copy!!
     for (i = 0; i < num_states(); ++i)
     {
-      z3[i] = f1[i];
+      z3[i] = _f1[i];
       yh[i] = y[i] + _dt*(bh1*z1[i] + bh2*z2[i] + bh3*z3[i]);
     }
 
@@ -305,7 +305,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       _prev[i] = a41*z1[i] + a42*z2[i] + a43*z3[i];
     }
 
-    step_ok = newton_solve(z4.get(), _prev.get(), y, _t + c4*_dt, _dt, a44);
+    step_ok = newton_solve(&z4[0], &_prev[0], y, _t + c4*_dt, _dt, a44);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
@@ -323,18 +323,18 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     for (i = 0; i < num_states(); ++i)
       z4[i] += y[i];
     
-    _ode->eval(z4.get(), _t + c4*_dt, f1.get());
+    _ode->eval(&z4[0], _t + c4*_dt, &_f1[0]);
     nfevals += 1;
 
     for (i = 0; i < num_states(); ++i)
     {
       //printf("i=%d, dt=%1.4e, b1=%1.4e, b2=%1.4e, b3=%1.4e, b4=%1.4e\n",i,dt,b1,b2,b3,b4);
       //printf("yn=%1.4e, y=%1.4e, z1=%1.4e, z2=%1.4e, z3=%1.4e, z4=%1.4e\n",yn[i],y[i],z1[i] ,z2[i] ,z3[i] ,f1[i]); 
-      yn[i] = y[i] + _dt*(b1*z1[i] + b2*z2[i] + b3*z3[i] + b4*f1[i]);
+      yn[i] = y[i] + _dt*(b1*z1[i] + b2*z2[i] + b3*z3[i] + b4*_f1[i]);
       yh[i] -= yn[i];//use this as the error vector
     }
 
-    new_time_step(y, yn0, yh.get(), t_end);//,blog);
+    new_time_step(y, yn0, &yh[0], t_end);//,blog);
     //recompute_jacobian=true;
 
     //done=blog[1];

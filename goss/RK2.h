@@ -20,7 +20,7 @@
 #ifndef RK2_H_IS_INCLUDED
 #define RK2_H_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -63,7 +63,7 @@ namespace goss
   protected: 
 
     // State derivative, allocated in attach(ode)
-    boost::scoped_array<double> k1, tmp;
+    std::vector<double> k1, tmp;
     
     // Perform a weighted addition of y and z
     inline void axpy(double* x, const double* y, double a, const double* z);

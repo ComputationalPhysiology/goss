@@ -34,25 +34,25 @@ GRL2::GRL2() : ODESolver(0.0, 0.0), _lode(0), y0(0), a(0), b(0), linear_terms(0)
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), _lode(0), 
-					 y0(0), a(0), b(0), linear_terms(0), 
-					 delta(1.0e-8), nbytes(0)
+	                y0(0), a(0), b(0), linear_terms(0), 
+	                delta(1.0e-8), nbytes(0)
 {
   attach(ode);
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(const GRL2& solver) : ODESolver(solver), _lode(0), 
-				 y0(new double[solver.num_states()]), 
-				 a(new double[solver.num_states()]), 
-				 b(new double[solver.num_states()]), 
-				 linear_terms(new uint[solver.num_states()]),
-				 delta(solver.delta)
+                                 y0(solver.num_states()), 
+                                 a(solver.num_states()), 
+                                 b(solver.num_states(), 0.0), 
+                                 linear_terms(solver.num_states()),
+                                 delta(solver.delta)
 {
   // Store Linearized ODE
   _lode = dynamic_cast<LinearizedODE*>(_ode.get());
   assert(_lode);
 
   // Get what terms are linear
-  _lode->linear_terms(linear_terms.get());
+  _lode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()
@@ -70,19 +70,16 @@ void GRL2::attach(boost::shared_ptr<ODE> ode)
   assert(_lode);
   
   // Initalize memory
-  y0.reset(new double[num_states()]);
-  a.reset(new double[num_states()]);
-  b.reset(new double[num_states()]);
-  linear_terms.reset(new uint[num_states()]);
-  std::fill(b.get(), b.get()+num_states(), static_cast<double>(0));
+  y0.resize(num_states(), 0.0);
+  a.resize(num_states(), 0.0);
+  b.resize(num_states(), 0.0);
+  linear_terms.resize(num_states());
   
   // Get what terms are linear
-  _lode->linear_terms(linear_terms.get());
+  _lode->linear_terms(&linear_terms[0]);
   
-  nbytes  = num_states()*sizeof(double);
-  std::fill(a.get(), a.get() + num_states(), 0.0);
-  std::fill(b.get(), b.get() + num_states(), 0.0);
-  std::fill(y0.get(), y0.get() + num_states(), 0.0);
+  nbytes = num_states()*sizeof(double);
+
 }
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double interval)
@@ -94,15 +91,15 @@ void GRL2::forward(double* y, double t, double interval)
   const double dt = interval;
 
   // Copy start conditions
-  std::memcpy(y0.get(), y, nbytes); 
+  std::memcpy(&y0[0], y, nbytes); 
 
   // First step
 
   // Evaluate full right hand side
-  _lode->eval(y, t, a.get());
+  _lode->eval(y, t, &a[0]);
 
   // Exact derivatives for linear terms
-  _lode->linear_derivatives(y, t, b.get());  
+  _lode->linear_derivatives(y, t, &b[0]);  
   
   for (uint i = 0; i < num_states(); ++i) 
   { 
@@ -111,7 +108,7 @@ void GRL2::forward(double* y, double t, double interval)
     {
       y[i] += delta; 
       b[i] = (_ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
-      y[i] -= delta;				        // Restore state i
+      y[i] -= delta;                       // Restore state i
     }
   }
 
@@ -125,7 +122,7 @@ void GRL2::forward(double* y, double t, double interval)
   //_lode->linear_derivatives(y, t, b);
 
   // Local variable to store comp i
-  double yi;					        
+  double yi;       
   for (uint i = 0; i < num_states(); ++i) 
   {        
     // Store original value of comp i

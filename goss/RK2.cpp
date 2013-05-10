@@ -40,8 +40,8 @@ RK2::RK2(boost::shared_ptr<ODE> ode, double ldt) : ODESolver(ldt), k1(0), tmp(0)
   attach(ode);
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(const RK2& solver) : ODESolver(solver), k1(new double[solver.num_states()]),
-			      tmp(new double[solver.num_states()])
+RK2::RK2(const RK2& solver) : ODESolver(solver), k1(solver.num_states()),
+			      tmp(solver.num_states())
 {
   // Do nothing
 }
@@ -56,8 +56,8 @@ void RK2::attach(boost::shared_ptr<ODE> ode)
   
   ODESolver::attach(ode);
 
-  k1.reset(new double[num_states()]);
-  tmp.reset(new double[num_states()]);
+  k1.resize(num_states());
+  tmp.resize(num_states());
 }
 //-----------------------------------------------------------------------------
 void RK2::forward(double* y, double t, double interval) 
@@ -74,13 +74,13 @@ void RK2::forward(double* y, double t, double interval)
   for (ulong j = 0; j < nsteps; ++j) 
   {
     // Initial eval
-    _ode->eval(y, lt, k1.get());
+    _ode->eval(y, lt, &k1[0]);
 
     // Explicit Euler step to find the midpoint solution
-    axpy(tmp.get(), y, 0.5*dt, k1.get());
+    axpy(&tmp[0], y, 0.5*dt, &k1[0]);
   
     // Evaluate derivative at midpoint
-    _ode->eval(tmp.get(), lt+0.5*dt, k1.get());
+    _ode->eval(&tmp[0], lt+0.5*dt, &k1[0]);
 
     // Use midpoint derivative for explicit Euler step
     for (uint i = 0; i < num_states(); ++i)

@@ -20,7 +20,7 @@
 #ifndef GRL1_H_IS_INCLUDED
 #define GRL1_H_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -65,10 +65,10 @@ namespace goss {
     LinearizedODE* _lode;
 
     // Pointers to intermediate values used while stepping
-    boost::scoped_array<double> a;
-    boost::scoped_array<double> b;
+    std::vector<double> a;
+    std::vector<double> b;
 
-    boost::scoped_array<uint> linear_terms;
+    std::vector<uint> linear_terms;
     const double delta;
 
   };

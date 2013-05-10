@@ -20,7 +20,7 @@
 #ifndef ESDIRK4O32_h_IS_INCLUDED
 #define ESDIRK4O32_h_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -82,7 +82,7 @@ namespace goss
     double c2, c3, c4;
 
     // State derivatives, allocated in attach(ode)
-    boost::scoped_array<double> z1, z2, z3, z4, yn, yh; 
+    std::vector<double> z1, z2, z3, z4, yn, yh; 
 
   };
 

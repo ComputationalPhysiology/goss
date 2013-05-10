@@ -20,7 +20,7 @@
 #ifndef ExplicitEuler_h_IS_INCLUDED
 #define ExplicitEuler_h_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <cstdlib>
@@ -64,7 +64,7 @@ namespace goss
   protected:
 
     // State derivative, allocated in attach(ode)
-    boost::scoped_array<double> _dFdt; 
+    std::vector<double> _dFdt; 
     
   };
   

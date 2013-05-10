@@ -20,7 +20,7 @@
 #ifndef ImplicitEuler_h_IS_INCLUDED
 #define ImplicitEuler_h_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <vector>
@@ -69,7 +69,7 @@ namespace goss
 
   protected:
 
-    boost::scoped_array<double> z1;
+    std::vector<double> z1;
     bool justrefined;
 
   };

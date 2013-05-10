@@ -42,7 +42,7 @@ ExplicitEuler::ExplicitEuler(boost::shared_ptr<ODE> ode, double ldt) :
 } 
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler(const ExplicitEuler& solver) : 
-  ODESolver(solver), _dFdt(new double[solver.num_states()])
+  ODESolver(solver), _dFdt(solver.num_states())
 { 
   // Do nothing
 } 
@@ -58,7 +58,7 @@ void ExplicitEuler::attach(boost::shared_ptr<ODE> ode)
   ODESolver::attach(ode);
 
   // Create memory for derivative evaluation
-  _dFdt.reset(new double[num_states()]);
+  _dFdt.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void ExplicitEuler::forward(double* y, double t, double interval)
   for (ulong step = 0; step < nsteps; ++step)
   {
     // Evaluate rhs
-    _ode->eval(y, lt, _dFdt.get());
+    _ode->eval(y, lt, &_dFdt[0]);
 
     // Update states
     for (uint i = 0; i < num_states(); ++i)
@@ -84,7 +84,6 @@ void ExplicitEuler::forward(double* y, double t, double interval)
 
     // Increase time
     lt += dt;
-
   }
-
 }
+//-----------------------------------------------------------------------------

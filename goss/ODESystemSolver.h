@@ -158,7 +158,7 @@ namespace goss
     
   }
   //-----------------------------------------------------------------------------
-  void ODESystemSolver::_forward_node(ODESolver& solver, uint node, double t, 
+  void ODESystemSolver::_forward_node(ODESolver& solver_, uint node, double t, 
 				      double interval)
   {
     
@@ -168,20 +168,20 @@ namespace goss
       
       // Get local ode. Nead to grab ode from solver so it also works in a 
       // threader version
-      ParameterizedODE& ode = dynamic_cast<ParameterizedODE&>(*solver.get_ode());
-      ode.set_field_parameters(&_field_parameters[node*ode.num_field_parameters()]);
+      ParameterizedODE& ode_ = dynamic_cast<ParameterizedODE&>(*solver_.get_ode());
+      ode_.set_field_parameters(&_field_parameters[node*ode_.num_field_parameters()]);
     }
     
     // Set internal time step if adaptive
     if (_is_adaptive)
-      solver.set_internal_time_step(_ldt_vec[node]);
+      solver_.set_internal_time_step(_ldt_vec[node]);
     
-    // Forward solver
-    solver.forward(&_states[node*_ode->num_states()], t, interval);
+    // Forward solver_
+    solver_.forward(&_states[node*_ode->num_states()], t, interval);
     
     // Get internal time step if adaptive
     if (_is_adaptive)
-      _ldt_vec[node] = solver.get_internal_time_step();
+      _ldt_vec[node] = solver_.get_internal_time_step();
     
   }
   //-----------------------------------------------------------------------------
