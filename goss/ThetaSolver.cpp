@@ -7,6 +7,11 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
+ThetaSolver::ThetaSolver() : ImplicitODESolver(), theta(0.5), 
+			     newton_iter1(0), newton_accepted1(0), 
+			     dt_v(0), z1(0), ft1(0), justrefined(false)
+{}
+//-----------------------------------------------------------------------------
 ThetaSolver:: ThetaSolver (boost::shared_ptr<ODE> ode, double ldt) 
   : ImplicitODESolver(ldt), theta(0.5), newton_iter1(0), newton_accepted1(0), 
     dt_v(0), z1(0), ft1(0), justrefined(false)
@@ -33,6 +38,7 @@ void ThetaSolver::attach(boost::shared_ptr<ODE> ode)
 void ThetaSolver::reset()
 {
   
+  theta = 0.5;
   justrefined = false;
   num_tsteps = 0;
 
@@ -47,6 +53,10 @@ void ThetaSolver::reset()
 void ThetaSolver::forward(double* y, double t, double interval)
 {
 
+  assert(_ode);
+
+  //std::cout << "theta: " << theta << " t: " << t << " dt: " << interval << " dt: " << _dt << " ldt: " << _ldt << " V: " << y[0] << std::endl;
+  
   uint i;
   double t_end = t + interval;
   _dt = _ldt > 0 ? _ldt : interval;
@@ -100,10 +110,9 @@ void ThetaSolver::forward(double* y, double t, double interval)
     
       t+=_dt;
       
-      if (std::fabs(t-t_end)<eps)
+      if (std::fabs(t-t_end) < eps)
       {
         done = true;
-        //printf("Done at t=%1.4e\n",t);
       }
       else
       {
@@ -118,7 +127,7 @@ void ThetaSolver::forward(double* y, double t, double interval)
         
 	  double tmp = 2.0*_dt;
           //if (fabs(ldt-tmp)<eps)
-          if (tmp>=_ldt)
+          if (tmp >= _ldt)
             _dt = _ldt;
           else
             _dt = tmp;

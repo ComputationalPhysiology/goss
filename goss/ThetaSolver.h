@@ -34,7 +34,7 @@ namespace goss
   public:
   
     // Default constructor
-    ThetaSolver() {};
+    ThetaSolver();
     
     // Constructor
     ThetaSolver(double ldt); 
