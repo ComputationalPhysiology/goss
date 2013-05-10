@@ -38,7 +38,7 @@
 //%include <goss/RKF34.h>
 %include <goss/RKF32.h>
 %include <goss/ImplicitEuler.h>
-//%include <goss/ThetaSolver.h>
+%include <goss/ThetaSolver.h>
 //%include <goss/ImplicitMidPointSolver.h>
 //%include <goss/SDIRK2O2.h>
 //%include <goss/SDIRK2O3.h>

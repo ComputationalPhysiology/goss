@@ -58,8 +58,8 @@
 
 %shared_ptr(goss::RKF32)
 %shared_ptr(goss::ImplicitEuler)
+%shared_ptr(goss::ThetaSolver)
 
-//%shared_ptr(goss::ThetaSolver)
 //%shared_ptr(goss::ImplicitMidPointSolver)
 //%shared_ptr(goss::SDIRK2O2)
 //%shared_ptr(goss::SDIRK2O3)
