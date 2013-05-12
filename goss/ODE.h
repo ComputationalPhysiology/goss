@@ -46,10 +46,10 @@ namespace goss {
     inline uint num_states() const { return _num_states; }
 
     // Evaluate rhs of the ODE
-    virtual void eval(const double* states, double t, double* values) = 0;
+    virtual void eval(const double* states, double time, double* values) = 0;
 
     // Evaluate component idx of the rhs of the ODE
-    virtual double eval(uint idx, const double* states, double t);
+    virtual double eval(uint idx, const double* states, double time);
 
     // Get default initial conditions
     virtual void get_ic(goss::DoubleVector* values) const = 0;
@@ -58,14 +58,20 @@ namespace goss {
     virtual boost::shared_ptr<ODE> copy() const = 0;
 
     // Compute numerical jacobian
-    virtual void compute_jacobian(double t, double* states, double* jac);
+    virtual void compute_jacobian(double time, double* states, double* jac);
     
     // In place LU Factorize matrix (jacobian)
-    virtual void lu_factorize(double* mat);
+    virtual void lu_factorize(double* mat) const;
     
     // Forward/Backward substitution of factoriesed matrix
-    virtual void forward_backward_subst(const double* mat, const double* b, double* x);
+    virtual void forward_backward_subst(const double* mat, const double* b, double* x) const;
 
+    // Populate indices with information about the linear terms
+    virtual void linear_terms(uint* indices) const;
+
+    // Evaluate the linear derivatives
+    virtual void linear_derivatives(const double* states, double time, double* values) const;
+    
   protected: 
     
     // ODE size

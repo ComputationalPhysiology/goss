@@ -43,7 +43,6 @@
 
 %shared_ptr(goss::ODE)
 %shared_ptr(goss::ParameterizedODE)
-%shared_ptr(goss::LinearizedODE)
 
 // ODESolvers
 %shared_ptr(goss::ODESolver)

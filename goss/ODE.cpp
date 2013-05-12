@@ -12,7 +12,7 @@ ODE::ODE(uint num_states_) :
 { 
 } 
 //-----------------------------------------------------------------------------
-double ODE::eval(uint idx, const double* states, double t) 
+double ODE::eval(uint idx, const double* states, double t)
 { 
   std::cout << "Warning: Calling base class ODE::eval component wise. "\
     "This is very slow." << std::endl;
@@ -20,11 +20,9 @@ double ODE::eval(uint idx, const double* states, double t)
   if (idx >= _num_states)
     throw std::runtime_error("Index out of range");
 
-  double* values = new double[_num_states];
-  eval(states, t, values);
+  eval(states, t, &_f1[0]);
   
-  const double ret = values[idx];
-  delete[] values;
+  const double ret = _f1[idx];
 
   return ret;
 }
@@ -51,7 +49,7 @@ void ODE::compute_jacobian(double t, double* states, double* jac)
   } 
 }
 //-----------------------------------------------------------------------------
-void ODE::lu_factorize(double* mat)
+void ODE::lu_factorize(double* mat) const
 {
   //std::cout << "Calling base class ODE::lu_factorize_subst." << std::endl;
   double sum;
@@ -86,7 +84,7 @@ void ODE::lu_factorize(double* mat)
   }
 }
 //-----------------------------------------------------------------------------
-void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
+void ODE::forward_backward_subst(const double* mat, const double* b, double* dx) const
 {
   // solves Ax = b with forward backward substitution, provided that 
   // A is already LU factorized
@@ -116,5 +114,15 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
   
     dx[i] = (dx[i]-sum)/mat[i*_num_states+i];
   }
+}
+//-----------------------------------------------------------------------------
+void ODE::linear_terms(uint* indices) const
+{
+  throw std::runtime_error("ODE::linear_terms must be implement in a subclass");
+}
+//-----------------------------------------------------------------------------
+void ODE::linear_derivatives(const double* x, double t, double* y) const
+{
+  throw std::runtime_error("ODE::linear_derivatives must be implemented in a subclass");
 }
 //-----------------------------------------------------------------------------

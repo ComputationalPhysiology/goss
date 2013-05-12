@@ -2,19 +2,18 @@
 #define VDP_h_IS_INCLUDED
 
 #include <boost/make_shared.hpp>
+#include <goss/ODE.h>
 #include <stdexcept>
-
-#include <goss/LinearizedODE.h>
 
 namespace goss 
 {
 
-  class VDP : public LinearizedODE
+  class VDP : public ODE
   {
   public:
     double mu;
 
-    VDP() : ODE(2), LinearizedODE(2), mu(10.0) {}
+    VDP() : ODE(2), mu(10.0) {}
 
     virtual ~VDP() {}
     

@@ -22,35 +22,32 @@
 #include <cstdlib>
 
 #include "GRL1.h"
-#include "LinearizedODE.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL1::GRL1() : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), linear_terms(0), 
+GRL1::GRL1() : ODESolver(0.0, 0.0), a(0), b(0), linear_terms(0), 
 	       delta(1.0e-8)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), _lode(0), a(0), b(0), 
+GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), a(0), b(0), 
                                          linear_terms(0), delta(1.0e-8)
 {
   attach(ode);
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(const GRL1& solver) : ODESolver(solver), _lode(0), 
+GRL1::GRL1(const GRL1& solver) : ODESolver(solver), 
                                  a(solver.num_states()), 
                                  b(solver.num_states(), 0.0), 
                                  linear_terms(solver.num_states()),
 				 delta(solver.delta)
 {
-  // Store Linearized ODE
-  _lode = dynamic_cast<LinearizedODE*>(_ode.get());
-  assert(_lode);
+  assert(_ode);
 
   // Get what terms are linear
-  _lode->linear_terms(&linear_terms[0]);
+  _ode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
@@ -64,33 +61,29 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using base class
   ODESolver::attach(ode);
   
-  // Store Linearized ODE
-  _lode = dynamic_cast<LinearizedODE*>(ode.get());
-  assert(_lode);
-  
   // Initalize memory
   a.resize(num_states());
   b.resize(num_states(), 0.0);
   linear_terms.resize(num_states());
   
   // Get what terms are linear
-  _lode->linear_terms(&linear_terms[0]);
+  _ode->linear_terms(&linear_terms[0]);
 }
 
 //-----------------------------------------------------------------------------
 void GRL1::forward(double* y, double t, double interval)
 {
 
-  assert(_lode);
+  assert(lode);
 
   // Local timestep
   const double dt = interval;
 
   // Evaluate full right hand side
-  _lode->eval(y, t, &a[0]);              
+  _ode->eval(y, t, &a[0]);              
 
   // Exact derivatives for linear terms 
-  _lode->linear_derivatives(y, t, &b[0]);
+  _ode->linear_derivatives(y, t, &b[0]);
 
   for (uint i = 0; i < num_states(); ++i) 
   { 
@@ -100,7 +93,7 @@ void GRL1::forward(double* y, double t, double interval)
       y[i] += delta; 
       
       // Component i derivative
-      b[i] = (_lode->eval(i, y, t) - a[i])/delta;  
+      b[i] = (_ode->eval(i, y, t) - a[i])/delta;  
       y[i] -= delta;				        // Restore state i
     }
   }

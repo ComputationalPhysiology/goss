@@ -30,9 +30,6 @@
 
 namespace goss {
 
-  // Forward declaration
-  class LinearizedODE;
-
   // First order accurate Generalized Rush-Larsen ODE Solver
   class RL: public ODESolver
   {
@@ -60,9 +57,6 @@ namespace goss {
     void forward(double* y, double t, double interval);
     
   private:
-
-    // Storage for the Linearized ODE
-    LinearizedODE* _lode;
 
     // Pointers to intermediate values used while stepping
     std::vector<double> a;

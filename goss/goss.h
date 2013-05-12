@@ -28,7 +28,6 @@
 // ODEs
 #include <goss/ODE.h>
 #include <goss/ParameterizedODE.h>
-#include <goss/LinearizedODE.h>
 
 // ODESolvers
 #include <goss/ODESolver.h>
