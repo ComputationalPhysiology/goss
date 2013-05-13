@@ -20,7 +20,15 @@
 
 // Common
 %include <goss/types.h>
+%include <goss/constants.h>
 %include <goss/DoubleVector.h>
+
+// log
+%include <goss/log.h>
+%include <goss/Progress.h>
+%include <goss/Table.h>
+%include <goss/LogLevel.h>
+%include <goss/timing.h>
 
 // ODEs
 %include <goss/ODE.h>

@@ -51,3 +51,43 @@
 //    
 //  }
 //}
+
+%extend goss::Progress {
+
+void _add(int incr) {
+    for (int j=0;j<incr; ++j)
+        (*self)++;
+}
+
+void _set(double value) {
+    *self = value;
+}
+
+%pythoncode
+%{
+def __iadd__(self, other):
+    if isinstance(other, int):
+        self._add(other)
+    elif isinstance(other, float):
+        self._set(other)
+    return self
+
+def update(self, other):
+    "Update the progress with given number"
+    if isinstance(other, float):
+        self._set(other)
+%}
+
+}
+
+//-----------------------------------------------------------------------------
+// Use traceback in debug message
+// Reimplement info
+//-----------------------------------------------------------------------------
+%pythoncode %{
+def debug(message):
+    import traceback
+    file, line, func, txt = traceback.extract_stack(None, 2)[0]
+    __debug(file, line, func, message)
+
+%}

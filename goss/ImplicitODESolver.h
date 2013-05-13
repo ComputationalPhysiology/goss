@@ -77,7 +77,7 @@ namespace goss
 
     // Variables used in the jacobian evaluation
     std::vector<double> jac;
-    std::vector<double> _f1, _f2, _yz;
+    std::vector<double> _f1, _yz;
 
     // Right hand side and solution of the linear system
     std::vector<double> _b, _dz;

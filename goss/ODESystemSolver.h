@@ -24,6 +24,7 @@
 #include "types.h"
 #include "DoubleVector.h"
 #include "ParameterizedODE.h"
+#include "log.h"
 #include "ODESolver.h"
 
 namespace goss 

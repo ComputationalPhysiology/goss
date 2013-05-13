@@ -3,6 +3,7 @@
 #include <cstdio>
 
 #include "ImplicitEuler.h"
+#include "log.h"
 
 using namespace goss;
 
@@ -86,11 +87,12 @@ void ImplicitEuler::forward(double* y, double t, double interval)
 
   while (!done)
   {
+  
     num_tsteps += 1;
     
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(t, y, &jac[0]);
+      _ode->compute_jacobian(y, t, &jac[0]);
 
       // Build Euler discretization of jacobian
       mult(-_dt, &jac[0]);
@@ -125,7 +127,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
       else
       {
         // If the solver has refined, we do not allow it to double its 
-	// timestep for anoter step
+	// timestep for another step
         if (justrefined)
 	{
           justrefined = false;
@@ -133,8 +135,8 @@ void ImplicitEuler::forward(double* y, double t, double interval)
 	else
 	{
           double tmp = 2.0*_dt;
-          //if (fabs(ldt-tmp) < eps)
-          if (tmp >= _ldt)
+	  //if (fabs(_ldt-tmp) < eps)
+	  if (_ldt > 0 && tmp >= _ldt)
             _dt = _ldt;
           else
             _dt = tmp;
@@ -142,7 +144,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
 	
 	// If we are passed t_end
         if ((t + _dt) > t_end)
-          _dt = t_end - t;
+	  _dt = t_end - t;
 	
       }
       
@@ -157,6 +159,8 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     {
       //std::cout << "Newton step NOT OK: " << std::endl;
       _dt /= 2.0;
+
+      recompute_jacobian = true;
       justrefined = true;
 #ifdef DEBUG
       newton_accepted1.push_back(0);

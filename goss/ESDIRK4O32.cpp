@@ -210,7 +210,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     //Jacobian recomputed once for each local step
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(t, y, &jac[0]);
+      _ode->compute_jacobian(y, t, &jac[0]);
       nfevals += num_states();
 
       // compute_jacobian(t + c2*dt, y);

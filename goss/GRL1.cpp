@@ -74,7 +74,7 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
 void GRL1::forward(double* y, double t, double interval)
 {
 
-  assert(lode);
+  assert(_ode);
 
   // Local timestep
   const double dt = interval;

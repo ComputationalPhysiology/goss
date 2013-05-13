@@ -20,11 +20,23 @@ if (GOSS_ENABLE_PYTHON)
   endif()
 endif()
 
-# Look for Boost (scoped_array support)
-set(Boost_ADDITIONAL_VERSIONS 1.43 1.43.0 1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 
-    1.46.1 1.47 1.47.0 1.48 1.48.0 1.49 1.49.0 1.50 1.50.0)
+# Look for Boost 
 set(BOOST_ROOT $ENV{BOOST_DIR})
-find_package(Boost 1.36 QUIET)
+if (BOOST_ROOT)
+  set(Boost_NO_SYSTEM_PATHS on)
+endif()
+
+# Prevent FindBoost.cmake from looking for system  Boost{foo}.cmake files
+set(Boost_NO_BOOST_CMAKE true)
+
+set(Boost_USE_MULTITHREADED $ENV{BOOST_USE_MULTITHREADED})
+set(Boost_ADDITIONAL_VERSIONS 1.43 1.43.0 1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 1.46.1 1.47 1.47.0 1.48 1.48.0 1.49 1.49.0 1.50 1.50.0)
+
+find_package(Boost 1.36 QUIET REQUIRED)
+
+set(GOSS_BOOST_COMPONENTS system thread)
+
+find_package(Boost COMPONENTS ${GOSS_BOOST_COMPONENTS} REQUIRED)
 
 # Check for OpenMP
 if (GOSS_ENABLE_OPENMP)
@@ -73,6 +85,8 @@ endif (PYTHONINTERP_FOUND)
 # Add include directories and libs of required packages
 # Boost
 list(APPEND GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+list(APPEND GOSS_TARGET_LINK_LIBRARIES ${Boost_LIBRARIES})
+list(APPEND APPEND GOSS_TARGET_LINK_LIBRARIES_DIRS ${Boost_LIBRARY_DIRS})
 
 # OpenMP
 if (GOSS_ENABLE_OPENMP AND OPENMP_FOUND)

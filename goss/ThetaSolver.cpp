@@ -75,7 +75,7 @@ void ThetaSolver::forward(double* y, double t, double interval)
   
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(t, y, &jac[0]);
+      _ode->compute_jacobian(y, t, &jac[0]);
 
       // Build Theta discretization of jacobian
       mult(-_dt*(1-theta), &jac[0]);

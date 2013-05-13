@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <cmath>
 
+#include "Timer.h"
+#include "log.h"
 #include "ODE.h"
 
 using namespace goss;
@@ -12,27 +14,31 @@ ODE::ODE(uint num_states_) :
 { 
 } 
 //-----------------------------------------------------------------------------
-double ODE::eval(uint idx, const double* states, double t)
+double ODE::eval(uint idx, const double* states, double time)
 { 
-  std::cout << "Warning: Calling base class ODE::eval component wise. "\
-    "This is very slow." << std::endl;
+  Timer timer_("Componentwise evaluation of rhs");
+
+  warning("Warning: Calling base class ODE::eval component wise. "\
+	  "This is very slow.");
 
   if (idx >= _num_states)
-    throw std::runtime_error("Index out of range");
+    error("Index out of range");
 
-  eval(states, t, &_f1[0]);
+  eval(states, time, &_f1[0]);
   
   const double ret = _f1[idx];
 
   return ret;
 }
 //-----------------------------------------------------------------------------
-void ODE::compute_jacobian(double t, double* states, double* jac)
+void ODE::compute_jacobian(double* states, double time, double* jac)
 {
-  //std::cout << "Calling base class ODE::compute_jacobian." << std::endl;
+
+  Timer timer_("Jacobian computation");
+
   uint i, j;
   double max, ysafe, delta;
-  eval(states, t, &_f1[0]);
+  eval(states, time, &_f1[0]);
   
   for (i = 0; i < _num_states; ++i)
   {
@@ -40,17 +46,20 @@ void ODE::compute_jacobian(double t, double* states, double* jac)
     max = 1e-5 > std::fabs(ysafe) ? 1e-5 : std::fabs(ysafe);
     delta = std::sqrt(1e-15*max);
     states[i] += delta;
-    eval(states, t, &_f2[0]);
+    eval(states, time, &_f2[0]);
     
     for (j = 0; j < _num_states; ++j)
-      jac[j*_num_states+i]=(_f2[j] - _f1[j])/delta;
-    
+      jac[j*_num_states+i] = (_f2[j] - _f1[j])/delta;
+
     states[i] = ysafe;
   } 
 }
 //-----------------------------------------------------------------------------
 void ODE::lu_factorize(double* mat) const
 {
+
+  Timer timer_("Factorizing jacobian");
+
   //std::cout << "Calling base class ODE::lu_factorize_subst." << std::endl;
   double sum;
   int i, k, r;
@@ -90,6 +99,8 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
   // A is already LU factorized
   //std::cout << "Calling base class ODE::forward_backward_subst." << std::endl;
 
+  Timer timer_("Forward backward substitution");
+
   double sum;
 
   dx[0] = b[0];
@@ -116,13 +127,13 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
   }
 }
 //-----------------------------------------------------------------------------
-void ODE::linear_terms(uint* indices) const
+void ODE::linear_terms(uint*) const
 {
-  throw std::runtime_error("ODE::linear_terms must be implement in a subclass");
+  error("ODE::linear_terms must be implement in a subclass");
 }
 //-----------------------------------------------------------------------------
-void ODE::linear_derivatives(const double* x, double t, double* y) const
+void ODE::linear_derivatives(const double*, double, double*) const
 {
-  throw std::runtime_error("ODE::linear_derivatives must be implemented in a subclass");
+  error("ODE::linear_derivatives must be implemented in a subclass");
 }
 //-----------------------------------------------------------------------------

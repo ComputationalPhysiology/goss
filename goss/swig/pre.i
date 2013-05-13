@@ -18,3 +18,24 @@
 
 %ignore goss::DoubleVector::data;
 %ignore goss::DoubleVector2D::data;
+
+//-----------------------------------------------------------------------------
+// Need to ignore these dues to SWIG confusion of overloaded functions
+//-----------------------------------------------------------------------------
+%ignore goss::Table::set(std::string,std::string,std::size_t);
+
+//-----------------------------------------------------------------------------
+// Ignore operators so SWIG stop complaining
+//-----------------------------------------------------------------------------
+%ignore goss::TableEntry::operator std::string;
+%ignore goss::Progress::operator++;
+%ignore goss::Progress::operator=;
+%ignore goss::Table::operator=;
+%ignore goss::TableEntry::operator=;
+
+//-----------------------------------------------------------------------------
+// Ignore GOSS C++ stream handling
+//-----------------------------------------------------------------------------
+%ignore goss::LogStream;
+%ignore goss::cout;
+%ignore goss::endl;

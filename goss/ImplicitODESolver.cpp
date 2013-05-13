@@ -17,37 +17,38 @@
 //
 // Modified by Johan Hake 2012
 
-// FIXME: This class needs some serious reconsideration regarding memory use!!
+#include <cmath>
 
 #include "ImplicitODESolver.h"
-#include <iostream>
-#include <cmath>
+#include "log.h"
+#include "constants.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
-  : ODESolver(), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), stages(0), newtonits(0), 
-    maxits(10), rejects(0), jac_comp(0), min_dt(0.0), recompute_jacobian(true)
+  : ODESolver(), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
+    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), recompute_jacobian(true)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(double ldt)
-  : ODESolver(ldt), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), stages(0), newtonits(0), 
-    maxits(10), rejects(0), jac_comp(0), min_dt(0.0), recompute_jacobian(true)
+  : ODESolver(ldt), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
+    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), recompute_jacobian(true)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
-  : ODESolver(solver), jac(0), _f1(0), _f2(0), _yz(0), _b(0), _dz(0), _prev(0),
+  : ODESolver(solver), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
     _newton_tol(solver._newton_tol), eta(solver.eta), kappa(solver.kappa), 
-    stages(solver.stages), newtonits(solver.newtonits), 
+    jac_size(solver.jac_size), stages(solver.stages), newtonits(solver.newtonits), 
     maxits(solver.maxits), rejects(solver.rejects), jac_comp(solver.jac_comp), 
-    min_dt(solver.min_dt), recompute_jacobian(solver.recompute_jacobian)
+    num_tsteps(solver.num_tsteps), min_dt(solver.min_dt), 
+    recompute_jacobian(solver.recompute_jacobian)
 {
   // Initialize memory
   _b.resize(num_states());
@@ -56,7 +57,6 @@ ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
 
   _yz.resize(num_states());
   _f1.resize(num_states());
-  _f2.resize(num_states());
 
   // Init jacobian
   jac_size = num_states()*num_states();
@@ -84,7 +84,6 @@ void ImplicitODESolver::attach(boost::shared_ptr<ODE> ode)
 
   _yz.resize(num_states());
   _f1.resize(num_states());
-  _f2.resize(num_states());
 
   // Init jacobian
   jac_size = num_states()*num_states();
@@ -127,7 +126,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
   uint i;
   bool step_ok = true, converged = false;
   newtonits = 0;
-  double Ntheta, z_norm, prev_norm = 1.0;
+  double Ntheta = 1.0, z_norm, prev_norm = 1.0;
   recompute_jacobian = false;
 
   do
@@ -164,12 +163,10 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       // If we diverge
       if (Ntheta > 1)
       {
-#ifdef DEBUG
-        std::cout << "Newton solver diverges with Ntheta = " << Ntheta << \
-	  ", reduces time step." << std::endl;
-#endif
+	goss_debug1("Newton solver diverges with Ntheta: %f. Reducing time step.", Ntheta);
         rejects ++;
         step_ok = false;
+	recompute_jacobian = true;
         //return step_ok;
         break;
       }
@@ -177,10 +174,8 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       // We converge too slow
       if (z_norm > (kappa*_newton_tol*(1 - Ntheta)/std::pow(Ntheta, maxits - newtonits)))
       {
-#ifdef DEBUG
-        std::cout << "Newton solver converges to slow with Ntheta = " << Ntheta << \
-	  " at iteration " << newtonits << ", reduces time step." << std::endl;
-#endif
+	goss_debug2("Newton solver converges to slow with Ntheta: %f at "\
+		    "iteration %d. Reducing time step.", Ntheta, newtonits);
         rejects ++;
         step_ok = false;
         recompute_jacobian = true;
@@ -193,17 +188,16 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     // newtonits == 0
     else
     {
-      eta = eta > 1e-15 ? eta : 1e-15;
+      eta = eta > GOSS_EPS ? eta : GOSS_EPS;
       eta = std::pow(eta, 0.8);
     }
 
     // No convergence
     if (newtonits > maxits && !converged)
     {
-#ifdef DEBUG
-      std::cout << "Not converged in " << maxits << " iterations. Reduces "\
-	"time step." << std::endl;
-#endif
+      goss_debug1("Newton solver did not converged in %d iterations. Reducing " \
+		  "time step.", maxits);
+      recompute_jacobian = true;
       rejects ++;
       step_ok = false;
       //return step_ok;
@@ -216,12 +210,11 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 
     prev_norm = z_norm;
     newtonits++;
+    
+  } while (eta*z_norm <= kappa*_newton_tol);
 
-  } while (eta*z_norm <= kappa*_newton_tol); 
+  //goss_debug1("Newton converged in %d iterations.", newtonits);
 
-#ifdef DEBUG
-  std::cout << "Newton converged in " << newtonits << " iterations." << std::endl;
-#endif
   return step_ok;
 }
 //-----------------------------------------------------------------------------

@@ -58,7 +58,7 @@ namespace goss {
     virtual boost::shared_ptr<ODE> copy() const = 0;
 
     // Compute numerical jacobian
-    virtual void compute_jacobian(double time, double* states, double* jac);
+    virtual void compute_jacobian(double* states, double time, double* jac);
     
     // In place LU Factorize matrix (jacobian)
     virtual void lu_factorize(double* mat) const;
