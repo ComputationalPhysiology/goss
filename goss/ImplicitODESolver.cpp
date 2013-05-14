@@ -124,7 +124,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 				     double dt, double alpha)
 {
   uint i;
-  bool step_ok = true, converged = false;
+  bool step_ok = true;
   newtonits = 0;
   double Ntheta = 1.0, z_norm, prev_norm = 1.0;
   recompute_jacobian = false;
@@ -193,7 +193,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     }
 
     // No convergence
-    if (newtonits > maxits && !converged)
+    if (newtonits > maxits)
     {
       goss_debug1("Newton solver did not converged in %d iterations. Reducing " \
 		  "time step.", maxits);
@@ -211,7 +211,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     prev_norm = z_norm;
     newtonits++;
     
-  } while (eta*z_norm <= kappa*_newton_tol);
+  } while(eta*z_norm <= kappa*_newton_tol);
 
   //goss_debug1("Newton converged in %d iterations.", newtonits);
 
