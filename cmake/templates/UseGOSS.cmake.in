@@ -1,0 +1,26 @@
+#
+# This file sets up include directories, link directories, and
+# compiler settings for a project to use GOSS. It should not be
+# included directly, but rather through the GOSS_USE_FILE setting
+# obtained from GOSSConfig.cmake.
+#
+
+if (NOT GOSS_USE_FILE_INCLUDED)
+  set(GOSS_USE_FILE_INCLUDED 1)
+
+  # Add compiler definitions needed to use GOSS
+  add_definitions(${GOSS_CXX_DEFINITIONS})
+
+  # Add compiler flags needed to use GOSS
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GOSS_CXX_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GOSS_LINK_FLAGS}")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${GOSS_LINK_FLAGS}")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${GOSS_LINK_FLAGS}")
+
+  # Add include directories needed to use GOSS
+  include_directories(${GOSS_INCLUDE_DIRS})
+  include_directories(SYSTEM ${GOSS_3RD_PARTY_INCLUDE_DIRS})
+
+  # Add link directories needed to use GOSS
+  link_directories(${GOSS_3RD_PARTY_LIBRARY_DIRS})
+endif()

@@ -61,14 +61,18 @@ get_target_property(GOSS_LIBRARY_LOCATION goss LOCATION)
 get_filename_component(GOSS_LIBRARY_FILENAME ${GOSS_LIBRARY_LOCATION} NAME)
 set(GOSS_LIBRARY "${CMAKE_INSTALL_PREFIX}/${GOSS_LIB_DIR}/${GOSS_LIBRARY_FILENAME}")
 
-configure_file(${GOSS_CMAKE_DIR}/templates/goss-config.cmake.in
-  ${CMAKE_BINARY_DIR}/goss/goss-config.cmake @ONLY)
-configure_file(${GOSS_CMAKE_DIR}/templates/goss-config-version.cmake.in
-  ${CMAKE_BINARY_DIR}/goss/goss-config-version.cmake @ONLY)
+configure_file(${GOSS_CMAKE_DIR}/templates/GOSSConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/goss/GOSSConfig.cmake @ONLY)
+configure_file(${GOSS_CMAKE_DIR}/templates/GOSSConfigVersion.cmake.in
+  ${CMAKE_BINARY_DIR}/goss/GOSSConfigVersion.cmake @ONLY)
+# Keep goss-config{-version}.cmake for backwards compatability
+configure_file(${GOSS_CMAKE_DIR}/templates/UseGOSS.cmake.in
+  ${CMAKE_BINARY_DIR}/goss/UseGOSS.cmake @ONLY)
 install(
   FILES
-    ${CMAKE_BINARY_DIR}/goss/goss-config.cmake
-    ${CMAKE_BINARY_DIR}/goss/goss-config-version.cmake
+    ${CMAKE_BINARY_DIR}/goss/GOSSConfig.cmake
+    ${CMAKE_BINARY_DIR}/goss/GOSSConfigVersion.cmake
+    ${CMAKE_BINARY_DIR}/goss/UseGOSS.cmake
   DESTINATION ${GOSS_SHARE_DIR}/cmake
   COMPONENT Development
   )
