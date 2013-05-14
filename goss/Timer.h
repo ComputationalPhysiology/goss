@@ -16,12 +16,16 @@
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 //
 // First added:  2008-06-13
-// Last changed: 2013-05-12
+// Last changed: 2013-05-14
 
 #ifndef __TIMER_H
 #define __TIMER_H
 
 #include <iostream>
+
+#ifdef HAS_OPENMP
+#include <omp.h>
+#endif
 
 #include "LogManager.h"
 #include "timing.h"
@@ -67,7 +71,12 @@ namespace goss
     double stop()
     {
       t = time() - t;
+#ifdef HAS_OPENMP
+      if (omp_get_thread_num() == 0)
+	LogManager::logger.register_timing(_task, t);
+#else
       LogManager::logger.register_timing(_task, t);
+#endif
       stopped = true;
       return t;
     }
