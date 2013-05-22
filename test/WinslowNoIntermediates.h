@@ -6,7 +6,6 @@
 #include <boost/make_shared.hpp>
 
 #include "goss/ParameterizedODE.h"
-#include "goss/LinearizedODE.h"
 
 namespace goss {
 

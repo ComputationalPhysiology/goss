@@ -6,7 +6,6 @@
 #include <cmath>
 
 #include "goss/ParameterizedODE.h"
-#include "goss/LinearizedODE.h"
 
 namespace goss {
 
