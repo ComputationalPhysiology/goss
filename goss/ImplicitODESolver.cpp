@@ -28,27 +28,30 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
   : ODESolver(), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), jac_size(0), stages(0), newtonits(0), 
-    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), recompute_jacobian(true)
+    _newton_tol(1.e-5), eta(1e-10), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), 
+    recompute_jacobian(true), _absolute_tol(1.e-10), _max_relative_residual(1.e-3)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(double ldt)
   : ODESolver(ldt), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), kappa(0.1), jac_size(0), stages(0), newtonits(0), 
-    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), recompute_jacobian(true)
+    _newton_tol(1.e-5), eta(1e-10), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    maxits(10), rejects(0), jac_comp(0), num_tsteps(0), min_dt(0.0), 
+    recompute_jacobian(true), _absolute_tol(1.e-10), _max_relative_residual(1.e-3)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
   : ODESolver(solver), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(solver._newton_tol), eta(solver.eta), kappa(solver.kappa), 
+    _newton_tol(solver._newton_tol), eta(solver.eta), _kappa(solver._kappa), 
     jac_size(solver.jac_size), stages(solver.stages), newtonits(solver.newtonits), 
     maxits(solver.maxits), rejects(solver.rejects), jac_comp(solver.jac_comp), 
     num_tsteps(solver.num_tsteps), min_dt(solver.min_dt), 
-    recompute_jacobian(solver.recompute_jacobian)
+    recompute_jacobian(solver.recompute_jacobian), _absolute_tol(solver._absolute_tol), 
+    _max_relative_residual(solver._max_relative_residual)
 {
   // Initialize memory
   _b.resize(num_states());
@@ -126,7 +129,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
   uint i;
   bool step_ok = true;
   newtonits = 0;
-  double Ntheta = 1.0, z_norm, prev_norm = 1.0;
+  double relative_residual = 1.0, residual, prev_residual = 1.0;
   recompute_jacobian = false;
 
   do
@@ -145,44 +148,43 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 
     // Linear solve on factorized jacobian
     _ode->forward_backward_subst(&jac[0], &_b[0], &_dz[0]);
-    z_norm = norm(&_dz[0]);
+    residual = norm(&_dz[0]);
+
+    // Check for residual convergence
+    if (residual < _absolute_tol)
+      break;
 
     // 2nd time around
     if (newtonits > 0) 
     {
 
       // How fast are we converging?
-      Ntheta = z_norm/prev_norm;
+      relative_residual = residual/prev_residual;
 
-      // If not fast enough recompute jacobian
-      if (Ntheta < 1e-3)
-        recompute_jacobian = false;
-      else
-        recompute_jacobian = true;
-    
       // If we diverge
-      if (Ntheta > 1)
+      if (relative_residual > 1)
       {
-	goss_debug1("Newton solver diverges with Ntheta: %f. Reducing time step.", Ntheta);
+	goss_debug1("Newton solver diverges with relative_residual: %f. Reducing time step.", relative_residual);
         rejects ++;
         step_ok = false;
 	recompute_jacobian = true;
-        //return step_ok;
         break;
       }
       
       // We converge too slow
-      if (z_norm > (kappa*_newton_tol*(1 - Ntheta)/std::pow(Ntheta, maxits - newtonits)))
+      if (relative_residual >= _max_relative_residual || \
+	  residual > (_kappa*_newton_tol*(1 - relative_residual)/std::pow(relative_residual, maxits - newtonits)))
       {
-	goss_debug2("Newton solver converges to slow with Ntheta: %f at "\
-		    "iteration %d. Reducing time step.", Ntheta, newtonits);
+	goss_debug3("Newton solver converges to slow with relative_residual: "\
+		    "%.2e and residual: %.2e at iteration %d. "\
+		    "Reducing time step.", relative_residual, residual, newtonits);
         rejects ++;
         step_ok = false;
         recompute_jacobian = true;
         break;
       }
       
-      eta = Ntheta/(1.0 - Ntheta);
+      eta = relative_residual/(1.0 - relative_residual);
     }
     
     // newtonits == 0
@@ -208,10 +210,10 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     for (i = 0; i <num_states(); ++i)
       z[i] += _dz[i];
 
-    prev_norm = z_norm;
+    prev_residual = residual;
     newtonits++;
     
-  } while(eta*z_norm <= kappa*_newton_tol);
+  } while(eta*residual <= _kappa*_newton_tol);
 
   //goss_debug1("Newton converged in %d iterations.", newtonits);
 

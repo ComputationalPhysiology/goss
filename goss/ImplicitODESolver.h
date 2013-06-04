@@ -57,6 +57,17 @@ namespace goss
     // Set newton tolerance
     void set_newton_tol(double newton_tol){ _newton_tol = newton_tol; }
 
+    // Set absolute tolerance
+    void set_absolute_tol(double absolute_tol){ _absolute_tol = absolute_tol; }
+
+    // Set max relative residual
+    void set_max_relative_residual(double max_relative_residual)
+    { _max_relative_residual = max_relative_residual; }
+
+    // Set kappa
+    void set_kappa(double kappa)
+    { _kappa = kappa; }
+
     // Return the number of recomputation of the jacobian
     int num_jac_comp(){ return jac_comp; }
 
@@ -93,7 +104,7 @@ namespace goss
     double eta;
 
     // The safety factor for the stopping criterion of the newton iteration
-    double kappa;
+    double _kappa;
     uint jac_size;
 
     uint stages;
@@ -102,6 +113,10 @@ namespace goss
 
     double min_dt;
     bool recompute_jacobian;
+
+    double _absolute_tol;
+    double _max_relative_residual;
+    double _eta_0;
 
   };
 
