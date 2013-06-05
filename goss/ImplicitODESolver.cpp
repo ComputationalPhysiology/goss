@@ -161,10 +161,14 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       // How fast are we converging?
       relative_residual = residual/prev_residual;
 
+      // If too slow we flag the jacobian to be recomputed
+      recompute_jacobian = relative_residual >= _max_relative_residual;
+
       // If we diverge
       if (relative_residual > 1)
       {
-	goss_debug1("Newton solver diverges with relative_residual: %f. Reducing time step.", relative_residual);
+	goss_debug1("Newton solver diverges with relative_residual: %f. "\
+		    "Reducing time step.", relative_residual);
         rejects ++;
         step_ok = false;
 	recompute_jacobian = true;
@@ -172,8 +176,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       }
       
       // We converge too slow
-      if (relative_residual >= _max_relative_residual || \
-	  residual > (_kappa*_newton_tol*(1 - relative_residual)/std::pow(relative_residual, maxits - newtonits)))
+      if (residual > (_kappa*_newton_tol*(1 - relative_residual)/std::pow(relative_residual, maxits - newtonits)))
       {
 	goss_debug3("Newton solver converges to slow with relative_residual: "\
 		    "%.2e and residual: %.2e at iteration %d. "\
@@ -185,6 +188,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       }
       
       eta = relative_residual/(1.0 - relative_residual);
+
     }
     
     // newtonits == 0
