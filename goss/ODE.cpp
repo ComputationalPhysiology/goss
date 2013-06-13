@@ -14,6 +14,11 @@ ODE::ODE(uint num_states_) :
 { 
 } 
 //-----------------------------------------------------------------------------
+ODE::ODE(const ODE& ode) : 
+  _num_states(ode._num_states), _f1(ode._num_states), _f2(ode._num_states)
+{ 
+} 
+//-----------------------------------------------------------------------------
 double ODE::eval(uint idx, const double* states, double time)
 { 
   Timer timer_("Componentwise evaluation of rhs");

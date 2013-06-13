@@ -30,7 +30,7 @@
 namespace goss {
 
   // Class which provides a more verbose interface for users to controll an ODE
-  class ParameterizedODE : public virtual ODE
+  class ParameterizedODE : public ODE
   {
   public:
 
@@ -47,7 +47,21 @@ namespace goss {
       _param_to_value()
     { 
       // Do nothing
-    } 
+    }
+
+    // Copy constructor
+    ParameterizedODE(const ParameterizedODE& ode) : 
+    ODE(ode),
+    _state_names(ode._state_names),
+    _field_state_names(ode._field_state_names),
+    _parameter_names(ode._parameter_names),
+    _field_parameter_names(ode._field_parameter_names),
+    _field_state_indices(ode._field_state_indices), 
+    _monitored_names(ode._monitored_names),
+    _param_to_value(ode._param_to_value)
+    {
+      // Do nothing
+    }
 
     virtual ~ParameterizedODE()
     {

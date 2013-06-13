@@ -36,6 +36,9 @@ namespace goss {
     // Constructor
     ODE(uint num_states_);
 
+    // Copy constructor
+    ODE(const ODE& ode);
+
     // Destructor
     virtual ~ODE() 
     {

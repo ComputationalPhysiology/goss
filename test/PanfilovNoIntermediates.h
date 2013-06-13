@@ -15,8 +15,7 @@ namespace goss {
   public:
 
     // Constructor
-    PanfilovNoIntermediates() : ODE(2),
-      ParameterizedODE(2, 3, 1, 0, 0), 
+    PanfilovNoIntermediates() : ParameterizedODE(2, 3, 1, 0, 0), 
       time_constant(1.0), v_peak(35.0), v_rest(-85.0)
       
     {

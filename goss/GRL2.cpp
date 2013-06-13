@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cstring>
 #include <cmath>
+#include <cstdio>
 
 #include "GRL2.h"
 
@@ -40,14 +41,15 @@ GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0),
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(const GRL2& solver) : ODESolver(solver),
-                                 y0(solver.num_states()), 
-                                 a(solver.num_states()), 
-                                 b(solver.num_states(), 0.0), 
-                                 linear_terms(solver.num_states()),
+                                 y0(solver.y0), 
+                                 a(solver.a), 
+                                 b(solver.b), 
+                                 linear_terms(solver.linear_terms),
                                  delta(solver.delta)
 {
   assert(_ode);
-
+  
+  printf("GRL2 constructor!\n");
   // Get what terms are linear
   _ode->linear_terms(&linear_terms[0]);
 }
@@ -84,7 +86,9 @@ void GRL2::forward(double* y, double t, double interval)
   const double dt = interval;
 
   // Copy start conditions
-  std::memcpy(&y0[0], y, nbytes); 
+  for (uint i = 0; i < num_states(); ++i) 
+    y0[i] = y[i];
+  //std::memcpy(&y0[0], y, nbytes); 
 
   // First step
 

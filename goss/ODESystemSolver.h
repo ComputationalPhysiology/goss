@@ -171,6 +171,7 @@ namespace goss
       // threader version
       ParameterizedODE& ode_ = dynamic_cast<ParameterizedODE&>(*solver_.get_ode());
       ode_.set_field_parameters(&_field_parameters[node*ode_.num_field_parameters()]);
+      
     }
     
     // Set internal time step if adaptive

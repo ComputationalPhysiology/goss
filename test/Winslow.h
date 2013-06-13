@@ -15,8 +15,7 @@ namespace goss {
   public:
 
     // Constructor
-    Winslow() : ODE(31),
-      ParameterizedODE(31, 68, 1, 2, 4), 
+    Winslow() : ParameterizedODE(31, 68, 1, 2, 4), 
       A_cap(0.0001534), C_sc(1.0), V_JSR(1.6e-07), V_NSR(2.1e-06),
         V_myo(2.584e-05), V_ss(1.2e-09), ist(0), Ca_o(2.0), K_o(4.0),
         Na_i(10.0), Na_o(138.0), G_KpMax(0.002216), G_KrMax(0.0034),
