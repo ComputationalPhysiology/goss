@@ -71,7 +71,8 @@ namespace goss
     // Return the number of recomputation of the jacobian
     int num_jac_comp(){ return jac_comp; }
 
-  protected: 
+    //protected:
+  public: 
 
     // Scale a matrix
     void mult(double fact, double* mat);

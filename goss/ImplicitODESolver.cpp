@@ -107,6 +107,9 @@ void ImplicitODESolver::reset()
   // Newton tolerance
   _newton_tol = 1.e-5;
 
+  // Reset eta
+  eta = 1.e-10;
+
 }
 
 //-----------------------------------------------------------------------------
