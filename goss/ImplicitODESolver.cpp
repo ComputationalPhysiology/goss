@@ -155,7 +155,9 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 
     // Check for residual convergence
     if (residual < _absolute_tol)
+    {
       break;
+    }
 
     // 2nd time around
     if (newtonits > 0) 
@@ -197,6 +199,10 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     // newtonits == 0
     else
     {
+      // On first iteration we need an approximation of eta. We take
+      // the one from previous step and increase it slightly. This is
+      // important for linear problems which only should recquire 1
+      // iteration to converge.
       eta = eta > GOSS_EPS ? eta : GOSS_EPS;
       eta = std::pow(eta, 0.8);
     }
@@ -220,7 +226,10 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     prev_residual = residual;
     newtonits++;
     
-  } while(eta*residual <= _kappa*_newton_tol);
+    
+    // eta*residul is the iteration error and an estimation of the
+    // local discretization error.
+  } while(eta*residual >= _kappa*_newton_tol);
 
   //goss_debug1("Newton converged in %d iterations.", newtonits);
 
