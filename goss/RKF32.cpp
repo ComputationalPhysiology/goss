@@ -256,7 +256,7 @@ void RKF32::forward(double* y, double t, double interval)
       {
         if (ret_ptr != y)
 	{
-	  for (uint i = 0; i < num_states(); ++i) 
+	  for (i = 0; i < num_states(); ++i) 
 	    ret_ptr[i] = y[i];
           //memcpy(ret_ptr, y, nbytes);
           yn0 = y;
@@ -275,7 +275,7 @@ void RKF32::forward(double* y, double t, double interval)
   // This can probably be done in a more elegant way
   if (ret_ptr != y)
   {
-    for (uint i = 0; i < num_states(); ++i) 
+    for (i = 0; i < num_states(); ++i) 
       ret_ptr[i] = y[i];
     //memcpy(ret_ptr, y, nbytes);
     yn0 = y;
