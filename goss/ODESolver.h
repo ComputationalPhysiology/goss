@@ -49,9 +49,10 @@ namespace goss
 
     // Copy constructor (Uses default copy constructor of ODE)
     ODESolver (const ODESolver& solver) : _ldt(solver._ldt), _dt(solver._dt), 
-					  _ode(solver._ode->copy())
+					  _ode(static_cast<ODE*>(0))
     {
-      // Do nothing
+      if (solver._ode)
+	_ode = solver._ode->copy();
     }
 
     // Destructor
@@ -74,7 +75,7 @@ namespace goss
     virtual void forward(double* y, double t, double interval) = 0;
 
     // The size of the ODE
-    inline uint num_states() const { return _ode->num_states(); }
+    inline uint num_states() const { return _ode ? _ode->num_states() : 0; }
 
     // Return the ODE (const version)
     inline const boost::shared_ptr<ODE> get_ode() const { return _ode; }
