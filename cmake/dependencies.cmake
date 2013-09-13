@@ -17,6 +17,15 @@ if (GOSS_ENABLE_PYTHON)
     endif()
     include(UseSWIG)
     set(PYTHON_FOUND TRUE)
+
+    # Set numpy version define
+    set(GOSS_PYTHON_DEFINITIONS -DNUMPY_VERSION_MAJOR=${NUMPY_VERSION_MAJOR} -DNUMPY_VERSION_MINOR=${NUMPY_VERSION_MINOR} -DNUMPY_VERSION_MICRO=${NUMPY_VERSION_MICRO})
+
+    # Only set define for none depricated API for NUMPY version 1.7 and larger
+    if(NUMPY_VERSION VERSION_GREATER 1.6.2)
+      set(GOSS_PYTHON_DEFINITIONS ${DOLFIN_PYTHON_DEFINITIONS} -DNPY_NO_DEPRECATED_API=NPY_${NUMPY_VERSION_MAJOR}_${NUMPY_VERSION_MINOR}_API_VERSION)
+    endif()
+
   endif()
 endif()
 
@@ -109,6 +118,7 @@ include_directories(SYSTEM ${GOSS_DEP_SYSTEM_INCLUDE_DIRECTORIES})
 # Add CXX defintions
 add_definitions(${GOSS_CXX_DEFINITIONS})
 add_definitions(-DGOSS_VERSION="${GOSS_VERSION}")
+add_definitions(${GOSS_PYTHON_DEFINITIONS})
 
 # Add flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GOSS_CXX_FLAGS}")
