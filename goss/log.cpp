@@ -37,11 +37,11 @@
 
 using namespace goss;
 
-static boost::scoped_array<char> buffer(0);
-static unsigned int buffer_size= 0;
+static boost::scoped_array<char> goss_buffer(0);
+static unsigned int goss_buffer_size= 0;
 
-// Buffer allocation
-void allocate_buffer(std::string msg)
+// Goss_Buffer allocation
+void allocate_goss_buffer(std::string msg)
 {
   // va_list, start, end require a char pointer of fixed size so we
   // need to allocate the buffer here. We allocate twice the size of
@@ -50,19 +50,19 @@ void allocate_buffer(std::string msg)
   unsigned int new_size = std::max(static_cast<unsigned int>(2*msg.size()),
                                    static_cast<unsigned int>(GOSS_LINELENGTH));
   //static_cast<unsigned int>(GOSS_LINELENGTH));
-  if (new_size > buffer_size)
+  if (new_size > goss_buffer_size)
   {
-    buffer.reset(new char[new_size]);
-    buffer_size = new_size;
+    goss_buffer.reset(new char[new_size]);
+    goss_buffer_size = new_size;
   }
 }
 
 // Macro for parsing arguments
-#define read(buffer, msg) \
-  allocate_buffer(msg); \
+#define read(local_buffer, msg) \
+  allocate_goss_buffer(msg); \
   va_list aptr; \
   va_start(aptr, msg); \
-  vsnprintf(buffer, buffer_size, msg.c_str(), aptr); \
+  vsnprintf(local_buffer, goss_buffer_size, msg.c_str(), aptr); \
   va_end(aptr);
 
 //-----------------------------------------------------------------------------
@@ -70,10 +70,9 @@ void goss::info(std::string msg, ...)
 {
   if (!LogManager::logger.is_active())
     return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.log(buffer.get());
+  read(goss_buffer.get(), msg);
+  LogManager::logger.log(goss_buffer.get());
 }
-//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void goss::info_stream(std::ostream& out, std::string msg)
 {
@@ -89,61 +88,61 @@ void goss::info_underline(std::string msg, ...)
 {
   if (!LogManager::logger.is_active())
     return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.log_underline(buffer.get());
+  read(goss_buffer.get(), msg);
+  LogManager::logger.log_underline(goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::warning(std::string msg, ...)
 {
   if (!LogManager::logger.is_active())
     return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.warning(buffer.get());
+  read(goss_buffer.get(), msg);
+  LogManager::logger.warning(goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::error(std::string msg, ...)
 {
-  read(buffer.get(), msg);
-  LogManager::logger.error(buffer.get());
+  read(goss_buffer.get(), msg);
+  LogManager::logger.error(goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::goss_error(std::string location,
                           std::string task,
                           std::string reason, ...)
 {
-  read(buffer.get(), reason);
-  LogManager::logger.goss_error(location, task, buffer.get());
+  read(goss_buffer.get(), reason);
+  LogManager::logger.goss_error(location, task, goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::deprecation(std::string feature,
                          std::string version,
                          std::string message, ...)
 {
-  read(buffer.get(), message);
-  LogManager::logger.deprecation(feature, version, buffer.get());
+  read(goss_buffer.get(), message);
+  LogManager::logger.deprecation(feature, version, goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::log(int log_level, std::string msg, ...)
 {
   if (!LogManager::logger.is_active())
     return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.log(buffer.get(), log_level);
+  read(goss_buffer.get(), msg);
+  LogManager::logger.log(goss_buffer.get(), log_level);
 }
 //-----------------------------------------------------------------------------
 void goss::begin(std::string msg, ...)
 {
   if (!LogManager::logger.is_active())
     return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.begin(buffer.get());
+  read(goss_buffer.get(), msg);
+  LogManager::logger.begin(goss_buffer.get());
 }
 //-----------------------------------------------------------------------------
 void goss::begin(int log_level, std::string msg, ...)
 {
   if (!LogManager::logger.is_active()) return; // optimization
-  read(buffer.get(), msg);
-  LogManager::logger.begin(buffer.get(), log_level);
+  read(goss_buffer.get(), msg);
+  LogManager::logger.begin(goss_buffer.get(), log_level);
 }
 //-----------------------------------------------------------------------------
 void goss::end()
@@ -181,10 +180,10 @@ void goss::monitor_memory_usage()
 void goss::__debug(std::string file, unsigned long line,
                      std::string function, std::string format, ...)
 {
-  read(buffer.get(), format);
+  read(goss_buffer.get(), format);
   std::ostringstream ost;
   ost << file << ":" << line << " in " << function << "()";
-  std::string msg = std::string(buffer.get()) + " [at " + ost.str() + "]";
+  std::string msg = std::string(goss_buffer.get()) + " [at " + ost.str() + "]";
   LogManager::logger.__debug(msg);
 }
 //-----------------------------------------------------------------------------
