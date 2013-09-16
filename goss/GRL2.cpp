@@ -47,11 +47,11 @@ GRL2::GRL2(const GRL2& solver) : ODESolver(solver),
                                  linear_terms(solver.linear_terms),
                                  delta(solver.delta)
 {
-  assert(_ode);
   
-  printf("GRL2 constructor!\n");
-  // Get what terms are linear
-  _ode->linear_terms(&linear_terms[0]);
+  if (_ode)
+    // Get what terms are linear
+    _ode->linear_terms(&linear_terms[0]);
+  
 }
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()

@@ -44,10 +44,9 @@ GRL1::GRL1(const GRL1& solver) : ODESolver(solver),
                                  linear_terms(solver.num_states()),
 				 delta(solver.delta)
 {
-  assert(_ode);
-
-  // Get what terms are linear
-  _ode->linear_terms(&linear_terms[0]);
+  if (_ode)
+    // Get what terms are linear
+    _ode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()

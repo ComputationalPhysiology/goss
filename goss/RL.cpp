@@ -42,11 +42,10 @@ RL::RL(const RL& solver) : ODESolver(solver),
 			   b(solver.num_states(), 0.0), 
 			   linear_terms(solver.num_states())
 {
-  
-  assert(_ode);
-
-  // Get what terms are linear
-  _ode->linear_terms(&linear_terms[0]);
+  if (_ode)
+    
+    // Get what terms are linear
+    _ode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
 RL::~RL()
