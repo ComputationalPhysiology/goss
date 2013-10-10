@@ -16,8 +16,9 @@
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 //
 // First added:  2008-07-19
-// Last changed: 2013-05-12
+// Last changed: 2013-10-10
 
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <sstream>

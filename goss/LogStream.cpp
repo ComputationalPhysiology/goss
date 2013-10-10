@@ -93,12 +93,6 @@ LogStream& LogStream::operator<< (double a)
   return *this;
 }
 //-----------------------------------------------------------------------------
-LogStream& LogStream::operator<< (std::complex<double> z)
-{
-  buffer << z.real() << " + " << z.imag() << "i";
-  return *this;
-}
-//-----------------------------------------------------------------------------
 void LogStream::setprecision(std::streamsize n)
 {
   buffer.precision(n);
