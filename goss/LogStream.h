@@ -23,7 +23,6 @@
 #ifndef __LOG_STREAM_H
 #define __LOG_STREAM_H
 
-#include <complex>
 #include <string>
 #include <sstream>
 
@@ -67,9 +66,6 @@ namespace goss
 
     /// Output for double
     LogStream& operator<< (double a);
-
-    /// Output for std::complex<double>
-    LogStream& operator<< (std::complex<double> z);
 
     void setprecision(std::streamsize n);
 
