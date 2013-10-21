@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cmath>
 
+#include "log.h"
 #include "ExplicitEuler.h"
 
 using namespace goss;
@@ -56,6 +57,11 @@ void ExplicitEuler::attach(boost::shared_ptr<ODE> ode)
 {
   // Attach ODE
   ODESolver::attach(ode);
+
+  if (ode->is_dae())
+    goss_error("ExplicitEuler.cpp",
+	       "attaching ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
 
   // Create memory for derivative evaluation
   _dFdt.resize(num_states());

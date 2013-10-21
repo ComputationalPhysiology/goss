@@ -74,8 +74,8 @@ namespace goss
   /// Developers should read the file goss/log/README in the GOSS
   /// source tree for further notes about the use of this function.
   void goss_error(std::string location,
-                    std::string task,
-                    std::string reason, ...);
+		  std::string task,
+		  std::string reason, ...);
 
   /// Issue deprecation warning for removed feature
   ///

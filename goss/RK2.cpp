@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cmath>
 
+#include "log.h"
 #include "RK2.h"
 
 using namespace goss;
@@ -55,6 +56,11 @@ void RK2::attach(boost::shared_ptr<ODE> ode)
 {
   
   ODESolver::attach(ode);
+
+  if (ode->is_dae())
+    goss_error("RK2.cpp",
+	       "attaching ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
 
   k1.resize(num_states());
   tmp.resize(num_states());

@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
+#include "log.h"
 
 #include "RL.h"
 
@@ -71,6 +72,11 @@ void RL::forward(double* y, double t, double interval)
 {
 
   assert(_ode);
+
+  if (_ode->is_dae())
+    goss_error("RL.cpp",
+	       "forwarding ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
 
   // Local timestep
   const double dt = interval;

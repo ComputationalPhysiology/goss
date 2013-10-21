@@ -96,7 +96,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
 
       // Build Euler discretization of jacobian
       mult(-_dt, &jac[0]);
-      add_identity(&jac[0]);
+      add_mass_matrix(&jac[0]);
 
       // Factorize jacobian
       _ode->lu_factorize(&jac[0]);

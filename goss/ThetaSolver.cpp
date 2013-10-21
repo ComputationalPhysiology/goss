@@ -79,7 +79,7 @@ void ThetaSolver::forward(double* y, double t, double interval)
 
       // Build Theta discretization of jacobian
       mult(-_dt*(1-theta), &jac[0]);
-      add_identity(&jac[0]);
+      add_mass_matrix(&jac[0]);
 
       // Factorize jacobian
       _ode->lu_factorize(&jac[0]);

@@ -31,6 +31,7 @@
 #include "SaltzLorenz.h"
 #include "Sin.h"
 #include "VDP.h"
+#include "van_der_Pol.h"
 #include "Winslow.h"
 #include "WinslowNoIntermediates.h"
 #include "WinslowCSE.h"
@@ -71,6 +72,9 @@ protected:
     {
       solver->forward(x.data.get(), t, dt);
       t += dt;
+      
+      if (std::fmod(t, .1) < dt)
+	info("t %.2f: y: %.2f, z: %.2f", t, x.data.get()[0], x.data.get()[1]);
     }
   }
 };
@@ -81,6 +85,13 @@ class ODETester : public ODESolverTest<O, RK4>
 {
 public :
   ODETester() : ODESolverTest<O, RK4>() {}
+};
+
+template<class O>
+class DAETester : public ODESolverTest<O, ThetaSolver>
+{
+public :
+  DAETester() : ODESolverTest<O, ThetaSolver>() {}
 };
 
 template<class S>
@@ -115,6 +126,8 @@ public :
 typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody, \
 		       FG, Robertson, Sin, VDP, SaltzLorenz> ODEs;
 
+typedef testing::Types<VanDerPol> DAEs;
+
 // Different list of Solvers
 typedef testing::Types<ExplicitEuler, RK2, RK4, RKF32> ExplicitODESolvers; 
 //typedef testing::Types<ImplicitEuler, ESDIRK4O32> ImplicitODESolvers;
@@ -125,6 +138,7 @@ typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE,
 		       PanfilovCSE, PanfilovCSEArray> ParameterizedODEs;
 
 TYPED_TEST_CASE(ODETester, ODEs);
+TYPED_TEST_CASE(DAETester, DAEs);
 TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
 TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
 TYPED_TEST_CASE(RLTester, RLODESolvers);
@@ -139,6 +153,19 @@ TYPED_TEST(ODETester, IntegrationTest)
 
   // Run fine simulation
   this->run_ode(0.00001, 10.0, this->x_fine);
+
+  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
+  
+}
+
+TYPED_TEST(DAETester, DAESolverTest) 
+{
+
+  // Run coarse simulation
+  this->run_ode(0.01, 0.800, this->x_coarse);
+
+  // Run fine simulation
+  this->run_ode(0.001, 0.800, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
   

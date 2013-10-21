@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstdlib>
 
+#include "log.h"
 #include "GRL1.h"
 
 using namespace goss;
@@ -60,6 +61,11 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using base class
   ODESolver::attach(ode);
   
+  if (ode->is_dae())
+    goss_error("GRL1.cpp",
+	       "attaching ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
+
   // Initalize memory
   a.resize(num_states());
   b.resize(num_states(), 0.0);

@@ -215,7 +215,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
       // compute_jacobian(t + c2*dt, y);
       mult(-_dt*a22, &jac[0]);
-      add_identity(&jac[0]);
+      add_mass_matrix(&jac[0]);
       _ode->lu_factorize(&jac[0]);
       jac_comp += 1;
       recompute_jacobian = false;

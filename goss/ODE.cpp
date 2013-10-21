@@ -10,12 +10,14 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ODE::ODE(uint num_states_) : 
-  _num_states(num_states_), _f1(num_states_), _f2(num_states_)
+  _num_states(num_states_), _differential_states(num_states_, true), _is_dae(false),
+  _f1(num_states_), _f2(num_states_)
 { 
 } 
 //-----------------------------------------------------------------------------
 ODE::ODE(const ODE& ode) : 
-  _num_states(ode._num_states), _f1(ode._num_states), _f2(ode._num_states)
+  _num_states(ode._num_states), _differential_states(ode._differential_states), 
+  _is_dae(ode._is_dae), _f1(ode._num_states), _f2(ode._num_states)
 { 
 } 
 //-----------------------------------------------------------------------------

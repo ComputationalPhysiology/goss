@@ -75,11 +75,24 @@ namespace goss {
     // Evaluate the linear derivatives
     virtual void linear_derivatives(const double* states, double time, double* values) const;
     
+    // Returns true if the ODE is a DAE (then only implicit solvers can be used)
+    bool is_dae() const
+    { return _is_dae;}
+
+    // Return a view of the differential states of the ODE
+    const std::vector<bool>& differential_states() const
+    { return _differential_states; }
+
   protected: 
     
     // ODE size
     const uint _num_states;
 
+    // Flags for what states are differential
+    std::vector<bool> _differential_states;
+
+    // Flag to determine if an ODE is a DAE
+    bool _is_dae;
     
   private:
 

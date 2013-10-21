@@ -76,8 +76,8 @@ namespace goss
     // Scale a matrix
     void mult(double fact, double* mat);
 
-    // Add identity to matrix
-    void add_identity(double* mat);
+    // Add the mass matrix based on what states are differential
+    void add_mass_matrix(double *mat) const;
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 

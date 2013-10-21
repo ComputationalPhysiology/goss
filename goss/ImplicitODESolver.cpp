@@ -120,12 +120,6 @@ void ImplicitODESolver::mult(double scale, double* mat)
       mat[i*num_states()+j] *= scale;
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::add_identity(double* mat)
-{
-  for (uint i = 0; i < num_states(); ++i)
-    mat[i*num_states()+i] += 1;
-}
-//-----------------------------------------------------------------------------
 bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double t,
 				     double dt, double alpha)
 {
@@ -147,7 +141,8 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     
     // Build rhs for linear solve
     for (i = 0; i < num_states(); ++i)
-      _b[i] = -z[i] + dt*(prev[i] + alpha*_f1[i]);
+      _b[i] = -z[i]*static_cast<double>(_ode->differential_states()[i]) + \
+	dt*(prev[i] + alpha*_f1[i]);
 
     // Linear solve on factorized jacobian
     _ode->forward_backward_subst(&jac[0], &_b[0], &_dz[0]);
@@ -226,7 +221,6 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     prev_residual = residual;
     newtonits++;
     
-    
     // eta*residul is the iteration error and an estimation of the
     // local discretization error.
   } while(eta*residual >= _kappa*_newton_tol);
@@ -245,5 +239,11 @@ double ImplicitODESolver::norm(double* vec)
 
   l2_norm = std::sqrt(l2_norm);
   return l2_norm;
+}
+//-----------------------------------------------------------------------------
+void ImplicitODESolver::add_mass_matrix(double* mat) const
+{
+  for (uint i = 0; i < num_states(); ++i)
+    mat[i*num_states()+i] += static_cast<double>(_ode->differential_states()[i]);
 }
 //-----------------------------------------------------------------------------
