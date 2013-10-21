@@ -17,8 +17,10 @@
 //
 // Modified by Johan Hake 2012
 
-#include "ESDIRK4O32.h"
 #include <stdio.h>
+
+#include "log.h"
+#include "ESDIRK4O32.h"
 
 using namespace goss;
 
@@ -144,6 +146,11 @@ void  ESDIRK4O32::attach(boost::shared_ptr<ODE> ode)
 
   // Use base classes to actually attach ode
   ImplicitODESolver::attach(ode);
+
+  if (ode->is_dae())
+    goss_error("ESDIRK4o32.cpp",
+	       "attaching ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
 
   z1.resize(num_states());
   z2.resize(num_states());

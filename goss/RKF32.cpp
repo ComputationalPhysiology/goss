@@ -22,6 +22,7 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "log.h"
 #include "types.h"
 #include "RKF32.h"
 
@@ -139,6 +140,11 @@ void RKF32::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using base class. 
   // NOTE: This will trigger call to reset
   ODESolver::attach(ode);
+
+  if (ode->is_dae())
+    goss_error("RKF32.cpp",
+	       "attaching ode",
+	       "cannot integrate a DAE ode with an explicit solver.");
 
   // Initilize RK increments
   ki.resize(num_states()); 
