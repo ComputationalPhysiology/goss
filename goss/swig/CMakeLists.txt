@@ -25,7 +25,10 @@ set(CMAKE_SWIG_FLAGS
   -O
   -Iinclude/swig
   ${GOSS_CXX_DEFINITIONS}
+  ${GOSS_PYTHON_DEFINITIONS}
   )
+
+add_definitions(${GOSS_PYTHON_DEFINITIONS})
 
 # Get all SWIG interface files
 
