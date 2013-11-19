@@ -153,6 +153,18 @@ if (ENABLE_PYTHON_EXTENSION_MODULE)
 endif()
 
 #------------------------------------------------------------------------------
+# Installation of GOSS utilities
+
+set(GOSS_UTILITIES
+  ${GOSS_SOURCE_DIR}/scripts/gotran2goss
+  )
+
+install(FILES ${GOSS_UTILITIES}
+  DESTINATION ${GOSS_BIN_DIR}
+  PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE
+  COMPONENT RuntimeExecutables)
+
+#------------------------------------------------------------------------------
 # If enabling unit testing add test subdirectory
 
 if (GOSS_ENABLE_UNIT_TESTS)
