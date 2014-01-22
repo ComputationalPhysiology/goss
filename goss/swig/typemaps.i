@@ -151,6 +151,9 @@
 // Apply typemap to const
 %apply double* field_params { const double* field_params }
 
+// Apply states typemap to y (used in ODESolver::forward)
+%apply const double* states { double* y }
+
 // The typecheck
 %typecheck(SWIG_TYPECHECK_DOUBLE_ARRAY) double *
 {
