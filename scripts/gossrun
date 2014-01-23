@@ -1,0 +1,162 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import division
+__author__ = "Johan Hake (hake.dev@gmail.com)"
+__date__ = "2013-03-13 -- 2014-01-23"
+__copyright__ = "Copyright (C) 2013 " + __author__
+__license__  = "GNU LGPL Version 3.0 or later"
+
+from modelparameters.codegeneration import latex
+from scipy.integrate import odeint
+import pylab
+import numpy as np
+import instant
+from gotran.model.loadmodel2 import load_ode
+from gotran.common.options import parameters
+from gotran.common import error
+from gotran.codegeneration.compilemodule2 import compile_module
+
+from goss.codegeneration2 import GossCodeGenerator
+from goss.compilemodule2 import jit as goss_jit
+from goss import goss_solvers
+import goss
+
+def main(filename, params):
+
+    # Compile executeable code from gotran ode
+    ode = load_ode(filename)
+
+    # Get monitored and plot states
+    plot_states = params.plot
+    state_names = [state.name for state in ode.full_states]
+    monitored = [plot_states.pop(plot_states.index(name)) \
+                 for name in plot_states[:] if name not in state_names]
+
+    goss_ode = goss_jit(ode, monitored=monitored, code_params=params.code)
+
+    parameter_values = params.parameters
+    init_conditions = params.init_conditions
+
+    if len(parameter_values) == 1 and parameter_values[0] == "":
+        parameter_values = []
+
+    if len(init_conditions) == 1 and init_conditions[0] == "":
+        init_conditions = []
+
+    if len(parameter_values) % 2 != 0:
+        error("Expected an even number of values for 'parameters'")
+
+    if len(init_conditions) % 2 != 0:
+        error("Expected an even number of values for 'initial_conditions'")
+
+    # Set parameters direct to the compiled goss ODE
+    user_params = dict()
+    for param_name, param_value in [(parameter_values[i*2], parameter_values[i*2+1]) \
+                                    for i in range(int(len(parameter_values)/2))]:
+        goss_ode.set_parameter(param_name, float(param_value))
+
+    # Extract initial conditions
+    user_ic = dict()
+    for state_name, state_value in [(init_conditions[i*2], init_conditions[i*2+1]) \
+                                    for i in range(int(len(init_conditions)/2))]:
+        
+        user_ic[state_name] = float(state_value)
+
+    # FIXME: Update GOSS to do this more easily within GOSS
+    # Create python module to set init values
+    python_params = parameters.generation.copy()
+    for name in python_params.functions:
+        python_params.functions[name].generate = False
+
+    module = compile_module(ode, language="Python", generation_params=python_params)
+
+    # Get plot inds and initial conditions
+    plot_inds = np.array([module.state_indices(state) for state in plot_states], dtype=int)
+    states = module.init_state_values(**user_ic)
+
+    # Create the Solver
+    ldt = params.ldt
+    if ldt > 0:
+        # Try using the ldt when intantiating the solver (Not all solvers support ldt)
+        try:
+            solver = getattr(goss, params.solver)(goss_ode, ldt)
+        except:
+            solver = getattr(goss, params.solver)(goss_ode)
+    else:
+        solver = getattr(goss, params.solver)(goss_ode)
+
+    # Use to integrate model
+    t0 = 0.
+    t1 = params.tstop
+    dt = params.dt
+
+    tsteps = np.linspace(t0, t1, t1/dt+1)
+
+    # Create numpy array for monitored values
+    monitored_values = np.zeros(len(monitored), dtype=np.float_)
+    single_state_values = np.zeros(len(plot_states), dtype=np.float_)
+    
+    # Allocate memory
+    collected_values = np.zeros((len(plot_states)+len(monitored), len(tsteps)))
+
+    # Save the initial conditions
+    if plot_states:
+        collected_values[:len(plot_states), 0] = states[plot_inds]
+    if monitored:
+        goss_ode.eval_monitored(states, t0, monitored_values)
+        collected_values[len(plot_states):, 0] = monitored_values
+
+    p = goss.Progress("Stepping {0} with {1}".format(ode, params.solver), len(tsteps))
+
+    # Integrate solution
+    for ind, t in enumerate(tsteps[:-1]):
+
+        # Step solver
+        solver.forward(states, t, dt)
+
+        # Collect plotstates and monitored
+        if plot_states:
+            collected_values[:len(plot_states), ind+1] = states[plot_inds]
+        if monitored:
+            goss_ode.eval_monitored(states, t, monitored_values)
+            collected_values[len(plot_states):, ind+1] = monitored_values
+
+        p += 1
+    
+    # Build plot arguments
+    pylab.plot(tsteps, np.transpose(collected_values))
+    pylab.legend(["$\\mathrm{{{0}}}$".format(latex(value))
+                  for value in plot_states + monitored])
+    pylab.xlabel("time")
+    pylab.title(ode.name.replace("_", "\\_"))
+    pylab.show()
+
+if __name__ == "__main__":
+    import sys, os
+    from modelparameters.parameterdict import *
+
+    code_params = GossCodeGenerator.default_parameters()
+    
+    params = ParameterDict(\
+        solver = OptionParam("ImplicitEuler", goss_solvers, \
+                             description="The ODE solver used to integrate "\
+                             "the ODE/DAE."),
+        parameters = Param([""], description="Set parameter of model"),
+        init_conditions = Param([""], description="Set initial condition of model"),
+        tstop = ScalarParam(100., gt=0, description="Time for stopping simulation"),\
+        dt = ScalarParam(0.1, gt=0, description="Timestep for plotting."),\
+        ldt = ScalarParam(-1., ge=-1, description="Intermediate timesteps."),\
+        plot = Param(["V"], description="States or monitored to plot."),\
+        code = code_params)
+    
+    params.parse_args(usage="usage: %prog FILE [options]")
+    
+    if len(sys.argv) < 2:
+        error("Expected a single gotran file argument.")
+
+    if not os.path.isfile(sys.argv[1]):
+        error("Expected the argument to be a file.", exception=IOError)
+	 
+    file_name = sys.argv[1]
+    main(file_name, params)
