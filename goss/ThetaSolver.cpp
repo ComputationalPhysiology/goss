@@ -2,7 +2,7 @@
 #include <cmath>
 
 #include "ThetaSolver.h"
-
+#include "log.h"
 
 using namespace goss;
 
@@ -50,6 +50,22 @@ void ThetaSolver::reset()
   ImplicitODESolver::reset();
 }
 //-----------------------------------------------------------------------------
+void ThetaSolver::compute_factorized_jacobian(double* y, double t, double dt)
+{
+  
+  // Let ODE compute the jacobian
+  _ode->compute_jacobian(y, t, &jac[0]);
+
+  // Build Theta discretization of jacobian
+  mult(-dt*(1-theta), &jac[0]);
+  add_mass_matrix(&jac[0]);
+
+  // Factorize the jacobian
+  _ode->lu_factorize(&jac[0]);
+  jac_comp += 1;
+
+}
+//-----------------------------------------------------------------------------
 void ThetaSolver::forward(double* y, double t, double interval)
 {
 
@@ -73,18 +89,10 @@ void ThetaSolver::forward(double* y, double t, double interval)
   {
     num_tsteps += 1;
   
+    // Recompute the jacobian if nessesary
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(y, t, &jac[0]);
-
-      // Build Theta discretization of jacobian
-      mult(-_dt*(1-theta), &jac[0]);
-      add_mass_matrix(&jac[0]);
-
-      // Factorize jacobian
-      _ode->lu_factorize(&jac[0]);
-      jac_comp += 1;
-      
+      compute_factorized_jacobian(y, t, _dt);
     }
 
     // Use 0.0 z1:
@@ -155,8 +163,9 @@ void ThetaSolver::forward(double* y, double t, double interval)
     }
   }
 #ifdef DEBUG
-  printf("ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e in "\
-	 "%ld steps\n", jac_comp, rejects, t, num_tsteps);
+  // Lower level than DEBUG!
+  log(5, "ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e in " \
+      "%ld steps\n", jac_comp, rejects, t, num_tsteps);
 #endif
 
 }

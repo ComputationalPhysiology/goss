@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-01-23"
+__date__ = "2013-03-13 -- 2014-01-27"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -21,6 +21,8 @@ from goss.codegeneration2 import GossCodeGenerator
 from goss.compilemodule2 import jit as goss_jit
 from goss import goss_solvers
 import goss
+
+#goss.set_log_level(goss.DEBUG)
 
 def main(filename, params):
 
@@ -86,6 +88,10 @@ def main(filename, params):
     else:
         solver = getattr(goss, params.solver)(goss_ode)
 
+    # FIXME: Hardcoding solver parameters
+    #if isinstance(solver, goss.ImplicitODESolver):
+    #    solver.set_newton_tol(1.e-5)
+        
     # Use to integrate model
     t0 = 0.
     t1 = params.tstop

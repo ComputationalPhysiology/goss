@@ -58,6 +58,9 @@ namespace goss
     // Step solver an interval of time forward
     void forward(double* y, double t, double dt);
 
+    // Solver specific compute jacobian method
+    void compute_factorized_jacobian(double* y, double t, double dt);
+
     // Theta parameter
     double theta;
 

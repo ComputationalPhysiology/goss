@@ -172,6 +172,22 @@ void ESDIRK4O32::reset()
   AdaptiveImplicitSolver::reset();
 }
 //-----------------------------------------------------------------------------
+void ESDIRK4O32::compute_factorized_jacobian(double* y, double t, double dt)
+{
+  
+  // Let ODE compute the jacobian
+  _ode->compute_jacobian(y, t, &jac[0]);
+  nfevals += num_states();
+
+  // compute_jacobian(t + c2*dt, y);
+  mult(-dt*a22, &jac[0]);
+  add_mass_matrix(&jac[0]);
+  _ode->lu_factorize(&jac[0]);
+  jac_comp += 1;
+  recompute_jacobian = false;
+
+}
+//-----------------------------------------------------------------------------
 void ESDIRK4O32::forward(double* y, double t, double interval) 
 {
   // NB sjekk definisjonen av prev vs hvilken dt som sendes til NewtonSolve!
@@ -217,16 +233,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     //Jacobian recomputed once for each local step
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(y, t, &jac[0]);
-      nfevals += num_states();
-
-      // compute_jacobian(t + c2*dt, y);
-      mult(-_dt*a22, &jac[0]);
-      add_mass_matrix(&jac[0]);
-      _ode->lu_factorize(&jac[0]);
-      jac_comp += 1;
-      recompute_jacobian = false;
-      //printf("Recomputed jac at t=%1.4e with dt=%1.4e\n",t,dt);
+      compute_factorized_jacobian(y, t, _dt);
     }
 
     // Computes the first node explicitly

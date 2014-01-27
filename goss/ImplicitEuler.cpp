@@ -4,6 +4,7 @@
 
 #include "ImplicitEuler.h"
 #include "log.h"
+#include "constants.h"
 
 using namespace goss;
 
@@ -67,6 +68,22 @@ void ImplicitEuler::reset()
   ImplicitODESolver::reset();
 }
 //-----------------------------------------------------------------------------
+void ImplicitEuler::compute_factorized_jacobian(double* y, double t, double dt)
+{
+  
+  // Let ODE compute the jacobian
+  _ode->compute_jacobian(y, t, &jac[0]);
+
+  // Build Euler discretization of jacobian
+  mult(-dt, &jac[0]);
+  add_mass_matrix(&jac[0]);
+
+  // Factorize the jacobian
+  _ode->lu_factorize(&jac[0]);
+  jac_comp += 1;
+
+}
+//-----------------------------------------------------------------------------
 void ImplicitEuler::forward(double* y, double t, double interval) 
 {
 
@@ -83,24 +100,17 @@ void ImplicitEuler::forward(double* y, double t, double interval)
   bool step_ok, done = false;
 
   // A way to check if we are at t_end.
-  const double eps = 1e-14;
+  const double eps = GOSS_EPS*1000;
 
   while (!done)
   {
   
     num_tsteps += 1;
     
+    // Recompute the jacobian if nessesary
     if (recompute_jacobian)
     {
-      _ode->compute_jacobian(y, t, &jac[0]);
-
-      // Build Euler discretization of jacobian
-      mult(-_dt, &jac[0]);
-      add_mass_matrix(&jac[0]);
-
-      // Factorize jacobian
-      _ode->lu_factorize(&jac[0]);
-      jac_comp += 1;
+      compute_factorized_jacobian(y, t, _dt);
     }
 
     // Use 0.0 as initial guess
@@ -134,18 +144,22 @@ void ImplicitEuler::forward(double* y, double t, double interval)
         }
 	else
 	{
-          double tmp = 2.0*_dt;
+          const double tmp = 2.0*_dt;
 	  //if (fabs(_ldt-tmp) < eps)
 	  if (_ldt > 0 && tmp >= _ldt)
             _dt = _ldt;
           else
             _dt = tmp;
+	  //if (std::abs(_dt-tmp/2)<GOSS_EPS)
+	    goss_debug2("Changing dt from %e to %e", tmp/2, _dt);
         }
 	
 	// If we are passed t_end
         if ((t + _dt) > t_end)
+	{
 	  _dt = t_end - t;
-	
+	  goss_debug1("Adapting timestep due to t_end: dt %e", _dt);
+	}
       }
       
       // Add increment
@@ -158,6 +172,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     else
     {
       _dt /= 2.0;
+      goss_debug1("Reducing dt: %e", _dt);
 
       recompute_jacobian = true;
       justrefined = true;
@@ -167,8 +182,9 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     }
   }
 #ifdef DEBUG
-  printf("ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e in "\
-	 "%ld steps\n", jac_comp, rejects, t, num_tsteps);
+  // Lower level than DEBUG!
+  log(5, "ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e in " \
+      "%ld steps\n", jac_comp, rejects, t, num_tsteps);
 #endif
 }
 //-----------------------------------------------------------------------------

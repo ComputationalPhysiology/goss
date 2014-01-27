@@ -54,6 +54,9 @@ namespace goss
     // Step solver an interval of time forward
     virtual void forward(double* y, double t, double interval) = 0;
 
+    // Solver specific compute jacobian method
+    virtual void compute_factorized_jacobian(double* y, double t, double dt) = 0;
+
     // Set newton tolerance
     void set_newton_tol(double newton_tol){ _newton_tol = newton_tol; }
 
