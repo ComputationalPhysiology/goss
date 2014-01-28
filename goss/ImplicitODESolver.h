@@ -63,6 +63,9 @@ namespace goss
     // Set absolute tolerance
     void set_absolute_tol(double absolute_tol){ _absolute_tol = absolute_tol; }
 
+    // Set newton tolerance
+    void set_max_iterations(uint maxits_){maxits = maxits_;}
+
     // Set max relative residual
     void set_max_relative_residual(double max_relative_residual)
     { _max_relative_residual = max_relative_residual; }
@@ -80,7 +83,7 @@ namespace goss
     void mult(double fact, double* mat);
 
     // Add the mass matrix based on what states are differential
-    void add_mass_matrix(double *mat) const;
+    void add_mass_matrix(double *mat, double weight=1.0) const;
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 

@@ -110,7 +110,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     // Recompute the jacobian if nessesary
     if (recompute_jacobian)
     {
-      compute_factorized_jacobian(y, t, _dt);
+      compute_factorized_jacobian(y, t+_dt, _dt);
     }
 
     // Use 0.0 as initial guess
@@ -118,7 +118,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
       z1[i] = 0.0;
 
     // Solve for increment
-    step_ok = newton_solve(&z1[0], &_prev[0], y, t + _dt, _dt, 1.0);    
+    step_ok = newton_solve(&z1[0], &_prev[0], y, t+_dt, _dt, 1.0);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
     dt_v.push_back(_dt);

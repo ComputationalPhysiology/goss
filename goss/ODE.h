@@ -80,7 +80,7 @@ namespace goss {
     { return _is_dae;}
 
     // Return a view of the differential states of the ODE
-    const std::vector<bool>& differential_states() const
+    const std::vector<unsigned char>& differential_states() const
     { return _differential_states; }
 
   protected: 
@@ -89,7 +89,7 @@ namespace goss {
     const uint _num_states;
 
     // Flags for what states are differential
-    std::vector<bool> _differential_states;
+    std::vector<unsigned char> _differential_states;
 
     // Flag to determine if an ODE is a DAE
     bool _is_dae;

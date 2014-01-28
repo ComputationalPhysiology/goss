@@ -14,7 +14,7 @@ namespace goss
 
     VanDerPol() : ODE(2)
     {
-      _differential_states[1] = false;
+      _differential_states[1] = 0;
       _is_dae = true;
     }
 

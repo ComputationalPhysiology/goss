@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-01-27"
+__date__ = "2013-03-13 -- 2014-01-28"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -22,6 +22,7 @@ from goss.compilemodule2 import jit as goss_jit
 from goss import goss_solvers
 import goss
 
+goss.set_log_level(goss.PROGRESS)
 #goss.set_log_level(goss.DEBUG)
 
 def main(filename, params):
@@ -89,8 +90,10 @@ def main(filename, params):
         solver = getattr(goss, params.solver)(goss_ode)
 
     # FIXME: Hardcoding solver parameters
-    #if isinstance(solver, goss.ImplicitODESolver):
-    #    solver.set_newton_tol(1.e-5)
+    if isinstance(solver, goss.ImplicitODESolver):
+        solver.set_newton_tol(1.e-5)
+        solver.set_absolute_tol(1.e-6)
+        solver.set_max_iterations(30)
         
     # Use to integrate model
     t0 = 0.
@@ -129,6 +132,12 @@ def main(filename, params):
             collected_values[len(plot_states):, ind+1] = monitored_values
 
         p += 1
+
+    if isinstance(solver, goss.ImplicitODESolver):
+        goss.debug("Jacobian computed {0} times".format(solver.num_jac_comp()))
+
+    if collected_values.shape[0] == 0:
+        return 
     
     # Build plot arguments
     pylab.plot(tsteps, np.transpose(collected_values))

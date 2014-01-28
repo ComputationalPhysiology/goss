@@ -51,6 +51,7 @@
 #include <goss/RK2.h>
 //#include <goss/RKF34.h>
 #include <goss/RKF32.h>
+#include <goss/BasicImplicitEuler.h>
 #include <goss/ImplicitEuler.h>
 #include <goss/ThetaSolver.h>
 //#include <goss/ImplicitMidPointSolver.h>

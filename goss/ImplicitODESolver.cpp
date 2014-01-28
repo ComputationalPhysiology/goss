@@ -140,9 +140,9 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     _ode->eval(&_yz[0], t, &_f1[0]);
     
     // Build rhs for linear solve
+    // z = y-y0
     for (i = 0; i < num_states(); ++i)
-      _b[i] = -z[i]*static_cast<double>(_ode->differential_states()[i]) + \
-	dt*(prev[i] + alpha*_f1[i]);
+      _b[i] = -z[i]*_ode->differential_states()[i] + dt*(prev[i] + alpha*_f1[i]);
 
     // Linear solve on factorized jacobian
     _ode->forward_backward_subst(&jac[0], &_b[0], &_dz[0]);
@@ -241,9 +241,9 @@ double ImplicitODESolver::norm(double* vec)
   return l2_norm;
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::add_mass_matrix(double* mat) const
+void ImplicitODESolver::add_mass_matrix(double* mat, double weight) const
 {
   for (uint i = 0; i < num_states(); ++i)
-    mat[i*num_states()+i] += static_cast<double>(_ode->differential_states()[i]);
+    mat[i*num_states()+i] += weight*_ode->differential_states()[i];
 }
 //-----------------------------------------------------------------------------
