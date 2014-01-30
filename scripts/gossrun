@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-01-28"
+__date__ = "2013-03-13 -- 2014-01-29"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -13,6 +13,7 @@ import pylab
 import numpy as np
 import instant
 from gotran.model.loadmodel2 import load_ode
+from gotran.model.expressions2 import Expression
 from gotran.common.options import parameters
 from gotran.common import error
 from gotran.codegeneration.compilemodule2 import compile_module
@@ -33,8 +34,10 @@ def main(filename, params):
     # Get monitored and plot states
     plot_states = params.plot
     state_names = [state.name for state in ode.full_states]
-    monitored = [plot_states.pop(plot_states.index(name)) \
-                 for name in plot_states[:] if name not in state_names]
+    monitored_plot = [plot_states.pop(plot_states.index(name)) \
+                      for name in plot_states[:] if name not in state_names]
+    
+    monitored = [expr.name for expr in ode.intermediates + ode.state_expressions]
 
     goss_ode = goss_jit(ode, monitored=monitored, code_params=params.code)
 
@@ -75,7 +78,10 @@ def main(filename, params):
     module = compile_module(ode, language="Python", generation_params=python_params)
 
     # Get plot inds and initial conditions
-    plot_inds = np.array([module.state_indices(state) for state in plot_states], dtype=int)
+    plot_inds = np.array([module.state_indices(state) for state in \
+                          plot_states], dtype=int)
+    monitor_inds = np.array([monitored.index(monitor) \
+                             for monitor in monitored_plot], dtype=int)
     states = module.init_state_values(**user_ic)
 
     # Create the Solver
@@ -104,17 +110,16 @@ def main(filename, params):
 
     # Create numpy array for monitored values
     monitored_values = np.zeros(len(monitored), dtype=np.float_)
-    single_state_values = np.zeros(len(plot_states), dtype=np.float_)
     
     # Allocate memory
-    collected_values = np.zeros((len(plot_states)+len(monitored), len(tsteps)))
+    collected_values = np.zeros((len(plot_states)+len(monitored_plot), len(tsteps)))
 
     # Save the initial conditions
     if plot_states:
         collected_values[:len(plot_states), 0] = states[plot_inds]
-    if monitored:
+    if monitored_plot:
         goss_ode.eval_monitored(states, t0, monitored_values)
-        collected_values[len(plot_states):, 0] = monitored_values
+        collected_values[len(plot_states):, 0] = monitored_values[monitor_inds]
 
     p = goss.Progress("Stepping {0} with {1}".format(ode, params.solver), len(tsteps))
 
@@ -127,9 +132,9 @@ def main(filename, params):
         # Collect plotstates and monitored
         if plot_states:
             collected_values[:len(plot_states), ind+1] = states[plot_inds]
-        if monitored:
+        if monitored_plot:
             goss_ode.eval_monitored(states, t, monitored_values)
-            collected_values[len(plot_states):, ind+1] = monitored_values
+            collected_values[len(plot_states):, ind+1] = monitored_values[monitor_inds]
 
         p += 1
 
@@ -139,10 +144,10 @@ def main(filename, params):
     if collected_values.shape[0] == 0:
         return 
     
-    # Build plot arguments
+    # Plot data
     pylab.plot(tsteps, np.transpose(collected_values))
     pylab.legend(["$\\mathrm{{{0}}}$".format(latex(value))
-                  for value in plot_states + monitored])
+                  for value in plot_states + monitored_plot])
     pylab.xlabel("time")
     pylab.title(ode.name.replace("_", "\\_"))
     pylab.show()
