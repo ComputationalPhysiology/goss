@@ -52,6 +52,44 @@
 //  }
 //}
 
+%extend goss::ODESystemSolver {
+
+PyObject* _states() 
+{
+  npy_intp adims[1] = {self->num_nodes()*self->ode()->num_states()};
+  return PyArray_SimpleNewFromData(1, adims, NPY_DOUBLE, (char *)(self->states()));
+}
+
+PyObject* _states(uint node) 
+{
+  npy_intp adims[1] = {self->ode()->num_states()};
+  return PyArray_SimpleNewFromData(1, adims, NPY_DOUBLE, (char *)(self->states(node)));
+}
+
+%pythoncode
+%{
+
+def states(self, node=None):
+    """
+    Return a view of the states
+
+    Arguments
+    ---------
+    node : int (optional)
+        If provided the states from a specific node is returned, otherwise all 
+        states are returned.
+    """
+    if node is None:
+        return self._states()
+    if not isinstance(node, int):
+        error("Expected the node argument to be an int.")
+    if node >= self.num_nodes():
+        error("Expected the node argument to be less than the number of nodes.")
+    return self._states(node)
+
+%}
+}
+
 %extend goss::Progress {
 
 void _add(int incr) {

@@ -19,6 +19,8 @@
 %ignore goss::DoubleVector::data;
 %ignore goss::DoubleVector2D::data;
 
+%ignore goss::ODESystemSolver::states;
+
 //-----------------------------------------------------------------------------
 // Need to ignore these dues to SWIG confusion of overloaded functions
 //-----------------------------------------------------------------------------

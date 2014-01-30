@@ -64,6 +64,18 @@ namespace goss
     // Set the number of threads
     void set_num_threads(uint num_threads);
     
+    // Get a const pointer to the whole states data array
+    const double* states() const {return _states.data();}
+    
+    // Get a pointer to the whole states data array
+    double* states(){return _states.data();}
+    
+    // Get a const pointer to the states data of one node
+    const double* states(uint node) const {return &_states[node*_ode->num_states()];}
+    
+    // Get a pointer to the states data of one node
+    double* states(uint node){return &_states[node*_ode->num_states()];}
+    
     // Get the number of threads
     inline uint get_num_threads() const;
 
@@ -75,6 +87,7 @@ namespace goss
     
     // Get the number of nodes
     inline uint num_nodes() {return _num_nodes;}
+
     
   private:
 
