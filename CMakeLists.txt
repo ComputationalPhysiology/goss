@@ -171,7 +171,7 @@ install(FILES ${GOSS_UTILITIES}
 
 if (GOSS_ENABLE_UNIT_TESTS)
   enable_testing()
-  add_subdirectory(test)
+  add_subdirectory(test/cpp)
   
 endif()
 
