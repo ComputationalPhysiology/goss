@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-01-29"
+__date__ = "2013-03-13 -- 2014-02-03"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -18,8 +18,8 @@ from gotran.common.options import parameters
 from gotran.common import error
 from gotran.codegeneration.compilemodule2 import compile_module
 
-from goss.codegeneration2 import GossCodeGenerator
-from goss.compilemodule2 import jit as goss_jit
+from goss.codegeneration import GossCodeGenerator
+from goss.compilemodule import jit as goss_jit
 from goss import goss_solvers
 import goss
 
