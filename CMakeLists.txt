@@ -157,7 +157,6 @@ endif()
 
 set(GOSS_UTILITIES
   ${GOSS_SOURCE_DIR}/scripts/gotran2goss
-  ${GOSS_SOURCE_DIR}/scripts/gotran2goss2
   ${GOSS_SOURCE_DIR}/scripts/gossrun
   )
 

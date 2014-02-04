@@ -86,13 +86,14 @@ void BasicImplicitEuler::forward(double* y, double t, double interval)
 
   assert(_ode);
 
-  double incr_residual, residual, residual0, relative_residual;
+  double residual, residual0=1.0, relative_residual; //incr_residual
 
   // Local time
   double lt = t+interval;
   double dt = interval;
 
-  bool recompute_jacobian = true;
+  // NOT USED.
+  bool recompute_jacobian_ = true;
 
   // Calculate number of steps and size of timestep based on _ldt
 
@@ -139,7 +140,7 @@ void BasicImplicitEuler::forward(double* y, double t, double interval)
   {
     
     // Compute Jacobian
-    if (recompute_jacobian || newtonits==0)
+    if (recompute_jacobian_==0)
       compute_factorized_jacobian(y, lt, dt);
     
     // Linear solve on factorized jacobian
@@ -149,13 +150,13 @@ void BasicImplicitEuler::forward(double* y, double t, double interval)
     if (newtonits == 0)
     {
       residual = residual0 = norm(_b.data());
-      incr_residual = norm(_dz.data());
+      //incr_residual = norm(_dz.data());
     }
     else
     {
       // Compute resdiual
       residual = norm(_b.data());
-      incr_residual = norm(_dz.data());
+      //incr_residual = norm(_dz.data());
     }
 	  
     for (uint i = 0; i < num_states(); ++i)
