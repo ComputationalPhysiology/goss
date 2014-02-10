@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-02-03"
+__date__ = "2013-03-13 -- 2014-02-10"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -12,11 +12,11 @@ from scipy.integrate import odeint
 import pylab
 import numpy as np
 import instant
-from gotran.model.loadmodel2 import load_ode
-from gotran.model.expressions2 import Expression
+from gotran.model.loadmodel import load_ode
+from gotran.model.expressions import Expression
 from gotran.common.options import parameters
 from gotran.common import error
-from gotran.codegeneration.compilemodule2 import compile_module
+from gotran.codegeneration.compilemodule import compile_module
 
 from goss.codegeneration import GossCodeGenerator
 from goss.compilemodule import jit as goss_jit
