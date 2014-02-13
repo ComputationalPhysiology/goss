@@ -56,8 +56,8 @@
 #include <goss/ThetaSolver.h>
 //#include <goss/ImplicitMidPointSolver.h>
 //#include <goss/SDIRK2O2.h>
-//#include <goss/SDIRK2O3.h>
 #include <goss/ESDIRK4O32.h>
+#include <goss/ESDIRK23a.h>
 #include <goss/GRL1.h>
 #include <goss/GRL2.h>
 #include <goss/RL.h>

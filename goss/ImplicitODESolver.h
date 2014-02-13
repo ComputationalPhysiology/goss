@@ -55,8 +55,8 @@ namespace goss
     virtual void forward(double* y, double t, double interval) = 0;
 
     // Solver specific compute jacobian method
+    //virtual void compute_factorized_jacobian(const double& dt) =0;
     virtual void compute_factorized_jacobian(double* y, double t, double dt) = 0;
-
     // Set newton tolerance
     void set_newton_tol(double newton_tol){ _newton_tol = newton_tol; }
 
@@ -76,7 +76,7 @@ namespace goss
 
     // Return the number of recomputation of the jacobian
     int num_jac_comp(){ return jac_comp; }
-
+    int num_lu_fact(){ return lu_fact; }
   protected:
   
     // Scale a matrix
@@ -114,7 +114,7 @@ namespace goss
     uint jac_size;
 
     uint stages;
-    int newtonits, maxits, rejects, jac_comp;
+    int newtonits, maxits, rejects, jac_comp, lu_fact;
     ulong num_tsteps;
 
     double min_dt;
