@@ -67,7 +67,7 @@ namespace goss
     virtual void compute_factorized_jacobian(const double& dt);
   
     //not really needed:
-    virtual void compute_factorized_jacobian(double* y, double t, double dt){};
+    virtual void compute_factorized_jacobian(double* , double , double ){};
  
     // Reset ODE
     virtual void reset();
@@ -95,7 +95,7 @@ namespace goss
     // Help variable
     double gamma;
     
-    bool new_jacobian,first_step;
+    bool new_jacobian, first_step;
 
     // RK coefficients
     double a21, a22, a31, a32, a33, a41, a42, a43, a44;

@@ -26,8 +26,9 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ESDIRK23a::ESDIRK23a()
   : AdaptiveImplicitSolver(),
-    j_fac(0),
     gamma(0.43586652150845899942), 
+    new_jacobian(true), 
+    first_step(true),
     a21(gamma), 
     a22(gamma), 
     a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
@@ -49,11 +50,14 @@ ESDIRK23a::ESDIRK23a()
     c4(1.0),
     s_fac(0.9),
     tol(1.0e-5),
-    etamin(1.0e-10),
+    loc_error(1e9),
+    prev_dt(0.1),
     eta(1.0),
+    etamin(1.0e-10),
     kappa(1.0e-1),
     totalits(0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
+    j_fac(0)
 {
   _iord = 3;
   maxits = 7;
@@ -63,8 +67,9 @@ ESDIRK23a::ESDIRK23a()
 //-----------------------------------------------------------------------------
 ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode, double ldt)
   : AdaptiveImplicitSolver(ldt),
-    j_fac(0),
     gamma(0.43586652150845899942), 
+    new_jacobian(true), 
+    first_step(true),
     a21(gamma), 
     a22(gamma), 
     a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
@@ -86,50 +91,16 @@ ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode, double ldt)
     c4(1.0),
     s_fac(0.9),
     tol(1.0e-5),
-    etamin(1.0e-10),
+    loc_error(1e9),
+    prev_dt(0.1),
     eta(1.0),
+    etamin(1.0e-10),
     kappa(1.0e-1),
     totalits(0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
+    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
+    j_fac(0)
 {
-  _iord = 3;
-  maxits = 7;
-  min_dt = 1.0e-5;
   attach(ode);
-  first_step = true;
-} 
-//-----------------------------------------------------------------------------
-ESDIRK23a::ESDIRK23a(double ldt)
-  : AdaptiveImplicitSolver(ldt),
-    j_fac(0),
-    gamma(0.43586652150845899942), 
-    a21(gamma), 
-    a22(gamma), 
-    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
-    a32((-2*gamma+1)/(4*gamma)), 
-    a33(gamma), 
-    a41((6*gamma-1)/(12*gamma)), 
-    a42(-1/((24*gamma-12)*gamma)), 
-    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
-    a44(gamma), 
-    b1(a41), 
-    b2(a42), 
-    b3(a43), 
-    b4(a44), 
-    bh1(a31), 
-    bh2(a32), 
-    bh3(a33), 
-    c2(2.0*gamma), 
-    c3(1.0), 
-    c4(1.0),
-    s_fac(0.9),
-    tol(1.0e-5),
-    etamin(1.0e-10),
-    eta(1.0),
-    kappa(1.0e-1),
-    totalits(0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
-{
   _iord = 3;
   maxits = 7;
   min_dt = 1.0e-5;
@@ -138,8 +109,9 @@ ESDIRK23a::ESDIRK23a(double ldt)
 //-----------------------------------------------------------------------------
 ESDIRK23a::ESDIRK23a(const ESDIRK23a& solver)
   : AdaptiveImplicitSolver(solver),
-    j_fac(0),
     gamma(0.43586652150845899942), 
+    new_jacobian(true), 
+    first_step(true),
     a21(gamma), 
     a22(gamma), 
     a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
@@ -161,18 +133,16 @@ ESDIRK23a::ESDIRK23a(const ESDIRK23a& solver)
     c4(1.0),
     s_fac(0.9),
     tol(1.0e-5),
-    etamin(1.0e-10),
+    loc_error(1e9),
+    prev_dt(0.1),
     eta(1.0),
+    etamin(1.0e-10),
     kappa(1.0e-1),
     totalits(0),
-    z1(solver.num_states()), z2(solver.num_states()), 
-    z3(solver.num_states()), z4(solver.num_states()), 
-    yn(solver.num_states()), yh(solver.num_states())
+  z1(solver.num_states()), z2(solver.num_states()), z3(solver.num_states()), z4(solver.num_states()), yn(solver.num_states()), yh(solver.num_states()),
+    j_fac(solver.num_states()*solver.num_states())
 {
   _iord = 3;
-  maxits = 7;
-  min_dt = 1.0e-5;
-  first_step = true;
 }
 //-----------------------------------------------------------------------------
 ESDIRK23a::~ESDIRK23a() 
@@ -205,8 +175,6 @@ void ESDIRK23a::reset()
   // Reset bases
   AdaptiveImplicitSolver::reset();
 }
-
-
 //-----------------------------------------------------------------------------
 void ESDIRK23a::compute_factorized_jacobian(const double& dt)
 {
@@ -215,6 +183,7 @@ void ESDIRK23a::compute_factorized_jacobian(const double& dt)
 
   //std::cout << "Calling factorize jacobian" << std::endl; 
 
+  // FIXME: Hake, I think memcopy is better here...
   j_fac = jac;
  
   mult(-dt*a22, &j_fac[0]);
@@ -223,7 +192,7 @@ void ESDIRK23a::compute_factorized_jacobian(const double& dt)
   lu_fact += 1;
   //recompute_jacobian = false;
 }
-
+//-----------------------------------------------------------------------------
 void ESDIRK23a::advance_one_step(double* y, const double& t0, double& dt)
 {
  
@@ -306,7 +275,7 @@ bool ESDIRK23a::do_step(double* y, const double& t0, const double& delta_t)
   }
   return step_ok;
 }
-
+//-----------------------------------------------------------------------------
 bool ESDIRK23a::compute_stage_val
     (std::vector<double>& z,
      double* y,
@@ -339,6 +308,8 @@ bool ESDIRK23a::compute_stage_val
       _b[i] = -z[i] + z_int[i];
    
     prev_dz = dz;  
+
+    // FIXME: This method does not do anything!
     compute_factorized_jacobian(y,t_s,dt);
     _ode->forward_backward_subst(&j_fac[0], &_b[0], dz.data());
    
@@ -369,9 +340,7 @@ bool ESDIRK23a::compute_stage_val
 
   return conv_ok;
 }
-   
-
-
+//-----------------------------------------------------------------------------
 void ESDIRK23a::reduce_time_step(double& delta_t)
 { 
   /*Reduces the time step based on the most recent value of the
@@ -390,9 +359,6 @@ void ESDIRK23a::reduce_time_step(double& delta_t)
   //delta_t = max(0.5*delta_t,min_dt);
   //std::cout << " to " << delta_t <<std::endl;
 }
-
-
-
 //-----------------------------------------------------------------------------
 void ESDIRK23a::forward(double* y, const double t0, const double interval) 
 {
@@ -434,4 +400,4 @@ void ESDIRK23a::forward(double* y, const double t0, const double interval)
   first_step = false;
   //std::cout << "@Rejects goss " << num_rejected << std::endl;
 }
-
+//-----------------------------------------------------------------------------
