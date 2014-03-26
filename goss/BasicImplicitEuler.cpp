@@ -5,6 +5,7 @@
 #include "BasicImplicitEuler.h"
 #include "log.h"
 #include "constants.h"
+#include "fenv.h"
 
 using namespace goss;
 
@@ -83,7 +84,7 @@ void BasicImplicitEuler::compute_factorized_jacobian(double* y, double t, double
 //-----------------------------------------------------------------------------
 void BasicImplicitEuler::forward(double* y, double t, double interval)
 {
-
+  feenableexcept(FE_INVALID | FE_OVERFLOW);
   assert(_ode);
 
   double residual, residual0=1.0, relative_residual; //incr_residual
@@ -140,9 +141,9 @@ void BasicImplicitEuler::forward(double* y, double t, double interval)
   {
     
     // Compute Jacobian
-    if (recompute_jacobian_==0)
+    if (recompute_jacobian_)
       compute_factorized_jacobian(y, lt, dt);
-    
+
     // Linear solve on factorized jacobian
     _ode->forward_backward_subst(jac.data(), _b.data(), _dz.data());
 	  

@@ -28,7 +28,7 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
   : ODESolver(), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    _newton_tol(1.e-5), eta(1.), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
     maxits(10), rejects(0), jac_comp(0), lu_fact(0), num_tsteps(0), min_dt(0.0), 
     recompute_jacobian(true), _absolute_tol(1.e-10), _max_relative_residual(1.e-3)
 {
@@ -37,7 +37,7 @@ ImplicitODESolver::ImplicitODESolver()
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(double ldt)
   : ODESolver(ldt), jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _newton_tol(1.e-5), eta(1e-10), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
+    _newton_tol(1.e-5), eta(1.), _kappa(0.1), jac_size(0), stages(0), newtonits(0), 
     maxits(10), rejects(0), jac_comp(0), lu_fact(0), num_tsteps(0), min_dt(0.0), 
     recompute_jacobian(true), _absolute_tol(1.e-10), _max_relative_residual(1.e-3)
 {
@@ -108,7 +108,7 @@ void ImplicitODESolver::reset()
   _newton_tol = 1.e-5;
 
   // Reset eta
-  eta = 1.e-10;
+  eta = 1.;
 
 }
 
