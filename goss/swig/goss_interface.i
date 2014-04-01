@@ -30,6 +30,10 @@
 %include <goss/LogLevel.h>
 %include <goss/timing.h>
 
+// Parameters
+%include <goss/Parameter.h>
+%include <goss/Parameters.h>
+
 // ODEs
 %include <goss/ODE.h>
 %include <goss/ParameterizedODE.h>

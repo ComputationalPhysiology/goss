@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-02-10"
+__date__ = "2013-03-13 -- 2014-04-01"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -39,7 +39,8 @@ def main(filename, params):
     
     monitored = [expr.name for expr in ode.intermediates + ode.state_expressions]
 
-    goss_ode = goss_jit(ode, monitored=monitored, code_params=params.code)
+    goss_ode = goss_jit(ode, monitored=monitored, code_params=params.code, \
+                        cppargs=params.cppargs)
 
     parameter_values = params.parameters
     init_conditions = params.init_conditions
@@ -82,6 +83,7 @@ def main(filename, params):
                           plot_states], dtype=int)
     monitor_inds = np.array([monitored.index(monitor) \
                              for monitor in monitored_plot], dtype=int)
+
     states = module.init_state_values(**user_ic)
 
     # Create the Solver
@@ -99,7 +101,7 @@ def main(filename, params):
     if isinstance(solver, goss.ImplicitODESolver):
         solver.set_newton_tol(1.e-5)
         solver.set_absolute_tol(1.e-6)
-        solver.set_max_iterations(30)
+        solver.set_max_iterations(240)
         
     # Use to integrate model
     t0 = 0.
@@ -168,7 +170,8 @@ if __name__ == "__main__":
         dt = ScalarParam(0.1, gt=0, description="Timestep for plotting."),\
         ldt = ScalarParam(-1., ge=-1, description="Intermediate timesteps."),\
         plot = Param(["V"], description="States or monitored to plot."),\
-        code = code_params)
+        code = code_params,
+        cppargs = Param("-O2 -g"), description="C++ compile arguments.")
     
     params.parse_args(usage="usage: %prog FILE [options]")
     

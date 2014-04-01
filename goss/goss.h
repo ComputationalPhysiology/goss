@@ -33,6 +33,10 @@
 #include <goss/Table.h>
 #include <goss/LogLevel.h>
 
+// Parameters
+#include <goss/Parameter.h>
+#include <goss/Parameters.h>
+
 // Timing
 #include <goss/timing.h>
 #include <goss/Timer.h>

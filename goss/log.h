@@ -130,6 +130,9 @@ namespace goss
                 std::string function,
                 std::string check);
 
+  // Helper function to indent stings
+  std::string indent(std::string block);
+
 }
 
 // The following three macros are the only "functions" in GOSS
