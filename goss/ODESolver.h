@@ -35,20 +35,19 @@ namespace goss
 
     // FIXME: Remove dt as variable...
     // Default Constructor
-    ODESolver () : _ldt(-1.0), _dt(0.0), _ode(static_cast<ODE*>(0))
+    ODESolver () : _ldt(-1.0), _ode(static_cast<ODE*>(0))
     {
       // Do nothing
     }
 
     // Constructor
-    ODESolver (double ldt, double dt=0.0) : _ldt(ldt), _dt(dt), 
-					    _ode(static_cast<ODE*>(0))
+    ODESolver (double ldt) : _ldt(ldt), _ode(static_cast<ODE*>(0))
     {
       // Do nothing
     }
 
     // Copy constructor (Uses default copy constructor of ODE)
-    ODESolver (const ODESolver& solver) : _ldt(solver._ldt), _dt(solver._dt), 
+    ODESolver (const ODESolver& solver) : _ldt(solver._ldt), 
 					  _ode(static_cast<ODE*>(0))
     {
       if (solver._ode)
@@ -97,9 +96,6 @@ namespace goss
     // Local time step.
     double _ldt;
 
-    // Variable local time step.
-    double _dt;
-    
     // Shared pointer to ode 
     boost::shared_ptr<ODE> _ode;
 

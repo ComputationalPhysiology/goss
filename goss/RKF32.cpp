@@ -78,7 +78,7 @@ RKF32::RKF32(double ldt)
 }
 //-----------------------------------------------------------------------------
 RKF32::RKF32(boost::shared_ptr<ODE> ode, double ldt) 
-  : AdaptiveExplicitSolver(ldt, 0.0), 
+  : AdaptiveExplicitSolver(ldt), 
     nfevals(0), ndtsa(0), ndtsr(0),
     a21(1.0/2.0), 
     a32(3.0/4.0), 

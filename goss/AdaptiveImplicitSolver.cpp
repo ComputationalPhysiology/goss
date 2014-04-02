@@ -28,7 +28,7 @@ using namespace goss;
 AdaptiveImplicitSolver::AdaptiveImplicitSolver() : 
   ImplicitODESolver(), num_accepted(0), num_rejected(0), step_accepted(false), 
   reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
-  _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
+  _dt(0.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
   facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
   dt_old(0.0), _itol(0)
 {
@@ -38,7 +38,7 @@ AdaptiveImplicitSolver::AdaptiveImplicitSolver() :
 AdaptiveImplicitSolver::AdaptiveImplicitSolver(double ldt) : 
   ImplicitODESolver(ldt), num_accepted(0), num_rejected(0), step_accepted(false), 
   reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
-  _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
+  _dt(0.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
   facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
   dt_old(0.0), _itol(0)
 {
@@ -49,11 +49,12 @@ AdaptiveImplicitSolver::AdaptiveImplicitSolver(const AdaptiveImplicitSolver& sol
   : ImplicitODESolver(solver), num_accepted(solver.num_accepted), 
     num_rejected(solver.num_rejected), step_accepted(solver.step_accepted), 
     reached_tend(solver.reached_tend), dt_v(solver.dt_v), accept_v(solver.accept_v), 
-    single_step_mode(solver.single_step_mode), _t(solver._t), _dt_prev(solver._dt_prev), 
-    _atol(solver._atol), _rtol(solver._rtol), _iord(solver._iord), facmin(solver.facmin), 
-    facmax(solver.facmax), facmaxb(solver.facmaxb), stabfac(solver.stabfac), 
-    stabdown(solver.stabdown), stabup(solver.stabup), err_old(solver.err_old), 
-    dt_old(solver.dt_old), _itol(solver._itol)
+    single_step_mode(solver.single_step_mode), _t(solver._t), _dt(solver._dt), 
+    _dt_prev(solver._dt_prev), _atol(solver._atol), _rtol(solver._rtol), 
+    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax), 
+    facmaxb(solver.facmaxb), stabfac(solver.stabfac), stabdown(solver.stabdown), 
+    stabup(solver.stabup), err_old(solver.err_old), dt_old(solver.dt_old), 
+    _itol(solver._itol)
 {
   // Do nothing
 }

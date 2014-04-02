@@ -36,7 +36,7 @@ namespace goss
     AdaptiveExplicitSolver();
 
     // Constructor
-    AdaptiveExplicitSolver(double ldt, double dt=0.0);
+    AdaptiveExplicitSolver(double ldt);
 
     // Copy constructor
     AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver);
@@ -84,7 +84,7 @@ namespace goss
 
     // Log of 1) the numer of steps, 2) the number of rejected steps
     ulong num_accepted, num_rejected;
-    double _t, _dt_prev;
+    double _t, _dt, _dt_prev;
 
     // Local time step and tolerence.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 

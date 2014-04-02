@@ -27,12 +27,12 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-RL::RL() : ODESolver(0.0, 0.0), a(0), b(0), linear_terms(0)
+RL::RL() : ODESolver(0.0), a(0), b(0), linear_terms(0)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(0.0, 0.0), a(0), b(0), 
+RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(0.0), a(0), b(0), 
 				     linear_terms(0)
 {
   attach(ode);

@@ -106,7 +106,7 @@ namespace goss
 
     bool single_step_mode;
     
-    double _t, _dt_prev;
+    double _t, _dt, _dt_prev;
 
     // local time step and tolerence.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 

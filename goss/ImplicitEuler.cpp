@@ -84,15 +84,15 @@ void ImplicitEuler::compute_factorized_jacobian(double* y, double t, double dt)
 
 }
 //-----------------------------------------------------------------------------
-void ImplicitEuler::forward(double* y, double t, double interval) 
+void ImplicitEuler::forward(double* y, double t, double dt) 
 {
 
   assert(_ode);
 
   uint i;
-  const double t_end = t + interval;
+  const double t_end = t + dt;
 
-  _dt = _ldt > 0 ? _ldt : interval;
+  double ldt = _ldt > 0 ? _ldt : dt;
   
   for (i = 0; i < num_states(); ++i)
     _prev[i] = 0.0;
@@ -110,7 +110,7 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     // Recompute the jacobian if nessesary
     if (recompute_jacobian)
     {
-      compute_factorized_jacobian(y, t+_dt, _dt);
+      compute_factorized_jacobian(y, t+ldt, ldt);
     }
 
     // Use 0.0 as initial guess
@@ -118,17 +118,17 @@ void ImplicitEuler::forward(double* y, double t, double interval)
       z1[i] = 0.0;
 
     // Solve for increment
-    step_ok = newton_solve(&z1[0], &_prev[0], y, t+_dt, _dt, 1.0);    
+    step_ok = newton_solve(&z1[0], &_prev[0], y, t+ldt, ldt, 1.0);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
-    dt_v.push_back(_dt);
+    dt_v.push_back(ldt);
 #endif
     
     // Newton step OK
     if (step_ok)
     {
       //std::cout << "Newton step OK: " << std::endl;
-      t += _dt;
+      t += ldt;
       if (std::fabs(t - t_end) < eps)
       {
         done = true;
@@ -144,21 +144,21 @@ void ImplicitEuler::forward(double* y, double t, double interval)
         }
 	else
 	{
-          const double tmp = 2.0*_dt;
+          const double tmp = 2.0*ldt;
 	  //if (fabs(_ldt-tmp) < eps)
 	  if (_ldt > 0 && tmp >= _ldt)
-            _dt = _ldt;
+            ldt = _ldt;
           else
-            _dt = tmp;
-	  //if (std::abs(_dt-tmp/2)<GOSS_EPS)
-	    goss_debug2("Changing dt from %e to %e", tmp/2, _dt);
+            ldt = tmp;
+	  //if (std::abs(ldt-tmp/2)<GOSS_EPS)
+	    goss_debug2("Changing dt from %e to %e", tmp/2, ldt);
         }
 	
 	// If we are passed t_end
-        if ((t + _dt) > t_end)
+        if ((t + ldt) > t_end)
 	{
-	  _dt = t_end - t;
-	  goss_debug1("Adapting timestep due to t_end: dt %e", _dt);
+	  ldt = t_end - t;
+	  goss_debug1("Adapting timestep due to t_end: dt %e", ldt);
 	}
       }
       
@@ -171,8 +171,8 @@ void ImplicitEuler::forward(double* y, double t, double interval)
     }
     else
     {
-      _dt /= 2.0;
-      goss_debug1("Reducing dt: %e", _dt);
+      ldt /= 2.0;
+      goss_debug1("Reducing dt: %e", ldt);
 
       recompute_jacobian = true;
       justrefined = true;

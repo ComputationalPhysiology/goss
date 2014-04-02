@@ -66,7 +66,7 @@ void ThetaSolver::compute_factorized_jacobian(double* y, double t, double dt)
 
 }
 //-----------------------------------------------------------------------------
-void ThetaSolver::forward(double* y, double t, double interval)
+void ThetaSolver::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
@@ -74,8 +74,8 @@ void ThetaSolver::forward(double* y, double t, double interval)
   //std::cout << "theta: " << theta << " t: " << t << " dt: " << interval << " dt: " << _dt << " ldt: " << _ldt << " V: " << y[0] << std::endl;
   
   uint i;
-  double t_end = t + interval;
-  _dt = _ldt > 0 ? _ldt : interval;
+  double t_end = t + dt;
+  double ldt = _ldt > 0 ? _ldt : dt;
   
   for (i = 0; i < _ode->num_states(); ++i)
     _prev[i] = 0.0;
@@ -92,7 +92,7 @@ void ThetaSolver::forward(double* y, double t, double interval)
     // Recompute the jacobian if nessesary
     if (recompute_jacobian)
     {
-      compute_factorized_jacobian(y, t, _dt);
+      compute_factorized_jacobian(y, t, ldt);
     }
 
     // Use 0.0 z1:
@@ -106,17 +106,17 @@ void ThetaSolver::forward(double* y, double t, double interval)
       _prev[i] = theta*ft1[i];
     
     // Solve for increment
-    step_ok = newton_solve(&z1[0], &_prev[0], y, t + _dt, _dt, theta);    
+    step_ok = newton_solve(&z1[0], &_prev[0], y, t + ldt, ldt, theta);    
 #ifdef DEBUG
     newton_iter1.push_back(newtonits);
-    dt_v.push_back(_dt);
+    dt_v.push_back(ldt);
 #endif
 
     // Newton step OK
     if (step_ok)
     {
     
-      t+=_dt;
+      t+=ldt;
       
       if (std::fabs(t-t_end) < eps)
       {
@@ -133,17 +133,17 @@ void ThetaSolver::forward(double* y, double t, double interval)
 	else
 	{
         
-	  double tmp = 2.0*_dt;
+	  double tmp = 2.0*ldt;
           //if (fabs(ldt-tmp)<eps)
           if (tmp >= _ldt)
-            _dt = _ldt;
+            ldt = _ldt;
           else
-            _dt = tmp;
+            ldt = tmp;
         }
 
 	// If we are passed t_end
-        if ((t + _dt) > t_end)
-          _dt = t_end - t;
+        if ((t + ldt) > t_end)
+          ldt = t_end - t;
       }
 
       // Add increment
@@ -155,7 +155,7 @@ void ThetaSolver::forward(double* y, double t, double interval)
     }
     else
     {
-      _dt /= 2.0;
+      ldt /= 2.0;
       justrefined = true;
 #ifdef DEBUG
       newton_accepted1.push_back(0);

@@ -26,7 +26,7 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 AdaptiveExplicitSolver::AdaptiveExplicitSolver() 
-  : ODESolver(), num_accepted(0), num_rejected(0), _t(0.), _dt_prev(0.),
+  : ODESolver(), num_accepted(0), num_rejected(0), _t(0.), _dt(0.1), _dt_prev(0.),
     _atol(1.e-5), _rtol(1.e-8), _iord(1), facmin(0.5), facmax(2.0), 
     facmaxb(facmax), stabfac(0.9), step_accepted(false), reached_tend(false),
     _itol(0), dt_v(0), accept_v(0), single_step_mode(false)
@@ -34,8 +34,8 @@ AdaptiveExplicitSolver::AdaptiveExplicitSolver()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-AdaptiveExplicitSolver::AdaptiveExplicitSolver(double ldt, double dt) 
-  : ODESolver(ldt, dt), num_accepted(0), num_rejected(0), _t(0.), _dt_prev(0.),
+AdaptiveExplicitSolver::AdaptiveExplicitSolver(double ldt) 
+  : ODESolver(ldt), num_accepted(0), num_rejected(0), _t(0.), _dt(0.1), _dt_prev(0.),
     _atol(1.e-5), _rtol(1.e-8), _iord(1), facmin(0.5), facmax(2.0), 
     facmaxb(facmax), stabfac(0.9), step_accepted(false), reached_tend(false),
     _itol(0), dt_v(0), accept_v(0), single_step_mode(false)
@@ -45,12 +45,13 @@ AdaptiveExplicitSolver::AdaptiveExplicitSolver(double ldt, double dt)
 //-----------------------------------------------------------------------------
 AdaptiveExplicitSolver::AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver) 
   : ODESolver(solver), num_accepted(solver.num_accepted), 
-    num_rejected(solver.num_rejected), _t(solver._t), _dt_prev(solver._dt_prev),
-    _atol(solver._atol), _rtol(solver._rtol), _iord(solver._iord), 
-    facmin(solver.facmin), facmax(solver.facmax), facmaxb(solver.facmaxb), 
-    stabfac(solver.stabfac), step_accepted(solver.step_accepted), 
-    reached_tend(solver.reached_tend), _itol(solver._itol), dt_v(solver.dt_v), 
-    accept_v(solver.accept_v), single_step_mode(solver.single_step_mode)
+    num_rejected(solver.num_rejected), _t(solver._t), _dt(solver._dt), 
+    _dt_prev(solver._dt_prev),_atol(solver._atol), _rtol(solver._rtol), 
+    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax), 
+    facmaxb(solver.facmaxb), stabfac(solver.stabfac), 
+    step_accepted(solver.step_accepted), reached_tend(solver.reached_tend), 
+    _itol(solver._itol), dt_v(solver.dt_v), accept_v(solver.accept_v), 
+    single_step_mode(solver.single_step_mode)
 {
   // Do nothing
 }
