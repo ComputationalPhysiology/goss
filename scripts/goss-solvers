@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+__author__ = "Johan Hake (hake.dev@gmail.com)"
+__date__ = "2014-04-05 -- 2014-04-05"
+__copyright__ = "Copyright (C) 2013 " + __author__
+__license__  = "GNU LGPL Version 3.0 or later"
+
+from goss import *
+from goss import goss_solvers
+
+def main():
+
+    print "Available solvers in GOSS"
+    print "-------------------------"
+    for solver in goss_solvers:
+        obj = eval(solver)()
+        print
+        print solver
+        print obj.parameters.str(True)
+
+if __name__ == "__main__":
+    main()

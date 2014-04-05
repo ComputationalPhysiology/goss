@@ -53,7 +53,7 @@
 %shared_ptr(goss::RK4)
 %shared_ptr(goss::RK2)
 
-//%shared_ptr(goss::RKF34)
+ //%shared_ptr(goss::RKF34)
 
 %shared_ptr(goss::RKF32)
 %shared_ptr(goss::ImplicitEuler)
@@ -63,7 +63,7 @@
 //%shared_ptr(goss::ImplicitMidPointSolver)
 //%shared_ptr(goss::SDIRK2O2)
 //%shared_ptr(goss::SDIRK2O3)
-
+%shared_ptr(goss::ESDIRK23a)
 %shared_ptr(goss::ESDIRK4O32)
 %shared_ptr(goss::GRL1)
 %shared_ptr(goss::GRL2)

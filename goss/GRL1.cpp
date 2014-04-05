@@ -27,15 +27,15 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL1::GRL1() : ODESolver(0.0), a(0), b(0), linear_terms(0), 
-	       delta(1.0e-8)
+GRL1::GRL1() : ODESolver(), a(0), b(0), linear_terms(0), delta(1.0e-8)
 {
-  // Do nothing
+  parameters.rename("GRL1");
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(0.0), a(0), b(0), 
+GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0), 
                                          linear_terms(0), delta(1.0e-8)
 {
+  parameters.rename("GRL1");
   attach(ode);
 }
 //-----------------------------------------------------------------------------
@@ -46,6 +46,7 @@ GRL1::GRL1(const GRL1& solver) : ODESolver(solver),
 				 delta(solver.delta)
 {
   if (_ode)
+    
     // Get what terms are linear
     _ode->linear_terms(&linear_terms[0]);
 }
@@ -76,36 +77,47 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
 }
 
 //-----------------------------------------------------------------------------
-void GRL1::forward(double* y, double t, double interval)
+void GRL1::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
 
-  // Local timestep
-  const double dt = interval;
+  // Calculate number of steps and size of timestep based on _ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
 
-  // Evaluate full right hand side
-  _ode->eval(y, t, &a[0]);              
+  // Local time
+  double lt = t;
 
-  // Exact derivatives for linear terms 
-  _ode->linear_derivatives(y, t, &b[0]);
+  for (ulong step = 0; step < nsteps; ++step)
+  {
 
-  for (uint i = 0; i < num_states(); ++i) 
-  { 
-    // Numerical differentiation for non linear terms
-    if (linear_terms[i] == 0) 
-    {      
-      y[i] += delta; 
-      
-      // Component i derivative
-      b[i] = (_ode->eval(i, y, t) - a[i])/delta;  
-      y[i] -= delta;				        // Restore state i
+    // Evaluate full right hand side
+    _ode->eval(y, lt, &a[0]);              
+  
+    // Exact derivatives for linear terms 
+    _ode->linear_derivatives(y, lt, &b[0]);
+  
+    for (uint i = 0; i < num_states(); ++i) 
+    { 
+      // Numerical differentiation for non linear terms
+      if (linear_terms[i] == 0) 
+      {      
+        y[i] += delta; 
+        
+        // Component i derivative
+        b[i] = (_ode->eval(i, y, lt) - a[i])/delta;
+        y[i] -= delta;				   // Restore state i
+      }
     }
+  
+    // Integrate linear terms exactly
+    for (uint i = 0; i < num_states(); ++i) 
+      y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*ldt) - 1.0) : a[i]*ldt;
+  
+      // Increase time
+    lt += ldt;
   }
-
-  // Integrate linear terms exactly
-  for (uint i = 0; i < num_states(); ++i) 
-    y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) : a[i]*dt;
-
 }
 //-----------------------------------------------------------------------------

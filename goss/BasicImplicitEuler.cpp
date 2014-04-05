@@ -10,36 +10,31 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-BasicImplicitEuler::BasicImplicitEuler() : ImplicitODESolver(), newton_iter1(0), 
-				 newton_accepted1(0), dt_v(0), z1(0)
+BasicImplicitEuler::BasicImplicitEuler() : ImplicitODESolver()
 { 
-  // Do nothing
+  parameters.rename("BasicImplicitEuler");
 } 
 //-----------------------------------------------------------------------------
-BasicImplicitEuler::BasicImplicitEuler(boost::shared_ptr<ODE> ode, double ldt) : 
-  ImplicitODESolver(ldt), newton_iter1(0), newton_accepted1(0), dt_v(0), 
-  z1(0)
+BasicImplicitEuler::BasicImplicitEuler(boost::shared_ptr<ODE> ode) : 
+  ImplicitODESolver()
 { 
+  parameters.rename("BasicImplicitEuler");
   attach(ode);
 } 
 //-----------------------------------------------------------------------------
-BasicImplicitEuler::BasicImplicitEuler(double ldt) : ImplicitODESolver(ldt), newton_iter1(0), 
-					   newton_accepted1(0), dt_v(0), z1(0)
-{
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
 BasicImplicitEuler::BasicImplicitEuler(const BasicImplicitEuler& solver) : 
-  ImplicitODESolver(solver), newton_iter1(solver.newton_iter1), 
-  newton_accepted1(solver.newton_accepted1), dt_v(solver.dt_v), 
-  z1(solver.num_states())
+  ImplicitODESolver(solver)
 {
-  // Do nothing
+
+  _stages = 1;
+
 }
 //-----------------------------------------------------------------------------
 BasicImplicitEuler::~BasicImplicitEuler()
 {
-  // Do nothing
+
+  _stages = 1;
+
 }
 //-----------------------------------------------------------------------------
 void BasicImplicitEuler::attach(boost::shared_ptr<ODE> ode)
@@ -48,20 +43,10 @@ void BasicImplicitEuler::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using bases
   ImplicitODESolver::attach(ode);
 
-  // Init memory
-  z1.resize(num_states());
-
 }
 //-----------------------------------------------------------------------------
 void BasicImplicitEuler::reset()
 {
-  
-  num_tsteps = 0;
-
-  stages = 1;
-  newton_iter1.clear();
-  newton_accepted1.clear();
-  dt_v.clear();
   
   ImplicitODESolver::reset();
 }
@@ -70,37 +55,39 @@ void BasicImplicitEuler::compute_factorized_jacobian(double* y, double t, double
 {
   
   // Let ODE compute the jacobian
-  _ode->compute_jacobian(y, t, jac.data());
+  _ode->compute_jacobian(y, t, _jac.data());
 
   // Build Euler discretization of jacobian
-  mult(-dt, jac.data());
-  add_mass_matrix(jac.data());
+  mult(-dt, _jac.data());
+  add_mass_matrix(_jac.data());
 
   // Factorize the jacobian
-  _ode->lu_factorize(jac.data());
-  jac_comp += 1;
+  _ode->lu_factorize(_jac.data());
+  _jac_comp += 1;
 
 }
 //-----------------------------------------------------------------------------
-void BasicImplicitEuler::forward(double* y, double t, double interval)
+void BasicImplicitEuler::forward(double* y, double t, double dt)
 {
   feenableexcept(FE_INVALID | FE_OVERFLOW);
   assert(_ode);
 
-  double residual, residual0=1.0, relative_residual; //incr_residual
+  // Calculate number of steps and size of timestep based on _ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
+
+  const int max_iterations = parameters["max_iterations"];
+  const double rtol = parameters["relative_tolerance"];
 
   // Local time
-  double lt = t+interval;
-  double dt = interval;
-
-  // NOT USED.
-  bool recompute_jacobian_ = true;
+  double lt = t;
 
   // Calculate number of steps and size of timestep based on _ldt
 
   /* USE THIS WHEN WE HAVE ONE NEWTON ITERATION INPLACE
-  const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
-  const double dt = interval/nsteps;
+  const ulong nsteps = _ldt > 0 ? std::ceil(dt/_ldt - 1.0E-12) : 1;
+  const double dt = dt/nsteps;
 
   for (ulong step = 0; step < nsteps; ++step)
   {
@@ -119,88 +106,80 @@ void BasicImplicitEuler::forward(double* y, double t, double interval)
     _prev[i] = 0.0;
   */
 
-  bool newton_converged = false;
-  newtonits = 0;
-
-  // Copy previous solution
-  for (uint i = 0; i < num_states(); ++i)
-    _prev[i] = y[i];
-  
-  // Evaluate ODE using computed solution
-  _ode->eval(_prev.data(), lt, _f1.data());
-    
-  // Build rhs for linear solve
-  // b = dt*eval(y) - M*(y-y0) 
-  // With y=y0 at start of iteration
-  // b = eval(y0)
-  for (uint i = 0; i < num_states(); ++i)
-    _b[i] = -dt*_f1[i];
-  
-  // Start iterations
-  while (!newton_converged && newtonits < maxits)
+  for (ulong step = 0; step < nsteps; ++step)
   {
-    
-    // Compute Jacobian
-    if (recompute_jacobian_)
-      compute_factorized_jacobian(y, lt, dt);
 
-    // Linear solve on factorized jacobian
-    _ode->forward_backward_subst(jac.data(), _b.data(), _dz.data());
-	  
-    // Compute initial residual
-    if (newtonits == 0)
-    {
-      residual = residual0 = norm(_b.data());
-      //incr_residual = norm(_dz.data());
-    }
-    else
-    {
-      // Compute resdiual
-      residual = norm(_b.data());
-      //incr_residual = norm(_dz.data());
-    }
-	  
+    double relative_residual = 1.0;
+    double initial_residual = 1.0;
+    double residual;
+  
+    bool newton_converged = false;
+    _newton_iterations = 0;
+  
+    // Copy previous solution
     for (uint i = 0; i < num_states(); ++i)
-      y[i] -= _dz[i];
-        
-    // Update number of iterations
-    ++newtonits;
-        
-    // Relative residual
-    relative_residual = residual / residual0;
-
-    // Output iteration number and residual
-    log(DBG, "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "	\
-	"(tol = %.3e) r (rel) = %.3e (tol = %.3e)", newtonits,	\
-	residual, _absolute_tol, relative_residual, _newton_tol);
+      _prev[i] = y[i];
     
-    // Check convergence criteria
-    if (relative_residual < _newton_tol || residual < _absolute_tol)
+    // Start iterations
+    while (!newton_converged && _newton_iterations < max_iterations)
     {
-      newton_converged = true;
-    }
-    else
-    {
+      
       // Evaluate ODE using computed solution
-      _ode->eval(y, lt, _f1.data());
-    
+      _ode->eval(y, lt+ldt, _f1.data());
+      
       // Build rhs for linear solve
       // b = eval(y) - (y-y0)/dt 
       for (uint i = 0; i < num_states(); ++i)
-	_b[i] = (y[i]-_prev[i])*_ode->differential_states()[i] - dt*_f1[i];
-    }
-   
-  }
+        _b[i] = (y[i]-_prev[i])*_ode->differential_states()[i] - dt*_f1[i];
+  
+      // Compute residual
+      residual = norm(_b.data());
+  
+      if (_newton_iterations==0)
+	initial_residual = residual;
 
-  if (!newton_converged)
-  {
-    error("Newton solver did not converge. Maximal newton iterations exceded.");
-  }
- 
+      // Relative residual
+      relative_residual = residual / initial_residual;
+  
+      if (relative_residual < rtol)
+      {
+        newton_converged = true;
+        break;
+      }
+  
+      // Compute Jacobian
+      compute_factorized_jacobian(y, lt+ldt, ldt);
+  
+      // Linear solve on factorized jacobian
+      _ode->forward_backward_subst(_jac.data(), _b.data(), _dz.data());
+  	  
+      // Compute initial residual
+      if (_newton_iterations == 0)
+        initial_residual = residual;
+  	  
+      for (uint i = 0; i < num_states(); ++i)
+        y[i] -= _dz[i];
+          
+      // Update number of iterations
+      ++_newton_iterations;
+          
+      // Output iteration number and residual
+      log(DBG, "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "\
+  	" r (rel) = %.3e (tol = %.3e)", _newton_iterations, residual, \
+	  relative_residual, rtol);
+    }
+  
+    if (!newton_converged)
+      error("Newton solver did not converge. Maximal newton iterations exceded.");
+  
+    // Increase local time
+    lt += dt;
+
+  } 
     
 #ifdef DEBUG
   // Lower level than DEBUG!
-  log(5, "BasicImplicitEuler done with comp_jac = %d at t=%1.2e\n", jac_comp, t);
+  log(5, "BasicImplicitEuler done with comp_jac = %d at t=%1.2e\n", _jac_comp, t);
 #endif
 }
 //-----------------------------------------------------------------------------

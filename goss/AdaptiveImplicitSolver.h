@@ -36,9 +36,6 @@ namespace goss
     // Default constructor
     AdaptiveImplicitSolver();
 
-    // Constructor
-    AdaptiveImplicitSolver (double ldt);
-
     // Copy constructor
     AdaptiveImplicitSolver(const AdaptiveImplicitSolver& solver);
 
@@ -82,19 +79,17 @@ namespace goss
     // Set iord
     void set_iord(int iord){_iord = iord;}
 
-    // FIXME: Should this be protected?
-    // Compute an initial time step guess
-    double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
-
-    // FIXME: Should this be protected?
-    // Compute new timestep 
-    void new_time_step(double* y, double* yn, double* e, double t_end);
-
     // Return true if the Solver is adaptive
     bool is_adaptive() const { return true; }
 
   protected: 
     
+    // Compute an initial time step guess
+    double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
+
+    // Compute new timestep 
+    void new_time_step(double* y, double* yn, double* e, double t_end);
+
     // Log of 1) the numer of steps, 2) the number of rejected steps
     long num_accepted, num_rejected;
 
@@ -106,7 +101,7 @@ namespace goss
 
     bool single_step_mode;
     
-    double _t, _dt, _dt_prev;
+    double _t, _ldt, _dt, _dt_prev;
 
     // local time step and tolerence.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 

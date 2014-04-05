@@ -39,10 +39,7 @@ namespace goss
     ESDIRK4O32();
     
     // Constructor
-    ESDIRK4O32(double _ldt);
-
-    // Constructor
-    ESDIRK4O32(boost::shared_ptr<ODE> ode, double ldt=-1.0);
+    ESDIRK4O32(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     ESDIRK4O32(const ESDIRK4O32& solver);
@@ -57,9 +54,6 @@ namespace goss
     // Reset ODE
     virtual void reset();
     
-    // Solver specific compute jacobian method
-    void compute_factorized_jacobian(double* y, double t, double dt);
-
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
 

@@ -40,10 +40,7 @@ namespace goss
     RK4();
 
     // Constructor
-    RK4(double ldt);
-
-    // Constructor
-    RK4(boost::shared_ptr<ODE> ode, double ldt=-1.0);
+    RK4(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     RK4(const RK4& solver);

@@ -38,10 +38,7 @@ namespace goss
     BasicImplicitEuler();
 
     // Constructor
-    BasicImplicitEuler(boost::shared_ptr<ODE> ode, double ldt=-1.0);
-
-    // Constructor
-    BasicImplicitEuler(double ldt);
+    BasicImplicitEuler(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     BasicImplicitEuler(const BasicImplicitEuler& solver);
@@ -64,14 +61,6 @@ namespace goss
 
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
-
-    std::vector<int> newton_iter1;
-    std::vector<int> newton_accepted1;
-    std::vector<double> dt_v;
-
-  protected:
-
-    std::vector<double> z1;
 
   };
 

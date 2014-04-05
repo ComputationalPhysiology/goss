@@ -23,6 +23,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "ODESolver.h"
+#include "Parameters.h"
 
 namespace goss 
 {
@@ -33,12 +34,24 @@ namespace goss
   
   public:
   
+    // Default parameters
+    Parameters default_parameters()
+    {
+      Parameters p = ODESolver::default_parameters();
+      p.rename("implicit_ode_solver");
+      p.add("eta_0", 1.0);
+      p.add("kappa", 0.1);
+      p.add("relative_tolerance", 1.e-12);
+      p.add("max_iterations", 30, 0, 1000);
+      p.add("max_relative_previous_residual", 0.01);
+      p.add("always_recompute_jacobian", false);
+
+      return p;
+    }
+
     // Default constructor
     ImplicitODESolver();
   
-    // Constructor
-    ImplicitODESolver(double ldt);
-
     // Copy constructor
     ImplicitODESolver(const ImplicitODESolver& solver);
 
@@ -55,28 +68,11 @@ namespace goss
     virtual void forward(double* y, double t, double interval) = 0;
 
     // Solver specific compute jacobian method
-    //virtual void compute_factorized_jacobian(const double& dt) =0;
-    virtual void compute_factorized_jacobian(double* y, double t, double dt) = 0;
-    // Set newton tolerance
-    void set_newton_tol(double newton_tol){ _newton_tol = newton_tol; }
-
-    // Set absolute tolerance
-    void set_absolute_tol(double absolute_tol){ _absolute_tol = absolute_tol; }
-
-    // Set newton tolerance
-    void set_max_iterations(uint maxits_){maxits = maxits_;}
-
-    // Set max relative residual
-    void set_max_relative_residual(double max_relative_residual)
-    { _max_relative_residual = max_relative_residual; }
-
-    // Set kappa
-    void set_kappa(double kappa)
-    { _kappa = kappa; }
+    void compute_factorized_jacobian(double* y, double t, double dt, double alpha);
 
     // Return the number of recomputation of the jacobian
-    int num_jac_comp(){ return jac_comp; }
-    int num_lu_fact(){ return lu_fact; }
+    int num_jac_comp(){ return _jac_comp; }
+
   protected:
   
     // Scale a matrix
@@ -87,13 +83,13 @@ namespace goss
 
     // This function is designed for SDIRK and Backward Euler:
     virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
-			      double dt, double alpha);
+			      double dt, double alpha, bool always_recompute_jacobian);
 
     // Compute the norm of a vector
     virtual double norm(double* vec);
 
     // Variables used in the jacobian evaluation
-    std::vector<double> jac;
+    std::vector<double> _jac;
     std::vector<double> _f1, _yz;
 
     // Right hand side and solution of the linear system
@@ -102,27 +98,14 @@ namespace goss
     // Previous stages, used by DIRK methods
     std::vector<double> _prev;
 
-    // Newton tolerance
-    double _newton_tol;
-
     // Variable used in the estimation of the error of the newton 
     // iteration for the first iteration (Important for linear problems!)
-    double eta;
+    double _eta;
 
-    // The safety factor for the stopping criterion of the newton iteration
-    double _kappa;
-    uint jac_size;
-
-    uint stages;
-    int newtonits, maxits, rejects, jac_comp, lu_fact;
-    ulong num_tsteps;
-
-    double min_dt;
-    bool recompute_jacobian;
-
-    double _absolute_tol;
-    double _max_relative_residual;
-    double _eta_0;
+    uint _stages;
+    int _rejects, _jac_comp;
+    bool _recompute_jacobian;
+    int _newton_iterations;
 
   };
 

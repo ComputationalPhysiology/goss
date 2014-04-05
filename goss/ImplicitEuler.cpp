@@ -9,31 +9,24 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), newton_iter1(0), 
-				 newton_accepted1(0), dt_v(0), z1(0), 
-				 justrefined(false)
+ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), _z1(0), 
+				 _justrefined(false)
 { 
-  // Do nothing
+
+  parameters = ImplicitEuler::default_parameters();
+
 } 
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler(boost::shared_ptr<ODE> ode, double ldt) : 
-  ImplicitODESolver(ldt), newton_iter1(0), newton_accepted1(0), dt_v(0), 
-  z1(0), justrefined(false)
+ImplicitEuler::ImplicitEuler(boost::shared_ptr<ODE> ode) : 
+  ImplicitODESolver(), _z1(0), _justrefined(false)
 { 
   attach(ode);
+  parameters = ImplicitEuler::default_parameters();
 } 
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler(double ldt) : ImplicitODESolver(ldt), newton_iter1(0), 
-					   newton_accepted1(0), dt_v(0), z1(0), 
-					   justrefined(false)
-{
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
 ImplicitEuler::ImplicitEuler(const ImplicitEuler& solver) : 
-  ImplicitODESolver(solver), newton_iter1(solver.newton_iter1), 
-  newton_accepted1(solver.newton_accepted1), dt_v(solver.dt_v), 
-  z1(solver.num_states()), justrefined(solver.justrefined)
+  ImplicitODESolver(solver), _z1(solver.num_states()), 
+  _justrefined(solver._justrefined)
 {
   // Do nothing
 }
@@ -49,39 +42,22 @@ void ImplicitEuler::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using bases
   ImplicitODESolver::attach(ode);
 
+  // Previous stage solutions will always be zero for Implicit Euler
+  for (uint i = 0; i < num_states(); ++i)
+    _prev[i] = 0.0;
+
   // Init memory
-  z1.resize(num_states());
+  _z1.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
 void ImplicitEuler::reset()
 {
   
-  justrefined = false;
-  num_tsteps = 0;
-
-  stages = 1;
-  newton_iter1.clear();
-  newton_accepted1.clear();
-  dt_v.clear();
+  _justrefined = false;
+  _stages = 1;
   
   ImplicitODESolver::reset();
-}
-//-----------------------------------------------------------------------------
-void ImplicitEuler::compute_factorized_jacobian(double* y, double t, double dt)
-{
-  
-  // Let ODE compute the jacobian
-  _ode->compute_jacobian(y, t, &jac[0]);
-
-  // Build Euler discretization of jacobian
-  mult(-dt, &jac[0]);
-  add_mass_matrix(&jac[0]);
-
-  // Factorize the jacobian
-  _ode->lu_factorize(&jac[0]);
-  jac_comp += 1;
-
 }
 //-----------------------------------------------------------------------------
 void ImplicitEuler::forward(double* y, double t, double dt) 
@@ -90,102 +66,99 @@ void ImplicitEuler::forward(double* y, double t, double dt)
   assert(_ode);
 
   uint i;
+  bool step_ok;
+
   const double t_end = t + dt;
+  const double ldt_0 = parameters["ldt"];
+  double ldt = ldt_0 > 0 ? ldt_0 : dt;
+  int num_refinements = 0;
 
-  double ldt = _ldt > 0 ? _ldt : dt;
-  
-  for (i = 0; i < num_states(); ++i)
-    _prev[i] = 0.0;
-
-  bool step_ok, done = false;
+  const double min_dt = parameters["min_dt"];
+  bool always_recompute_jacobian = parameters["always_recompute_jacobian"];
+  const int num_refinements_without_always_recomputing_jacobian = parameters["num_refinements_without_always_recomputing_jacobian"];
 
   // A way to check if we are at t_end.
   const double eps = GOSS_EPS*1000;
 
-  while (!done)
+  while (true)
   {
   
-    num_tsteps += 1;
-    
-    // Recompute the jacobian if nessesary
-    if (recompute_jacobian)
-    {
-      compute_factorized_jacobian(y, t+ldt, ldt);
-    }
-
     // Use 0.0 as initial guess
     for (i = 0; i < num_states(); ++i)
-      z1[i] = 0.0;
+      _z1[i] = 0.0;
 
+    // Check if we should re compute the jacobian
+    if (num_refinements>num_refinements_without_always_recomputing_jacobian)
+      always_recompute_jacobian = true;
+      
     // Solve for increment
-    step_ok = newton_solve(&z1[0], &_prev[0], y, t+ldt, ldt, 1.0);    
-#ifdef DEBUG
-    newton_iter1.push_back(newtonits);
-    dt_v.push_back(ldt);
-#endif
+    step_ok = newton_solve(_z1.data(), _prev.data(), y, t+ldt, ldt, 1.0, 
+			   always_recompute_jacobian);
     
     // Newton step OK
     if (step_ok)
     {
-      //std::cout << "Newton step OK: " << std::endl;
-      t += ldt;
-      if (std::fabs(t - t_end) < eps)
-      {
-        done = true;
-        //printf("Done at t=%1.4e\n",t);
-      }
-      else
-      {
-        // If the solver has refined, we do not allow it to double its 
-	// timestep for another step
-        if (justrefined)
-	{
-          justrefined = false;
-        }
-	else
-	{
-          const double tmp = 2.0*ldt;
-	  //if (fabs(_ldt-tmp) < eps)
-	  if (_ldt > 0 && tmp >= _ldt)
-            ldt = _ldt;
-          else
-            ldt = tmp;
-	  //if (std::abs(ldt-tmp/2)<GOSS_EPS)
-	    goss_debug2("Changing dt from %e to %e", tmp/2, ldt);
-        }
-	
-	// If we are passed t_end
-        if ((t + ldt) > t_end)
-	{
-	  ldt = t_end - t;
-	  goss_debug1("Adapting timestep due to t_end: dt %e", ldt);
-	}
-      }
       
       // Add increment
       for (i = 0; i < num_states(); ++i)
-        y[i] += z1[i];
-#ifdef DEBUG
-      newton_accepted1.push_back(1);
-#endif    
+        y[i] += _z1[i];
+
+      t += ldt;
+
+      // Check if we are finished
+      if (std::fabs(t - t_end) < eps)
+	break;
+
+      // If the solver has refined, we do not allow it to double its 
+      // timestep for another step
+      if (!_justrefined)
+      {
+	// double time step
+        const double tmp = 2.0*ldt;
+        if (ldt_0 > 0. && tmp >= ldt_0)
+	{
+          ldt = ldt_0;
+	}
+        else
+	{
+          ldt = tmp;
+	  log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp/2, ldt);
+	}
+      }
+      else
+      {
+        _justrefined = false;
+      }
+      
+      // If we are passed t_end
+      if ((t + ldt + GOSS_EPS) > t_end)
+      {
+        ldt = t_end - t;
+        log(DBG, "Changing dt    | t : %g, to adapt for tend: %g", t, ldt);
+      }
+      
     }
     else
     {
       ldt /= 2.0;
-      goss_debug1("Reducing dt: %e", ldt);
+      if (ldt < min_dt)
+      {
+	goss_error("ImplicitEuler.cpp",
+		   "Forward ImplicitEuler",
+		   "Newtons solver failed to converge as dt become smaller " \
+		   "than \"min_dt\" %e", min_dt);
+      }
 
-      recompute_jacobian = true;
-      justrefined = true;
-#ifdef DEBUG
-      newton_accepted1.push_back(0);
-#endif    
+      log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
+      _recompute_jacobian = true;
+      _justrefined = true;
+      num_refinements += 1;
     }
   }
-#ifdef DEBUG
-  // Lower level than DEBUG!
-  log(5, "ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e in " \
-      "%ld steps\n", jac_comp, rejects, t, num_tsteps);
-#endif
+
+  // Lower level than DBG!
+  log(5, "ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e\n", \
+      _jac_comp, _rejects, t);
 }
 //-----------------------------------------------------------------------------
 

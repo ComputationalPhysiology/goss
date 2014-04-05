@@ -40,10 +40,7 @@ namespace goss
     ExplicitEuler();
 
     // Constructor
-    ExplicitEuler(double _ldt);
-    
-    // Constructor
-    ExplicitEuler(boost::shared_ptr<ODE> ode, double _ldt=-1.0);
+    ExplicitEuler(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     ExplicitEuler(const ExplicitEuler& solver);

@@ -35,9 +35,6 @@ namespace goss
     // Default Constructor
     AdaptiveExplicitSolver();
 
-    // Constructor
-    AdaptiveExplicitSolver(double ldt);
-
     // Copy constructor
     AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver);
 
@@ -80,11 +77,17 @@ namespace goss
     // Return true if the Solver is adaptive
     bool is_adaptive() const { return true; }
 
+    // Return the internal time step
+    inline double get_internal_time_step() const { return _ldt; }
+
+    // Set the internal time step
+    inline void set_internal_time_step(double ldt) {_ldt = ldt;}
+
   protected: 
 
     // Log of 1) the numer of steps, 2) the number of rejected steps
     ulong num_accepted, num_rejected;
-    double _t, _dt, _dt_prev;
+    double _t, _ldt, _dt, _dt_prev;
 
     // Local time step and tolerence.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 

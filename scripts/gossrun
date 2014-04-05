@@ -3,7 +3,7 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-04-01"
+__date__ = "2013-03-13 -- 2014-04-06"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -23,10 +23,9 @@ from goss.compilemodule import jit as goss_jit
 from goss import goss_solvers
 import goss
 
-goss.set_log_level(goss.PROGRESS)
-#goss.set_log_level(goss.DEBUG)
-
 def main(filename, params):
+
+    goss.set_log_level(getattr(goss, params.log_level))
 
     # Compile executeable code from gotran ode
     ode = load_ode(filename)
@@ -87,22 +86,23 @@ def main(filename, params):
     states = module.init_state_values(**user_ic)
 
     # Create the Solver
-    ldt = params.ldt
-    if ldt > 0:
-        # Try using the ldt when intantiating the solver (Not all solvers support ldt)
-        try:
-            solver = getattr(goss, params.solver)(goss_ode, ldt)
-        except:
-            solver = getattr(goss, params.solver)(goss_ode)
-    else:
-        solver = getattr(goss, params.solver)(goss_ode)
+    solver = getattr(goss, params.solver)(goss_ode)
 
-    # FIXME: Hardcoding solver parameters
-    if isinstance(solver, goss.ImplicitODESolver):
-        solver.set_newton_tol(1.e-5)
-        solver.set_absolute_tol(1.e-6)
-        solver.set_max_iterations(240)
-        
+    solver_param = params.solver_parameters
+    if len(solver_param) == 1 and solver_param[0] == "":
+        solver_param = []
+
+    if len(solver_param) % 2 != 0:
+        error("Expected an even number of values for 'parameters'")
+
+    for param_name, param_value in [(solver_param[i*2], solver_param[i*2+1]) \
+                                    for i in range(int(len(solver_param)/2))]:
+        if param_name not in solver.parameters:
+            error("Parameter '{0}' is not a parameter in '{1}'".format(\
+                param_name, params.solver))
+        value_type = type(solver.parameters[param_name])
+        solver.parameters[param_name] = value_type(param_value)
+
     # Use to integrate model
     t0 = 0.
     t1 = params.tstop
@@ -164,11 +164,12 @@ if __name__ == "__main__":
         solver = OptionParam("ImplicitEuler", goss_solvers, \
                              description="The ODE solver used to integrate "\
                              "the ODE/DAE."),
+        solver_parameters = Param([""], description="Parameters passed to the solver"),
+        log_level = OptionParam("PROGRESS", ["DEBUG", "PROGRESS", "INFO", "WARNING"]),
         parameters = Param([""], description="Set parameter of model"),
         init_conditions = Param([""], description="Set initial condition of model"),
         tstop = ScalarParam(100., gt=0, description="Time for stopping simulation"),\
         dt = ScalarParam(0.1, gt=0, description="Timestep for plotting."),\
-        ldt = ScalarParam(-1., ge=-1, description="Intermediate timesteps."),\
         plot = Param(["V"], description="States or monitored to plot."),\
         code = code_params,
         cppargs = Param("-O2 -g"), description="C++ compile arguments.")

@@ -34,14 +34,21 @@ namespace goss
   {
   public:
 
+    // Default parameters
+    Parameters default_parameters()
+    {
+      Parameters p = ImplicitODESolver::default_parameters();
+      p.rename("ImplicitEuler");
+      p.add("num_refinements_without_always_recomputing_jacobian", 2);
+      p.add("min_dt", 0.0001);
+      return p;
+    }
+
     // Default constructor
     ImplicitEuler();
 
     // Constructor
-    ImplicitEuler(boost::shared_ptr<ODE> ode, double ldt=-1.0);
-
-    // Constructor
-    ImplicitEuler(double ldt);
+    ImplicitEuler(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     ImplicitEuler(const ImplicitEuler& solver);
@@ -59,20 +66,13 @@ namespace goss
     // Reset ODE
     void reset();
 
-    // Solver specific compute jacobian method
-    void compute_factorized_jacobian(double* y, double t, double dt);
-
     // Step solver an interval of time forward
     void forward(double* y, double t, double interval);
 
-    std::vector<int> newton_iter1;
-    std::vector<int> newton_accepted1;
-    std::vector<double> dt_v;
-
   protected:
 
-    std::vector<double> z1;
-    bool justrefined;
+    std::vector<double> _z1;
+    bool _justrefined;
 
   };
 

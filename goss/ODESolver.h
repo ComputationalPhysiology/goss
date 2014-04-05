@@ -23,8 +23,10 @@
 #include <boost/shared_ptr.hpp>
 #include <iostream>
 
-#include "ODE.h"
 #include "types.h"
+#include "ODE.h"
+#include "Parameters.h"
+#include "log.h"
 
 namespace goss 
 {
@@ -33,21 +35,22 @@ namespace goss
 
   public:
 
-    // FIXME: Remove dt as variable...
-    // Default Constructor
-    ODESolver () : _ldt(-1.0), _ode(static_cast<ODE*>(0))
+    // Default parameters
+    static Parameters default_parameters()
     {
-      // Do nothing
+      Parameters params("ode_solver");
+      params.add("ldt", -1.0);
+      return params;
     }
-
-    // Constructor
-    ODESolver (double ldt) : _ldt(ldt), _ode(static_cast<ODE*>(0))
+    
+    // Default Constructor
+    ODESolver () : parameters(), _ode(static_cast<ODE*>(0))
     {
-      // Do nothing
+      parameters = default_parameters();
     }
 
     // Copy constructor (Uses default copy constructor of ODE)
-    ODESolver (const ODESolver& solver) : _ldt(solver._ldt), 
+    ODESolver (const ODESolver& solver) : parameters(solver.parameters),
 					  _ode(static_cast<ODE*>(0))
     {
       if (solver._ode)
@@ -83,19 +86,19 @@ namespace goss
     inline boost::shared_ptr<ODE> get_ode() { return _ode; }
 
     // Return the internal time step
-    inline double get_internal_time_step() const { return _ldt; }
+    inline virtual double get_internal_time_step() const { return -1.; }
 
     // Set the internal time step
-    inline void set_internal_time_step(double ldt) { _ldt = ldt; }
+    inline virtual void set_internal_time_step(double) {}
 
     // Return true if the Solver is adaptive
     virtual bool is_adaptive() const { return false; }
 
+    // Solver parameters
+    Parameters parameters;
+
   protected:
     
-    // Local time step.
-    double _ldt;
-
     // Shared pointer to ode 
     boost::shared_ptr<ODE> _ode;
 

@@ -154,7 +154,7 @@ void Logger::goss_error(std::string location,
     << "*** using the information listed below, you can ask for help at"
     << std::endl
     << "***" << std::endl
-    << "***     fenics@fenicsproject.org"
+    << "***     hake@gmail.org"
     << std::endl
     << "***" << std::endl
     << "*** Remember to include the error message listed below and, if possible,"

@@ -27,14 +27,16 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-RL::RL() : ODESolver(0.0), a(0), b(0), linear_terms(0)
+RL::RL() : ODESolver(), a(0), b(0), linear_terms(0)
 {
-  // Do nothing
+  parameters.rename("RL");
+  info(parameters.str(true));
 }
 //-----------------------------------------------------------------------------
-RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(0.0), a(0), b(0), 
+RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0), 
 				     linear_terms(0)
 {
+  parameters.rename("RL");
   attach(ode);
 }
 //-----------------------------------------------------------------------------
@@ -59,6 +61,11 @@ void RL::attach(boost::shared_ptr<ODE> ode)
   // Attach ode using base class
   ODESolver::attach(ode);
   
+  if (_ode->is_dae())
+    goss_error("RL.cpp",
+	       "attach ode",
+	       "cannot integrate a DAE ode with Rush Larsen method.");
+
   // Initalize memory
   a.resize(num_states(), 0.0);
   b.resize(num_states(), 0.0);
@@ -68,28 +75,34 @@ void RL::attach(boost::shared_ptr<ODE> ode)
   _ode->linear_terms(&linear_terms[0]);
 }
 //-----------------------------------------------------------------------------
-void RL::forward(double* y, double t, double interval)
+void RL::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
 
-  if (_ode->is_dae())
-    goss_error("RL.cpp",
-	       "forwarding ode",
-	       "cannot integrate a DAE ode with an explicit solver.");
+  // Calculate number of steps and size of timestep based on _ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
 
-  // Local timestep
-  const double dt = interval;
+  // Local time
+  double lt = t;
 
-  // Evaluate full right hand side
-  _ode->eval(y, t, &a[0]);
+  for (ulong step = 0; step < nsteps; ++step)
+  {
 
-  // Exact derivatives for linear terms
-  _ode->linear_derivatives(y, t, &b[0]);
+    // Evaluate full right hand side
+    _ode->eval(y, lt, a.data());
+  
+    // Exact derivatives for linear terms
+    _ode->linear_derivatives(y, lt, b.data());
+  
+    // Integrate linear terms exactly
+    for (uint i = 0; i < num_states(); ++i) 
+      y[i] += (linear_terms[i]==1) ? a[i]/b[i]*(std::exp(b[i]*ldt) - 1.0) : a[i]*ldt;
 
-  // Integrate linear terms exactly
-  for (uint i = 0; i < num_states(); ++i) 
-    y[i] += (linear_terms[i]==1) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) : a[i]*dt;
-
+    // Increase time
+    lt += ldt;
+  }
 }
 //-----------------------------------------------------------------------------

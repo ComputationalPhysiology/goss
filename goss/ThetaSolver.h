@@ -33,15 +33,26 @@ namespace goss
   {
   public:
   
+    // Default parameters
+    Parameters default_parameters()
+    {
+      Parameters p = ImplicitODESolver::default_parameters();
+      p.rename("ThetaSolver");
+      p.add("num_refinements_without_always_recomputing_jacobian", 2);
+      p.add("min_dt", 0.0001);
+      p.add("theta", 0.5, 0., 1.);
+      return p;
+    }
+
     // Default constructor
     ThetaSolver();
     
     // Constructor
-    ThetaSolver(double ldt); 
+    ThetaSolver(boost::shared_ptr<ODE> ode);
     
-    // Constructor
-    ThetaSolver(boost::shared_ptr<ODE> ode, double ldt=-1.0);
-    
+    // Copy constructor
+    ThetaSolver(const ThetaSolver& solver);
+
     // Destructor
     ~ThetaSolver(){};
 
@@ -58,20 +69,10 @@ namespace goss
     // Step solver an interval of time forward
     void forward(double* y, double t, double dt);
 
-    // Solver specific compute jacobian method
-    void compute_factorized_jacobian(double* y, double t, double dt);
-
-    // Theta parameter
-    double theta;
-
-    std::vector<int> newton_iter1;
-    std::vector<int> newton_accepted1;
-    std::vector<double> dt_v;
-    
     protected:
     
-    std::vector<double> z1, ft1;
-    bool justrefined;
+    std::vector<double> _z1, _ft1;
+    bool _justrefined;
     
   };
   

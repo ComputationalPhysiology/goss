@@ -28,17 +28,8 @@ using namespace goss;
 AdaptiveImplicitSolver::AdaptiveImplicitSolver() : 
   ImplicitODESolver(), num_accepted(0), num_rejected(0), step_accepted(false), 
   reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
-  _dt(0.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
-  facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
-  dt_old(0.0), _itol(0)
-{
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
-AdaptiveImplicitSolver::AdaptiveImplicitSolver(double ldt) : 
-  ImplicitODESolver(ldt), num_accepted(0), num_rejected(0), step_accepted(false), 
-  reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
-  _dt(0.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), facmin(0.5), facmax(2.0), 
+  _ldt(.1), _dt(.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), 
+  facmin(0.5), facmax(2.0), 
   facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
   dt_old(0.0), _itol(0)
 {
@@ -49,7 +40,8 @@ AdaptiveImplicitSolver::AdaptiveImplicitSolver(const AdaptiveImplicitSolver& sol
   : ImplicitODESolver(solver), num_accepted(solver.num_accepted), 
     num_rejected(solver.num_rejected), step_accepted(solver.step_accepted), 
     reached_tend(solver.reached_tend), dt_v(solver.dt_v), accept_v(solver.accept_v), 
-    single_step_mode(solver.single_step_mode), _t(solver._t), _dt(solver._dt), 
+    single_step_mode(solver.single_step_mode), _t(solver._t), _ldt(solver._ldt), 
+    _dt(solver._dt), 
     _dt_prev(solver._dt_prev), _atol(solver._atol), _rtol(solver._rtol), 
     _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax), 
     facmaxb(solver.facmaxb), stabfac(solver.stabfac), stabdown(solver.stabdown), 
@@ -177,16 +169,19 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
 }
 
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, double t_end)
+void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, 
+					   double t_end)
 {
   uint i;
   double err = 0.0;
   _dt_prev = _dt;
   //bool done = false;
 
+  const int max_iterations = parameters["maximum_iterations"];
+
   // A way to check if we are at t_end.
   const double eps = 1e-14;
-  recompute_jacobian = true;
+  _recompute_jacobian = true;
 
   double yi_abs, yni_abs, max, sk, tmp;
   for (i = 0; i < num_states(); ++i) 
@@ -222,7 +217,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   }
 
   // Computation of dtnew
-  const double lstabfac = stabfac*(2*maxits+1)/((2.0*maxits+newtonits));
+  const double lstabfac = stabfac*(2*max_iterations+1)/(2.0*max_iterations+_newton_iterations);
   
   //printf("lstabfac=%1.2e\n", lstabfac);
   double fac = lstabfac*std::pow((1.0/err), (1.0/(_iord+1)));
@@ -241,10 +236,11 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   if (err_old > 0)
     fac *= _dt/dt_old*std::pow((err_old/err), (1.0/(_iord + 1)));
   
-  if (fac < stabup && fac > stabdown){
+  if (fac < stabup && fac > stabdown)
+  {
     //printf("frac=%1.2e\n",fac);
     fac = 1.0;
-    recompute_jacobian = false;
+    _recompute_jacobian = false;
   }
   _dt *= fac;
 

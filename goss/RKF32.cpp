@@ -50,35 +50,12 @@ RKF32::RKF32()
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
 {
+  parameters.rename("RKF32");
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-RKF32::RKF32(double ldt) 
-  : AdaptiveExplicitSolver(ldt), 
-    nfevals(0), ndtsa(0), ndtsr(0),
-    a21(1.0/2.0), 
-    a32(3.0/4.0), 
-    b1(2.0/9.0), 
-    b2(1.0/3.0), 
-    b3(4.0/9.0), 
-    bh1(7.0/24.0), 
-    bh2(1.0/4.0), 
-    bh3(1.0/3.0), 
-    bh4(1.0/8.0), 
-    d1(b1-bh1), 
-    d2(b2-bh2), 
-    d3(b3-bh3), 
-    d4(-bh4), 
-    c2(1.0/2.0), 
-    c3(3.0/4.0), 
-    nbytes(0),
-    ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
-{
-  _iord = 3;
-}
-//-----------------------------------------------------------------------------
-RKF32::RKF32(boost::shared_ptr<ODE> ode, double ldt) 
-  : AdaptiveExplicitSolver(ldt), 
+RKF32::RKF32(boost::shared_ptr<ODE> ode) 
+  : AdaptiveExplicitSolver(), 
     nfevals(0), ndtsa(0), ndtsr(0),
     a21(1.0/2.0), 
     a32(3.0/4.0), 
@@ -98,6 +75,7 @@ RKF32::RKF32(boost::shared_ptr<ODE> ode, double ldt)
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
 { 
+  parameters.rename("RKF32");
   _iord = 3;
   attach(ode);
 }

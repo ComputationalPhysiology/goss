@@ -28,16 +28,12 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 RK2::RK2() : ODESolver(), k1(0), tmp(0)
 {
-  // Do nothing
+  parameters.rename("RK2");
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(double ldt) : ODESolver(ldt), k1(0), tmp(0)
+RK2::RK2(boost::shared_ptr<ODE> ode) : ODESolver(), k1(0), tmp(0)
 {
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
-RK2::RK2(boost::shared_ptr<ODE> ode, double ldt) : ODESolver(ldt), k1(0), tmp(0)
-{
+  parameters.rename("RK2");
   attach(ode);
 }
 //-----------------------------------------------------------------------------
@@ -66,14 +62,15 @@ void RK2::attach(boost::shared_ptr<ODE> ode)
   tmp.resize(num_states());
 }
 //-----------------------------------------------------------------------------
-void RK2::forward(double* y, double t, double interval) 
+void RK2::forward(double* y, double t, double dt) 
 {
 
   assert(_ode);
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
-  const double dt = interval/nsteps;
+  // Calculate number of steps and size of timestep based on ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
 
   // Local time
   double lt = t;
@@ -83,17 +80,17 @@ void RK2::forward(double* y, double t, double interval)
     _ode->eval(y, lt, &k1[0]);
 
     // Explicit Euler step to find the midpoint solution
-    axpy(&tmp[0], y, 0.5*dt, &k1[0]);
+    axpy(&tmp[0], y, 0.5*ldt, &k1[0]);
   
     // Evaluate derivative at midpoint
-    _ode->eval(&tmp[0], lt+0.5*dt, &k1[0]);
+    _ode->eval(&tmp[0], lt+0.5*ldt, &k1[0]);
 
     // Use midpoint derivative for explicit Euler step
     for (uint i = 0; i < num_states(); ++i)
-      y[i] += dt*k1[i];
+      y[i] += ldt*k1[i];
 
     // Update local time
-    lt += dt;
+    lt += ldt;
   }
 }
 //-----------------------------------------------------------------------------

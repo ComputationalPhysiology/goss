@@ -59,14 +59,13 @@ ESDIRK23a::ESDIRK23a()
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
     j_fac(0)
 {
+  parameters.rename("ESDIRK23a");
   _iord = 3;
-  maxits = 7;
-  min_dt = 1.0e-5;
   first_step = true;
 }
 //-----------------------------------------------------------------------------
-ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode, double ldt)
-  : AdaptiveImplicitSolver(ldt),
+ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode)
+  : AdaptiveImplicitSolver(),
     gamma(0.43586652150845899942), 
     new_jacobian(true), 
     first_step(true),
@@ -100,10 +99,9 @@ ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode, double ldt)
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
     j_fac(0)
 {
+  parameters.rename("ESDIRK23a");
   attach(ode);
   _iord = 3;
-  maxits = 7;
-  min_dt = 1.0e-5;
   first_step = true;
 }
 //-----------------------------------------------------------------------------
@@ -184,18 +182,19 @@ void ESDIRK23a::compute_factorized_jacobian(const double& dt)
   //std::cout << "Calling factorize jacobian" << std::endl; 
 
   // FIXME: Hake, I think memcopy is better here...
-  j_fac = jac;
+  j_fac = _jac;
  
-  mult(-dt*a22, &j_fac[0]);
-  add_mass_matrix(&j_fac[0]);
-  _ode->lu_factorize(&j_fac[0]);
-  lu_fact += 1;
+  mult(-dt*a22, j_fac.data());
+  add_mass_matrix(j_fac.data());
+  _ode->lu_factorize(j_fac.data());
   //recompute_jacobian = false;
 }
 //-----------------------------------------------------------------------------
 void ESDIRK23a::advance_one_step(double* y, const double& t0, double& dt)
 {
  
+  const double min_dt = parameters["min_dt"];
+
   bool accepted = do_step(y, t0, dt);
   while (!accepted && dt > min_dt){
     if (!new_jacobian){
@@ -260,7 +259,7 @@ bool ESDIRK23a::do_step(double* y, const double& t0, const double& delta_t)
       //y[i] = y[i] + delta_t*(b1*z1[i]+b2*z2[i]+b3*z3[i]+gamma*z4[i]);
       yh[i] = delta_t*((b1-bh1)*z1[i]+(b2-bh2)*z2[i]+(b3-gamma)*z3[i]+gamma*z4[i]);
     }  
-    _ode->forward_backward_subst(&j_fac[0], yh.data(), yh.data());
+    _ode->forward_backward_subst(j_fac.data(), yh.data(), yh.data());
  
     loc_error = norm(yh.data());
     if (loc_error > tol){
@@ -286,8 +285,8 @@ bool ESDIRK23a::compute_stage_val
   /*Local version of newton_solve, should be replaced by calls to the more
     generic function. */
 
-
-  newtonits = 0;
+  const int max_iterations = parameters["maximum_iterations"];
+  _newton_iterations = 0;
   uint i;
   double theta;
   bool conv_ok = true;
@@ -311,9 +310,9 @@ bool ESDIRK23a::compute_stage_val
 
     // FIXME: This method does not do anything!
     compute_factorized_jacobian(y,t_s,dt);
-    _ode->forward_backward_subst(&j_fac[0], &_b[0], dz.data());
+    _ode->forward_backward_subst(j_fac.data(), _b.data(), dz.data());
    
-    if (newtonits >= 1){
+    if (_newton_iterations >= 1){
       theta = norm(dz.data())/norm(prev_dz.data());
       if (!(theta <= 1)){
 	std::cout << "Solver diverges, reducing time step" << std::endl;
@@ -323,9 +322,9 @@ bool ESDIRK23a::compute_stage_val
       }
       eta = theta/(1.0-theta);
     }
-    if (newtonits > maxits){
+    if (_newton_iterations > max_iterations){
       //std::cout << "Not converged in "
-      //	       << maxits <<" iterations, reducing time step" << std::endl;
+      //	       << max_iterations <<" iterations, reducing time step" << std::endl;
       num_rejected ++;
       conv_ok = false;
       break;
@@ -333,16 +332,18 @@ bool ESDIRK23a::compute_stage_val
    
     for (i =0; i< num_states(); i++)
       z[i] += dz[i];
-    newtonits ++;
+    _newton_iterations ++;
     
   } while (eta * norm(dz.data()) > kappa*tol);
-  totalits += newtonits;   
+  totalits += _newton_iterations;   
 
   return conv_ok;
 }
 //-----------------------------------------------------------------------------
 void ESDIRK23a::reduce_time_step(double& delta_t)
 { 
+  const double min_dt = parameters["min_dt"];
+
   /*Reduces the time step based on the most recent value of the
     local error. Parameters are tuned for this particular ESDIRK23a method.*/
  
@@ -355,7 +356,7 @@ void ESDIRK23a::reduce_time_step(double& delta_t)
   
 
   //std::cout << "Goss Time step reduced from " << delta_t;
-  delta_t = std::max(reduction_factor*delta_t,min_dt);
+  delta_t = std::max(reduction_factor*delta_t, min_dt);
   //delta_t = max(0.5*delta_t,min_dt);
   //std::cout << " to " << delta_t <<std::endl;
 }
@@ -363,7 +364,9 @@ void ESDIRK23a::reduce_time_step(double& delta_t)
 void ESDIRK23a::forward(double* y, const double t0, const double interval) 
 {
 
-  double local_t=0;
+  const double min_dt = parameters["min_dt"];
+
+  double local_t = 0;
  
   //not used at this point...
   reached_tend = false;
@@ -375,7 +378,7 @@ void ESDIRK23a::forward(double* y, const double t0, const double interval)
     compute_ode_jacobian(y,t0);//,&jac[0]);
   }
   else {
-    _dt = std::max(s_fac*prev_dt*pow((tol/loc_error),0.25),min_dt); 
+    _dt = std::max(s_fac*prev_dt*pow((tol/loc_error),0.25), min_dt); 
     _dt = std::min(_dt, interval);
   }
 
@@ -384,7 +387,7 @@ void ESDIRK23a::forward(double* y, const double t0, const double interval)
     if (_dt*1.1 >= interval-local_t)
       _dt = interval-local_t;
 
-    if (newtonits >= 2)
+    if (_newton_iterations >= 2)
       compute_ode_jacobian(y, t0+local_t);//, &jac[0]);
   
     if (fabs((_dt-prev_dt)/prev_dt) > 0.2 || new_jacobian)
@@ -394,7 +397,7 @@ void ESDIRK23a::forward(double* y, const double t0, const double interval)
     
     prev_dt = _dt;
     local_t += _dt;
-    _dt = std::max(s_fac*prev_dt*pow((tol/loc_error),0.25),min_dt);
+    _dt = std::max(s_fac*prev_dt*pow((tol/loc_error), 0.25), min_dt);
   }
 
   first_step = false;

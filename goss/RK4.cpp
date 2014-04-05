@@ -28,17 +28,13 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 RK4::RK4() : ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
-  // Do nothing
+  parameters.rename("RK4");
 }
 //-----------------------------------------------------------------------------
-RK4::RK4(double ldt) : ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
+RK4::RK4(boost::shared_ptr<ODE> ode) : 
+  ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
-RK4::RK4(boost::shared_ptr<ODE> ode, double ldt) : 
-  ODESolver(ldt), k1(0), k2(0), k3(0), k4(0), tmp(0)
-{
+  parameters.rename("RK4");
   attach(ode);
 }
 //-----------------------------------------------------------------------------
@@ -75,14 +71,15 @@ void RK4::attach(boost::shared_ptr<ODE> ode)
 
 }
 //-----------------------------------------------------------------------------
-void RK4::forward(double* y, double t, double interval) 
+void RK4::forward(double* y, double t, double dt) 
 {
 
   assert(_ode);
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
-  const double dt = interval/nsteps;
+  // Calculate number of steps and size of timestep based on ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
 
   // Local time
   double lt = t;
@@ -92,21 +89,21 @@ void RK4::forward(double* y, double t, double interval)
     _ode->eval(y, lt, &k1[0]);
 
     // Explicit Euler step
-    axpy(&tmp[0], y, 0.5*dt, &k1[0]);
+    axpy(&tmp[0], y, 0.5*ldt, &k1[0]);
 
-    _ode->eval(&tmp[0], lt + 0.5*dt, &k2[0]);
-    axpy(&tmp[0], y, 0.5*dt, &k2[0]);
+    _ode->eval(&tmp[0], lt + 0.5*ldt, &k2[0]);
+    axpy(&tmp[0], y, 0.5*ldt, &k2[0]);
 
-    _ode->eval(&tmp[0], lt + 0.5*dt, &k3[0]);
-    axpy(&tmp[0], y, dt, &k3[0]);
+    _ode->eval(&tmp[0], lt + 0.5*ldt, &k3[0]);
+    axpy(&tmp[0], y, ldt, &k3[0]);
     
-    _ode->eval(&tmp[0], lt + dt, &k4[0]);
+    _ode->eval(&tmp[0], lt + ldt, &k4[0]);
 
     for (uint i = 0; i < num_states(); ++i)
-      y[i] += dt*(k1[i] + 2.0*k2[i] + 2.0*k3[i] + k4[i])/6.0;
+      y[i] += ldt*(k1[i] + 2.0*k2[i] + 2.0*k3[i] + k4[i])/6.0;
     
     // Update local time
-    lt += dt;
+    lt += ldt;
   }
 }
 //-----------------------------------------------------------------------------

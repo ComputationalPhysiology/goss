@@ -28,17 +28,13 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler() : ODESolver(), _dFdt(0)
 {
-  // Do nothing
+  parameters.rename("ExplicitEuler");
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(double ldt) : ODESolver(ldt), _dFdt(0)
-{
-  // Do nothing
-}
-//-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(boost::shared_ptr<ODE> ode, double ldt) : 
-  ODESolver(ldt), _dFdt(0)
+ExplicitEuler::ExplicitEuler(boost::shared_ptr<ODE> ode) : 
+  ODESolver(), _dFdt(0)
 { 
+  parameters.rename("ExplicitEuler");
   attach(ode);
 } 
 //-----------------------------------------------------------------------------
@@ -68,28 +64,29 @@ void ExplicitEuler::attach(boost::shared_ptr<ODE> ode)
 
 }
 //-----------------------------------------------------------------------------
-void ExplicitEuler::forward(double* y, double t, double interval) 
+void ExplicitEuler::forward(double* y, double t, double dt) 
 {
 
   assert(_ode);
   
   // Calculate number of steps and size of timestep based on _ldt
-  const ulong nsteps = _ldt > 0 ? std::ceil(interval/_ldt - 1.0E-12) : 1;
-  const double dt = interval/nsteps;
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
 
   // Local time
   double lt = t;
   for (ulong step = 0; step < nsteps; ++step)
   {
     // Evaluate rhs
-    _ode->eval(y, lt, &_dFdt[0]);
+    _ode->eval(y, lt, _dFdt.data());
 
     // Update states
     for (uint i = 0; i < num_states(); ++i)
-      y[i] += dt*_dFdt[i];
+      y[i] += ldt*_dFdt[i];
 
     // Increase time
-    lt += dt;
+    lt += ldt;
   }
 }
 //-----------------------------------------------------------------------------

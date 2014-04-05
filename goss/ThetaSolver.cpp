@@ -3,26 +3,29 @@
 
 #include "ThetaSolver.h"
 #include "log.h"
+#include "constants.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ThetaSolver::ThetaSolver() : ImplicitODESolver(), theta(0.5), 
-			     newton_iter1(0), newton_accepted1(0), 
-			     dt_v(0), z1(0), ft1(0), justrefined(false)
-{}
+ThetaSolver::ThetaSolver() : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
+{
+  parameters = default_parameters();
+}
 //-----------------------------------------------------------------------------
-ThetaSolver:: ThetaSolver (boost::shared_ptr<ODE> ode, double ldt) 
-  : ImplicitODESolver(ldt), theta(0.5), newton_iter1(0), newton_accepted1(0), 
-    dt_v(0), z1(0), ft1(0), justrefined(false)
+ThetaSolver:: ThetaSolver (boost::shared_ptr<ODE> ode) 
+  : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
 { 
+  parameters = default_parameters();
   attach(ode);
 } 
 //-----------------------------------------------------------------------------
-ThetaSolver::ThetaSolver(double ldt) : ImplicitODESolver(ldt), theta(0.5), 
-				       newton_iter1(0), newton_accepted1(0), 
-				       dt_v(0), z1(0), ft1(0), justrefined(false)
-{}
+ThetaSolver::ThetaSolver(const ThetaSolver& solver) : 
+  ImplicitODESolver(solver), _z1(solver.num_states()), _ft1(solver.num_states()),
+  _justrefined(solver._justrefined)
+{
+  // Do nothing
+}
 //-----------------------------------------------------------------------------
 void ThetaSolver::attach(boost::shared_ptr<ODE> ode)
 {
@@ -30,40 +33,20 @@ void ThetaSolver::attach(boost::shared_ptr<ODE> ode)
   ImplicitODESolver::attach(ode);
 
   // Init memory
-  z1.resize(num_states());
-  ft1.resize(num_states());
+  _z1.resize(num_states());
+  _ft1.resize(num_states());
 
 }
 //-----------------------------------------------------------------------------
 void ThetaSolver::reset()
 {
   
-  theta = 0.5;
-  justrefined = false;
-  num_tsteps = 0;
+  _justrefined = false;
 
-  stages = 1;
-  newton_iter1.clear();
-  newton_accepted1.clear();
-  dt_v.clear();
+  _jac_comp = 0;
+  _stages = 1;
   
   ImplicitODESolver::reset();
-}
-//-----------------------------------------------------------------------------
-void ThetaSolver::compute_factorized_jacobian(double* y, double t, double dt)
-{
-  
-  // Let ODE compute the jacobian
-  _ode->compute_jacobian(y, t, &jac[0]);
-
-  // Build Theta discretization of jacobian
-  mult(-dt*(1-theta), &jac[0]);
-  add_mass_matrix(&jac[0]);
-
-  // Factorize the jacobian
-  _ode->lu_factorize(&jac[0]);
-  jac_comp += 1;
-
 }
 //-----------------------------------------------------------------------------
 void ThetaSolver::forward(double* y, double t, double dt)
@@ -71,101 +54,112 @@ void ThetaSolver::forward(double* y, double t, double dt)
 
   assert(_ode);
 
-  //std::cout << "theta: " << theta << " t: " << t << " dt: " << interval << " dt: " << _dt << " ldt: " << _ldt << " V: " << y[0] << std::endl;
-  
   uint i;
-  double t_end = t + dt;
-  double ldt = _ldt > 0 ? _ldt : dt;
+  bool step_ok;
+
+  const double t_end = t + dt;
+  const double ldt_0 = parameters["ldt"];
+  const double theta = parameters["theta"];
+
+  double ldt = ldt_0 > 0 ? ldt_0 : dt;
+  int num_refinements = 0;
   
+  const double min_dt = parameters["min_dt"];
+  bool always_recompute_jacobian = parameters["always_recompute_jacobian"];
+  const int num_refinements_without_always_recomputing_jacobian = parameters["num_refinements_without_always_recomputing_jacobian"];
+
+  // A way to check if we are at t_end.
+  const double eps = GOSS_EPS*1000;
+
   for (i = 0; i < _ode->num_states(); ++i)
     _prev[i] = 0.0;
 
-  bool step_ok, done = false;
-
-  // A way to check if we are at t_end.
-  const double eps = 1e-14;
-
-  while (!done)
+  while (true)
   {
-    num_tsteps += 1;
   
-    // Recompute the jacobian if nessesary
-    if (recompute_jacobian)
-    {
-      compute_factorized_jacobian(y, t, ldt);
-    }
-
     // Use 0.0 z1:
     for (i = 0; i < _ode->num_states(); ++i)
-      z1[i] = 0.0;
+      _z1[i] = 0.0;
 
     // Explicit eval
-    _ode->eval(y, t, &ft1[0]);
+    if (std::abs(theta-1.0) > GOSS_EPS)
+    {
+      _ode->eval(y, t, &_ft1[0]);
+      for (i = 0; i < _ode->num_states(); ++i)
+	_prev[i] = (1-theta)*_ft1[i];
+    }
     
-    for (i = 0; i < _ode->num_states(); ++i)
-      _prev[i] = theta*ft1[i];
-    
+    // Check if we should re compute the jacobian
+    if (num_refinements<=num_refinements_without_always_recomputing_jacobian)
+      always_recompute_jacobian = true;
+      
     // Solve for increment
-    step_ok = newton_solve(&z1[0], &_prev[0], y, t + ldt, ldt, theta);    
-#ifdef DEBUG
-    newton_iter1.push_back(newtonits);
-    dt_v.push_back(ldt);
-#endif
+    step_ok = newton_solve(&_z1[0], &_prev[0], y, t+theta*ldt, ldt, theta, 
+			   always_recompute_jacobian);
 
     // Newton step OK
     if (step_ok)
     {
     
-      t+=ldt;
+      // Add increment
+      for (i = 0; i < _ode->num_states(); ++i)
+        y[i] += _z1[i];
+
+      t += ldt;
       
       if (std::fabs(t-t_end) < eps)
+	break;
+
+      // If the solver has refined, we do not allow it to double its 
+      // timestep for anoter step
+      if (!_justrefined)
       {
-        done = true;
+      
+	// double time step
+        const double tmp = 2.0*ldt;
+        if (ldt_0 > 0. && tmp >= ldt_0)
+	{
+          ldt = ldt_0;
+	}
+        else
+	{
+	  ldt = tmp;
+	  log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp/2, ldt);
+	}
+
       }
       else
       {
-        // If the solver has refined, we do not allow it to double its 
-	// timestep for anoter step
-        if (justrefined)
-	{
-          justrefined = false;
-        }
-	else
-	{
-        
-	  double tmp = 2.0*ldt;
-          //if (fabs(ldt-tmp)<eps)
-          if (tmp >= _ldt)
-            ldt = _ldt;
-          else
-            ldt = tmp;
-        }
-
-	// If we are passed t_end
-        if ((t + ldt) > t_end)
-          ldt = t_end - t;
+        _justrefined = false;
       }
 
-      // Add increment
-      for (i = 0; i < _ode->num_states(); ++i)
-        y[i] += z1[i];
-#ifdef DEBUG
-      newton_accepted1.push_back(1);
-#endif    
+      // If we are passed t_end
+      if ((t + ldt + GOSS_EPS) > t_end)
+      {
+        ldt = t_end - t;
+        log(DBG, "Changing dt    | t : %g, to adapt for tend: %g", t, ldt);
+      }
+
     }
     else
     {
       ldt /= 2.0;
-      justrefined = true;
-#ifdef DEBUG
-      newton_accepted1.push_back(0);
-#endif    
+      if (ldt < min_dt)
+      {
+	goss_error("ThetaSolver.cpp",
+		   "Forward ThetaSolver",
+		   "Newtons solver failed to converge as dt become smaller " \
+		   "than \"min_dt\" %e", min_dt);
+      }
+      log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
+      _justrefined = true;
+      num_refinements += 1;
     }
   }
 #ifdef DEBUG
   // Lower level than DEBUG!
-  log(5, "ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e in " \
-      "%ld steps\n", jac_comp, rejects, t, num_tsteps);
+  log(5, "ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e\n",
+      _jac_comp, _rejects, t);
 #endif
 
 }

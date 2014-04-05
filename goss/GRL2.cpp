@@ -28,16 +28,17 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL2::GRL2() : ODESolver(0.0), y0(0), a(0), b(0), linear_terms(0), 
+GRL2::GRL2() : ODESolver(), y0(0), a(0), b(0), linear_terms(0), 
 	       delta(1.0e-8), nbytes(0)
 {
-  // Do nothing
+  parameters.rename("GRL2");
 }
 //-----------------------------------------------------------------------------
-GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(0.0),
+GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(),
 	                y0(0), a(0), b(0), linear_terms(0), 
 	                delta(1.0e-8), nbytes(0)
 {
+  parameters.rename("GRL2");
   attach(ode);
 }
 //-----------------------------------------------------------------------------

@@ -54,7 +54,7 @@ namespace goss {
     virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
-    void forward(double* y, double t, double interval);
+    void forward(double* y, double t, double dt);
     
   private:
 

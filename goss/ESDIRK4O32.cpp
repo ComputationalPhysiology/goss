@@ -49,11 +49,12 @@ ESDIRK4O32::ESDIRK4O32()
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
+  parameters.rename("ESDIRK4O32");
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-ESDIRK4O32::ESDIRK4O32(boost::shared_ptr<ODE> ode, double ldt)
-  : AdaptiveImplicitSolver(ldt),
+ESDIRK4O32::ESDIRK4O32(boost::shared_ptr<ODE> ode)
+  : AdaptiveImplicitSolver(),
     gamma(0.43586652150845899942), 
     a21(gamma), 
     a22(gamma), 
@@ -76,36 +77,10 @@ ESDIRK4O32::ESDIRK4O32(boost::shared_ptr<ODE> ode, double ldt)
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
+  parameters.rename("ESDIRK4O32");
   _iord = 3;
   attach(ode);
 } 
-//-----------------------------------------------------------------------------
-ESDIRK4O32::ESDIRK4O32(double ldt)
-  : AdaptiveImplicitSolver(ldt),
-    gamma(0.43586652150845899942), 
-    a21(gamma), 
-    a22(gamma), 
-    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
-    a32((-2*gamma+1)/(4*gamma)), 
-    a33(gamma), 
-    a41((6*gamma-1)/(12*gamma)), 
-    a42(-1/((24*gamma-12)*gamma)), 
-    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
-    a44(gamma), 
-    b1(a41), 
-    b2(a42), 
-    b3(a43), 
-    b4(a44), 
-    bh1(a31), 
-    bh2(a32), 
-    bh3(a33), 
-    c2(2.0*gamma), 
-    c3(1.0), 
-    c4(1.0),
-    z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
-{
-  _iord = 3;
-}
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32(const ESDIRK4O32& solver)
   : AdaptiveImplicitSolver(solver),
@@ -167,25 +142,10 @@ void ESDIRK4O32::reset()
   nfevals = 0;
   ndtsa = 0;
   ndtsr = 0;
+  _ldt = parameters["ldt"];
 
   // Reset bases
   AdaptiveImplicitSolver::reset();
-}
-//-----------------------------------------------------------------------------
-void ESDIRK4O32::compute_factorized_jacobian(double* y, double t, double dt)
-{
-  
-  // Let ODE compute the jacobian
-  _ode->compute_jacobian(y, t, &jac[0]);
-  nfevals += num_states();
-
-  // compute_jacobian(t + c2*dt, y);
-  mult(-dt*a22, &jac[0]);
-  add_mass_matrix(&jac[0]);
-  _ode->lu_factorize(&jac[0]);
-  jac_comp += 1;
-  recompute_jacobian = false;
-
 }
 //-----------------------------------------------------------------------------
 void ESDIRK4O32::forward(double* y, double t, double interval) 
@@ -198,6 +158,8 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
   double* ret_ptr = y;
   double* swap, *yn0;
+
+  bool always_recompute_jacobian = parameters["always_recompute_jacobian"];
 
   // Use the raw pointer enabling pointer swap
   yn0 = &yn[0];
@@ -230,12 +192,6 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   while (!reached_tend)
   {
   
-    //Jacobian recomputed once for each local step
-    if (recompute_jacobian)
-    {
-      compute_factorized_jacobian(y, t, _dt);
-    }
-
     // Computes the first node explicitly
     _ode->eval(y, _t, &z1[0]);
     nfevals += 1;
@@ -249,13 +205,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       //printf("%1.2e, ",z2[i]);
     }
 
-    step_ok = newton_solve(&z2[0], &_prev[0], &y[0], _t + c2*_dt, _dt, a22);    
+    step_ok = newton_solve(&z2[0], &_prev[0], &y[0], _t + c2*_dt, _dt, a22, \
+			   always_recompute_jacobian);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
     if (!step_ok)
     {
-      recompute_jacobian = true;
+      _recompute_jacobian = true;
       _dt /= 2.0;
 #ifdef DEBUG
       log_data(_dt, false);
@@ -283,13 +240,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     }
     //printf(" after eval\n");
 
-    step_ok = newton_solve(&z3[0], &_prev[0], y, _t + c3*_dt, _dt, a33);
+    step_ok = newton_solve(&z3[0], &_prev[0], y, _t + c3*_dt, _dt, a33, 
+			   always_recompute_jacobian);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
     if (!step_ok)
     {
-      recompute_jacobian=true;
+      _recompute_jacobian=true;
       _dt /= 2.0;
 #ifdef DEBUG
       log_data(_dt, false);
@@ -319,13 +277,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       _prev[i] = a41*z1[i] + a42*z2[i] + a43*z3[i];
     }
 
-    step_ok = newton_solve(&z4[0], &_prev[0], y, _t + c4*_dt, _dt, a44);
+    step_ok = newton_solve(&z4[0], &_prev[0], y, _t + c4*_dt, _dt, a44, 
+			   always_recompute_jacobian);
 
     // Need to check if the newton solver is converged.
     // If not, we half the stepsize and try again
     if (!step_ok)
     {
-      recompute_jacobian=true;
+      _recompute_jacobian=true;
       _dt /= 2.0;
 #ifdef DEBUG
       log_data(_dt, false);
@@ -391,7 +350,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 #ifdef DEBUG
   dt_v.pop_back();
   //cout << "accepted,rejected="<<log[0]<<","<<log[1]<<endl;
-  printf("ESDIRK4O32 done with comp_jac = %d and rejected = %d\n", jac_comp, rejects);
+  printf("ESDIRK4O32 done with comp_jac = %d and rejected = %d\n", _jac_comp, _rejects);
 #endif
 
   //printf("Jumped out of the time loop at t = %1.6e\n",t);

@@ -371,6 +371,7 @@ const Parameters& Parameters::operator() (std::string key) const
 //-----------------------------------------------------------------------------
 const Parameters& Parameters::operator= (const Parameters& parameters)
 {
+
   // Clear all parameters
   clear();
 

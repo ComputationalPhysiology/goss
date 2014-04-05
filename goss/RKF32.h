@@ -38,10 +38,7 @@ namespace goss
     RKF32();
 
     // Constructor
-    RKF32(double _ldt);
-
-    // Constructor
-    RKF32 (boost::shared_ptr<ODE> ode, double ldt=-1.0);
+    RKF32 (boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     RKF32(const RKF32& solver);

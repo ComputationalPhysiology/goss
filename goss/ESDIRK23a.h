@@ -35,14 +35,20 @@ namespace goss
   
     public:
     
+    // Default parameters
+    Parameters default_parameters()
+    {
+      Parameters p = AdaptiveImplicitSolver::default_parameters();
+      p.add("num_refinements_without_always_recomputing_jacobian", 2);
+      p.add("min_dt", 0.001);
+      return p;
+    }
+
     //Default constructor
     ESDIRK23a();
     
     // Constructor
-    ESDIRK23a(double _ldt);
-
-    // Constructor
-    ESDIRK23a(boost::shared_ptr<ODE> ode, double ldt=-1.0);
+    ESDIRK23a(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     ESDIRK23a(const ESDIRK23a& solver);
@@ -54,14 +60,13 @@ namespace goss
     // Attach ODE
     virtual void attach(boost::shared_ptr<ODE> ode);
  
-    //jacobian of rhs
+    // Jacobian of rhs
     virtual void compute_ode_jacobian(double* y, double t)
     {
-      _ode->compute_jacobian(y, t, &jac[0]);
-      jac_comp ++;
+      _ode->compute_jacobian(y, t, _jac.data());
+      _jac_comp ++;
       new_jacobian = true;
     }
-
 
    //virtual void compute_factorized_jacobian(double* y, double t, double dt){}
     virtual void compute_factorized_jacobian(const double& dt);

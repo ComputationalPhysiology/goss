@@ -26,6 +26,7 @@
 #include "ParameterizedODE.h"
 #include "log.h"
 #include "ODESolver.h"
+#include "Parameters.h"
 
 namespace goss 
 {
@@ -37,6 +38,14 @@ namespace goss
   {
     
   public:
+
+    // Default parameters
+    static Parameters default_parameters()
+    {
+      Parameters params("ode_system_solver");
+      params.add("num_threads", 0, 0, 1024);
+      return params;
+    }
     
     // Constructor
     ODESystemSolver(uint nodes, boost::shared_ptr<ODESolver> solver, 
@@ -88,7 +97,9 @@ namespace goss
     // Get the number of nodes
     inline uint num_nodes() {return _num_nodes;}
 
-    
+    // Parameters
+    Parameters parameters;
+
   private:
 
     // Help functions used in normal and OpenMP runs
