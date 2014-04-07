@@ -31,10 +31,10 @@
 #include <stdio.h>
 #include <vector>
 
-#include <boost/scoped_array.hpp>
 #include "constants.h"
 #include "LogManager.h"
 #include "log.h"
+#include "Parameters.h"
 
 using namespace goss;
 
@@ -73,6 +73,13 @@ void goss::info(std::string msg, ...)
     return; // optimization
   read(goss_buffer.data(), msg);
   LogManager::logger.log(goss_buffer.data());
+}
+//-----------------------------------------------------------------------------
+void goss::info(const Parameters& parameters, bool verbose)
+{
+  if (!LogManager::logger.is_active())
+    return; // optimization
+  info(parameters.str(verbose));
 }
 //-----------------------------------------------------------------------------
 void goss::info_stream(std::ostream& out, std::string msg)

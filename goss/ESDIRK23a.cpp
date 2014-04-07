@@ -59,7 +59,7 @@ ESDIRK23a::ESDIRK23a()
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
     j_fac(0)
 {
-  parameters.rename("ESDIRK23a");
+  parameters = ESDIRK23a::default_parameters();
   _iord = 3;
   first_step = true;
 }
@@ -99,7 +99,7 @@ ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode)
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0),
     j_fac(0)
 {
-  parameters.rename("ESDIRK23a");
+  parameters = ESDIRK23a::default_parameters();
   attach(ode);
   _iord = 3;
   first_step = true;
@@ -285,7 +285,7 @@ bool ESDIRK23a::compute_stage_val
   /*Local version of newton_solve, should be replaced by calls to the more
     generic function. */
 
-  const int max_iterations = parameters["maximum_iterations"];
+  const int max_iterations = parameters["max_iterations"];
   _newton_iterations = 0;
   uint i;
   double theta;

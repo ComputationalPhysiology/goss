@@ -215,10 +215,12 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
         break;
       }
       
+      const double scaled_relative_previous_residual = \
+	std::max(std::pow(relative_previous_residual, max_iterations - _newton_iterations), \
+		 GOSS_EPS);
       // We converge too slow
       if (residual > (kappa*rtol*(1 - relative_previous_residual)/ \
-		      std::pow(relative_previous_residual, 
-			       max_iterations - _newton_iterations)))
+		      scaled_relative_previous_residual))
       {
 	log(DBG, "To slow        | t : %g, it: %2d, relative_previous_residual: " \
 	    "%f, relative_residual: %g. Recomputing Jacobian.", t, 

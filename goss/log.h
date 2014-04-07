@@ -24,10 +24,13 @@
 #define __LOG_H
 
 #include <string>
+
 #include "LogLevel.h"
 
 namespace goss
 {
+
+  class Parameters;
 
   /// The GOSS log system provides the following set of functions for
   /// uniform handling of log messages, warnings and errors. In addition,
@@ -39,6 +42,9 @@ namespace goss
 
   /// Print message
   void info(std::string msg, ...);
+
+  /// Print parameter (using output of str() method)
+  void info(const Parameters& parameters, bool verbose);
 
   /// Print message to stream
   void info_stream(std::ostream& out, std::string msg);

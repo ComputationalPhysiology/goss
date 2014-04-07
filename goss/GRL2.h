@@ -58,16 +58,15 @@ namespace goss {
     
   private:
 
+    void one_step(double* y2, double* y, double* y0, double t, double dt);
+
     // Pointers to intermediate values used while stepping
-    std::vector<double> y0; 
-    std::vector<double> a;
-    std::vector<double> b;
+    std::vector<double> _y2; 
+    std::vector<double> _a;
+    std::vector<double> _b;
 
-    std::vector<uint> linear_terms;
-    const double delta;
-
-    // Number of bytes which will be copied each time step
-    uint nbytes;
+    std::vector<uint> _linear_terms;
+    const double _delta;
 
   };
   

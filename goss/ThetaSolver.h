@@ -34,7 +34,7 @@ namespace goss
   public:
   
     // Default parameters
-    Parameters default_parameters()
+    static Parameters default_parameters()
     {
       Parameters p = ImplicitODESolver::default_parameters();
       p.rename("ThetaSolver");

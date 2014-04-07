@@ -16,7 +16,7 @@
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 //
 // First added:  2003-12-21
-// Last changed: 2013-05-12
+// Last changed: 2014-04-07
 
 // Uncomment this for testing std::clock
 //#define _WIN32
@@ -78,8 +78,8 @@ double goss::time()
   if (gettimeofday(&tv, &tz) != 0)
   {
     goss_error("timing.cpp",
-                 "return current time",
-                 "Call to gettimeofday() failed");
+	       "return current time",
+	       "Call to gettimeofday() failed");
   }
   return static_cast<double>(tv.tv_sec) + static_cast<double>(tv.tv_usec)*1e-6;
 #endif

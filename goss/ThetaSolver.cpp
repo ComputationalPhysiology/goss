@@ -137,7 +137,7 @@ void ThetaSolver::forward(double* y, double t, double dt)
       if ((t + ldt + GOSS_EPS) > t_end)
       {
         ldt = t_end - t;
-        log(DBG, "Changing dt    | t : %g, to adapt for tend: %g", t, ldt);
+        log(DBG, "Changing ldt   | t : %g, to adapt for dt end: %g", t, ldt);
       }
 
     }

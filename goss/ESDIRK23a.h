@@ -36,9 +36,10 @@ namespace goss
     public:
     
     // Default parameters
-    Parameters default_parameters()
+    static Parameters default_parameters()
     {
       Parameters p = AdaptiveImplicitSolver::default_parameters();
+      p.rename("ESDIRK23a");
       p.add("num_refinements_without_always_recomputing_jacobian", 2);
       p.add("min_dt", 0.001);
       return p;

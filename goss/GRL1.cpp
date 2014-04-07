@@ -22,6 +22,7 @@
 #include <cstdlib>
 
 #include "log.h"
+#include "Timer.h"
 #include "GRL1.h"
 
 using namespace goss;
@@ -48,7 +49,7 @@ GRL1::GRL1(const GRL1& solver) : ODESolver(solver),
   if (_ode)
     
     // Get what terms are linear
-    _ode->linear_terms(&linear_terms[0]);
+    _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
@@ -73,12 +74,14 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
   linear_terms.resize(num_states());
   
   // Get what terms are linear
-  _ode->linear_terms(&linear_terms[0]);
+  _ode->linear_terms(linear_terms.data());
 }
 
 //-----------------------------------------------------------------------------
 void GRL1::forward(double* y, double t, double dt)
 {
+
+  Timer _timer("GRL1 one step");
 
   assert(_ode);
 
@@ -86,7 +89,7 @@ void GRL1::forward(double* y, double t, double dt)
   const double ldt_0 = parameters["ldt"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
   const double ldt = dt/nsteps;
-
+  
   // Local time
   double lt = t;
 
@@ -94,10 +97,10 @@ void GRL1::forward(double* y, double t, double dt)
   {
 
     // Evaluate full right hand side
-    _ode->eval(y, lt, &a[0]);              
+    _ode->eval(y, lt, a.data());              
   
     // Exact derivatives for linear terms 
-    _ode->linear_derivatives(y, lt, &b[0]);
+    _ode->linear_derivatives(y, lt, b.data());
   
     for (uint i = 0; i < num_states(); ++i) 
     { 

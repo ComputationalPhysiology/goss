@@ -177,7 +177,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
   _dt_prev = _dt;
   //bool done = false;
 
-  const int max_iterations = parameters["maximum_iterations"];
+  const int max_iterations = parameters["max_iterations"];
 
   // A way to check if we are at t_end.
   const double eps = 1e-14;

@@ -35,7 +35,7 @@ namespace goss
   public:
   
     // Default parameters
-    Parameters default_parameters()
+    static Parameters default_parameters()
     {
       Parameters p = ODESolver::default_parameters();
       p.rename("implicit_ode_solver");

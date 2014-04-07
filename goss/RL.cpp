@@ -30,7 +30,6 @@ using namespace goss;
 RL::RL() : ODESolver(), a(0), b(0), linear_terms(0)
 {
   parameters.rename("RL");
-  info(parameters.str(true));
 }
 //-----------------------------------------------------------------------------
 RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0), 
@@ -48,7 +47,7 @@ RL::RL(const RL& solver) : ODESolver(solver),
   if (_ode)
     
     // Get what terms are linear
-    _ode->linear_terms(&linear_terms[0]);
+    _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 RL::~RL()
@@ -72,7 +71,7 @@ void RL::attach(boost::shared_ptr<ODE> ode)
   linear_terms.resize(num_states());
   
   // Get what terms are linear
-  _ode->linear_terms(&linear_terms[0]);
+  _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 void RL::forward(double* y, double t, double dt)
