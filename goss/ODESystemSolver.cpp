@@ -20,6 +20,8 @@
 
 #ifdef HAS_OPENMP
 #include <omp.h>
+#include <stdlib.h>
+#include <stdio.h>
 #endif
 
 #include "ODESystemSolver.h"
@@ -160,6 +162,12 @@ void ODESystemSolver::reset_default()
 void ODESystemSolver::set_num_threads(uint num_threads)
 {
 #ifdef HAS_OPENMP
+  
+  char* GOMP_CPU_AFFINITY;
+  GOMP_CPU_AFFINITY = getenv("GOMP_CPU_AFFINITY");
+  if (GOMP_CPU_AFFINITY!=NULL)
+    printf("GOMP_CPU_AFFINITY: %s\n", GOMP_CPU_AFFINITY);
+  
   // Store num threads
   _num_threads = num_threads;
 
