@@ -117,64 +117,8 @@ void GRL2::forward(double* y, double t, double dt)
   // First step
   one_step(_y2.data(), y, y, t, dt*0.5);
 
+  // Second step
   one_step(y, _y2.data(), y, t, dt);
 
-  //// Evaluate full right hand side
-  //_ode->eval(y, t, a.data());
-  //
-  //// Exact derivatives for linear terms
-  //_ode->linear_derivatives(y, t, b.data());
-  //
-  //for (uint i = 0; i < num_states(); ++i) 
-  //{ 
-  //  // Numerical differentiation
-  //  if (linear_terms[i] == 0) 
-  //  {
-  //    y[i] += delta; 
-  //    b[i] = (_ode->eval(i, y, t) - a[i])/delta;  // Component i derivative
-  //    y[i] -= delta;                       // Restore state i
-  //  }
-  //}
-  //
-  //for (uint i = 0; i < num_states(); ++i) 
-  //  y2[i] = (std::fabs(b[i]) > delta) ? y[i] + a[i]/b[i]*(std::exp(b[i]*dt*0.5) - 1.0) : 
-  //    y[i] + a[i]*dt*0.5;
-  //
-  //// Second step
-  //
-  //// Exact derivatives for linear terms
-  //_ode->linear_derivatives(y2.data(), t, b.data());
-  //_ode->eval(y2.data(), t, a.data());
-  //
-  //// Local variable to store comp i
-  ////double yi;       
-  //for (uint i = 0; i < num_states(); ++i) 
-  //{        
-  //  // Store original value of comp i
-  //  //yi = y[i];
-  //
-  //  // Use y2[i] at diagonal
-  //  //y[i] = y2[i];
-  //
-  //  // Evaluate right hand side after changing comp i    
-  //  //a[i] = _ode->eval(i, y, t);
-  //
-  //  if (linear_terms[i] == 0) 
-  //  {  
-  //    // Numerical differentiation for non-linear terms
-  //    y2[i] += delta; 
-  //
-  //    // Component i derivative
-  //    b[i] = (_ode->eval(i, y2.data(), t) - a[i])/delta;
-  //    y2[i] -= delta;                       // Restore state i
-  //  }
-  //
-  //  // Restore state i
-  //  //y[i] = yi;
-  //}
-  //
-  //for (uint i = 0; i < num_states(); ++i) 
-  //  y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*dt) - 1.0) :
-  //    a[i]*dt;
 }
 //-----------------------------------------------------------------------------
