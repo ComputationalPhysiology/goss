@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2012-09-20 -- 2014-02-04"
+__date__ = "2012-09-20 -- 2014-04-10"
 __copyright__ = "Copyright (C) 2012 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
 import os
 
 from gotran.model.loadmodel import load_ode
+from gotran import list_timings
 from goss.codegeneration import GossCodeGenerator
 from goss import error
 
@@ -33,6 +34,8 @@ def main(filename, params):
     f = open(output, "w")
     f.write("#include <goss.h>\n\n")
     f.write(cgen.class_code())
+    if params.list_timings:
+        list_timings()
 
 if __name__ == "__main__":
     import sys
@@ -47,6 +50,7 @@ if __name__ == "__main__":
         field_states = Param([], description="States which should be "\
                              "treated as field states."),\
         monitored = Param([], description="Monitored intermediates."),\
+        list_timings = Param(False, description="Print timings of codegeneration."),
         code = code_params)
     
     params.parse_args(usage="usage: %prog FILE [options]")#sys.argv[2:])
