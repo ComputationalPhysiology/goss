@@ -26,12 +26,12 @@
 
 #include "types.h"
 #include "ODESolver.h"
-#include "ODE.h"
+#include "RL1.h"
 
 namespace goss {
 
   // Second order accurate Generalized Rush-Larsen ODE Solver
-  class RL2 : public ODESolver
+  class RL2 : public RL1
   {
   public:
 
@@ -58,12 +58,8 @@ namespace goss {
     
   private:
 
-    void one_step(double* y2, double* y, double* y0, double t, double dt);
-
     // Pointers to intermediate values used while stepping
     std::vector<double> _y2; 
-    std::vector<double> _a;
-    std::vector<double> _b;
 
   };
   

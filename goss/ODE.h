@@ -101,7 +101,10 @@ namespace goss {
     
   private:
 
-    // Temporaries used to compute jacobian
+    // Friends
+    friend class ODESolver;
+
+    // Temporaries used to compute jacobian and other temporaries
     std::vector<double> _f1, _f2;
 
   };

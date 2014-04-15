@@ -64,7 +64,7 @@
 #include <goss/ESDIRK23a.h>
 #include <goss/GRL1.h>
 #include <goss/GRL2.h>
-#include <goss/RL.h>
+#include <goss/RL1.h>
 #include <goss/RL2.h>
 
 // ODESystem

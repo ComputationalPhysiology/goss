@@ -99,6 +99,13 @@ namespace goss
 
   protected:
     
+    // Access to scratch space in ODE
+    inline std::vector<double>& _f1() const
+    {assert(_ode); return _ode->_f1;}
+
+    inline std::vector<double>& _f2() const
+    {assert(_ode); return _ode->_f2;}
+
     // Shared pointer to ode 
     boost::shared_ptr<ODE> _ode;
 

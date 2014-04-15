@@ -132,7 +132,7 @@ typedef testing::Types<VanDerPol> DAEs;
 typedef testing::Types<ExplicitEuler, RK2, RK4> ExplicitODESolvers; 
 //typedef testing::Types<ImplicitEuler, SDIRK> ImplicitODESolvers;
 typedef testing::Types<BasicImplicitEuler, ESDIRK23a, ImplicitEuler, ThetaSolver> ImplicitODESolvers;
-typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
+typedef testing::Types<RL1, GRL1, RL2, GRL2> RLODESolvers;
 typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE, 
 		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates, 
 		       PanfilovCSE, PanfilovCSEArray> ParameterizedODEs;

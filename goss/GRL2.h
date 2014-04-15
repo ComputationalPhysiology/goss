@@ -25,13 +25,13 @@
 #include <boost/make_shared.hpp>
 
 #include "types.h"
-#include "ODESolver.h"
+#include "GRL1.h"
 #include "ODE.h"
 
 namespace goss {
 
   // Second order accurate Generalized Rush-Larsen ODE Solver
-  class GRL2 : public ODESolver
+  class GRL2 : public GRL1
   {
   public:
 
@@ -58,14 +58,8 @@ namespace goss {
     
   private:
 
-    void one_step(double* y2, double* y, double* y0, double t, double dt);
-
     // Pointers to intermediate values used while stepping
     std::vector<double> _y2; 
-    std::vector<double> _a;
-    std::vector<double> _b;
-
-    const double _delta;
 
   };
   

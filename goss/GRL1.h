@@ -21,6 +21,7 @@
 #define GRL1_H_IS_INCLUDED
 
 #include <vector>
+#include <cmath>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -35,6 +36,15 @@ namespace goss {
   {
   public:
     
+    // Default parameters
+    static Parameters default_parameters()
+    {
+      Parameters p = ODESolver::default_parameters();
+      p.rename("GRL1");
+      p.add("delta", 1e-8, 1e-12, 1e-8);
+      return p;
+    }
+
     // Default Constructor
     GRL1();
 
@@ -54,16 +64,30 @@ namespace goss {
     virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
-    void forward(double* y, double t, double dt);
+    virtual void forward(double* y, double t, double dt);
     
-  private:
+  protected:
 
-    // Pointers to intermediate values used while stepping
-    std::vector<double> _a;
-    std::vector<double> _b;
-
-    const double _delta;
+    // One step of the GRL algorithm
+    inline void _one_step(double* y2, const double* y, const double* y0, 
+			  const double t, const double dt, const double delta);
 
   };
+
+  //-----------------------------------------------------------------------------
+  inline void GRL1::_one_step(double* y2, const double* y, const double* y0, 
+			      const double t, const double dt, const double delta)
+  {
+    assert(_ode);
+    
+    // Evaluate full right hand side
+    _ode->linearized_eval(y, t, _f1().data(), _f2().data());
+    
+    for (uint i = 0; i < num_states(); ++i) 
+      y2[i] = (std::fabs(_f1()[i]) > delta) ? y0[i] + _f2()[i]/_f1()[i]*(std::exp(_f1()[i]*dt) - 1.0) : y0[i] + _f2()[i]*dt;
+  }
+
+  //-----------------------------------------------------------------------------
+
 }
 #endif

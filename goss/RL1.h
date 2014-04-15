@@ -21,6 +21,7 @@
 #define RL_H_IS_INCLUDED
 
 #include <vector>
+#include <cmath>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -31,38 +32,52 @@
 namespace goss {
 
   // First order accurate Generalized Rush-Larsen ODE Solver
-  class RL: public ODESolver
+  class RL1: public ODESolver
   {
   public:
     
     // Default Constructor
-    RL();
+    RL1();
 
     // Constructor
-    RL(boost::shared_ptr<ODE> ode);
+    RL1(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
-    RL(const RL& solver);
+    RL1(const RL1& solver);
     
     // Return a copy of itself
-    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RL>(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RL1>(*this); }
 
     // Destructor
-    ~RL();
+    ~RL1();
 
     // Attach ODE to solver
     virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
-    void forward(double* y, double t, double dt);
+    virtual void forward(double* y, double t, double dt);
     
-  private:
+  protected:
 
-    // Pointers to intermediate values used while stepping
-    std::vector<double> a;
-    std::vector<double> b;
+    // One step of the RL algorithm
+    inline void _one_step(double* y2, const double* y, const double* y0, 
+			  const double t, const double dt);
 
   };
+
+  //-----------------------------------------------------------------------------
+  inline void RL1::_one_step(double* y2, const double* y, const double* y0, 
+			     const double t, const double dt)
+  {
+
+    // Evaluate full right hand side
+    _ode->linearized_eval(y, t, _f1().data(), _f2().data());
+    
+    for (uint i = 0; i < num_states(); ++i) 
+      y2[i] = _ode->linear_term(i) ? y0[i] + _f2()[i]/_f1()[i]*(std::exp(_f1()[i]*dt) - 1.0) : y0[i] + _f2()[i]*dt;
+  }
+  
+  //-----------------------------------------------------------------------------
 
 }
 #endif

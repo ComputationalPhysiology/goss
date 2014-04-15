@@ -67,5 +67,5 @@
 %shared_ptr(goss::ESDIRK4O32)
 %shared_ptr(goss::GRL1)
 %shared_ptr(goss::GRL2)
-%shared_ptr(goss::RL)
+%shared_ptr(goss::RL1)
 %shared_ptr(goss::RL2)
