@@ -29,15 +29,13 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL2::GRL2() : ODESolver(), _y2(0), _a(0), _b(0), _linear_terms(0), 
-	       _delta(1.0e-8)
+GRL2::GRL2() : ODESolver(), _y2(0), _a(0), _b(0), _delta(1.0e-8)
 {
   parameters.rename("GRL2");
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(boost::shared_ptr<ODE> ode) : ODESolver(),
-	                _y2(0), _a(0), _b(0), _linear_terms(0), 
-	                _delta(1.0e-8)
+	                _y2(0), _a(0), _b(0), _delta(1.0e-8)
 {
   parameters.rename("GRL2");
   attach(ode);
@@ -47,14 +45,8 @@ GRL2::GRL2(const GRL2& solver) : ODESolver(solver),
                                  _y2(solver._y2), 
                                  _a(solver._a), 
                                  _b(solver._b), 
-                                 _linear_terms(solver._linear_terms),
                                  _delta(solver._delta)
 {
-  
-  if (_ode)
-    // Get what terms are linear
-    _ode->linear_terms(_linear_terms.data());
-  
 }
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()
@@ -76,11 +68,7 @@ void GRL2::attach(boost::shared_ptr<ODE> ode)
   _y2.resize(num_states(), 0.0);
   _a.resize(num_states(), 0.0);
   _b.resize(num_states(), 0.0);
-  _linear_terms.resize(num_states());
-  
-  // Get what terms are linear
-  _ode->linear_terms(_linear_terms.data());
-  
+
 }
 //-----------------------------------------------------------------------------
 void GRL2::one_step(double* y2, double* y, double* y0, double t, double dt)
@@ -88,21 +76,22 @@ void GRL2::one_step(double* y2, double* y, double* y0, double t, double dt)
   Timer _timer("GRL2 one step");
 
   // Evaluate full right hand side
-  _ode->eval(y, t, _a.data());
-
-  // Exact derivatives for linear terms
-  _ode->linear_derivatives(y, t, _b.data());
-  
-  for (uint i = 0; i < num_states(); ++i) 
-  { 
-    // Numerical differentiation
-    if (_linear_terms[i] == 0)
-    {
-      y[i] += _delta; 
-      _b[i] = (_ode->eval(i, y, t) - _a[i])/_delta;  // Component i derivative
-      y[i] -= _delta;                       // Restore state i
-    }
-  }
+  _ode->linearized_eval(y, t, _b.data(), _a.data());
+  //_ode->eval(y, t, _a.data());
+  //
+  //// Exact derivatives for linear terms
+  //_ode->linear_derivatives(y, t, _b.data());
+  //
+  //for (uint i = 0; i < num_states(); ++i) 
+  //{ 
+  //  // Numerical differentiation
+  //  if (!_ode->linear_term(i))
+  //  {
+  //    y[i] += _delta; 
+  //    _b[i] = (_ode->eval(i, y, t) - _a[i])/_delta;  // Component i derivative
+  //    y[i] -= _delta;                       // Restore state i
+  //  }
+  //}
 
   for (uint i = 0; i < num_states(); ++i) 
     y2[i] = (std::fabs(_b[i]) > _delta) ? y0[i] + _a[i]/_b[i]*(std::exp(_b[i]*dt) - 1.0) :

@@ -10,14 +10,15 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ODE::ODE(uint num_states_) : 
-  _num_states(num_states_), _differential_states(num_states_, 1), _is_dae(false),
-  _f1(num_states_), _f2(num_states_)
+  _num_states(num_states_), _differential_states(num_states_, 1), 
+  _linear_terms(num_states_, 0), _is_dae(false), _f1(num_states_), _f2(num_states_)
 { 
 } 
 //-----------------------------------------------------------------------------
 ODE::ODE(const ODE& ode) : 
   _num_states(ode._num_states), _differential_states(ode._differential_states), 
-  _is_dae(ode._is_dae), _f1(ode._num_states), _f2(ode._num_states)
+  _linear_terms(ode._linear_terms), _is_dae(ode._is_dae), _f1(ode._num_states), 
+  _f2(ode._num_states)
 { 
 } 
 //-----------------------------------------------------------------------------
@@ -134,13 +135,8 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
   }
 }
 //-----------------------------------------------------------------------------
-void ODE::linear_terms(uint*) const
+void ODE::linearized_eval(const double*, double, double*, double*) const
 {
-  error("ODE::linear_terms must be implement in a subclass");
-}
-//-----------------------------------------------------------------------------
-void ODE::linear_derivatives(const double*, double, double*) const
-{
-  error("ODE::linear_derivatives must be implemented in a subclass");
+  error("ODE::linearized_eval must be implement in a subclass");
 }
 //-----------------------------------------------------------------------------

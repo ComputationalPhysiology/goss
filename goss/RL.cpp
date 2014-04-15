@@ -27,13 +27,12 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-RL::RL() : ODESolver(), a(0), b(0), linear_terms(0)
+RL::RL() : ODESolver(), a(0), b(0)
 {
   parameters.rename("RL");
 }
 //-----------------------------------------------------------------------------
-RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0), 
-				     linear_terms(0)
+RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0)
 {
   parameters.rename("RL");
   attach(ode);
@@ -41,13 +40,8 @@ RL::RL(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0),
 //-----------------------------------------------------------------------------
 RL::RL(const RL& solver) : ODESolver(solver), 
 			   a(solver.num_states(), 0.0), 
-			   b(solver.num_states(), 0.0), 
-			   linear_terms(solver.num_states())
+			   b(solver.num_states(), 0.0)
 {
-  if (_ode)
-    
-    // Get what terms are linear
-    _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 RL::~RL()
@@ -68,10 +62,6 @@ void RL::attach(boost::shared_ptr<ODE> ode)
   // Initalize memory
   a.resize(num_states(), 0.0);
   b.resize(num_states(), 0.0);
-  linear_terms.resize(num_states());
-  
-  // Get what terms are linear
-  _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 void RL::forward(double* y, double t, double dt)
@@ -91,14 +81,14 @@ void RL::forward(double* y, double t, double dt)
   {
 
     // Evaluate full right hand side
-    _ode->eval(y, lt, a.data());
+    _ode->linearized_eval(y, lt, b.data(), a.data());
   
     // Exact derivatives for linear terms
-    _ode->linear_derivatives(y, lt, b.data());
+    //_ode->linear_derivatives(y, lt, b.data());
   
     // Integrate linear terms exactly
     for (uint i = 0; i < num_states(); ++i) 
-      y[i] += (linear_terms[i]==1) ? a[i]/b[i]*(std::exp(b[i]*ldt) - 1.0) : a[i]*ldt;
+      y[i] += _ode->linear_term(i) ? a[i]/b[i]*(std::exp(b[i]*ldt) - 1.0) : a[i]*ldt;
 
     // Increase time
     lt += ldt;

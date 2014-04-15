@@ -65,7 +65,6 @@ namespace goss {
     std::vector<double> _a;
     std::vector<double> _b;
 
-    std::vector<uint> _linear_terms;
     const double _delta;
 
   };

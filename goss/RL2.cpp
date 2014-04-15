@@ -29,13 +29,13 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-RL2::RL2() : ODESolver(), _y2(0), _a(0), _b(0), _linear_terms(0)
+RL2::RL2() : ODESolver(), _y2(0), _a(0), _b(0)
 {
   parameters.rename("RL2");
 }
 //-----------------------------------------------------------------------------
 RL2::RL2(boost::shared_ptr<ODE> ode) : ODESolver(),
-  _y2(0), _a(0), _b(0), _linear_terms(0)
+  _y2(0), _a(0), _b(0)
 {
   parameters.rename("RL2");
   attach(ode);
@@ -44,14 +44,8 @@ RL2::RL2(boost::shared_ptr<ODE> ode) : ODESolver(),
 RL2::RL2(const RL2& solver) : ODESolver(solver),
                                  _y2(solver._y2), 
                                  _a(solver._a), 
-                                 _b(solver._b), 
-                                 _linear_terms(solver._linear_terms)
+                                 _b(solver._b) 
 {
-  
-  if (_ode)
-    // Get what terms are linear
-    _ode->linear_terms(_linear_terms.data());
-  
 }
 //-----------------------------------------------------------------------------
 RL2::~RL2()
@@ -73,11 +67,6 @@ void RL2::attach(boost::shared_ptr<ODE> ode)
   _y2.resize(num_states(), 0.0);
   _a.resize(num_states(), 0.0);
   _b.resize(num_states(), 0.0);
-  _linear_terms.resize(num_states());
-  
-  // Get what terms are linear
-  _ode->linear_terms(_linear_terms.data());
-  
 }
 //-----------------------------------------------------------------------------
 void RL2::one_step(double* y2, double* y, double* y0, double t, double dt)
@@ -85,13 +74,14 @@ void RL2::one_step(double* y2, double* y, double* y0, double t, double dt)
   Timer _timer("RL2 one step");
 
   // Evaluate full right hand side
-  _ode->eval(y, t, _a.data());
-
-  // Exact derivatives for linear terms
-  _ode->linear_derivatives(y, t, _b.data());
+  _ode->linearized_eval(y, t, _b.data(), _a.data());
+  //_ode->eval(y, t, _a.data());
+  //
+  //// Exact derivatives for linear terms
+  //_ode->linear_derivatives(y, t, _b.data());
   
   for (uint i = 0; i < num_states(); ++i) 
-    y2[i] = (_linear_terms[i]==1) ? y0[i] + _a[i]/_b[i]*(std::exp(_b[i]*dt) - 1.0) :
+    y2[i] = _ode->linear_term(i) ? y0[i] + _a[i]/_b[i]*(std::exp(_b[i]*dt) - 1.0) :
       y0[i] + _a[i]*dt;
 }
 //-----------------------------------------------------------------------------

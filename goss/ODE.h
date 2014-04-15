@@ -54,6 +54,10 @@ namespace goss {
     // Evaluate component idx of the rhs of the ODE
     virtual double eval(uint idx, const double* states, double time);
 
+    // Evaluate the linearized rhs
+    virtual void linearized_eval(const double* states, double time, 
+				 double* linearized, double* rhs) const;
+    
     // Get default initial conditions
     virtual void get_ic(goss::DoubleVector* values) const = 0;
 
@@ -69,12 +73,6 @@ namespace goss {
     // Forward/Backward substitution of factoriesed matrix
     virtual void forward_backward_subst(const double* mat, const double* b, double* x) const;
 
-    // Populate indices with information about the linear terms
-    virtual void linear_terms(uint* indices) const;
-
-    // Evaluate the linear derivatives
-    virtual void linear_derivatives(const double* states, double time, double* values) const;
-    
     // Returns true if the ODE is a DAE (then only implicit solvers can be used)
     bool is_dae() const
     { return _is_dae;}
@@ -83,6 +81,10 @@ namespace goss {
     const std::vector<unsigned char>& differential_states() const
     { return _differential_states; }
 
+    // Return wether the ith term is linear
+    inline unsigned char linear_term(uint i) const
+    { return _linear_terms[i];}
+
   protected: 
     
     // ODE size
@@ -90,6 +92,9 @@ namespace goss {
 
     // Flags for what states are differential
     std::vector<unsigned char> _differential_states;
+
+    // Flags for what states the rhs is linearly dependent on itself
+    std::vector<unsigned char> _linear_terms;
 
     // Flag to determine if an ODE is a DAE
     bool _is_dae;

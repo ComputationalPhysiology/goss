@@ -62,8 +62,6 @@ namespace goss {
     std::vector<double> a;
     std::vector<double> b;
 
-    std::vector<uint> linear_terms;
-  
   };
 
 }

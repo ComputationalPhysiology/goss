@@ -28,28 +28,23 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-GRL1::GRL1() : ODESolver(), a(0), b(0), linear_terms(0), delta(1.0e-8)
+GRL1::GRL1() : ODESolver(), _a(0), _b(0), _delta(1.0e-8)
 {
   parameters.rename("GRL1");
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(), a(0), b(0), 
-                                         linear_terms(0), delta(1.0e-8)
+GRL1::GRL1(boost::shared_ptr<ODE> ode) : ODESolver(), _a(0), _b(0), 
+                                         _delta(1.0e-8)
 {
   parameters.rename("GRL1");
   attach(ode);
 }
 //-----------------------------------------------------------------------------
 GRL1::GRL1(const GRL1& solver) : ODESolver(solver), 
-                                 a(solver.num_states()), 
-                                 b(solver.num_states(), 0.0), 
-                                 linear_terms(solver.num_states()),
-				 delta(solver.delta)
+                                 _a(solver.num_states()), 
+                                 _b(solver.num_states(), 0.0), 
+				 _delta(solver._delta)
 {
-  if (_ode)
-    
-    // Get what terms are linear
-    _ode->linear_terms(linear_terms.data());
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
@@ -69,12 +64,8 @@ void GRL1::attach(boost::shared_ptr<ODE> ode)
 	       "cannot integrate a DAE ode with an explicit solver.");
 
   // Initalize memory
-  a.resize(num_states());
-  b.resize(num_states(), 0.0);
-  linear_terms.resize(num_states());
-  
-  // Get what terms are linear
-  _ode->linear_terms(linear_terms.data());
+  _a.resize(num_states());
+  _b.resize(num_states(), 0.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,27 +88,28 @@ void GRL1::forward(double* y, double t, double dt)
   {
 
     // Evaluate full right hand side
-    _ode->eval(y, lt, a.data());              
+    _ode->linearized_eval(y, lt, _b.data(), _a.data());
+    //_ode->eval(y, lt, a.data());              
   
     // Exact derivatives for linear terms 
-    _ode->linear_derivatives(y, lt, b.data());
-  
-    for (uint i = 0; i < num_states(); ++i) 
-    { 
-      // Numerical differentiation for non linear terms
-      if (linear_terms[i] == 0) 
-      {      
-        y[i] += delta; 
-        
-        // Component i derivative
-        b[i] = (_ode->eval(i, y, lt) - a[i])/delta;
-        y[i] -= delta;				   // Restore state i
-      }
-    }
+    //_ode->linear_derivatives(y, lt, b.data());
+    //
+    //for (uint i = 0; i < num_states(); ++i) 
+    //{ 
+    //  // Numerical differentiation for non linear terms
+    //  if (!_ode->linear_term(i))
+    //  {      
+    //    y[i] += delta; 
+    //    
+    //    // Component i derivative
+    //    b[i] = (_ode->eval(i, y, lt) - a[i])/delta;
+    //    y[i] -= delta;				   // Restore state i
+    //  }
+    //}
   
     // Integrate linear terms exactly
     for (uint i = 0; i < num_states(); ++i) 
-      y[i] += (std::fabs(b[i]) > delta) ? a[i]/b[i]*(std::exp(b[i]*ldt) - 1.0) : a[i]*ldt;
+      y[i] += (std::fabs(_b[i]) > _delta) ? _a[i]/_b[i]*(std::exp(_b[i]*ldt) - 1.0) : _a[i]*ldt;
   
       // Increase time
     lt += ldt;

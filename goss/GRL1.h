@@ -59,11 +59,10 @@ namespace goss {
   private:
 
     // Pointers to intermediate values used while stepping
-    std::vector<double> a;
-    std::vector<double> b;
+    std::vector<double> _a;
+    std::vector<double> _b;
 
-    std::vector<uint> linear_terms;
-    const double delta;
+    const double _delta;
 
   };
 }
