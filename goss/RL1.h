@@ -71,7 +71,7 @@ namespace goss {
   {
 
     // Evaluate full right hand side
-    _ode->linearized_eval(y, t, _f1().data(), _f2().data());
+    _ode->linearized_eval(y, t, _f1().data(), _f2().data(), true);
     
     for (uint i = 0; i < num_states(); ++i) 
       y2[i] = _ode->linear_term(i) ? y0[i] + _f2()[i]/_f1()[i]*(std::exp(_f1()[i]*dt) - 1.0) : y0[i] + _f2()[i]*dt;

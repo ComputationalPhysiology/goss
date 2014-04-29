@@ -135,7 +135,7 @@ void ODE::forward_backward_subst(const double* mat, const double* b, double* dx)
   }
 }
 //-----------------------------------------------------------------------------
-void ODE::linearized_eval(const double*, double, double*, double*) const
+void ODE::linearized_eval(const double*, double, double*, double*, bool) const
 {
   error("ODE::linearized_eval must be implement in a subclass");
 }

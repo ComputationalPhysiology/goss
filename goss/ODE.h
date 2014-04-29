@@ -56,8 +56,9 @@ namespace goss {
 
     // Evaluate the linearized rhs
     virtual void linearized_eval(const double* states, double time, 
-				 double* linearized, double* rhs) const;
-    
+				 double* linearized, double* rhs, 
+				 bool only_linear) const;
+
     // Get default initial conditions
     virtual void get_ic(goss::DoubleVector* values) const = 0;
 
