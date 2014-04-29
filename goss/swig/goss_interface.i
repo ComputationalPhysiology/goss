@@ -29,6 +29,7 @@
 %include <goss/Table.h>
 %include <goss/LogLevel.h>
 %include <goss/timing.h>
+%include <goss/Timer.h>
 
 // Parameters
 %include <goss/Parameter.h>
