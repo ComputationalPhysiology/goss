@@ -171,7 +171,12 @@ void BasicImplicitEuler::forward(double* y, double t, double dt)
   
     if (!newton_converged)
       error("Newton solver did not converge. Maximal newton iterations exceded.");
-  
+    else
+      // Output iteration number and residual
+      log(DBG, "BasicImplicitEuler newton iteration %d: r (abs) = %.3e " \
+	  " r (rel) = %.3e (tol = %.3e)", _newton_iterations, residual,	\
+	  relative_residual, rtol);
+
     // Increase local time
     lt += dt;
 
