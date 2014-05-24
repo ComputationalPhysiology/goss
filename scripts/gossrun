@@ -3,13 +3,14 @@
 
 from __future__ import division
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2013-03-13 -- 2014-04-06"
+__date__ = "2013-03-13 -- 2014-05-14"
 __copyright__ = "Copyright (C) 2013 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
 from modelparameters.codegeneration import latex
 from scipy.integrate import odeint
-import pylab
+from itertools import cycle
+import matplotlib.pyplot as plt
 import numpy as np
 import instant
 from gotran.model.loadmodel import load_ode
@@ -31,12 +32,30 @@ def main(filename, params):
     ode = load_ode(filename)
 
     # Get monitored and plot states
-    plot_states = params.plot
+    plot_states = params.plot_y
+
+    # Get x_values
+    x_name = params.plot_x
+
     state_names = [state.name for state in ode.full_states]
     monitored_plot = [plot_states.pop(plot_states.index(name)) \
                       for name in plot_states[:] if name not in state_names]
-    
+
     monitored = [expr.name for expr in ode.intermediates + ode.state_expressions]
+    for mp in monitored_plot:
+        if mp not in monitored:
+            error("{} is not a state or intermediate in this ODE".format(mp))
+
+    if x_name not in ["time"]+monitored+state_names:
+        error("Expected plot_x to be either 'time' or one of the plotable "\
+              "variables, got {}".format(x_name))
+
+    # Logic if x_name is not 'time'
+    if x_name != "time":
+        if x_name in state_names:
+            plot_states.append(x_name)
+        else:
+            monitored_plot.append(x_name)
 
     goss_ode = goss_jit(ode, monitored=monitored, code_params=params.code, \
                         cppargs=params.cppargs)
@@ -140,19 +159,38 @@ def main(filename, params):
 
         p += 1
 
-    if isinstance(solver, goss.ImplicitODESolver):
-        goss.debug("Jacobian computed {0} times".format(solver.num_jac_comp()))
-
+    del p
+    
     if collected_values.shape[0] == 0:
         return 
     
     # Plot data
-    pylab.plot(tsteps, np.transpose(collected_values))
-    pylab.legend(["$\\mathrm{{{0}}}$".format(latex(value))
-                  for value in plot_states + monitored_plot])
-    pylab.xlabel("time")
-    pylab.title(ode.name.replace("_", "\\_"))
-    pylab.show()
+    plt.rcParams["lines.linewidth"] = 2
+    line_styles = cycle([c+s for s in ["-", "--", "-.", ":"]
+                         for c in plt.rcParams["axes.color_cycle"]])
+
+    plot_items = plot_states + monitored_plot
+    if x_name != "time":
+        x_values = collected_values[plot_items.index(x_name)]
+    else:
+        x_values = tsteps
+
+    plotted_items = 0
+    for what, values in zip(plot_items, collected_values):
+        if what == x_name:
+            continue
+        plotted_items += 1
+        plt.plot(x_values, values, next(line_styles))
+
+    if plotted_items > 1:
+        plt.legend(["$\\mathrm{{{0}}}$".format(latex(value))
+                    for value in plot_items])
+    else:
+        plt.ylabel("$\\mathrm{{{0}}}$".format(latex(plot_items[0])))
+        
+    plt.xlabel("$\\mathrm{{{0}}}$".format(latex(x_name)))
+    plt.title(ode.name.replace("_", "\\_"))
+    plt.show()
 
 if __name__ == "__main__":
     import sys, os
@@ -170,7 +208,9 @@ if __name__ == "__main__":
         init_conditions = Param([""], description="Set initial condition of model"),
         tstop = ScalarParam(100., gt=0, description="Time for stopping simulation"),\
         dt = ScalarParam(0.1, gt=0, description="Timestep for plotting."),\
-        plot = Param(["V"], description="States or monitored to plot."),\
+        plot_y = Param(["V"], description="States or monitored to plot on the y axis."),\
+        plot_x = Param("time", description="Values used for the x axis. Can be time "\
+                       "and any valid plot_y variable."), 
         code = code_params,
         cppargs = Param("-O2 -g"), description="C++ compile arguments.")
     
