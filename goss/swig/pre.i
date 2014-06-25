@@ -20,6 +20,8 @@
 %ignore goss::DoubleVector2D::data;
 
 %ignore goss::ODESystemSolver::states;
+%rename(_eval) goss::ODE::eval(const double*, double, double*);
+%rename(eval_component) goss::ODE::eval(uint, const double*, double);
 
 //-----------------------------------------------------------------------------
 // Need to ignore these dues to SWIG confusion of overloaded functions

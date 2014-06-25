@@ -52,6 +52,20 @@
 //  }
 //}
 
+%extend goss::ODE 
+{
+  %pythoncode%{
+def eval(self, states, time, values=None):
+    import numpy as np
+    if not isinstance(states, np.ndarray):
+        raise TypeError("expected a numpy array as first argument")
+    if values is None:
+        values = np.zeros_like(states)
+    self._eval(states, time, values)
+    return values
+    %}
+}
+
 %extend goss::ODESystemSolver {
 
 PyObject* _states() 
