@@ -40,6 +40,8 @@
 #include "PanfilovNoIntermediates.h"
 #include "PanfilovCSE.h"
 #include "PanfilovCSEArray.h"
+#include "fhn.h"
+#include "beeler_reuter_1977.h"
 
 using namespace goss;
 
@@ -72,9 +74,10 @@ protected:
     {
       solver->forward(x.data.get(), t, dt);
       t += dt;
-      
+      /*
       if (std::fmod(t, .1) < dt)
 	info("t %.2f: y: %.2f, z: %.2f", t, x.data.get()[0], x.data.get()[1]);
+      */
     }
   }
 };
@@ -109,10 +112,17 @@ public :
 };
 
 template<class S>
-class RLTester : public ODESolverTest<VDP, S>
+class RLTester : public ODESolverTest<Fhn, S>
 {
 public :
-  RLTester() : ODESolverTest<VDP, S>() {}
+  RLTester() : ODESolverTest<Fhn, S>() {}
+};
+
+template<class S>
+class RLTester2 : public ODESolverTest<Beeler_reuter_1977, S>
+{
+public :
+  RLTester2() : ODESolverTest<Beeler_reuter_1977, S>() {}
 };
 
 template<class O>
