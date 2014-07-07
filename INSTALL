@@ -5,6 +5,10 @@ GOSS uses CMake for configuration and installation. GOSS also
 relies on a number of other third-party libraries. Your system will be
 probed for these libraries as part of the configuration process.
 
+Packages:
+
+  cmake, libboost, swig
+
 Simple build and install
 ------------------------
 
