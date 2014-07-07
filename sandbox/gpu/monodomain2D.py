@@ -18,7 +18,8 @@ t = Constant(0.)
 # Domain and solution space
 do_plot = False
 L = 100.
-N = 512
+N = 1024
+#N = 128
 domain = RectangleMesh(-L, -L, L, L, N, N)
 cellmodel = dolfin_jit(load_ode("tentusscher_panfilov_2006_M_cell.ode"), field_states=["V"])
 heart = CardiacModel(domain, t, D, None, cellmodel)
@@ -28,11 +29,11 @@ ps["pde_solver"] = "monodomain"
 ps["MonodomainSolver"]["linear_solver_type"] = "iterative"
 ps["MonodomainSolver"]["theta"] = 1.0
 ps["ode_solver"]["solver"] = "RL1"
-ps["ode_solver"]["num_threads"] = 4 / MPI.size(domain.mpi_comm())
+ps["ode_solver"]["num_threads"] = 8 / MPI.size(domain.mpi_comm())
 
 # If cuda
 ps["ode_solver"]["use_cuda"] = True
-ps["ode_solver"]["cuda_params"]["float_precision"] = "single"
+ps["ode_solver"]["cuda_params"]["float_precision"] = "double"
 ps["ode_solver"]["cuda_params"]["solver"] = "rush_larsen"
 
 ps["apply_stimulus_current_to_pde"] = True
@@ -68,5 +69,7 @@ for timestep, (u, vm) in solver.solve((0, tstop), dt):
         u.vector().min()
         u.vector().max()
 
-list_timings()
+if MPI.rank(domain.mpi_comm()) == 0:
+    list_timings()
+    
 interactive()
