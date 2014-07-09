@@ -62,8 +62,25 @@ void RL1::attach(boost::shared_ptr<ODE> ode)
 void RL1::forward(double* y, double t, double dt)
 {
 
-  // Do one step
-  _one_step(y, y, y, t, dt);
+  
+  // Calculate number of steps and size of timestep based on _ldt
+  const double ldt_0 = parameters["ldt"];
+  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
+  const double ldt = dt/nsteps;
+  
+  // Local time
+  double lt = t;
+
+  for (ulong step = 0; step < nsteps; ++step)
+  {
+
+    // One step
+    _one_step(y, y, y, lt, ldt);
+
+    // Increase time
+    lt += ldt;
+
+  }
   
 }
 //-----------------------------------------------------------------------------
