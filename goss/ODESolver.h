@@ -28,6 +28,8 @@
 #include "Parameters.h"
 #include "log.h"
 
+//#include <fenv.h>
+
 namespace goss 
 {
 
@@ -68,7 +70,9 @@ namespace goss
 
     // Attach ODE and reset solver 
     virtual void attach(boost::shared_ptr<ODE> ode) 
-    { _ode = ode; reset();}
+    { 
+      //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
+      _ode = ode; reset();}
 
     // Reset solver 
     virtual void reset() { /* Do nothing */ }
