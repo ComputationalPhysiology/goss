@@ -71,6 +71,50 @@ void ODESystemSolver::forward(double t, double interval)
   }
 }
 //-----------------------------------------------------------------------------
+void ODESystemSolver::get_field_state_components(double* component_field_states, 
+                                                 uint num_components, const uint* components, 
+                                                 bool tangled_storage) const
+{
+  // Iterate over all nodes using threaded or non-threaded loop
+  if(_num_threads > 0)
+  {
+    //#pragma omp parallel for schedule(guided, 20) 
+   for (uint node = 0; node < _num_nodes; node++)
+     _get_field_states_node_comp(node, component_field_states, 
+                                 num_components, components,
+                                 tangled_storage);
+  }
+  else
+  {
+    for (uint node = 0; node < _num_nodes; node++)
+     _get_field_states_node_comp(node, component_field_states, 
+                                 num_components, components,
+                                 tangled_storage);
+  }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::set_field_state_components(const double* component_field_states, 
+                                                 uint num_components, const uint* components, 
+                                                 bool tangled_storage)
+{
+  // Iterate over all nodes using threaded or non-threaded loop
+  if(_num_threads > 0)
+  {
+    //#pragma omp parallel for schedule(guided, 20) 
+   for (uint node = 0; node < _num_nodes; node++)
+     _set_field_states_node_comp(node, component_field_states, 
+                                 num_components, components,
+                                 tangled_storage);
+  }
+  else
+  {
+    for (uint node = 0; node < _num_nodes; node++)
+     _set_field_states_node_comp(node, component_field_states, 
+                                 num_components, components,
+                                 tangled_storage);
+  }
+}
+//-----------------------------------------------------------------------------
 void ODESystemSolver::get_field_states(double* field_state_values, 
 				       bool tangled_storage) const
 {

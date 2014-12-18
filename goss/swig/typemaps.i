@@ -16,6 +16,104 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 
+%typemap(in) (double* component_field_states, goss::uint num_components)
+{
+
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  goss::uint size = PyArray_SIZE(xa);
+  $2 = size / arg1->num_nodes();
+  
+  if (size % arg1->num_nodes() != 0)
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as an integer number times the number of nodes.");
+  
+  if ($2>=arg1->ode()->num_field_states())
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "or less than the number of field states times the number "
+                   "of nodes..");
+
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) (const double* component_field_states, goss::uint num_components)
+{
+
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_DOUBLE))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of doubles expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.float_.");
+
+  // Check size of passed array
+  goss::uint size = PyArray_SIZE(xa);
+  $2 = size / arg1->num_nodes();
+  
+  if (size % arg1->num_nodes() != 0)
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as an integer number times the number of nodes.");
+  
+  if ($2>=arg1->ode()->num_field_states())
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "or less than the number of field states times the number "
+                   "of nodes..");
+
+  $1 = (double *)PyArray_DATA(xa);
+}
+
+%typemap(in) (const goss::uint* components)
+{
+
+  // Check type
+  if (!PyArray_Check($input))
+    SWIG_exception(SWIG_TypeError, "Numpy array expected");
+
+  // Get PyArrayObject
+  PyArrayObject *xa = reinterpret_cast<PyArrayObject*>($input);
+
+  // Check data type
+  if (!(PyArray_ISCONTIGUOUS(xa) && PyArray_TYPE(xa) == NPY_UINT32))
+    SWIG_exception(SWIG_TypeError, "Contigous numpy array of uint32 expected."
+           " Make sure the numpy array is contiguous, and uses dtype=np.uint32.");
+
+  // Get size
+  goss::uint size = PyArray_SIZE(xa);
+
+  // Check size of passed array
+  if (size <= arg1->ode()->num_field_states())
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "or less than the number of field states.");
+  
+  // Check size compared to the previously calculated size from the double* array
+  if (size!=arg3)
+    SWIG_exception(SWIG_ValueError, "Expected a numpy array of the same size "
+		   "as len(component_field_states)/num_field_states.");
+
+  $1 = (goss::uint *)PyArray_DATA(xa);
+  
+  for (goss::uint i = 0; i<size; i++)
+    if ($1[i]>=arg1->ode()->num_field_states())
+      SWIG_exception(SWIG_IndexError, "Expected the indices in the component array to "\
+                     "be less than the number of field states.");
+}
+
 %typemap(in) double* system_field_states
 {
   // Check type

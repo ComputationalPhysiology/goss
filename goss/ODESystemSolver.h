@@ -48,6 +48,16 @@ namespace goss
     // Step all nodes an interval of time forward
     void forward(double t, double interval);
 
+    // Return components of system field state values
+    void get_field_state_components(double* component_field_states, 
+                                    uint num_components, const uint* components, 
+                                    bool tangled_storage=true) const;
+
+    // Set components of system field state values
+    void set_field_state_components(const double* component_field_states, 
+                                    uint num_components, const uint* components, 
+                                    bool tangled_storage=true);
+    
     // Return system field state values
     void get_field_states(double* system_field_states, bool tangled_storage=true) const;
 
@@ -104,9 +114,22 @@ namespace goss
     inline void _set_field_states_node(uint node, const double* values, 
 				       bool tangled_storage);
 
-    // Set field states for a given node
+    // Get field states for a given node
     inline void _get_field_states_node(uint node, double* values, 
 				       bool tangled_storage) const;
+
+
+    // Set field state components for a given node
+    inline void _set_field_states_node_comp(uint node, const double* values, 
+                                            uint num_components, 
+                                            const uint* components, 
+                                            bool tangled_storage);
+
+    // Get field state components for a given node
+    inline void _get_field_states_node_comp(uint node, double* values, 
+                                            uint num_components, 
+                                            const uint* components, 
+                                            bool tangled_storage) const;
 
     // Set field parameter values
     inline void _set_field_parameters_node(uint node, const double* values, 
@@ -211,6 +234,42 @@ namespace goss
       _states[node*_ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
     }
     
+  }
+  //-----------------------------------------------------------------------------
+  void ODESystemSolver::_get_field_states_node_comp(uint node, double* values, 
+                                                    uint num_components, 
+                                                    const uint* components, 
+                                                    bool tangled_storage) const
+  {
+    uint ind = 0;
+    uint i = 0;
+    
+    for (uint ic = 0; ic < num_components; ic++)
+    {
+      i = components[ic];
+      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
+	_num_nodes*i + node;
+      
+      values[ind] = _states[node*_ode->num_states() +		\
+			    _ode->get_field_state_indices()[i]];
+    }
+  }
+  //-----------------------------------------------------------------------------
+  void ODESystemSolver::_set_field_states_node_comp(uint node, const double* values, 
+                                                    uint num_components, 
+                                                    const uint* components, 
+                                                    bool tangled_storage)
+  {
+    uint ind = 0;
+    uint i = 0;
+    
+    for (uint ic = 0; ic < num_components; ic++)
+    {
+      i = components[ic];
+      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
+	_num_nodes*i + node;
+      _states[node*_ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
+    }
   }
   //-----------------------------------------------------------------------------
   void ODESystemSolver::_get_field_states_node(uint node, double* values, 

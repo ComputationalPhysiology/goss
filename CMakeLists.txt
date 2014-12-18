@@ -61,10 +61,10 @@ if (HAS_PIPE)
 endif()
 
 # Add some strict compiler checks
-CHECK_CXX_COMPILER_FLAG("-Wall -Werror -pedantic" HAS_PEDANTIC)
-if (HAS_PEDANTIC)
-  set(GOSS_CXX_DEVELOPER_FLAGS "-Wall -Werror -pedantic ${GOSS_CXX_DEVELOPER_FLAGS}")
-endif()
+#CHECK_CXX_COMPILER_FLAG("-Wall -Werror -pedantic" HAS_PEDANTIC)
+#if (HAS_PEDANTIC)
+#  set(GOSS_CXX_DEVELOPER_FLAGS "-Wall -Werror -pedantic ${GOSS_CXX_DEVELOPER_FLAGS}")
+#endif()
 
 CHECK_CXX_COMPILER_FLAG("-Wshadow -Wextra" HAS_EXTRA)
 if (HAS_EXTRA)
