@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 __author__ = "Johan Hake (hake.dev@gmail.com)"
-__date__ = "2012-09-20 -- 2014-07-07"
+__date__ = "2012-09-20 -- 2015-01-15"
 __copyright__ = "Copyright (C) 2012 " + __author__
 __license__  = "GNU LGPL Version 3.0 or later"
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         error("Expected a single gotran file argument")
 
     if not os.path.isfile(sys.argv[1]):
-        error("Expected the argument to be a file", exception=IOError)
+        error("Expected the argument to be a file")
 	 
     file_name = sys.argv[1]
     main(file_name, params)
