@@ -1,0 +1,32 @@
+# Cell model file for modified Fitz-Hugo-Nagumo model
+
+# States with default initial conditions
+states(V=-85.0,
+       s=0.0)
+
+# Parameters with default values
+parameters(a=0.13,
+           b=0.013,
+           c_1=0.26,
+           c_2=0.1,
+           c_3=1.0,
+           V_rest=-85.0,
+           V_peak=40.,
+           stim_start = 1,
+           stim_duration = 1,
+           stim_amplitude = 0, # 50
+           stim_period = 1000)
+
+
+# Intermediates
+V_amp = V_peak - V_rest
+V_th = V_rest + a*V_amp
+
+I = (c_1/(V_amp**2)*(V - V_rest)*(V - V_th)*(V_peak - V)
+     - c_2/(V_amp)*(V - V_rest)*s)
+
+i_Stim = stim_amplitude*ContinuousConditional(Ge(time, stim_start), 1, 0, 0.2)*ContinuousConditional(Le(time, stim_start + stim_duration), 1, 0, 0.2)
+
+# Time derivatives
+dV_dt = I + i_Stim
+ds_dt = b*(V - V_rest - c_3*s)
