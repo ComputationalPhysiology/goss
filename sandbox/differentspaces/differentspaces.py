@@ -58,7 +58,7 @@ def setup_model(cellmodel_strs, domain, space):
 
     if len(cellmodels)==2:
         subdomain = CompiledSubDomain("x[1] <= 0.5")
-        if space == "P1":
+        if space == "P_1":
             cellmodel_domains = VertexFunction("size_t", domain, 10)
         else:
             cellmodel_domains = CellFunction("size_t", domain, 10)
@@ -118,10 +118,11 @@ def setup_model(cellmodel_strs, domain, space):
 if __name__ == "__main__":
 
     cellmodel_strs = ["rice_model_2008", "hybrid"]
-    space = "DG0"#, "Q2"
-    
+    space = "Quadrature_2"#"DG_0"#, "Quadrature_2" 
+    space = "P_1"#"DG_0"#, "Quadrature_2"
+   
     # Define mesh
-    domain = UnitSquareMesh(100, 100)
+    domain = UnitSquareMesh(10, 10)
     setup_model(cellmodel_strs, domain, space)
 
 
