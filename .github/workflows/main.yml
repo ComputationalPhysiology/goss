@@ -18,8 +18,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install ubuntu dependencies
       run: |
-        sudo apt-get -qq update && \
-        apt install cmake g++ libboost-filesystem-dev \
+        sudo apt-get update && \
+        apt-get install cmake g++ libboost-filesystem-dev \
         libboost-iostreams-dev \
         libboost-math-dev \
         libomp-dev
