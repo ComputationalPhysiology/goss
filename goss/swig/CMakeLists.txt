@@ -52,7 +52,8 @@ set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SWIG_MODULE_${SWIG_MODULE_NAME}_EXTRA_DEPS ${GOSS_SWIG_DEPENDENCIES})
 
 # Tell CMake to run SWIG on goss.i and to link against libgoss
-swig_add_module(${SWIG_MODULE_NAME} python goss.i)
+# swig_add_module(${SWIG_MODULE_NAME} python goss.i)
+SWIG_ADD_LIBRARY(${SWIG_MODULE_NAME} LANGUAGE python TYPE MODULE SOURCES goss.i)
 swig_link_libraries(${SWIG_MODULE_NAME} goss ${PYTHON_LIBRARIES})
 
 # Install Python .py files
