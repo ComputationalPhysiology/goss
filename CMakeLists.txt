@@ -1,7 +1,7 @@
 # Top level CMakeLists.txt file for GOSS
 
 # Require CMake 2.6
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.9)
 
 #------------------------------------------------------------------------------
 # Set project name and version number
@@ -17,6 +17,9 @@ string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER)
 # Set special link option, see `cmake --help-policy CMP0003`
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
+  cmake_policy(SET CMP0026 OLD)
+  cmake_policy(SET CMP0078 OLD)
+  cmake_policy(SET CMP0086 OLD)
 endif()
 
 # Set verbose output while testing CMake
