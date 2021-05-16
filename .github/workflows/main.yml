@@ -18,6 +18,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev pkg-config libc6-dev
       - name: Install python dependencies
         run: python -m pip install numpy
-      - name: Build goss
-        run: mkdir -p build && cd build && cmake .. && make
-        
+      - name: Build and install goss
+        run: mkdir -p build && cd build && cmake .. && make  && make install
+      - name: Run tests
+        run: cd build && ctests - V
+      - name: Install python dependencies
+        run: python3 -m pip install gotran pytest
