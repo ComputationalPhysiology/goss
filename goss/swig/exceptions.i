@@ -32,8 +32,9 @@ SWIGINTERN void handle_goss_exceptions()
   }
   
   // all logic_error subclasses
+  // FIXME: This should be StandardError not SyntaxError
   catch (std::logic_error &e) {
-    PyErr_SetString(PyExc_StandardError, const_cast<char*>(e.what()));
+    PyErr_SetString(PyExc_SyntaxError, const_cast<char*>(e.what()));
   }
 
   // all runtime_error subclasses
