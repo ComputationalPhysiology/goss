@@ -66,7 +66,7 @@ if (PYTHONINTERP_FOUND)
   if (NOT DEFINED GOSS_INSTALL_PYTHON_EXT_DIR)
     # Get path for platform-dependent Python modules (since we install a binary libary)
     execute_process(
-      COMMAND ${PYTHON_EXECUTABLE} -c "import sys, distutils.sysconfig; sys.stdout.write(distutils.sysconfig.get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}'))"
+      COMMAND ${PYTHON_EXECUTABLE} -c "import sys, site; sys.stdout.write(site.getsitepackages()[0])"
       OUTPUT_VARIABLE GOSS_INSTALL_PYTHON_EXT_DIR
       )
     # Strip off CMAKE_INSTALL_PREFIX (is added later by CMake)
@@ -79,7 +79,7 @@ if (PYTHONINTERP_FOUND)
   if (NOT DEFINED GOSS_INSTALL_PYTHON_MODULE_DIR)
     # Get path for pure Python modules
     execute_process(
-      COMMAND ${PYTHON_EXECUTABLE} -c "import sys, distutils.sysconfig; sys.stdout.write(distutils.sysconfig.get_python_lib(plat_specific=False, prefix='${CMAKE_INSTALL_PREFIX}'))"
+      COMMAND ${PYTHON_EXECUTABLE} -c "import sys, site; sys.stdout.write(site.getsitepackages()[0])"
       OUTPUT_VARIABLE GOSS_INSTALL_PYTHON_MODULE_DIR
       )
     # Strip off CMAKE_INSTALL_PREFIX (is added later by CMake)
