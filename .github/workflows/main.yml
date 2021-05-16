@@ -19,8 +19,8 @@ jobs:
       - name: Install python dependencies
         run: python -m pip install numpy
       - name: Build and install goss
-        run: mkdir -p build && cd build && cmake .. && make  && make install
+        run: mkdir -p build && cd build && cmake .. && make  && sudo make install
       - name: Run tests
         run: cd build && ctests - V
       - name: Install python dependencies
-        run: python3 -m pip install gotran pytest
+        run: sudo python3 -m pip install gotran pytest
