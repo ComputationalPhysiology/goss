@@ -11,15 +11,15 @@ jobs:
         python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Build goss
-      run: |
-        mkdir -p build
-        cd build
-        cmake ..
-        make
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build goss
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make
         
