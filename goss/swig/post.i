@@ -156,7 +156,7 @@ def warn_once(self, msg):
         cls._warned = set()
     if not msg in cls._warned:
         cls._warned.add(msg)
-        print msg
+        print(msg)
 
 def value(self):
     val_type = self.type_str()
@@ -169,7 +169,7 @@ def value(self):
     elif val_type == "double":
         return float(self)
     else:
-        raise TypeError, "unknown value type '%s' of parameter '%s'"%(val_type, self.key())
+        raise TypeError("unknown value type '%s' of parameter '%s'"%(val_type, self.key()))
 
 def get_range(self):
     val_type = self.type_str()
@@ -192,7 +192,7 @@ def get_range(self):
             return
         return local_range
     else:
-        raise TypeError, "unknown value type '%s' of parameter '%s'"%(val_type, self.key())
+        raise TypeError("unknown value type '%s' of parameter '%s'"%(val_type, self.key()))
 
 def data(self):
     return self.value(), self.get_range(), self.access_count(), self.change_count()
@@ -281,13 +281,13 @@ def iteritems(self):
 def set_range(self, key, *arg):
     "Set the range for the given parameter"
     if key not in self._get_parameter_keys():
-        raise KeyError, "no parameter with name '%s'"%key
+        raise KeyError("no parameter with name '%s'"%key)
     self._get_parameter(key).set_range(*arg)
 
 def get_range(self, key):
     "Get the range for the given parameter"
     if key not in self._get_parameter_keys():
-        raise KeyError, "no parameter with name '%s'"%key
+        raise KeyError("no parameter with name '%s'"%key)
     return self._get_parameter(key).get_range()
 
 def __getitem__(self, key):
@@ -298,14 +298,14 @@ def __getitem__(self, key):
     if key in self._get_parameter_set_keys():
         return self._get_parameter_set(key)
 
-    raise KeyError, "'%s'"%key
+    raise KeyError("'%s'"%key)
 
 def __setitem__(self, key, value):
     "Set the parameter 'key', with given 'value'"
     if key not in self._get_parameter_keys():
-        raise KeyError, "'%s' is not a parameter"%key
+        raise KeyError("'%s' is not a parameter"%key)
     if not isinstance(value,(int,str,float,bool)):
-        raise TypeError, "can only set 'int', 'bool', 'float' and 'str' parameters"
+        raise TypeError("can only set 'int', 'bool', 'float' and 'str' parameters")
     par = self._get_parameter(key)
     if isinstance(value,bool):
         par._assign_bool(value)
@@ -315,7 +315,7 @@ def __setitem__(self, key, value):
 def update(self, other):
     "A recursive update that handles parameter subsets correctly."
     if not isinstance(other,(Parameters, dict)):
-        raise TypeError, "expected a 'dict' or a '%s'"%Parameters.__name__
+        raise TypeError("expected a 'dict' or a '%s'"%Parameters.__name__)
     for key, other_value in other.iteritems():
         self_value  = self[key]
         if isinstance(self_value, Parameters):
@@ -374,7 +374,7 @@ def get(self, key):
     if key in self._get_parameter_set_keys():
         return self._get_parameter_set(key)
 
-    raise KeyError, "'%s'"%key
+    raise KeyError("'%s'"%key)
 
 %}
 
@@ -408,7 +408,7 @@ def __new_Parameter_init__(self,*args,**kwargs):
     elif len(args) == 1 and isinstance(args[0], (str,type(self))):
         old_init(self, args[0])
     else:
-        raise TypeError, "expected a single optional argument of type 'str' or ''"%type(self).__name__
+        raise TypeError("expected a single optional argument of type 'str' or ''"%type(self).__name__)
     if len(kwargs) == 0:
         return
 
@@ -421,10 +421,10 @@ def __new_Parameter_init__(self,*args,**kwargs):
                 self.add(key, *value)
             elif isinstance(value[0], str) and len(value) == 2:
                 if not isinstance(value[1], list):
-                    raise TypeError, "expected a list as second item of tuple, when first is a 'str'"
+                    raise TypeError("expected a list as second item of tuple, when first is a 'str'")
                 self.add(key, *value)
             else:
-                raise TypeError,"expected a range tuple of size 2 for 'str' values and 3 for scalars"
+                raise TypeError("expected a range tuple of size 2 for 'str' values and 3 for scalars")
         else:
             self.add(key,value)
 

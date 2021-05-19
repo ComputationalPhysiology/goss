@@ -1,5 +1,5 @@
 import os
-from gotran import *
+from gotran import load_ode
 from goss import *
 import numpy as np
 import pytest
@@ -141,14 +141,14 @@ class TestODESystemSolver(object):
         assert system.num_nodes() == num_nodes
 
         with pytest.raises(ValueError):
-            system.set_field_states(np.zeros(self.ode.num_field_states()*num_nodes/2))
+            system.set_field_states(np.zeros(self.ode.num_field_states()*num_nodes//2))
             
         with pytest.raises(TypeError):
             system.set_field_states(np.zeros(self.ode.num_field_states()*num_nodes,
                                              dtype=int))
             
         with pytest.raises(ValueError):
-            system.set_field_parameters(np.zeros(self.ode.num_field_states()*num_nodes/2))
+            system.set_field_parameters(np.zeros(self.ode.num_field_states()*num_nodes//2))
             
         with pytest.raises(TypeError):
             system.set_field_parameters(np.zeros(self.ode.num_field_states()*num_nodes, \

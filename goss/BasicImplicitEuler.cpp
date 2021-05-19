@@ -69,7 +69,8 @@ void BasicImplicitEuler::compute_factorized_jacobian(double* y, double t, double
 //-----------------------------------------------------------------------------
 void BasicImplicitEuler::forward(double* y, double t, double dt)
 {
-  feenableexcept(FE_INVALID | FE_OVERFLOW);
+  // FIXME: This does not work on Mac?
+  // feenableexcept(FE_INVALID | FE_OVERFLOW);
   assert(_ode);
 
   // Calculate number of steps and size of timestep based on _ldt
