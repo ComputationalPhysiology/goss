@@ -22,6 +22,10 @@
 #include <omp.h>
 #include <stdlib.h>
 #include <stdio.h>
+#else
+ int omp_get_thread_num(){
+   return 0;
+ }
 #endif
 
 #include "ODESystemSolver.h"
