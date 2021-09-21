@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(PYTHON_LIBRARY_DIR "/Users/henriknf/local/src/goss/venv/lib/python3.8/site-packages")
 set(PYTHON_EXECUTABLE "/Users/henriknf/local/src/goss/venv/bin/python")
 
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -14,10 +15,15 @@ endif()
 set(CMAKE_CXX_FLAGS "-O3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-project(automobile)
+project(goss)
+
+find_package(PythonLibs ${PY_VERSION} REQUIRED)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS system python)
 
 include_directories("${CMAKE_SOURCE_DIR}/cpp/include/goss_bits")
 include_directories("${CMAKE_SOURCE_DIR}/python")
+include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 
 file (GLOB SOURCE_FILES "cpp/src/*.cpp")
 file (GLOB HEADER_FILES "cpp/include/goss_bits/*.h")
@@ -33,7 +39,11 @@ pybind11_add_module(goss
 	${PYTHON_FILES}
 )
 
-target_link_libraries(goss PUBLIC)
+if(Boost_FOUND)
+  target_link_libraries(goss PRIVATE ${Boost_LIBRARIES})
+endif()
+
+
 
 install(TARGETS goss
   COMPONENT python

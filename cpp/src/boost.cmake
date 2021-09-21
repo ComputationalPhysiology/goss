@@ -1,3 +1,0 @@
-FIND_PACKAGE(Boost 1.40 COMPONENTS program_options REQUIRED )
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIR})

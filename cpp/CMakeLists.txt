@@ -91,7 +91,6 @@ add_library(goss SHARED ${SOURCE_FILES})
 # Include directories
 target_include_directories(goss PRIVATE include/goss_bits)
 
-TARGET_LINK_LIBRARIES(goss LINK_PUBLIC ${Boost_LIBRARIES})
 
 # Install
 install(TARGETS goss DESTINATION lib)
