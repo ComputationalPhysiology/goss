@@ -21,8 +21,7 @@
 #define RK4_h_IS_INCLUDED
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 #include "ODESolver.h"
 #include "types.h"
@@ -40,19 +39,19 @@ namespace goss
     RK4();
 
     // Constructor
-    RK4(boost::shared_ptr<ODE> ode);
+    RK4(std::shared_ptr<ODE> ode);
 
     // Copy constructor
     RK4(const RK4& solver);
 
     // Return a copy of itself
-    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RK4>(*this); }
+    std::shared_ptr<ODESolver> copy() const { return std::make_shared<RK4>(*this); }
 
     // Destructor
     ~RK4();
 
     // Attach ODE to solver
-    virtual void attach(boost::shared_ptr<ODE> ode);
+    virtual void attach(std::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);

@@ -17,9 +17,9 @@ namespace goss
 
     virtual ~VDP() {}
     
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<VDP>(*this);
+      return std::make_shared<VDP>(*this);
     }
 
     void eval(const double* y, double t, double* f_vals)

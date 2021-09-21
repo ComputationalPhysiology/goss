@@ -31,7 +31,7 @@ ExplicitEuler::ExplicitEuler() : ODESolver(), _dFdt(0)
   parameters.rename("ExplicitEuler");
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(boost::shared_ptr<ODE> ode) : 
+ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) : 
   ODESolver(), _dFdt(0)
 { 
   parameters.rename("ExplicitEuler");
@@ -49,7 +49,7 @@ ExplicitEuler::~ExplicitEuler()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void ExplicitEuler::attach(boost::shared_ptr<ODE> ode)
+void ExplicitEuler::attach(std::shared_ptr<ODE> ode)
 {
   // Attach ODE
   ODESolver::attach(ode);

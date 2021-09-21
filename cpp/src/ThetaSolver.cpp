@@ -13,7 +13,7 @@ ThetaSolver::ThetaSolver() : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(
   parameters = default_parameters();
 }
 //-----------------------------------------------------------------------------
-ThetaSolver:: ThetaSolver (boost::shared_ptr<ODE> ode) 
+ThetaSolver:: ThetaSolver (std::shared_ptr<ODE> ode) 
   : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
 { 
   parameters = default_parameters();
@@ -27,7 +27,7 @@ ThetaSolver::ThetaSolver(const ThetaSolver& solver) :
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void ThetaSolver::attach(boost::shared_ptr<ODE> ode)
+void ThetaSolver::attach(std::shared_ptr<ODE> ode)
 {
   // Attach ode using bases
   ImplicitODESolver::attach(ode);

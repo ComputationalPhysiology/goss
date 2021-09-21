@@ -16,9 +16,9 @@ namespace goss
     
     NonLinOscillator() : ODE(2), omega(4*std::acos(0.0)) {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<NonLinOscillator>(*this);
+      return std::make_shared<NonLinOscillator>(*this);
     }
 
     ~NonLinOscillator() {}

@@ -36,9 +36,9 @@ namespace goss
     
     FG () : ODE(2){}
 
-    boost::shared_ptr<ODE> copy() const 
+    std::shared_ptr<ODE> copy() const 
     {
-      return boost::make_shared<FG>(*this);
+      return std::make_shared<FG>(*this);
     }
 
     ~FG() {};

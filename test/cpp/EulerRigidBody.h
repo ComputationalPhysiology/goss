@@ -14,9 +14,9 @@ namespace goss
     EulerRigidBody() : ODE(3), I1(0.5), I2(2.0), I3(3.0), pi(2*acos(0.0))
     {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<EulerRigidBody>(*this);
+      return std::make_shared<EulerRigidBody>(*this);
     }
 
     ~EulerRigidBody() {}

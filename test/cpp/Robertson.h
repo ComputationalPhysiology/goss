@@ -21,9 +21,9 @@ namespace goss
     
     Robertson () : ODE(3) {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<Robertson>(*this);
+      return std::make_shared<Robertson>(*this);
     }
 
     ~Robertson() {}

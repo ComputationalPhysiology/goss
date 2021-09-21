@@ -22,8 +22,7 @@
 
 #include <vector>
 #include <cmath>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 #include "types.h"
 #include "ODESolver.h"
@@ -40,19 +39,19 @@ namespace goss {
     RL1();
 
     // Constructor
-    RL1(boost::shared_ptr<ODE> ode);
+    RL1(std::shared_ptr<ODE> ode);
 
     // Copy constructor
     RL1(const RL1& solver);
     
     // Return a copy of itself
-    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RL1>(*this); }
+    std::shared_ptr<ODESolver> copy() const { return std::make_shared<RL1>(*this); }
 
     // Destructor
     ~RL1();
 
     // Attach ODE to solver
-    virtual void attach(boost::shared_ptr<ODE> ode);
+    virtual void attach(std::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     virtual void forward(double* y, double t, double dt);

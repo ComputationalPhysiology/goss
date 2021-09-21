@@ -33,7 +33,7 @@ GRL2::GRL2() : GRL1(), _y2(0)
   parameters.rename("GRL2");
 }
 //-----------------------------------------------------------------------------
-GRL2::GRL2(boost::shared_ptr<ODE> ode) : GRL1(), _y2(0)
+GRL2::GRL2(std::shared_ptr<ODE> ode) : GRL1(), _y2(0)
 {
   parameters.rename("GRL2");
   attach(ode);
@@ -48,7 +48,7 @@ GRL2::~GRL2()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void GRL2::attach(boost::shared_ptr<ODE> ode)
+void GRL2::attach(std::shared_ptr<ODE> ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);

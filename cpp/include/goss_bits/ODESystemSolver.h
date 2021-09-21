@@ -19,7 +19,7 @@
 #define ODESYSTEMSOLVER_h_IS_INCLUDED
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "types.h"
 #include "DoubleVector.h"
@@ -39,8 +39,8 @@ namespace goss
   public:
 
     // Constructor
-    ODESystemSolver(uint nodes, boost::shared_ptr<ODESolver> solver, 
-		    boost::shared_ptr<ParameterizedODE> ode);
+    ODESystemSolver(uint nodes, std::shared_ptr<ODESolver> solver, 
+		    std::shared_ptr<ParameterizedODE> ode);
     
     // Destructor
     ~ODESystemSolver();
@@ -90,10 +90,10 @@ namespace goss
     inline uint get_num_threads() const;
 
     // Get the ParameterizedODE
-    inline boost::shared_ptr<ParameterizedODE> ode() {return _ode;}
+    inline std::shared_ptr<ParameterizedODE> ode() {return _ode;}
     
     // Get the ODESolver
-    inline boost::shared_ptr<ODESolver> solver() {return _solver;}
+    inline std::shared_ptr<ODESolver> solver() {return _solver;}
     
     // Get the number of nodes
     inline uint num_nodes() {return _num_nodes;}
@@ -142,13 +142,13 @@ namespace goss
     uint _num_threads;
 
     // The ODE solver
-    boost::shared_ptr<ODESolver> _solver;
+    std::shared_ptr<ODESolver> _solver;
 
     // Solvers used in OpenMP threaded runs
-    std::vector<boost::shared_ptr<ODESolver> > _threaded_solvers;
+    std::vector<std::shared_ptr<ODESolver> > _threaded_solvers;
 
     // Local pointer to ODE (No ownership. Solver owes ODE)
-    boost::shared_ptr<ParameterizedODE> _ode;
+    std::shared_ptr<ParameterizedODE> _ode;
     
     // Solution array with the solution for all nodes
     std::vector<double> _states;

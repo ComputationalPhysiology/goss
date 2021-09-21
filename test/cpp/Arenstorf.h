@@ -28,9 +28,9 @@ namespace goss {
     ~Arenstorf() 
     {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<Arenstorf>(*this);
+      return std::make_shared<Arenstorf>(*this);
     }
 
     virtual void eval(const double* y, double t, double* f_vals)

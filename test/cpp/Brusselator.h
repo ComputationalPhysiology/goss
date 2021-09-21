@@ -13,9 +13,9 @@ namespace goss
     Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<Brusselator>(*this);
+      return std::make_shared<Brusselator>(*this);
     }
 
     virtual void eval(const double* state, double t, double* f_vals)

@@ -18,9 +18,9 @@ namespace goss
       _is_dae = true;
     }
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<VanDerPol>(*this);
+      return std::make_shared<VanDerPol>(*this);
     }
 
     ~VanDerPol() {}

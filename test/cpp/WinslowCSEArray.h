@@ -472,9 +472,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<WinslowCSEArray>(*this);
+      return std::make_shared<WinslowCSEArray>(*this);
     }
 
     // Evaluate the monitored intermediates

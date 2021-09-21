@@ -25,9 +25,9 @@ namespace goss
     SaltzLorenz() : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
     {}
     
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<SaltzLorenz>(*this);
+      return std::make_shared<SaltzLorenz>(*this);
     }
 
     ~SaltzLorenz() {}
