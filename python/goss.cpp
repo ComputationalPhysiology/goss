@@ -2,14 +2,14 @@
 
 namespace py = pybind11;
 
-void init_goss(py::module &);
+void init_ODE(py::module &);
 
-namespace mcl {
+namespace goss {
 
 PYBIND11_MODULE(goss, m) {
     // Optional docstring
     m.doc() = "goss library";
     
-    init_goss(m);
+    init_ODE(m);
 }
 }

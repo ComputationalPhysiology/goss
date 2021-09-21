@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(PYTHON_LIBRARY_DIR "/Users/henriknf/local/src/goss/venv/lib/python3.8/site-packages")
+set(PYTHON_LIBRARY_DIR "/Users/henriknf/local/src/goss/venv/lib/python3.9/site-packages")
 set(PYTHON_EXECUTABLE "/Users/henriknf/local/src/goss/venv/bin/python")
 
 
@@ -18,7 +18,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 project(goss)
 
 find_package(PythonLibs ${PY_VERSION} REQUIRED)
-find_package(Boost 1.64.0 REQUIRED COMPONENTS system python)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS)
+# find_package(Boost 1.64.0 REQUIRED COMPONENTS system python)
+# find_package(Boost COMPONENTS python REQUIRED)
 
 include_directories("${CMAKE_SOURCE_DIR}/cpp/include/goss_bits")
 include_directories("${CMAKE_SOURCE_DIR}/python")
@@ -39,10 +41,9 @@ pybind11_add_module(goss
 	${PYTHON_FILES}
 )
 
-if(Boost_FOUND)
-  target_link_libraries(goss PRIVATE ${Boost_LIBRARIES})
-endif()
 
+target_link_libraries(goss PRIVATE ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+target_include_directories(goss PRIVATE ${PYTHON_INCLUDE_DIRS})
 
 
 install(TARGETS goss
