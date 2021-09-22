@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_testing()
 
-option(BUILD_TESTS "Build the test suite." ON)
+option(BUILD_TESTS "Build the test suite." OFF)
 
 # Use these to variables to set which python to use - should find a better way
 # set(PYTHON_LIBRARY_DIR "/Users/henriknf/local/src/goss/venv/lib/python3.9/site-packages")
@@ -62,7 +62,7 @@ include_directories(
 		${PROJECT_SOURCE_DIR}/src
 )
 if(BUILD_TESTS)
-    add_subdirectory("${CMAKE_SOURCE_DIR}/cpp/tests")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/tests/cpp")
 endif()
 
 add_library(goss "${SOURCES}" "${HEADERS}")
