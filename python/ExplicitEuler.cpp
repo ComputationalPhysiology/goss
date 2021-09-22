@@ -1,4 +1,4 @@
-#include "../cpp/include/goss_bits/goss.h"
+#include "../include/goss/goss.h"
 
 #include <pybind11/stl.h>
 
