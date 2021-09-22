@@ -83,7 +83,7 @@
 # )
 
 # # Set up such that XCode organizes the files correctly
-# source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
+# # source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 # # Add library
 # add_library(goss SHARED ${SOURCE_FILES})
@@ -92,11 +92,11 @@
 # target_include_directories(goss PRIVATE include/goss_bits)
 
 
-# # Install
+# Install
 # install(TARGETS goss DESTINATION lib)
 
-# # Install the headers
+# Install the headers
 # install(FILES include/goss_bits DESTINATION include)
 
-# # Create base directory
+# Create base directory
 # install(DIRECTORY include/goss_bits DESTINATION include)
