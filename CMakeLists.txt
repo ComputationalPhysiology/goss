@@ -11,10 +11,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_testing()
 
-option(BUILD_TESTS "Build the test suite." OFF)
+option(BUILD_TESTS "Build the test suite." ON)
 
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Debug)
+  set(CMAKE_BUILD_TYPE Release)
 endif()
 
 set(CMAKE_CXX_FLAGS "-O3")
@@ -25,7 +25,7 @@ find_package(PythonLibs ${PY_VERSION} REQUIRED)
 find_package(Boost COMPONENTS system thread program_options REQUIRED)
 
 
-# include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIRS})
 # include_directories(${Boost_INCLUDE_DIRS})
 
 file (GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/goss/*.cpp")
@@ -40,23 +40,17 @@ if(BUILD_TESTS)
     add_subdirectory("${CMAKE_SOURCE_DIR}/tests/cpp")
 endif()
 
-# Build library
-# add_library(goss ${SOURCES})
-# target_link_libraries(goss PRIVATE OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
 
 # Build demo
-add_executable(main main.cpp ${SOURCES} ${HEADERS})
-target_link_libraries(main OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
+# add_executable(main main.cpp ${SOURCES} ${HEADERS})
+# target_link_libraries(main OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
 
 # # Build python module
 include(pybind11.cmake)
-add_library(gosscpp MODULE ${SOURCES} ${HEADERS} ${BINDINGS})
-target_link_libraries(gosscpp PRIVATE pybind11::module OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread ${PYTHON_LIBRARIES})
-set_target_properties(gosscpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
+pybind11_add_module(cpp ${SOURCES} ${BINDINGS})
+target_include_directories(cpp PUBLIC ${HEADERS})
+target_link_libraries(cpp PRIVATE pybind11::module OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread ${PYTHON_LIBRARIES})
+set_target_properties(cpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
                                      SUFFIX "${PYTHON_MODULE_EXTENSION}")
 
                                      
-# install(TARGETS goss
-#   COMPONENT python
-#   LIBRARY DESTINATION "${PYTHON_LIBRARY_DIR}"
-#   )
