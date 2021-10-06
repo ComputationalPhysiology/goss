@@ -20,7 +20,7 @@
 #ifndef AdaptiveExplicitSolver_h_IS_INCLUDED
 #define AdaptiveExplicitSolver_h_IS_INCLUDED
 
-#include <goss/ODESolver.h>
+#include "ODESolver.h"
 #include <vector>
 
 namespace goss 

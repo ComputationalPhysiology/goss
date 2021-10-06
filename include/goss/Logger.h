@@ -29,8 +29,8 @@
 #include <ostream>
 #include <string>
 #include <boost/scoped_ptr.hpp>
-#include <goss/Table.h>
-#include <goss/LogLevel.h>
+#include "Table.h"
+#include "LogLevel.h"
 
 // Forward declarations
 namespace boost { class thread; }

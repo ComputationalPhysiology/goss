@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include <goss/LogLevel.h>
+#include "LogLevel.h"
 
 namespace goss
 {

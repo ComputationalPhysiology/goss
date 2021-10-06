@@ -27,8 +27,8 @@
 #include <set>
 #include <map>
 #include <vector>
-#include <goss/Parameter.h>
-#include <goss/log.h>
+#include "Parameter.h"
+#include "log.h"
 
 namespace boost
 {

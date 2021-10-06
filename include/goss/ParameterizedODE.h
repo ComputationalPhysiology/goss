@@ -23,9 +23,9 @@
 #include <map>
 #include <stdexcept>
 
-#include <goss/types.h>
-#include <goss/ODE.h>
-#include <goss/DoubleVector.h>
+#include "types.h"
+#include "ODE.h"
+#include "DoubleVector.h"
 
 namespace goss {
 

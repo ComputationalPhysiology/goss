@@ -1,5 +1,5 @@
-
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <iostream>
 #include <goss/goss.h>
 #include <cmath>
@@ -14,9 +14,9 @@ namespace goss
 
     Sin () : ODE(2), omega(4*std::acos(0.0)) {}
 
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-        return std::make_shared<Sin>(*this);
+        return boost::make_shared<Sin>(*this);
     }
 
     ~Sin() {}
@@ -41,31 +41,25 @@ namespace goss
 
 int main(){
 
-    std::shared_ptr<goss::Sin> ode;
+    boost::shared_ptr<goss::Sin> ode(new goss::Sin);
+    boost::shared_ptr<goss::ExplicitEuler> solver(new goss::ExplicitEuler(ode));
 
-    goss::ExplicitEuler solver(ode);
     goss::DoubleVector x;
-
+    solver->get_ode()->get_ic(&x);
     double dt = 0.0001;
     double tstop = 10.0;
     
-
     const uint nstep = std::ceil(tstop/dt - 1.0E-12);
-    // 
     double t = 0.0;
-    // 
-    // for (uint i = 0; i < nstep; i++)
-    // {
-    //   solver.forward(x.data.get(), t, dt);
+    
+    for (uint i = 0; i < nstep; i++)
+    {
+      solver->forward(x.data.get(), t, dt);
       
-    //   t += dt;
-    //   info("t %.2f: y: %.2f, z: %.2f", t, x.data.get()[0], x.data.get()[1]);
-    //   /*
-    //   if (std::fmod(t, .1) < dt)
-	// info("t %.2f: y: %.2f, z: %.2f", t, x.data.get()[0], x.data.get()[1]);
-    //   */
-    // }
-    std::cout << "Hello world\n";
+      t += dt;
+      goss::info("t %.2f: y: %.2f, z: %.2f", t, x.data.get()[0], x.data.get()[1]);
+     
+    }
 
     return 0;
 }

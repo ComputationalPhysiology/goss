@@ -49,11 +49,11 @@ add_executable(main main.cpp ${SOURCES} ${HEADERS})
 target_link_libraries(main OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
 
 # # Build python module
-# include(pybind11.cmake)
-# add_library(gosscpp MODULE ${SOURCES} ${HEADERS} ${BINDINGS})
-# target_link_libraries(gosscpp PRIVATE pybind11::module OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread ${PYTHON_LIBRARIES})
-# set_target_properties(gosscpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
-#                                      SUFFIX "${PYTHON_MODULE_EXTENSION}")
+include(pybind11.cmake)
+add_library(gosscpp MODULE ${SOURCES} ${HEADERS} ${BINDINGS})
+target_link_libraries(gosscpp PRIVATE pybind11::module OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread ${PYTHON_LIBRARIES})
+set_target_properties(gosscpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
+                                     SUFFIX "${PYTHON_MODULE_EXTENSION}")
 
                                      
 # install(TARGETS goss

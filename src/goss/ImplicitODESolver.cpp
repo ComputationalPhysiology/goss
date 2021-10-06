@@ -60,7 +60,7 @@ ImplicitODESolver::~ImplicitODESolver ()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::attach(std::shared_ptr<ODE> ode)
+void ImplicitODESolver::attach(boost::shared_ptr<ODE> ode)
 {
   
   // Attach ode using base attach

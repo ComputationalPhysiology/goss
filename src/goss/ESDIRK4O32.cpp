@@ -53,7 +53,7 @@ ESDIRK4O32::ESDIRK4O32()
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-ESDIRK4O32::ESDIRK4O32(std::shared_ptr<ODE> ode)
+ESDIRK4O32::ESDIRK4O32(boost::shared_ptr<ODE> ode)
   : AdaptiveImplicitSolver(),
     gamma(0.43586652150845899942), 
     a21(gamma), 
@@ -116,7 +116,7 @@ ESDIRK4O32::~ESDIRK4O32()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void  ESDIRK4O32::attach(std::shared_ptr<ODE> ode)
+void  ESDIRK4O32::attach(boost::shared_ptr<ODE> ode)
 {
 
   // Use base classes to actually attach ode

@@ -31,7 +31,7 @@ RK2::RK2() : ODESolver(), k1(0), tmp(0)
   parameters.rename("RK2");
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(std::shared_ptr<ODE> ode) : ODESolver(), k1(0), tmp(0)
+RK2::RK2(boost::shared_ptr<ODE> ode) : ODESolver(), k1(0), tmp(0)
 {
   parameters.rename("RK2");
   attach(ode);
@@ -48,7 +48,7 @@ RK2::~RK2 ()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void RK2::attach(std::shared_ptr<ODE> ode)
+void RK2::attach(boost::shared_ptr<ODE> ode)
 {
   
   ODESolver::attach(ode);

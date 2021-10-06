@@ -21,9 +21,10 @@
 #define ESDIRK23a_h_IS_INCLUDED
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
-#include <goss/AdaptiveImplicitSolver.h>
+#include "AdaptiveImplicitSolver.h"
 
 namespace goss 
 {
@@ -48,17 +49,17 @@ namespace goss
     ESDIRK23a();
     
     // Constructor
-    ESDIRK23a(std::shared_ptr<ODE> ode);
+    ESDIRK23a(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     ESDIRK23a(const ESDIRK23a& solver);
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
-    { return std::make_shared<ESDIRK23a>(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<ESDIRK23a>(*this); }
 
     // Attach ODE
-    virtual void attach(std::shared_ptr<ODE> ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
  
     // Jacobian of rhs
     virtual void compute_ode_jacobian(double* y, double t)

@@ -34,7 +34,7 @@ RL2::RL2() : RL1(), _y2(0)
   parameters.rename("RL2");
 }
 //-----------------------------------------------------------------------------
-RL2::RL2(std::shared_ptr<ODE> ode) : RL1(), _y2(0)
+RL2::RL2(boost::shared_ptr<ODE> ode) : RL1(), _y2(0)
 {
   parameters.rename("RL2");
   attach(ode);
@@ -49,7 +49,7 @@ RL2::~RL2()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void RL2::attach(std::shared_ptr<ODE> ode)
+void RL2::attach(boost::shared_ptr<ODE> ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);

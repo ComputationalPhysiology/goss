@@ -23,9 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #else
- int omp_get_thread_num(){
-   return 0;
- }
+int omp_get_thread_num(){
+  return 0;
+}
 #endif
 
 #include <goss/ODESystemSolver.h>
@@ -34,8 +34,8 @@ using namespace goss;
 
 //-----------------------------------------------------------------------------
 ODESystemSolver::ODESystemSolver(uint num_nodes_, 
-				 std::shared_ptr<ODESolver> solver_, 
-				 std::shared_ptr<ParameterizedODE> ode_) :
+				 boost::shared_ptr<ODESolver> solver_, 
+				 boost::shared_ptr<ParameterizedODE> ode_) :
   _num_nodes(num_nodes_), _num_threads(0), _solver(solver_), 
   _threaded_solvers(0), _ode(ode_), _states(num_nodes_*ode_->num_states()),
   _field_parameters(num_nodes_*ode_->num_field_parameters()),

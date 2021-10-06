@@ -21,9 +21,10 @@
 #define BasicImplicitEuler_h_IS_INCLUDED
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
-#include <goss/ImplicitODESolver.h>
+#include "ImplicitODESolver.h"
 
 namespace goss 
 {
@@ -37,20 +38,20 @@ namespace goss
     BasicImplicitEuler();
 
     // Constructor
-    BasicImplicitEuler(std::shared_ptr<ODE> ode);
+    BasicImplicitEuler(boost::shared_ptr<ODE> ode);
 
     // Copy constructor
     BasicImplicitEuler(const BasicImplicitEuler& solver);
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
-    { return std::make_shared<BasicImplicitEuler>(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<BasicImplicitEuler>(*this); }
 
     // Destructor
     ~BasicImplicitEuler ();
 
     // Attach ODE
-    void attach(std::shared_ptr<ODE> ode);
+    void attach(boost::shared_ptr<ODE> ode);
 
     // Reset ODE
     void reset();

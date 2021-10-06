@@ -23,7 +23,7 @@
 #ifndef __LOG_MANAGER_H
 #define __LOG_MANAGER_H
 
-#include <goss/Logger.h>
+#include "Logger.h"
 
 namespace goss
 {

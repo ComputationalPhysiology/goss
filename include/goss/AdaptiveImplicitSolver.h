@@ -20,7 +20,7 @@
 #ifndef AdaptiveImplicitSolver_h_IS_INCLUDED
 #define AdaptiveImplicitSolver_h_IS_INCLUDED
 
-#include <goss/ImplicitODESolver.h>
+#include "ImplicitODESolver.h"
 #include <vector>
 #include <stdio.h>
 

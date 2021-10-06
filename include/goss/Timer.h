@@ -27,8 +27,8 @@
 #include <omp.h>
 #endif
 
-#include <goss/LogManager.h>
-#include <goss/timing.h>
+#include "LogManager.h"
+#include "timing.h"
 
 namespace goss
 {

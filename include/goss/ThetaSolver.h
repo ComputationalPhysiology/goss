@@ -21,9 +21,10 @@
 #define ThetaSolver_h_IS_INCLUDED
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
-#include <goss/ImplicitODESolver.h>
+#include "ImplicitODESolver.h"
 
 namespace goss 
 {
@@ -47,7 +48,7 @@ namespace goss
     ThetaSolver();
     
     // Constructor
-    ThetaSolver(std::shared_ptr<ODE> ode);
+    ThetaSolver(boost::shared_ptr<ODE> ode);
     
     // Copy constructor
     ThetaSolver(const ThetaSolver& solver);
@@ -56,11 +57,11 @@ namespace goss
     ~ThetaSolver(){};
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
-    { return std::make_shared<ThetaSolver>(*this); }
+    boost::shared_ptr<ODESolver> copy() const 
+    { return boost::make_shared<ThetaSolver>(*this); }
 
     // Attach ODE
-    void attach(std::shared_ptr<ODE> ode);
+    void attach(boost::shared_ptr<ODE> ode);
 
     // Reset solver
     void reset();

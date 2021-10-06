@@ -31,7 +31,7 @@ RK4::RK4() : ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
   parameters.rename("RK4");
 }
 //-----------------------------------------------------------------------------
-RK4::RK4(std::shared_ptr<ODE> ode) : 
+RK4::RK4(boost::shared_ptr<ODE> ode) : 
   ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
   parameters.rename("RK4");
@@ -52,7 +52,7 @@ RK4::~RK4 ()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void RK4::attach(std::shared_ptr<ODE> ode)
+void RK4::attach(boost::shared_ptr<ODE> ode)
 {
 
   // Attach ode using base class

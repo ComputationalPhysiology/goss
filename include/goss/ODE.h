@@ -21,10 +21,10 @@
 #define ODE_H_IS_INCLUDED
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
-#include <goss/types.h>
-#include <goss/DoubleVector.h>
+#include "types.h"
+#include "DoubleVector.h"
 
 namespace goss {
 
@@ -63,7 +63,7 @@ namespace goss {
     virtual void get_ic(goss::DoubleVector* values) const = 0;
 
     // Return a copy of the ODE
-    virtual std::shared_ptr<ODE> copy() const = 0;
+    virtual boost::shared_ptr<ODE> copy() const = 0;
 
     // Compute numerical jacobian
     virtual void compute_jacobian(double* states, double time, double* jac);

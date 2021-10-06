@@ -5,7 +5,7 @@
 #include <goss/BasicImplicitEuler.h>
 #include <goss/log.h>
 #include <goss/constants.h>
-#include "fenv.h"
+
 
 using namespace goss;
 
@@ -15,7 +15,7 @@ BasicImplicitEuler::BasicImplicitEuler() : ImplicitODESolver()
   parameters.rename("BasicImplicitEuler");
 } 
 //-----------------------------------------------------------------------------
-BasicImplicitEuler::BasicImplicitEuler(std::shared_ptr<ODE> ode) : 
+BasicImplicitEuler::BasicImplicitEuler(boost::shared_ptr<ODE> ode) : 
   ImplicitODESolver()
 { 
   parameters.rename("BasicImplicitEuler");
@@ -37,7 +37,7 @@ BasicImplicitEuler::~BasicImplicitEuler()
 
 }
 //-----------------------------------------------------------------------------
-void BasicImplicitEuler::attach(std::shared_ptr<ODE> ode)
+void BasicImplicitEuler::attach(boost::shared_ptr<ODE> ode)
 {
 
   // Attach ode using bases

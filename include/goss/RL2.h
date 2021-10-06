@@ -21,11 +21,12 @@
 #define RL2_H_IS_INCLUDED
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
-#include <goss/types.h>
-#include <goss/ODESolver.h>
-#include <goss/RL1.h>
+#include "types.h"
+#include "ODESolver.h"
+#include "RL1.h"
 
 namespace goss {
 
@@ -38,19 +39,19 @@ namespace goss {
     RL2();
 
     // Constructor
-    RL2(std::shared_ptr<ODE> ode);
+    RL2(boost::shared_ptr<ODE> ode);
     
     // Copy constructor
     RL2(const RL2& solver);
     
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const { return std::make_shared<RL2>(*this); }
+    boost::shared_ptr<ODESolver> copy() const { return boost::make_shared<RL2>(*this); }
 
     // Destructor
     ~RL2();
 
     // Attach ODE to solver
-    virtual void attach(std::shared_ptr<ODE> ode);
+    virtual void attach(boost::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);
