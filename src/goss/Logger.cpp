@@ -401,3 +401,4 @@ void Logger::write(int log_level, std::string msg) const
   *logstream << msg << std::endl;
 }
 //----------------------------------------------------------------------------
+

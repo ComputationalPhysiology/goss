@@ -14,9 +14,9 @@ namespace goss
 
     Sin () : ODE(2), omega(4*std::acos(0.0)) {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-        return boost::make_shared<Sin>(*this);
+        return std::make_shared<Sin>(*this);
     }
 
     ~Sin() {}
@@ -41,8 +41,8 @@ namespace goss
 
 int main(){
 
-    boost::shared_ptr<goss::Sin> ode(new goss::Sin);
-    boost::shared_ptr<goss::ExplicitEuler> solver(new goss::ExplicitEuler(ode));
+    std::shared_ptr<goss::Sin> ode(new goss::Sin);
+    std::shared_ptr<goss::ExplicitEuler> solver(new goss::ExplicitEuler(ode));
 
     goss::DoubleVector x;
     solver->get_ode()->get_ic(&x);

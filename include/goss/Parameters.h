@@ -239,7 +239,7 @@ namespace goss
                               const Parameters &parameters,
                               std::string base_name="") const;
 
-    // Read in values from the boost::variable_map
+    // Read in values from the std::variable_map
     void read_vm(boost::program_options::variables_map& vm,
                  Parameters &parameters,
                  std::string base_name="");

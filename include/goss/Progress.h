@@ -26,7 +26,7 @@
 namespace goss
 {
 
-  // FIXME: Replace implementation with wrapper for boost::progress_display
+  // FIXME: Replace implementation with wrapper for std::progress_display
   // FIXME: See http://www.boost.org/doc/libs/1_42_0/libs/timer/timer.htm
 
   /// This class provides a simple way to create and update progress

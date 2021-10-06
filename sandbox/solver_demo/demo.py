@@ -6,8 +6,8 @@ import numpy as np
 oscilator = jit(load_ode("oscilator"))
 
 
-#solver1 = ExplicitEuler(oscilator)
-solver1 = RL1(oscilator)
+solver1 = ExplicitEuler(oscilator)
+# solver1 = RL1(oscilator)
 
 tstop = 10.
 n_steps = 1000

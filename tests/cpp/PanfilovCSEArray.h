@@ -1,7 +1,7 @@
 #ifndef PANFILOVCSEARRAY_H_IS_INCLUDED
 #define PANFILOVCSEARRAY_H_IS_INCLUDED
 
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <stdexcept>
 #include <cmath>
 
@@ -73,9 +73,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<PanfilovCSEArray>(*this);
+      return std::make_shared<PanfilovCSEArray>(*this);
     }
 
     // Evaluate the monitored intermediates

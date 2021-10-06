@@ -1,7 +1,7 @@
 #ifndef Sin_h_IS_INCLUDED
 #define Sin_h_IS_INCLUDED
 
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <goss/ODE.h>
 #include <cmath>
 
@@ -15,9 +15,9 @@ namespace goss
 
     Sin () : ODE(2), omega(4*std::acos(0.0)) {}
 
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<Sin>(*this);
+      return std::make_shared<Sin>(*this);
     }
 
     ~Sin() {}

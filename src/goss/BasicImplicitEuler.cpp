@@ -15,7 +15,7 @@ BasicImplicitEuler::BasicImplicitEuler() : ImplicitODESolver()
   parameters.rename("BasicImplicitEuler");
 } 
 //-----------------------------------------------------------------------------
-BasicImplicitEuler::BasicImplicitEuler(boost::shared_ptr<ODE> ode) : 
+BasicImplicitEuler::BasicImplicitEuler(std::shared_ptr<ODE> ode) : 
   ImplicitODESolver()
 { 
   parameters.rename("BasicImplicitEuler");
@@ -37,7 +37,7 @@ BasicImplicitEuler::~BasicImplicitEuler()
 
 }
 //-----------------------------------------------------------------------------
-void BasicImplicitEuler::attach(boost::shared_ptr<ODE> ode)
+void BasicImplicitEuler::attach(std::shared_ptr<ODE> ode)
 {
 
   // Attach ode using bases

@@ -31,7 +31,7 @@
 #include <goss/LogManager.h>
 #include <goss/timing.h>
 
-// We use boost::timer (std::clock) on Windows and otherwise the
+// We use std::timer (std::clock) on Windows and otherwise the
 // platform-dependent (but higher-precision) gettimeofday from
 // <sys/time.h>. Note that in the latter case, the timer is not
 // reset to zero at the start of the program so time() will not
@@ -40,8 +40,8 @@
 namespace goss
 {
 #ifdef _WIN32
-  boost::timer __global_timer;
-  boost::timer __tic_timer;
+  std::timer __global_timer;
+  std::timer __tic_timer;
 #else
   double __tic_timer;
 #endif

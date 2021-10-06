@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include <cmath>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 #include "goss/ParameterizedODE.h"
 
@@ -459,9 +459,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    boost::shared_ptr<ODE> copy() const
+    std::shared_ptr<ODE> copy() const
     {
-      return boost::make_shared<WinslowNoIntermediates>(*this);
+      return std::make_shared<WinslowNoIntermediates>(*this);
     }
 
     // Evaluate the monitored intermediates

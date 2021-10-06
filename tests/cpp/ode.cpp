@@ -55,8 +55,8 @@ protected:
   virtual ~ODESolverTest() { }
 
   // ODE and solver
-  boost::shared_ptr<ODE> ode;
-  boost::shared_ptr<ODESolver> solver;
+  std::shared_ptr<ODE> ode;
+  std::shared_ptr<ODESolver> solver;
   DoubleVector x_coarse, x_fine;
   
   void run_ode(double dt, double tstop, DoubleVector& x)

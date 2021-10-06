@@ -64,7 +64,7 @@ ESDIRK23a::ESDIRK23a()
   first_step = true;
 }
 //-----------------------------------------------------------------------------
-ESDIRK23a::ESDIRK23a(boost::shared_ptr<ODE> ode)
+ESDIRK23a::ESDIRK23a(std::shared_ptr<ODE> ode)
   : AdaptiveImplicitSolver(),
     gamma(0.43586652150845899942), 
     new_jacobian(true), 
@@ -148,7 +148,7 @@ ESDIRK23a::~ESDIRK23a()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void  ESDIRK23a::attach(boost::shared_ptr<ODE> ode)
+void  ESDIRK23a::attach(std::shared_ptr<ODE> ode)
 {
 
   // Use base classes to actually attach ode

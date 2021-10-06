@@ -20,7 +20,7 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 
 #include "types.h"
@@ -66,10 +66,10 @@ namespace goss
     }
 
     // Return a copy of itself
-    virtual boost::shared_ptr<ODESolver> copy() const = 0;
+    virtual std::shared_ptr<ODESolver> copy() const = 0;
 
     // Attach ODE and reset solver 
-    virtual void attach(boost::shared_ptr<ODE> ode) 
+    virtual void attach(std::shared_ptr<ODE> ode) 
     { 
       //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
       _ode = ode; reset();}
@@ -84,10 +84,10 @@ namespace goss
     inline uint num_states() const { return _ode ? _ode->num_states() : 0; }
 
     // Return the ODE (const version)
-    inline const boost::shared_ptr<ODE> get_ode() const { return _ode; }
+    inline const std::shared_ptr<ODE> get_ode() const { return _ode; }
 
     // Return the ODE
-    inline boost::shared_ptr<ODE> get_ode() { return _ode; }
+    inline std::shared_ptr<ODE> get_ode() { return _ode; }
 
     // Return the internal time step
     inline virtual double get_internal_time_step() const { return -1.; }
@@ -111,7 +111,7 @@ namespace goss
     {assert(_ode); return _ode->_f2;}
 
     // Shared pointer to ode 
-    boost::shared_ptr<ODE> _ode;
+    std::shared_ptr<ODE> _ode;
 
   };
 

@@ -17,7 +17,7 @@
 
 #include <string>
 #include <cmath>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/scoped_ptr.hpp>
 
 #include "goss/goss.h"
@@ -41,8 +41,8 @@ protected:
   virtual ~ODESystemSolverTest() {}
 
   // ODE and solver
-  boost::shared_ptr<ParameterizedODE> ode;
-  boost::shared_ptr<ODESolver> solver;
+  std::shared_ptr<ParameterizedODE> ode;
+  std::shared_ptr<ODESolver> solver;
   boost::scoped_ptr<ODESystemSolver> system_solver;
   DoubleVector x_coarse, x_fine;
   

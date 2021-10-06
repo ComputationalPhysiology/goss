@@ -17,7 +17,7 @@ ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), _z1(0),
 
 } 
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler(boost::shared_ptr<ODE> ode) : 
+ImplicitEuler::ImplicitEuler(std::shared_ptr<ODE> ode) : 
   ImplicitODESolver(), _z1(0), _justrefined(false)
 { 
   attach(ode);
@@ -36,7 +36,7 @@ ImplicitEuler::~ImplicitEuler()
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-void ImplicitEuler::attach(boost::shared_ptr<ODE> ode)
+void ImplicitEuler::attach(std::shared_ptr<ODE> ode)
 {
 
   // Attach ode using bases

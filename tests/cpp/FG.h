@@ -1,7 +1,7 @@
 #ifndef FG_h_IS_INCLUDED
 #define FG_h_IS_INCLUDED
 
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <goss/ODE.h>
 #include <cmath>
 
@@ -36,9 +36,9 @@ namespace goss
     
     FG () : ODE(2){}
 
-    boost::shared_ptr<ODE> copy() const 
+    std::shared_ptr<ODE> copy() const 
     {
-      return boost::make_shared<FG>(*this);
+      return std::make_shared<FG>(*this);
     }
 
     ~FG() {};
