@@ -1,7 +1,7 @@
 #ifndef SaltzLorenz_h_IS_INCLUDED
 #define SaltzLorenz_h_IS_INCLUDED
 
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <goss/ODE.h>
 
 namespace goss 
@@ -25,9 +25,9 @@ namespace goss
     SaltzLorenz() : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
     {}
     
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<SaltzLorenz>(*this);
+      return boost::make_shared<SaltzLorenz>(*this);
     }
 
     ~SaltzLorenz() {}

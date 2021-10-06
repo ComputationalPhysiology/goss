@@ -1,7 +1,7 @@
 #ifndef PANFILOVNOINTERMEDIATES_H_IS_INCLUDED
 #define PANFILOVNOINTERMEDIATES_H_IS_INCLUDED
 
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <stdexcept>
 #include <cmath>
 
@@ -69,9 +69,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<PanfilovNoIntermediates>(*this);
+      return boost::make_shared<PanfilovNoIntermediates>(*this);
     }
 
     // Evaluate the monitored intermediates

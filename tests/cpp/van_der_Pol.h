@@ -1,7 +1,7 @@
 #ifndef van_der_Pol_h_IS_INCLUDED
 #define van_der_Pol_h_IS_INCLUDED
 
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <goss/ODE.h>
 #include <cmath>
 
@@ -18,9 +18,9 @@ namespace goss
       _is_dae = true;
     }
 
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<VanDerPol>(*this);
+      return boost::make_shared<VanDerPol>(*this);
     }
 
     ~VanDerPol() {}

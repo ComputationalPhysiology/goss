@@ -1,7 +1,7 @@
 #ifndef VDP_h_IS_INCLUDED
 #define VDP_h_IS_INCLUDED
 
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <goss/ODE.h>
 #include <stdexcept>
 
@@ -17,9 +17,9 @@ namespace goss
 
     virtual ~VDP() {}
     
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<VDP>(*this);
+      return boost::make_shared<VDP>(*this);
     }
 
     void eval(const double* y, double t, double* f_vals)

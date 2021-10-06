@@ -1,6 +1,6 @@
 #ifndef FHN_H_IS_INCLUDED
 #define FHN_H_IS_INCLUDED
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <stdexcept>
 #include <cmath>
 
@@ -194,9 +194,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<Fhn>(*this);
+      return boost::make_shared<Fhn>(*this);
     }
 
     // Evaluate the monitored intermediates

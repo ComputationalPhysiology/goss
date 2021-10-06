@@ -18,20 +18,18 @@ FetchContent_MakeAvailable(gtest)
 
 file(GLOB HEADERS *.h)
 
-add_executable(testode ode.cpp ${HEADERS})
-add_executable(testodesystem odesystem.cpp ${HEADERS})
+add_executable(testode ode.cpp ${SOURCES} ${HEADERS})
+add_executable(testodesystem odesystem.cpp ${SOURCES} ${HEADERS})
 
 target_link_libraries(testode
-    goss
     gtest_main
-    Boost::boost
+    Boost::program_options Boost::system Boost::thread
 
 )
 
 target_link_libraries(testodesystem
-    goss
     gtest_main
-    Boost::boost
+    Boost::program_options Boost::system Boost::thread
 
 )
 

@@ -1,6 +1,6 @@
 #ifndef BEELER_REUTER_1977_H_IS_INCLUDED
 #define BEELER_REUTER_1977_H_IS_INCLUDED
-#include <memory>
+#include <boost/make_shared.hpp>
 #include <stdexcept>
 #include <cmath>
 
@@ -488,9 +488,9 @@ namespace goss {
     }
 
     // Return a copy of the ODE
-    std::shared_ptr<ODE> copy() const
+    boost::shared_ptr<ODE> copy() const
     {
-      return std::make_shared<Beeler_reuter_1977>(*this);
+      return boost::make_shared<Beeler_reuter_1977>(*this);
     }
 
     // Evaluate the monitored intermediates
