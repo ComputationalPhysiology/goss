@@ -14,7 +14,7 @@ enable_testing()
 option(BUILD_TESTS "Build the test suite." OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
+  set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 set(CMAKE_CXX_FLAGS "-O3")
@@ -25,32 +25,35 @@ find_package(PythonLibs ${PY_VERSION} REQUIRED)
 find_package(Boost COMPONENTS system thread program_options REQUIRED)
 
 
-include_directories(${PYTHON_INCLUDE_DIRS})
-include_directories(${Boost_INCLUDE_DIRS})
+# include_directories(${PYTHON_INCLUDE_DIRS})
+# include_directories(${Boost_INCLUDE_DIRS})
 
-file (GLOB SOURCES "src/goss/*.cpp")
-# file (GLOB HEADERS "include/goss/*.h")
-file (GLOB BINDINGS "src/python/goss/*.cpp" "src/python/goss/*.hpp")
+file (GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/goss/*.cpp")
+file (GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/goss/*.h")
+file (GLOB BINDINGS "${PROJECT_SOURCE_DIR}/src/python/goss/*.cpp" "${PROJECT_SOURCE_DIR}/src/python/goss/*.hpp")
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/src
+)
 if(BUILD_TESTS)
     add_subdirectory("${CMAKE_SOURCE_DIR}/tests/cpp")
 endif()
 
 # Build library
-add_library(goss ${SOURCES})
-target_link_libraries(goss PRIVATE OpenMP::OpenMP_CXX ${Boost_LIBRARIES})
+# add_library(goss ${SOURCES})
+# target_link_libraries(goss PRIVATE OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
 
 # Build demo
-add_executable(main main.cpp ${SOURCES})
-target_link_libraries(main OpenMP::OpenMP_CXX ${Boost_LIBRARIES})
+add_executable(main main.cpp ${SOURCES} ${HEADERS})
+target_link_libraries(main OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread)
 
-# Build python module
-include(pybind11.cmake)
-add_library(gosscpp MODULE ${SOURCES} ${BINDINGS})
-target_link_libraries(gosscpp PRIVATE pybind11::module OpenMP::OpenMP_CXX ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-set_target_properties(gosscpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
-                                     SUFFIX "${PYTHON_MODULE_EXTENSION}")
+# # Build python module
+# include(pybind11.cmake)
+# add_library(gosscpp MODULE ${SOURCES} ${HEADERS} ${BINDINGS})
+# target_link_libraries(gosscpp PRIVATE pybind11::module OpenMP::OpenMP_CXX Boost::program_options Boost::system Boost::thread ${PYTHON_LIBRARIES})
+# set_target_properties(gosscpp PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
+#                                      SUFFIX "${PYTHON_MODULE_EXTENSION}")
 
                                      
 # install(TARGETS goss
