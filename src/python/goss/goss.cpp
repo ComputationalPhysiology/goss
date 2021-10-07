@@ -44,7 +44,7 @@ void init_ODE(py::module &m)
         }
         std::shared_ptr<ODE> copy() const override
         {
-            PYBIND11_OVERLOAD_PURE_NAME(std::shared_ptr<ODE>, goss::ODE, "copy", copy, );
+            PYBIND11_OVERLOAD_PURE_NAME(std::shared_ptr<goss::ODE>, goss::ODE, "copy", copy, );
         }
         void compute_jacobian(double *states, double time, double *jac) override
         {
@@ -62,13 +62,12 @@ void init_ODE(py::module &m)
         }
     };
 
-    // py::class_<goss::ODE, PyODE>ode(m, "ODE");
+    py::class_<goss::ODE, PyODE, std::shared_ptr<goss::ODE>>ode(m, "ODE");
 
 
     // // py::class_<goss::ODE, PyODE>(m, "ODE")
-    // ode
-    // .def(py::init([](goss::uint num_states){
-    //     return std::shared_ptr<goss::ODE>(new goss::ODE(num_states))});
+    ode
+      .def(py::init<goss::uint>());
 }
 
 PYBIND11_MODULE(cpp, m)
@@ -78,4 +77,5 @@ PYBIND11_MODULE(cpp, m)
 
 
     init_ExplicitEuler(m);
+    init_ODE(m);
 }
