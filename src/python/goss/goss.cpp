@@ -67,7 +67,10 @@ void init_ODE(py::module &m)
 
     // // py::class_<goss::ODE, PyODE>(m, "ODE")
     ode
-      .def(py::init<goss::uint>());
+      .def(py::init<goss::uint>())
+      .def(py::init<const PyODE&>())
+      .def("num_states", &goss::ODE::num_states);
+
 }
 
 PYBIND11_MODULE(cpp, m)

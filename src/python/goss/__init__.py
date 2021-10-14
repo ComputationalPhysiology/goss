@@ -23,12 +23,12 @@
 
 # Import pure python modules
 from . import codegeneration as codegeneration
-from . import compilemodule as compilemodule
+from .compilemodule import jit
 
 
 from . import cpp
 
-__all__ = ["codegeneration", "compilemodule", "cpp"]
+__all__ = ["codegeneration", "jit", "cpp"]
 
 # If dolfin is present import it
 try:

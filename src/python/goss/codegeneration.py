@@ -33,6 +33,16 @@ from gotran.common import error
 
 _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
 #define {MODELNAME}_H_IS_INCLUDED
+// Based on https://gcc.gnu.org/wiki/Visibility
+#if defined _WIN32 || defined __CYGWIN__
+    #ifdef __GNUC__
+        #define DLL_EXPORT __attribute__ ((dllexport))
+    #else
+        #define DLL_EXPORT __declspec(dllexport)
+    #endif
+#else
+    #define DLL_EXPORT __attribute__ ((visibility ("default")))
+#endif
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
@@ -106,7 +116,14 @@ _class_template = """namespace goss {{
 
   }};
 
-}}"""
+}}
+
+extern "C" DLL_EXPORT goss::ParameterizedODE * create_{ModelName}()
+{{
+  return new goss::{ModelName};
+}}
+
+"""
 
 _no_monitored_snippet = """\n      // No monitored
       throw std::runtime_error(\"No monitored in the \\'{0}\\' model.\");"""
@@ -299,7 +316,7 @@ class GossCodeGenerator(CppCodeGenerator):
         """
         Generate the goss file code
         """
-        self.file_form["CLASS_DECLARATION"] = self.generate_class_code()
+        self.file_form["CLASS_DECLARATION"] = self.class_code()
         return _file_template.format(**self.file_form)
 
     def _constructor_body(self):
