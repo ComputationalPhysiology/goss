@@ -127,6 +127,9 @@ namespace goss
       goss_error("Parameters.h",
 		 "create parameter of requested type",
 		 "Type '%s' is not allowed", key.c_str());
+     (void)min;
+     (void)max;
+     
     }
 
     /// Add an unset parameter of type T with allows parameters. For
@@ -138,6 +141,7 @@ namespace goss
       goss_error("Parameters.h",
 		 "create parameter of requested type",
 		 "Type '%s' is not allowed", key.c_str());
+      (void)valid_values;
     }
 
     /// Add int-valued parameter

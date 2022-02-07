@@ -73,10 +73,10 @@ void init_ODE(py::module &m)
 
 }
 
-PYBIND11_MODULE(cpp, m)
+PYBIND11_MODULE(_gosscpp, m)
 {
 
-    m.doc() = "This is a Python binding of C++ goss Library";
+    m.doc() = "This is a Python bindings of C++ goss Library";
 
 
     init_ExplicitEuler(m);

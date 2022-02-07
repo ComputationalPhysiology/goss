@@ -26,7 +26,7 @@ from . import codegeneration as codegeneration
 from .compilemodule import jit
 
 
-from . import cpp
+from . import _gosscpp
 
 __all__ = ["codegeneration", "jit", "cpp"]
 

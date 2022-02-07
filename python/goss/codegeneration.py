@@ -25,11 +25,11 @@ from modelparameters.parameters import Param
 from gotran.codegeneration.codegenerators import CppCodeGenerator
 from gotran.codegeneration.algorithmcomponents import *
 
-from gotran.common import check_arg, check_kwarg
+from modelparameters.utils import check_arg, check_kwarg
 from gotran.model.ode import ODE
 from gotran.model.expressions import Expression
 from gotran.common.options import parameters
-from gotran.common import error
+from modelparameters.logger import error
 
 _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
 #define {MODELNAME}_H_IS_INCLUDED

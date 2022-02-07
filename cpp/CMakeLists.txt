@@ -117,7 +117,7 @@ target_link_libraries(goss PUBLIC Boost::system Boost::thread)
 
 # Set compiler flags
 list(APPEND GOSS_DEVELOPER_FLAGS -O2;-g;-pipe)
-list(APPEND goss_compiler_flags -Wall;-Werror;-Wextra;-Wno-comment;-pedantic;)
+list(APPEND goss_compiler_flags -Wall;-Werror;-Wextra;-Wno-comment;-pedantic)
 target_compile_options(goss PRIVATE "$<$<OR:$<CONFIG:Debug>,$<CONFIG:Developer>>:${goss_compiler_flags}>")
 target_compile_options(goss PRIVATE $<$<CONFIG:Developer>:${GOSS_DEVELOPER_FLAGS}>)
 
