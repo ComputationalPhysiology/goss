@@ -45,7 +45,7 @@ _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
 #endif
 
 #include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <stdexcept>
 #include <cmath>
 

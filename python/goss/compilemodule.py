@@ -66,7 +66,6 @@ def jit(
 
     import cppyy.ll
 
-    cppyy.load_library("goss")
     cppyy.cppdef(cpp_code)
     from cppyy.gbl import create_ODE
 
