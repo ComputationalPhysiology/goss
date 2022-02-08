@@ -80,6 +80,7 @@ void init_ODE(py::module &m)
     ode.def(py::init<goss::uint>())
             .def(py::init<const PyODE &>())
             .def("num_states", &goss::ODE::num_states)
+            .def("is_dae", &goss::ODE::is_dae)
             .def("get_ic",
                  [](const goss::ODE &self) {
                      goss::DoubleVector values;

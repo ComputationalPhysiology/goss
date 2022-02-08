@@ -32,3 +32,7 @@ def test_ode_compute_jacobian(oscilator):
     jac = np.zeros((2, 2))
     oscilator.compute_jacobian(np.array([0.1, 0.2]), 0, jac)
     assert np.allclose(jac, np.array([[0, -1], [1, 0]]))
+
+
+def test_is_dae(oscilator):
+    assert oscilator.is_dae() is False
