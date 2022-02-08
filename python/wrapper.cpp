@@ -13,7 +13,9 @@ namespace py = pybind11;
 void init_ExplicitEuler(py::module &m)
 {
 
-    py::class_<goss::ExplicitEuler>(m, "ExplicitEuler").def(py::init<>());
+    py::class_<goss::ExplicitEuler> solver(m, "ExplicitEuler");
+
+    solver.def(py::init<>());
 }
 
 
@@ -138,7 +140,6 @@ PYBIND11_MODULE(_gosscpp, m)
 
     m.doc() = "This is a Python bindings of C++ goss Library";
 
-
-    init_ExplicitEuler(m);
     init_ODE(m);
+    init_ExplicitEuler(m);
 }

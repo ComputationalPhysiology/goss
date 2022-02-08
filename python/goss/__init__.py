@@ -24,9 +24,9 @@
 # Import pure python modules
 from . import codegeneration as codegeneration
 from .compilemodule import jit
+from .ode import ODE
 
-
-from ._gosscpp import ExplicitEuler, ODE, make_ode
+# from ._gosscpp import ExplicitEuler, ODE, make_ode
 
 __all__ = ["codegeneration", "jit", "cpp"]
 
