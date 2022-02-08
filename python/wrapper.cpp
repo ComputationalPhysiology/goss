@@ -98,6 +98,21 @@ void init_ODE(py::module &m)
 
                      self.compute_jacobian(states_ptr, time, jac_ptr);
                  })
+            .def("linearized_eval",
+                 [](goss::ODE &self, const py::array_t<double> states, double time,
+                    const py::array_t<double> linearized, const py::array_t<double> rhs,
+                    bool only_linear) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
+
+                     py::buffer_info linearized_info = linearized.request();
+                     auto linearized_ptr = static_cast<double *>(linearized_info.ptr);
+
+                     py::buffer_info rhs_info = rhs.request();
+                     auto rhs_ptr = static_cast<double *>(rhs_info.ptr);
+
+                     self.linearized_eval(states_ptr, time, linearized_ptr, rhs_ptr, only_linear);
+                 })
             .def("eval",
                  [](goss::ODE &self, const py::array_t<double> states, double time,
                     const py::array_t<double> values) {

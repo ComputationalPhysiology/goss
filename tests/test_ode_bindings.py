@@ -36,3 +36,31 @@ def test_ode_compute_jacobian(oscilator):
 
 def test_is_dae(oscilator):
     assert oscilator.is_dae() is False
+
+
+def test_linearized_rhs_only_linear_True(oscilator):
+    # Add some fill values to linear
+    fill = 42
+    linear = fill * np.ones(2)
+
+    rhs = np.zeros(2)
+    states = np.array([0.1, 0.2])
+    oscilator.linearized_eval(states, 0, linear, rhs, True)
+
+    # Linear has not changed
+    assert np.allclose(linear, fill)
+    assert np.allclose(rhs, np.array([-0.2, 0.1]))
+
+
+def test_linearized_rhs_only_linear_False(oscilator):
+    # Add some fill values to linear
+    fill = 42
+    linear = fill * np.ones(2)
+
+    rhs = np.zeros(2)
+    states = np.array([0.1, 0.2])
+    oscilator.linearized_eval(states, 0, linear, rhs, False)
+
+    # Now linear has changed
+    assert np.allclose(linear, 0.0)
+    assert np.allclose(rhs, np.array([-0.2, 0.1]))
