@@ -17,20 +17,8 @@
 
 __all__ = ["jit"]
 
-import hashlib
-# from dolfin.cpp import MPI
-
-# System imports
-import dijitso
-import hashlib
-
 # Import Gotran
-import gotran
-from modelparameters.logger import push_log_level, pop_log_level, info, INFO
-from gotran.codegeneration.codegenerators import PythonCodeGenerator
-
-from gotran.codegeneration.compilemodule import load_module
-
+from modelparameters.logger import push_log_level, INFO
 # Local imports
 from .codegeneration import GossCodeGenerator
 from . import _gosscpp as cpp
@@ -70,25 +58,7 @@ def jit(
         ode, field_states, field_parameters, monitored, code_params
     )
     cgen.params.class_code = True
-    pgen = PythonCodeGenerator(cgen.params)
-
-    # Create unique module name for this application run
-    module_name = "goss_compiled_module_{0}_{1}".format(
-        ode.name,
-        hashlib.sha1(
-            (
-                ode.signature()
-                + repr(code_params)
-                + repr(field_states)
-                + repr(field_parameters)
-                + repr(monitored)
-                + dijitso.__version__
-                + gotran.__version__
-                + str(cppargs)
-            ).encode()
-        ).hexdigest(),
-    )
-
+ 
     push_log_level(INFO)
 
     # Init state code

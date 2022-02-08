@@ -14,7 +14,13 @@ setup(
     maintainer_email="henriknf@simula.no",
     license="GNU General Public License v3 (GPLv3)",
     keywords=["ODE", "solver", "system", "equations", "cuda"],
-    install_requires=["numpy", "modelparameters", "gotran", "dijitso", "typer"],
+    install_requires=[
+        "numpy",
+        "modelparameters",
+        "gotran",
+        "typer",
+        "cppyy",
+    ],
     extras_require={
         "test": ["pytest", "pytest-cov"],
         "dev": [
