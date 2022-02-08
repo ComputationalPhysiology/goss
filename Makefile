@@ -9,6 +9,10 @@ clean-build: ## remove build artifacts
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 	rm -rf _skbuild
+	rm -rf python/goss/_gosscpp*
+	rm -rf python/goss/include
+	rm -rf python/goss/lib
+	rm -rf python/goss/libgoss*
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
