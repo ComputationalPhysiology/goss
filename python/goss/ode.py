@@ -3,7 +3,7 @@ from typing import Optional
 import os
 import numpy as np
 import gotran
-from . import _gosscpp
+
 from .compilemodule import jit
 
 
@@ -14,13 +14,22 @@ class LinearizedEval(NamedTuple):
 
 class ODE:
     def __init__(self, *args, **kwargs):
+
         if isinstance(args[0], gotran.ODE):
             self._cpp_object = jit(args[0])
-        elif isinstance(args[0], _gosscpp.ODE):
-            self._cpp_object = args[0]
         elif isinstance(args[0], os.PathLike):
             # Assume this is a gotran ode file
             self._cpp_object = jit(gotran.load_ode(args[0]))
+
+        else:
+            # Need to import this module here in order to
+            # not cause trouble for cppyy
+            from . import _gosscpp
+
+            if isinstance(args[0], _gosscpp.ODE):
+                self._cpp_object = args[0]
+            else:
+                raise ValueError(f"Unknown argument of type {type(args[0])}")
 
     def copy(self):
         return ODE(self._cpp_object)

@@ -16,13 +16,16 @@
 # along with GOSS. If not, see <http://www.gnu.org/licenses/>.
 
 __all__ = ["jit"]
+from pathlib import Path
 
 # Import Gotran
 from modelparameters.logger import push_log_level, INFO
+
 # Local imports
 from .codegeneration import GossCodeGenerator
-from . import _gosscpp as cpp
 
+
+here = Path(__file__).parent.absolute()
 
 
 def jit(
@@ -58,19 +61,28 @@ def jit(
         ode, field_states, field_parameters, monitored, code_params
     )
     cgen.params.class_code = True
- 
+
     push_log_level(INFO)
 
     # Init state code
     cpp_code = cgen.file_code()
+    import cppyy
 
-    import cppyy.ll
+    cppyy.add_include_path(here.joinpath("include").as_posix())
+    cppyy.add_library_path(here.joinpath("lib").as_posix())
+    cppyy.load_library("goss")
 
     cppyy.cppdef(cpp_code)
+
+    # _cppyygbl = __import__("cppyy.gbl", fromlist=["create_ODE"])
+    # submodule = getattr(_cppyygbl, "create_ODE")()
     from cppyy.gbl import create_ODE
 
     submodule = create_ODE()
+    import cppyy.ll
+
     python_object = cppyy.ll.as_ctypes(submodule)
 
-    return cpp.make_ode(python_object.value)
-   
+    from . import _gosscpp
+
+    return _gosscpp.make_ode(python_object.value)

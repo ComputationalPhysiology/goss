@@ -104,16 +104,12 @@ target_sources(goss PRIVATE
 
   
 # Configure the library
-# set_target_properties(basix PROPERTIES PUBLIC_HEADER basix/finite-element.h)
 set_target_properties(goss PROPERTIES PRIVATE_HEADER "${HEADERS_goss}")
 target_include_directories(goss PUBLIC $<INSTALL_INTERFACE:include> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}>")
-
 
 target_link_libraries(goss PUBLIC OpenMP::OpenMP_CXX)
 target_link_libraries(goss PUBLIC Boost::program_options)
 target_link_libraries(goss PUBLIC Boost::system Boost::thread)
-
-
 
 # Set compiler flags
 list(APPEND GOSS_DEVELOPER_FLAGS -O2;-g;-pipe)
@@ -132,7 +128,6 @@ install(TARGETS goss
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT RuntimeExecutables
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT RuntimeLibraries
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Development)
-
 
 # Configure CMake helpers
 include(CMakePackageConfigHelpers)
