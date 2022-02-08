@@ -34,7 +34,7 @@ setup(
             "wheel",
         ],
     },
-    entry_points={"console_scripts": ["goss=goss.__main__"]},
+    entry_points={"console_scripts": ["goss=goss.cli:app"]},
     cmake_args=[
         "-DPython3_EXECUTABLE=" + sys.executable,
         "-DPython3_LIBRARIES=" + sysconfig.get_config_var("LIBDEST"),
