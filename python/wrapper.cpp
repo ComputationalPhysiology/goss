@@ -1,8 +1,11 @@
 #include <boost/shared_ptr.hpp>
 #include <goss/goss.h>
+#include <memory>
 #include <pybind11/functional.h>
+#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <vector>
 
 
 namespace py = pybind11;
@@ -16,6 +19,14 @@ void init_ExplicitEuler(py::module &m)
 
 void init_ODE(py::module &m)
 {
+
+    m.def(
+            "make_ode",
+            [](std::uintptr_t e) {
+                goss::ODE *p = reinterpret_cast<goss::ODE *>(e);
+                return std::shared_ptr<const goss::ODE>(p);
+            },
+            "Create a goss::ODE object from a pointer integer, typically returned by a just-in-time compiler");
 
     class PyODE : public goss::ODE
     {
@@ -62,15 +73,48 @@ void init_ODE(py::module &m)
         }
     };
 
-    py::class_<goss::ODE, PyODE, std::shared_ptr<goss::ODE>>ode(m, "ODE");
+    py::class_<goss::ODE, PyODE, std::shared_ptr<goss::ODE>> ode(m, "ODE");
 
 
     // // py::class_<goss::ODE, PyODE>(m, "ODE")
-    ode
-      .def(py::init<goss::uint>())
-      .def(py::init<const PyODE&>())
-      .def("num_states", &goss::ODE::num_states);
+    ode.def(py::init<goss::uint>())
+            .def(py::init<const PyODE &>())
+            .def("num_states", &goss::ODE::num_states)
+            .def("get_ic",
+                 [](const goss::ODE &self) {
+                     goss::DoubleVector values;
+                     self.get_ic(&values);
+                     return py::array_t<double>(values.n, values.data.get());
+                 })
+            .def("compute_jacobian",
+                 [](goss::ODE &self, const py::array_t<double> states, double time,
+                    const py::array_t<double> jac) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
 
+                     py::buffer_info jac_info = jac.request();
+                     auto jac_ptr = static_cast<double *>(jac_info.ptr);
+
+                     self.compute_jacobian(states_ptr, time, jac_ptr);
+                 })
+            .def("eval",
+                 [](goss::ODE &self, const py::array_t<double> states, double time,
+                    const py::array_t<double> values) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
+
+                     py::buffer_info values_info = values.request();
+                     auto values_ptr = static_cast<double *>(values_info.ptr);
+
+                     self.eval(states_ptr, time, values_ptr);
+                 })
+            .def("eval",
+                 [](goss::ODE &self, uint id, const py::array_t<double> states, double time) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
+
+                     return self.eval(id, states_ptr, time);
+                 });
 }
 
 PYBIND11_MODULE(_gosscpp, m)

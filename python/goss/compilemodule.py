@@ -17,8 +17,10 @@
 
 __all__ = ["jit"]
 
+import hashlib
+# from dolfin.cpp import MPI
+
 # System imports
-import sys
 import dijitso
 import hashlib
 
@@ -33,14 +35,6 @@ from gotran.codegeneration.compilemodule import load_module
 from .codegeneration import GossCodeGenerator
 from . import _gosscpp as cpp
 
-
-def _jit_generate(class_data, module_name, signature, parameters):
-
-    code_c = class_data["code"]
-    code_h = ""
-    depends = []
-
-    return code_h, code_c, depends
 
 
 def jit(
@@ -95,47 +89,19 @@ def jit(
         ).hexdigest(),
     )
 
-    # Check cache
-    compiled_module = load_module(module_name)
-
-    if compiled_module:
-        return getattr(compiled_module, cgen.name)()
-
     push_log_level(INFO)
 
     # Init state code
-    python_code = pgen.init_states_code(ode)
     cpp_code = cgen.file_code()
 
-    dijitso_params = dijitso.validate_params(dijitso.params.default_params())
-    dijitso_params["build"]["include_dirs"] = goss_pc["include_dirs"]
-    dijitso_params["build"]["libs"] = goss_pc["libraries"]
-    dijitso_params["build"]["lib_dirs"] = goss_pc["library_dirs"]
-    # I guess normally dijitso should make this work, but I only managed to get it
-    # to work if I used shared libraries. Something to refactor in th future.
-    dijitso_params["build"]["cxxflags"] = list(
-        dijitso_params["build"]["cxxflags"]
-    ) + find_shared_libs(goss_pc)
-    cpp_data = {"code": cpp_code}
+    import cppyy.ll
 
-    module, signature = dijitso.jit(
-        cpp_data,
-        module_name,
-        dijitso_params,
-        generate=_jit_generate,
-    )
+    cppyy.load_library("goss")
+    cppyy.cppdef(cpp_code)
+    from cppyy.gbl import create_ODE
 
-    info("Calling GOSS just-in-time (JIT) compiler, this may take some " "time...")
-    sys.stdout.flush()
+    submodule = create_ODE()
+    python_object = cppyy.ll.as_ctypes(submodule)
 
-    declaration_form = dict(
-        ModelName=cgen.name,
-        python_code=python_code,
-    )
-
-    info(" done")
-    pop_log_level()
-    sys.stdout.flush()
-
-    # Return an instantiated class
-    return getattr(compiled_module, cgen.name)()
+    return cpp.make_ode(python_object.value)
+   

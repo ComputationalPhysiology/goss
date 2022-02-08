@@ -1,4 +1,9 @@
 
+python/goss/include/
+python/goss/lib/
+_skbuild/
+build-cpp/
+sandbox
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,c++,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,c++,python
 

@@ -26,15 +26,14 @@ from . import codegeneration as codegeneration
 from .compilemodule import jit
 
 
-from . import _gosscpp
+from ._gosscpp import ExplicitEuler, ODE, make_ode
 
 __all__ = ["codegeneration", "jit", "cpp"]
 
 # If dolfin is present import it
 try:
     from . import dolfinutils
+
     __all__.extend(dolfinutils.__all__)
 except Exception as e:
     pass
-    
-

@@ -14,7 +14,7 @@ setup(
     maintainer_email="henriknf@simula.no",
     license="GNU General Public License v3 (GPLv3)",
     keywords=["ODE", "solver", "system", "equations", "cuda"],
-    install_requires=["numpy", "modelparameters", "gotran", "dijitso"],
+    install_requires=["numpy", "modelparameters", "gotran", "dijitso", "typer"],
     extras_require={
         "test": ["pytest", "pytest-cov"],
         "dev": [
@@ -34,6 +34,7 @@ setup(
             "wheel",
         ],
     },
+    entry_points={"console_scripts": ["goss=goss.__main__"]},
     cmake_args=[
         "-DPython3_EXECUTABLE=" + sys.executable,
         "-DPython3_LIBRARIES=" + sysconfig.get_config_var("LIBDEST"),
