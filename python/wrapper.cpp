@@ -1,4 +1,3 @@
-#include <boost/shared_ptr.hpp>
 #include <goss/goss.h>
 #include <memory>
 #include <pybind11/functional.h>
@@ -10,12 +9,35 @@
 
 namespace py = pybind11;
 
-void init_ExplicitEuler(py::module &m)
+void init_ODESolvers(py::module &m)
 {
+    py::class_<goss::ODESolver> solver_ODESolver(m, "ODESolver");
 
-    py::class_<goss::ExplicitEuler> solver(m, "ExplicitEuler");
+    solver_ODESolver.def("num_states", &goss::ODESolver::num_states)
+            .def("attach",
+                 [](goss::ODESolver &self, std::shared_ptr<goss::ODE> ode) { self.attach(ode); });
 
-    solver.def(py::init<>());
+    py::class_<goss::ExplicitEuler, goss::ODESolver> solver_ExplicitEuler(m, "ExplicitEuler");
+    solver_ExplicitEuler.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("forward", [](goss::ExplicitEuler &self, const py::array_t<double> y, double t,
+                               double interval) {
+                py::buffer_info y_info = y.request();
+                auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                self.forward(y_ptr, t, interval);
+            });
+
+    py::class_<goss::RL1, goss::ODESolver> solver_RL1(m, "RL1");
+    solver_RL1.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("forward",
+                 [](goss::RL1 &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 });
 }
 
 
@@ -141,5 +163,5 @@ PYBIND11_MODULE(_gosscpp, m)
     m.doc() = "This is a Python bindings of C++ goss Library";
 
     init_ODE(m);
-    init_ExplicitEuler(m);
+    init_ODESolvers(m);
 }

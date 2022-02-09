@@ -27,7 +27,7 @@ from .compilemodule import jit
 from .ode import ODE
 from .systemsolver import ODESystemSolver
 
-goss_solvers = [solvers.RL1]
+goss_solvers = [solvers.ExplicitEuler, solvers.RL1]
 
 __all__ = ["codegeneration", "jit", "ODE", "goss_solvers", "ODESystemSolver"]
 
