@@ -5,7 +5,7 @@
 #include <goss/ODE.h>
 #include <cmath>
 
-namespace goss 
+namespace goss
 {
 
   class Sin : public ODE
@@ -26,16 +26,16 @@ namespace goss
     {
       double y1 = y[0];
       double y2 = y[1];
-      f_vals[0] =  omega*y2; 
+      f_vals[0] =  omega*y2;
       f_vals[1] = -omega*y1;
     }
-    
+
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _num_states;
       res->data.reset(new double[_num_states]);
-      res->data[0] = 0.0; 
-      res->data[1] = 1.0;//omega; 
+      res->data[0] = 0.0;
+      res->data[1] = 1.0;//omega;
     }
   };
 }

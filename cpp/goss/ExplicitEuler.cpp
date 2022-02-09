@@ -31,18 +31,18 @@ ExplicitEuler::ExplicitEuler() : ODESolver(), _dFdt(0)
   parameters.rename("ExplicitEuler");
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) : 
+ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) :
   ODESolver(), _dFdt(0)
-{ 
+{
   parameters.rename("ExplicitEuler");
   attach(ode);
-} 
+}
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(const ExplicitEuler& solver) : 
+ExplicitEuler::ExplicitEuler(const ExplicitEuler& solver) :
   ODESolver(solver), _dFdt(solver.num_states())
-{ 
+{
   // Do nothing
-} 
+}
 //-----------------------------------------------------------------------------
 ExplicitEuler::~ExplicitEuler()
 {
@@ -64,11 +64,11 @@ void ExplicitEuler::attach(std::shared_ptr<ODE> ode)
 
 }
 //-----------------------------------------------------------------------------
-void ExplicitEuler::forward(double* y, double t, double dt) 
+void ExplicitEuler::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
-  
+
   // Calculate number of steps and size of timestep based on _ldt
   const double ldt_0 = parameters["ldt"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;

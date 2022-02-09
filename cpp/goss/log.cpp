@@ -148,7 +148,7 @@ void goss::begin(std::string msg, ...)
 //-----------------------------------------------------------------------------
 void goss::begin(int log_level, std::string msg, ...)
 {
-  if (!LogManager::logger.is_active()) 
+  if (!LogManager::logger.is_active())
     return; // optimization
   read(goss_buffer.data(), msg);
   LogManager::logger.begin(goss_buffer.data(), log_level);

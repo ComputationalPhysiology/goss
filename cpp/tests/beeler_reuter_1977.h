@@ -18,7 +18,7 @@ namespace goss {
       E_Na(50), g_Na(0.04), g_Nac(3e-05), g_s(0.0005), IstimAmplitude(0.5),
         IstimEnd(50000), IstimPeriod(1000), IstimPulseDuration(1),
         IstimStart(10), C(0.01)
-      
+
     {
 
       // State names
@@ -79,7 +79,7 @@ namespace goss {
     void eval(const double* states, double time, double* values)
     {
 
-      //Timer timer_("Evaluation of rhs"); 
+      //Timer timer_("Evaluation of rhs");
 
       // Assign states
       const double m = states[0];
@@ -158,7 +158,7 @@ namespace goss {
       // Expressions for the Membrane component
       values[7] = (-i_K1 - i_s - i_Na - i_x1 + Istim)/C;
     }
-    
+
 
     // Evaluate the linearized rhs
     void linearized_eval(const double* states, double time, double* linear,
@@ -514,7 +514,7 @@ namespace goss {
 
     // Parameters
     double E_Na, g_Na, g_Nac, g_s, IstimAmplitude, IstimEnd, IstimPeriod,
-      IstimPulseDuration, IstimStart, C;    
+      IstimPulseDuration, IstimStart, C;
 
   };
 

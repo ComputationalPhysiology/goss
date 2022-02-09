@@ -24,7 +24,7 @@
 #include <vector>
 #include <stdio.h>
 
-namespace goss 
+namespace goss
 {
 
   // Base class for adaptive implicit ODE solvers
@@ -44,7 +44,7 @@ namespace goss
 
     // Initialize data
     virtual void reset();
-    
+
     // Step solver an interval of time forward
     virtual void forward(double* y, double t, double interval) = 0;
 
@@ -63,11 +63,11 @@ namespace goss
     // FIXME: Where is this used!?
     // Store timestep and accepted timestep
     void log_data(double dt, bool accepted);
-    
+
     // Return a vector of collected timesteps
     void dt_vector(DoubleVector *res);
 
-    // Return a record of accepted 
+    // Return a record of accepted
     void accepted_vector(DoubleVector *res);
 
     // Set single step mode
@@ -75,46 +75,45 @@ namespace goss
 
     // Set tolerance
     void set_tol(double atol, double rtol=1.0e-8) {_atol = atol; _rtol = rtol;}
-    
+
     // Set iord
     void set_iord(int iord){_iord = iord;}
 
     // Return true if the Solver is adaptive
     bool is_adaptive() const { return true; }
 
-  protected: 
-    
+  protected:
+
     // Compute an initial time step guess
     double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
 
-    // Compute new timestep 
+    // Compute new timestep
     void new_time_step(double* y, double* yn, double* e, double t_end);
 
     // Log of 1) the numer of steps, 2) the number of rejected steps
     long num_accepted, num_rejected;
 
-    // a bool log of 1) timetep accepted, 2) 
+    // a bool log of 1) timetep accepted, 2)
     bool step_accepted, reached_tend;
 
     std::vector<double> dt_v;
     std::vector<bool> accept_v;
 
     bool single_step_mode;
-    
+
     double _t, _ldt, _dt, _dt_prev;
 
     // local time step and tolerence.
-    double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac; 
+    double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac;
 
     // Added stability to reduce the number of Jacobian computations
-    double stabdown, stabup; 
+    double stabdown, stabup;
     double err_old, dt_old;
 
     // Parameter for scalar or vector tolerance computing
-    int _itol; 
+    int _itol;
 
   };
 
 }
 #endif
-

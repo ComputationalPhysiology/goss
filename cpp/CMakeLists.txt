@@ -102,7 +102,7 @@ target_sources(goss PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/log.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/timing.cpp)
 
-  
+
 # Configure the library
 set_target_properties(goss PROPERTIES PRIVATE_HEADER "${HEADERS_goss}")
 target_include_directories(goss PUBLIC $<INSTALL_INTERFACE:include> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}>")

@@ -34,7 +34,7 @@ namespace goss {
   class GRL1: public ODESolver
   {
   public:
-    
+
     // Default parameters
     static Parameters default_parameters()
     {
@@ -49,10 +49,10 @@ namespace goss {
 
     // Constructor
     GRL1(std::shared_ptr<ODE> ode);
-    
+
     // Copy constructor
     GRL1(const GRL1& solver);
-    
+
     // Return a copy of itself
     std::shared_ptr<ODESolver> copy() const { return std::make_shared<GRL1>(*this); }
 
@@ -64,25 +64,25 @@ namespace goss {
 
     // Step solver an interval in time forward
     virtual void forward(double* y, double t, double dt);
-    
+
   protected:
 
     // One step of the GRL algorithm
-    inline void _one_step(double* y2, const double* y, const double* y0, 
+    inline void _one_step(double* y2, const double* y, const double* y0,
 			  const double t, const double dt, const double delta);
 
   };
 
   //-----------------------------------------------------------------------------
-  inline void GRL1::_one_step(double* y2, const double* y, const double* y0, 
+  inline void GRL1::_one_step(double* y2, const double* y, const double* y0,
 			      const double t, const double dt, const double delta)
   {
     assert(_ode);
-    
+
     // Evaluate full right hand side
     _ode->linearized_eval(y, t, _f1().data(), _f2().data(), false);
-    
-    for (uint i = 0; i < num_states(); ++i) 
+
+    for (uint i = 0; i < num_states(); ++i)
       y2[i] = (std::fabs(_f1()[i]) > delta) ? y0[i] + _f2()[i]/_f1()[i]*(std::exp(_f1()[i]*dt) - 1.0) : y0[i] + _f2()[i]*dt;
   }
 

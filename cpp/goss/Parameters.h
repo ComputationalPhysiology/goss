@@ -129,7 +129,7 @@ namespace goss
 		 "Type '%s' is not allowed", key.c_str());
      (void)min;
      (void)max;
-     
+
     }
 
     /// Add an unset parameter of type T with allows parameters. For

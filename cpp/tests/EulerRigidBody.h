@@ -4,7 +4,7 @@
 #include <memory>
 #include <goss/ODE.h>
 
-namespace goss 
+namespace goss
 {
 
   class EulerRigidBody : public ODE
@@ -20,7 +20,7 @@ namespace goss
     }
 
     ~EulerRigidBody() {}
-    
+
     void eval(const double* state, double t, double* f_vals)
     {
       const double y1 = state[0];
@@ -29,13 +29,13 @@ namespace goss
       f_vals[0] = (I2 - I3)/I1*y2*y3;
       f_vals[1] = (I3 - I1)/I2*y3*y1;
       f_vals[2] = (I1 - I2)/I3*y1*y2;
-      
+
       if (t>=3*pi && t<=4*pi)
       {
 	f_vals[2] += 0.25*pow(sin(t),2);
       }
     }
-    
+
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _num_states;

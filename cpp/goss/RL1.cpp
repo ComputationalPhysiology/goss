@@ -43,7 +43,7 @@ RL1::RL1(const RL1& solver) : ODESolver(solver)
 }
 //-----------------------------------------------------------------------------
 RL1::~RL1()
-{ 
+{
   // Do nothing
 }
 //-----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ void RL1::attach(std::shared_ptr<ODE> ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);
-  
+
   if (_ode->is_dae())
     goss_error("RL1.cpp",
 	       "attach ode",
@@ -62,12 +62,12 @@ void RL1::attach(std::shared_ptr<ODE> ode)
 void RL1::forward(double* y, double t, double dt)
 {
 
-  
+
   // Calculate number of steps and size of timestep based on _ldt
   const double ldt_0 = parameters["ldt"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
   const double ldt = dt/nsteps;
-  
+
   // Local time
   double lt = t;
 
@@ -81,6 +81,6 @@ void RL1::forward(double* y, double t, double dt)
     lt += ldt;
 
   }
-  
+
 }
 //-----------------------------------------------------------------------------

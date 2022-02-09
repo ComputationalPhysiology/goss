@@ -45,7 +45,7 @@ RL2::RL2(const RL2& solver) : RL1(solver), _y2(solver._y2)
 }
 //-----------------------------------------------------------------------------
 RL2::~RL2()
-{ 
+{
   // Do nothing
 }
 //-----------------------------------------------------------------------------
@@ -65,12 +65,12 @@ void RL2::attach(std::shared_ptr<ODE> ode)
 //-----------------------------------------------------------------------------
 void RL2::forward(double* y, double t, double dt)
 {
-  
+
   // Calculate number of steps and size of timestep based on _ldt
   const double ldt_0 = parameters["ldt"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
   const double ldt = dt/nsteps;
-  
+
   // Local time
   double lt = t;
 

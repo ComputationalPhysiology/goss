@@ -4,7 +4,7 @@
 #include <memory>
 #include <goss/ODE.h>
 
-namespace goss 
+namespace goss
 {
 
   /*
@@ -24,7 +24,7 @@ namespace goss
 
     SaltzLorenz() : ODE(3), rho(10.0), r(28.0), b(8.0/3.0)
     {}
-    
+
     std::shared_ptr<ODE> copy() const
     {
       return std::make_shared<SaltzLorenz>(*this);
@@ -39,14 +39,14 @@ namespace goss
       const double y3 = y[2];
       f_vals[0] = -rho*y1+rho*y2;
       f_vals[1] = -y1*y3+r*y1-y2;
-      f_vals[2] =  y1*y2-b*y3; 
+      f_vals[2] =  y1*y2-b*y3;
     }
-    
+
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _num_states;
       res->data.reset(new double[_num_states]);
-      res->data[0] = -8.0; 
+      res->data[0] = -8.0;
       res->data[1] =  8.0;
       res->data[2] = 27.0;
     }

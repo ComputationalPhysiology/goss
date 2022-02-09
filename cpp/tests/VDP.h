@@ -5,7 +5,7 @@
 #include <goss/ODE.h>
 #include <stdexcept>
 
-namespace goss 
+namespace goss
 {
 
   class VDP : public ODE
@@ -16,7 +16,7 @@ namespace goss
     VDP() : ODE(2), mu(10.0) {}
 
     virtual ~VDP() {}
-    
+
     std::shared_ptr<ODE> copy() const
     {
       return std::make_shared<VDP>(*this);
@@ -29,12 +29,12 @@ namespace goss
       f_vals[0] = y2;
       f_vals[1] = mu*mu*((1-y1*y1)*y2-y1);
     }
-    
+
     virtual double eval(uint idx, const double* state, double t)
     {
       const double y1 = state[0];
       const double y2 = state[1];
-      switch (idx) 
+      switch (idx)
       {
       case 0:
 	return y2;

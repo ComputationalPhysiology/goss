@@ -25,15 +25,15 @@
 #include "ODESolver.h"
 #include "Parameters.h"
 
-namespace goss 
+namespace goss
 {
 
   // Base class of all Implicit Solvers
-  class ImplicitODESolver : public ODESolver 
+  class ImplicitODESolver : public ODESolver
   {
-  
+
   public:
-  
+
     // Default parameters
     static Parameters default_parameters()
     {
@@ -51,7 +51,7 @@ namespace goss
 
     // Default constructor
     ImplicitODESolver();
-  
+
     // Copy constructor
     ImplicitODESolver(const ImplicitODESolver& solver);
 
@@ -74,7 +74,7 @@ namespace goss
     int num_jac_comp(){ return _jac_comp; }
 
   protected:
-  
+
     // Scale a matrix
     void mult(double fact, double* mat);
 
@@ -82,7 +82,7 @@ namespace goss
     void add_mass_matrix(double *mat, double weight=1.0) const;
 
     // This function is designed for SDIRK and Backward Euler:
-    virtual bool newton_solve(double* k, double* prev, double* y0, double t, 
+    virtual bool newton_solve(double* k, double* prev, double* y0, double t,
 			      double dt, double alpha, bool always_recompute_jacobian);
 
     // Compute the norm of a vector
@@ -98,7 +98,7 @@ namespace goss
     // Previous stages, used by DIRK methods
     std::vector<double> _prev;
 
-    // Variable used in the estimation of the error of the newton 
+    // Variable used in the estimation of the error of the newton
     // iteration for the first iteration (Important for linear problems!)
     double _eta;
 

@@ -58,7 +58,7 @@ protected:
   std::shared_ptr<ODE> ode;
   std::shared_ptr<ODESolver> solver;
   DoubleVector x_coarse, x_fine;
-  
+
   void run_ode(double dt, double tstop, DoubleVector& x)
   {
 
@@ -67,9 +67,9 @@ protected:
     solver->get_ode()->get_ic(&x);
 
     const uint nstep = std::ceil(tstop/dt - 1.0E-12);
-    
+
     double t = 0.0;
-    
+
     for (uint i = 0; i < nstep; i++)
     {
       solver->forward(x.data.get(), t, dt);
@@ -139,12 +139,12 @@ typedef testing::Types<Arenstorf, Brusselator, NonLinOscillator, EulerRigidBody,
 typedef testing::Types<VanDerPol> DAEs;
 
 // Different list of Solvers
-typedef testing::Types<ExplicitEuler, RK2, RK4> ExplicitODESolvers; 
+typedef testing::Types<ExplicitEuler, RK2, RK4> ExplicitODESolvers;
 //typedef testing::Types<ImplicitEuler, SDIRK> ImplicitODESolvers;
 typedef testing::Types<BasicImplicitEuler, ESDIRK23a, ImplicitEuler, ThetaSolver> ImplicitODESolvers;
 typedef testing::Types<RL1, GRL1, RL2, GRL2> RLODESolvers;
-typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE, 
-		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates, 
+typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE,
+		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates,
 		       PanfilovCSE, PanfilovCSEArray> ParameterizedODEs;
 
 TYPED_TEST_CASE(ODETester, ODEs);
@@ -154,8 +154,8 @@ TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
 TYPED_TEST_CASE(RLTester, RLODESolvers);
 TYPED_TEST_CASE(ParameterizedODETester, ParameterizedODEs);
 
-// Run all included 
-TYPED_TEST(ODETester, IntegrationTest) 
+// Run all included
+TYPED_TEST(ODETester, IntegrationTest)
 {
 
   // Run coarse simulation
@@ -165,10 +165,10 @@ TYPED_TEST(ODETester, IntegrationTest)
   this->run_ode(0.00001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
 }
 
-TYPED_TEST(DAETester, DAESolverTest) 
+TYPED_TEST(DAETester, DAESolverTest)
 {
 
   // Run coarse simulation
@@ -178,10 +178,10 @@ TYPED_TEST(DAETester, DAESolverTest)
   this->run_ode(0.001, 0.800, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
 }
 
-TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
+TYPED_TEST(ExplicitTester, ExplicitSolverTest)
 {
 
   // Run coarse simulation
@@ -193,7 +193,7 @@ TYPED_TEST(ExplicitTester, ExplicitSolverTest)
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
 }
 
-TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
+TYPED_TEST(ImplicitTester, ImplicitSolverTest)
 {
 
   // Run coarse simulation
@@ -203,10 +203,10 @@ TYPED_TEST(ImplicitTester, ImplicitSolverTest)
   this->run_ode(0.01, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
 }
 
-TYPED_TEST(RLTester, RLSolverTest) 
+TYPED_TEST(RLTester, RLSolverTest)
 {
 
   // Run coarse simulation
@@ -216,10 +216,10 @@ TYPED_TEST(RLTester, RLSolverTest)
   this->run_ode(0.0001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
 }
 
-TYPED_TEST(ParameterizedODETester, ParameterizedODETest) 
+TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
 {
 
   // Local version
@@ -233,9 +233,9 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
 
   double old_fine = this->x_fine.data[0];
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
   // Change parameters
-  
+
   std::string param = lode.get_parameter_names()[0];
   const double value = lode.get_parameter(param);
   lode.set_parameter(param, value*0.9);
@@ -249,13 +249,13 @@ TYPED_TEST(ParameterizedODETester, ParameterizedODETest)
     param = lode.get_field_parameter_names()[i];
     values[i] = lode.get_parameter(param)*0.9;
   }
-  
+
   // Set field parameters if any
   if (lode.num_field_parameters() > 0)
   {
     lode.set_field_parameters(&values[0]);
     ASSERT_EQ(lode.get_parameter(param), values[values.size()-1]);
-  }  
+  }
 
   // Run coarse simulation
   this->run_ode(0.1, 100.0, this->x_coarse);

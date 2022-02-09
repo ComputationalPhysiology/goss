@@ -13,14 +13,14 @@ ThetaSolver::ThetaSolver() : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(
   parameters = default_parameters();
 }
 //-----------------------------------------------------------------------------
-ThetaSolver:: ThetaSolver (std::shared_ptr<ODE> ode) 
+ThetaSolver:: ThetaSolver (std::shared_ptr<ODE> ode)
   : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
-{ 
+{
   parameters = default_parameters();
   attach(ode);
-} 
+}
 //-----------------------------------------------------------------------------
-ThetaSolver::ThetaSolver(const ThetaSolver& solver) : 
+ThetaSolver::ThetaSolver(const ThetaSolver& solver) :
   ImplicitODESolver(solver), _z1(solver.num_states()), _ft1(solver.num_states()),
   _justrefined(solver._justrefined)
 {
@@ -40,12 +40,12 @@ void ThetaSolver::attach(std::shared_ptr<ODE> ode)
 //-----------------------------------------------------------------------------
 void ThetaSolver::reset()
 {
-  
+
   _justrefined = false;
 
   _jac_comp = 0;
   _stages = 1;
-  
+
   ImplicitODESolver::reset();
 }
 //-----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void ThetaSolver::forward(double* y, double t, double dt)
 
   double ldt = ldt_0 > 0 ? ldt_0 : dt;
   int num_refinements = 0;
-  
+
   const double min_dt = parameters["min_dt"];
   bool always_recompute_jacobian = parameters["always_recompute_jacobian"];
   const int num_refinements_without_always_recomputing_jacobian = parameters["num_refinements_without_always_recomputing_jacobian"];
@@ -76,7 +76,7 @@ void ThetaSolver::forward(double* y, double t, double dt)
 
   while (true)
   {
-  
+
     // Use 0.0 z1:
     for (i = 0; i < _ode->num_states(); ++i)
       _z1[i] = 0.0;
@@ -88,33 +88,33 @@ void ThetaSolver::forward(double* y, double t, double dt)
       for (i = 0; i < _ode->num_states(); ++i)
 	_prev[i] = (1-theta)*_ft1[i];
     }
-    
+
     // Check if we should re compute the jacobian
     if (num_refinements<=num_refinements_without_always_recomputing_jacobian)
       always_recompute_jacobian = true;
-      
+
     // Solve for increment
-    step_ok = newton_solve(&_z1[0], &_prev[0], y, t+theta*ldt, ldt, theta, 
+    step_ok = newton_solve(&_z1[0], &_prev[0], y, t+theta*ldt, ldt, theta,
 			   always_recompute_jacobian);
 
     // Newton step OK
     if (step_ok)
     {
-    
+
       // Add increment
       for (i = 0; i < _ode->num_states(); ++i)
         y[i] += _z1[i];
 
       t += ldt;
-      
+
       if (std::fabs(t-t_end) < eps)
 	break;
 
-      // If the solver has refined, we do not allow it to double its 
+      // If the solver has refined, we do not allow it to double its
       // timestep for anoter step
       if (!_justrefined)
       {
-      
+
 	// double time step
         const double tmp = 2.0*ldt;
         if (ldt_0 > 0. && tmp >= ldt_0)
@@ -164,6 +164,3 @@ void ThetaSolver::forward(double* y, double t, double dt)
 
 }
 //-----------------------------------------------------------------------------
-
-
-

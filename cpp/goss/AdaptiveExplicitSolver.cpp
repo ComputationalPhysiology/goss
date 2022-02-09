@@ -25,24 +25,24 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-AdaptiveExplicitSolver::AdaptiveExplicitSolver() 
+AdaptiveExplicitSolver::AdaptiveExplicitSolver()
   : ODESolver(), num_accepted(0), num_rejected(0), _t(0.), _ldt(0.1),
     _dt(0.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1),
-    facmin(0.5), facmax(2.0), facmaxb(facmax), stabfac(0.9), 
+    facmin(0.5), facmax(2.0), facmaxb(facmax), stabfac(0.9),
     step_accepted(false), reached_tend(false),
     _itol(0), dt_v(0), accept_v(0), single_step_mode(false)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-AdaptiveExplicitSolver::AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver) 
-  : ODESolver(solver), num_accepted(solver.num_accepted), 
-    num_rejected(solver.num_rejected), _t(solver._t), _ldt(solver._ldt), _dt(solver._dt), 
-    _dt_prev(solver._dt_prev),_atol(solver._atol), _rtol(solver._rtol), 
-    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax), 
-    facmaxb(solver.facmaxb), stabfac(solver.stabfac), 
-    step_accepted(solver.step_accepted), reached_tend(solver.reached_tend), 
-    _itol(solver._itol), dt_v(solver.dt_v), accept_v(solver.accept_v), 
+AdaptiveExplicitSolver::AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver)
+  : ODESolver(solver), num_accepted(solver.num_accepted),
+    num_rejected(solver.num_rejected), _t(solver._t), _ldt(solver._ldt), _dt(solver._dt),
+    _dt_prev(solver._dt_prev),_atol(solver._atol), _rtol(solver._rtol),
+    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax),
+    facmaxb(solver.facmaxb), stabfac(solver.stabfac),
+    step_accepted(solver.step_accepted), reached_tend(solver.reached_tend),
+    _itol(solver._itol), dt_v(solver.dt_v), accept_v(solver.accept_v),
     single_step_mode(solver.single_step_mode)
 {
   // Do nothing
@@ -62,21 +62,21 @@ void AdaptiveExplicitSolver::reset()
   // half of the previous timestep
   facmin  = 0.5;
 
-  // We can not choose the next timestep more then 
+  // We can not choose the next timestep more then
   // double of the previous timestep
-  facmaxb = 2.0; 
+  facmaxb = 2.0;
   facmax  = facmaxb;
   stabfac = 0.9; // std::pow(0.25,1/(_iord+1));
 }
 //-----------------------------------------------------------------------------
-double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1, 
+double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
 				      double* f0, double* f1, double iord)
 {
   // Compute a first guess for explicit Euler as
   // H = 0.01 * norm(y0)/(norm(f0)
   // The increment for explicit Euler is small compared to the solution
   // We assume that y0 and f0 are computed.
-  // y1 and f1 are just pointers to contigous memory which this 
+  // y1 and f1 are just pointers to contigous memory which this
   // function borrows
 
   uint i;
@@ -93,14 +93,14 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
       tmp  = y0[i]/sk;
       dny += tmp*tmp;
     }
-  } 
-  else 
+  }
+  else
   {
     std::cout << " Not implemented yet " << std::endl;
     //for (i=0; i<num_states();++i){
     //    sk   = _atol[i] + _rtol[i]*fabs(y0[i]);
     //    dnf += pow(f0[i]/sk,2);
-    //    dny += pow(y0[i]/sk,2); 
+    //    dny += pow(y0[i]/sk,2);
     //}
     //for i in xrange(0,n):
     //    sk   = _atol[i] + _rtol[i]*math.fabs(y0[i])
@@ -159,10 +159,10 @@ double AdaptiveExplicitSolver::dtinit(double t, double* y0, double* y1,
   {
     if (fabs(dt)*1.0e-3 < 1.0e-6)
       dt1 = 1.0e-6;
-    else 
+    else
       dt1 = fabs(dt)*1.0e-3;
-  } 
-  else 
+  }
+  else
     dt1 = std::pow((0.01/der12),(1.0/iord));
 
   if (100*fabs(dt)<dt1)
@@ -183,7 +183,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
   double yi_abs, yni_abs, tmp;
   _dt_prev = _dt;
 
-  for (uint i = 0; i < num_states(); ++i) 
+  for (uint i = 0; i < num_states(); ++i)
   {
     yi_abs  = fabs(y[i]);
     yni_abs = fabs(yn[i]);
@@ -192,7 +192,7 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
     tmp     = e[i]/sk;
     err += tmp*tmp;
   }
-  
+
   err = std::sqrt(err/num_states());
 
   // Sanity check to ensure algorithm does not break down.
@@ -234,8 +234,8 @@ void AdaptiveExplicitSolver::new_time_step(double* y, double* yn, double* e, dou
 
   _dt *= fac;
 
-  // If it is very likely that we will reach the end with two timesteps, we 
-  // set the first timestp to half the distance to avoid the last timestep 
+  // If it is very likely that we will reach the end with two timesteps, we
+  // set the first timestp to half the distance to avoid the last timestep
   // been very small
   if (_t + _dt >= t_end)
     _dt = t_end - _t;
@@ -261,10 +261,9 @@ double AdaptiveExplicitSolver::get_current_time_step()
 {
 #ifndef DEBUG
   printf("NOT IN DEBUG MODE\n");
-  return _dt; 
+  return _dt;
 #else
   return _dt_prev;
 #endif
 }
 //-----------------------------------------------------------------------------
-

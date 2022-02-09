@@ -28,7 +28,7 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
   : ODESolver(), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _eta(1.), _stages(0), _rejects(0), _jac_comp(0), _recompute_jacobian(true), 
+    _eta(1.), _stages(0), _rejects(0), _jac_comp(0), _recompute_jacobian(true),
     _newton_iterations(0)
 {
   parameters = default_parameters();
@@ -36,9 +36,9 @@ ImplicitODESolver::ImplicitODESolver()
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver& solver)
   : ODESolver(solver), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0),
-    _eta(solver._eta), _stages(solver._stages), 
-    _rejects(solver._rejects), _jac_comp(solver._jac_comp), 
-    _recompute_jacobian(solver._recompute_jacobian), 
+    _eta(solver._eta), _stages(solver._stages),
+    _rejects(solver._rejects), _jac_comp(solver._jac_comp),
+    _recompute_jacobian(solver._recompute_jacobian),
     _newton_iterations(solver._newton_iterations)
 {
 
@@ -62,9 +62,9 @@ ImplicitODESolver::~ImplicitODESolver ()
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::attach(std::shared_ptr<ODE> ode)
 {
-  
+
   // Attach ode using base attach
-  // NOTE: This calls reset in the most derived class, which then propagates 
+  // NOTE: This calls reset in the most derived class, which then propagates
   // NOTE: the call downwards to base classes.
   ODESolver::attach(ode);
 
@@ -83,7 +83,7 @@ void ImplicitODESolver::attach(std::shared_ptr<ODE> ode)
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::reset()
 {
-  
+
   // Reset counts
   _rejects = 0;
   _jac_comp = 0;
@@ -96,10 +96,10 @@ void ImplicitODESolver::reset()
 
 }
 //-----------------------------------------------------------------------------
-void ImplicitODESolver::compute_factorized_jacobian(double* y, double t, double dt, 
+void ImplicitODESolver::compute_factorized_jacobian(double* y, double t, double dt,
 						    double alpha)
 {
-  
+
   // Let ODE compute the jacobian
   _ode->compute_jacobian(y, t, _jac.data());
 
@@ -121,7 +121,7 @@ void ImplicitODESolver::mult(double scale, double* mat)
 }
 //-----------------------------------------------------------------------------
 bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double t,
-				     double dt, double alpha, 
+				     double dt, double alpha,
 				     bool always_recompute_jacobian)
 {
   uint i;
@@ -132,14 +132,14 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
   double previous_residual = 1.0;
   double initial_residual = 1.0;
   double residual;
-  
+
   // Parameters
   const int max_iterations = parameters["max_iterations"];
   const double rtol = parameters["relative_tolerance"];
 
   // The safety factor for the stopping criterion of the newton iteration
   const double kappa = parameters["kappa"];
-  
+
   // If the relative previous residual is larger than this value we recompute jacobian
   const double max_relative_previous_residual = parameters["max_relative_previous_residual"];
 
@@ -149,13 +149,13 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
   do
   {
 
-    // Compute local newton solution 
+    // Compute local newton solution
     for (i = 0; i < num_states(); ++i)
       _yz[i] = y0[i] + z[i];
 
     // Evaluate ODE using local solution
     _ode->eval(_yz.data(), t, _f1.data());
-    
+
     // Build rhs for linear solve
     // z = y-y0
     // prev is a linear combination of previous stage solutions
@@ -180,7 +180,7 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     _ode->forward_backward_subst(_jac.data(), _b.data(), _dz.data());
 
     // _Newton_Iterations == 0
-    if (_newton_iterations == 0) 
+    if (_newton_iterations == 0)
     {
 
       initial_residual = residual;
@@ -207,14 +207,14 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
       if (relative_previous_residual >= 1)
       {
 	log(DBG, "Diverges       | t : %g, it : %2d, relative_previous_residual: %f, " \
-	    "relativ_residual: %g. Reducing time step and recompute jacobian.", 
+	    "relativ_residual: %g. Reducing time step and recompute jacobian.",
 	    t, _newton_iterations, relative_previous_residual, relative_residual);
         step_ok = false;
         _rejects ++;
 	_recompute_jacobian = true;
         break;
       }
-      
+
       const double scaled_relative_previous_residual = \
 	std::max(std::pow(relative_previous_residual, max_iterations - _newton_iterations), \
 		 GOSS_EPS);
@@ -223,27 +223,27 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
 		      scaled_relative_previous_residual))
       {
 	log(DBG, "To slow        | t : %g, it: %2d, relative_previous_residual: " \
-	    "%f, relative_residual: %g. Recomputing Jacobian.", t, 
+	    "%f, relative_residual: %g. Recomputing Jacobian.", t,
 	    _newton_iterations, relative_previous_residual, relative_residual);
         _recompute_jacobian = true;
       }
-      
+
       _eta = relative_previous_residual/(1.0 - relative_previous_residual);
 
     }
-    
+
     // No convergence
     if (_newton_iterations > max_iterations)
     {
       log(DBG, "Max iterations | t : %g, it: %2d, relative_previous_residual: " \
-	  "%f, relative_residual: %g. Recomputing Jacobian.", t, 
+	  "%f, relative_residual: %g. Recomputing Jacobian.", t,
 	  _newton_iterations, relative_previous_residual, relative_residual);
       _recompute_jacobian = true;
       _rejects ++;
       step_ok = false;
       break;
     }
-    
+
     // Update local increment solution
     for (i = 0; i <num_states(); ++i)
       z[i] += _dz[i];
@@ -252,9 +252,9 @@ bool ImplicitODESolver::newton_solve(double* z, double* prev, double* y0, double
     relative_residual = residual/initial_residual;
     previous_residual = residual;
     _newton_iterations++;
-    
+
     log(5, "Monitor        | t : %g, it : %2d, relative_previous_residual: %f, " \
-	"relativ_residual: %g.", 
+	"relativ_residual: %g.",
 	t, _newton_iterations, relative_previous_residual, relative_residual);
     // eta*residul is the iteration error and an estimation of the
     // local discretization error.

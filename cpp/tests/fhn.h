@@ -18,7 +18,7 @@ namespace goss {
       a(0.13), b(0.013), c_1(0.26), c_2(0.1), c_3(1.0), stim_amplitude(50),
         stim_duration(1), stim_period(1000), stim_start(1), v_peak(40.0),
         v_rest(-85.0)
-      
+
     {
 
       // State names
@@ -69,7 +69,7 @@ namespace goss {
     void eval(const double* states, double time, double* values)
     {
 
-      //Timer timer_("Evaluation of rhs"); 
+      //Timer timer_("Evaluation of rhs");
 
       // Assign states
       const double v = states[0];
@@ -86,7 +86,7 @@ namespace goss {
       values[0] = I + i_Stim;
       values[1] = b*(v - c_3*s - v_rest);
     }
-    
+
 
     // Evaluate the linearized rhs
     void linearized_eval(const double* states, double time, double* linear,
@@ -220,7 +220,7 @@ namespace goss {
 
     // Parameters
     double a, b, c_1, c_2, c_3, stim_amplitude, stim_duration, stim_period,
-      stim_start, v_peak, v_rest;    
+      stim_start, v_peak, v_rest;
 
   };
 

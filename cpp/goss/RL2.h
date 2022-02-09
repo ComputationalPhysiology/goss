@@ -39,10 +39,10 @@ namespace goss {
 
     // Constructor
     RL2(std::shared_ptr<ODE> ode);
-    
+
     // Copy constructor
     RL2(const RL2& solver);
-    
+
     // Return a copy of itself
     std::shared_ptr<ODESolver> copy() const { return std::make_shared<RL2>(*this); }
 
@@ -54,13 +54,13 @@ namespace goss {
 
     // Step solver an interval in time forward
     void forward(double* y, double t, double interval);
-    
+
   private:
 
     // Pointers to intermediate values used while stepping
-    std::vector<double> _y2; 
+    std::vector<double> _y2;
 
   };
-  
+
 }
 #endif

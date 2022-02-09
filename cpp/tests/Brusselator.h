@@ -4,12 +4,12 @@
 #include <memory>
 #include <goss/ODE.h>
 
-namespace goss 
+namespace goss
 {
   class Brusselator : public ODE
   {
   public:
-    
+
     Brusselator () : ODE(2) {}
     ~Brusselator() {}
 
@@ -30,8 +30,8 @@ namespace goss
     {
       res->n = _num_states;
       res->data.reset(new double[_num_states]);
-      res->data[0] = 1.5; 
-      res->data[1] = 3.0; 
+      res->data[0] = 1.5;
+      res->data[1] = 3.0;
     }
   };
 }
