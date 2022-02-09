@@ -52,12 +52,9 @@ class ODESolver:
     def copy(self):
         return self.__class__(self._cpp_object)
 
-    def forward(self, y: np.ndarray, t: float, interval: float) -> np.ndarray:
-
-        # Make a copy so that we don't mutate the input array
-        y_copy = y.copy()
-        self._cpp_object.forward(y_copy, t, interval)
-        return y_copy
+    def forward(self, y: np.ndarray, t: float, interval: float):
+        # FIXME: Consider making this pure
+        self._cpp_object.forward(y, t, interval)
 
     @property
     def num_states(self):
