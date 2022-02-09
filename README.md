@@ -59,3 +59,4 @@ python -m pip install pre-commit
 pre-commit install
 ```
 For every future commit, you will now run a set of tests that will make sure that you follow the coding style.
+
