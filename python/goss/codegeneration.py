@@ -23,7 +23,15 @@ from modelparameters.parameters import Param
 
 # Gotran imports
 from gotran.codegeneration.codegenerators import CppCodeGenerator
-from gotran.codegeneration.algorithmcomponents import *
+
+from gotran.codegeneration.algorithmcomponents import (
+    rhs_expressions,
+    monitored_expressions,
+    linearized_derivatives,
+    jacobian_expressions,
+    factorized_jacobian_expressions,
+    forward_backward_subst_expressions,
+)
 
 from modelparameters.utils import check_arg, check_kwarg
 from gotran.model.ode import ODE
@@ -44,7 +52,6 @@ _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
     #define DLL_EXPORT __attribute__ ((visibility ("default")))
 #endif
 
-#include <boost/shared_ptr.hpp>
 #include <memory>
 #include <stdexcept>
 #include <cmath>
@@ -65,7 +72,7 @@ _class_template = """namespace goss {{
 
     // Constructor
     {ModelName}() : ParameterizedODE({num_states}, {num_parameters}, {num_field_states}, {num_field_parameters}, {num_monitored}){variable_initialization}
-      
+
     {{
 {constructor}{constructor_linear_terms}
     }}
@@ -80,10 +87,10 @@ _class_template = """namespace goss {{
     void eval(const double* states, double time, double* values)
     {{
 
-      //Timer timer_(\"Evaluation of rhs\"); 
+      //Timer timer_(\"Evaluation of rhs\");
 {eval_code}
     }}
-    
+
 {jacobian_code}{factorizing_code}{fb_substitution_code}{linearized_eval_code}{eval_componentwise_code}
     // Get default initial conditions
     void get_ic(goss::DoubleVector *values) const
@@ -112,7 +119,7 @@ _class_template = """namespace goss {{
     }}
 
   private:
-{variable_declaration}    
+{variable_declaration}
 
   }};
 
@@ -177,7 +184,8 @@ class GossCodeGenerator(CppCodeGenerator):
             use_cse=use_cse.copy(),
             optimize_exprs=optimize_exprs.copy(),
             generate_jacobian=Param(
-                False, description="Generate analytic jacobian " "when integrating."
+                False,
+                description="Generate analytic jacobian " "when integrating.",
             ),
             generate_lu_factorization=Param(
                 False,
@@ -224,21 +232,21 @@ class GossCodeGenerator(CppCodeGenerator):
         code_params = code_params or {}
 
         check_arg(ode, ODE)
-        check_kwarg(field_states, "field_states", list, itemtypes=str)
-        check_kwarg(field_parameters, "field_parameters", list, itemtypes=str)
-        check_kwarg(monitored, "monitored", list, itemtypes=str)
+        check_kwarg(field_states, "field_states", (list, tuple), itemtypes=str)
+        check_kwarg(field_parameters, "field_parameters", (list, tuple), itemtypes=str)
+        check_kwarg(monitored, "monitored", (list, tuple), itemtypes=str)
         check_kwarg(code_params, "code_params", dict)
 
         state_strs = [state.name for state in ode.full_states]
         for state_str in field_states:
-            if not state_str in state_strs:
+            if state_str not in state_strs:
                 error("{0} is not a state in the {1} ODE".format(state_str, ode))
 
         parameter_strs = [param.name for param in ode.parameters]
         for parameter_str in field_parameters:
-            if not parameter_str in parameter_strs:
+            if parameter_str not in parameter_strs:
                 error(
-                    "{0} is not a parameter in the {1} ODE".format(parameter_str, ode)
+                    "{0} is not a parameter in the {1} ODE".format(parameter_str, ode),
                 )
 
         for expr_str in monitored:
@@ -370,7 +378,10 @@ class GossCodeGenerator(CppCodeGenerator):
             body.extend(["", "// Field state indices"])
             for i, name in enumerate(self.field_states):
                 body.append(
-                    "_field_state_indices[{0}] = {1}".format(i, state_names.index(name))
+                    "_field_state_indices[{0}] = {1}".format(
+                        i,
+                        state_names.index(name),
+                    ),
                 )
 
         # Field parameter names
@@ -427,7 +438,7 @@ class GossCodeGenerator(CppCodeGenerator):
         if self.class_form["num_parameters"] > 0:
             parameter_declarations.extend(["", "// Parameters"])
             parameter_declarations.append(
-                "double " + ", ".join(param.name for param in ode.parameters)
+                "double " + ", ".join(param.name for param in ode.parameters),
             )
 
             init.extend(
@@ -440,7 +451,7 @@ class GossCodeGenerator(CppCodeGenerator):
         # Parameter initialization
         init = [", ".join(init)]
         code = "\n".join(
-            self.indent_and_split_lines(init, indent=3, no_line_ending=True)
+            self.indent_and_split_lines(init, indent=3, no_line_ending=True),
         )
         if code:
             code = ",\n" + code
@@ -448,7 +459,7 @@ class GossCodeGenerator(CppCodeGenerator):
 
         init_copy = [", ".join(init_copy)]
         code = "\n".join(
-            self.indent_and_split_lines(init_copy, indent=3, no_line_ending=True)
+            self.indent_and_split_lines(init_copy, indent=3, no_line_ending=True),
         )
         if code:
             code = ",\n" + code
@@ -484,7 +495,7 @@ class GossCodeGenerator(CppCodeGenerator):
             set_field_parameters_code.append("")
 
             code = "\n".join(
-                self.indent_and_split_lines(set_field_parameters_code, indent=3)
+                self.indent_and_split_lines(set_field_parameters_code, indent=3),
             )
             self.class_form["set_field_parameters_code"] = code
 
@@ -495,7 +506,9 @@ class GossCodeGenerator(CppCodeGenerator):
 
         rhs = rhs_expressions(self.ode, result_name="values", params=self.params.code)
         self.class_form["eval_code"] = self.function_code(
-            rhs, indent=3, include_signature=False
+            rhs,
+            indent=3,
+            include_signature=False,
         )
 
     def _monitored_code(self):
@@ -503,10 +516,15 @@ class GossCodeGenerator(CppCodeGenerator):
         Generate code for the monitored method
         """
         monitored = monitored_expressions(
-            self.ode, self.monitored, result_name="monitored", params=self.params.code
+            self.ode,
+            self.monitored,
+            result_name="monitored",
+            params=self.params.code,
         )
         self.class_form["monitored_evaluation_code"] = self.function_code(
-            monitored, indent=3, include_signature=False
+            monitored,
+            indent=3,
+            include_signature=False,
         )
 
     def _eval_componentwise_code(self):
@@ -566,7 +584,9 @@ class GossCodeGenerator(CppCodeGenerator):
         fact = None
         if self.params.functions.jacobian.generate:
             jac = jacobian_expressions(
-                self.ode, result_name="jac", params=self.params.code
+                self.ode,
+                result_name="jac",
+                params=self.params.code,
             )
 
             body = ["", '//Timer timer_("Jacobian computation");', ""]
@@ -584,7 +604,9 @@ class GossCodeGenerator(CppCodeGenerator):
 
             if jac is None:
                 jac = jacobian_expressions(
-                    self.ode, result_name="jac", params=self.params.code
+                    self.ode,
+                    result_name="jac",
+                    params=self.params.code,
                 )
 
             fact = factorized_jacobian_expressions(jac, params=self.params.code)
@@ -605,14 +627,18 @@ class GossCodeGenerator(CppCodeGenerator):
 
             if jac is None:
                 jac = jacobian_expressions(
-                    self.ode, result_name="jac", params=self.params.code
+                    self.ode,
+                    result_name="jac",
+                    params=self.params.code,
                 )
 
             if fact is None:
                 fact = factorized_jacobian_expressions(jac, params=self.params.code)
 
             fb_subst = forward_backward_subst_expressions(
-                fact, residual_name="b", params=self.params.code
+                fact,
+                residual_name="b",
+                params=self.params.code,
             )
             body = ["", '//Timer timer_("Forward backward substitution");', ""]
             # body.extend(["// Copy b to dx", "for (unsigned int i=0; i<_num_states; i++)"])

@@ -31,7 +31,7 @@ RK4::RK4() : ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
   parameters.rename("RK4");
 }
 //-----------------------------------------------------------------------------
-RK4::RK4(std::shared_ptr<ODE> ode) : 
+RK4::RK4(std::shared_ptr<ODE> ode) :
   ODESolver(), k1(0), k2(0), k3(0), k4(0), tmp(0)
 {
   parameters.rename("RK4");
@@ -57,7 +57,7 @@ void RK4::attach(std::shared_ptr<ODE> ode)
 
   // Attach ode using base class
   ODESolver::attach(ode);
-  
+
   if (ode->is_dae())
     goss_error("RK4.cpp",
 	       "attaching ode",
@@ -71,7 +71,7 @@ void RK4::attach(std::shared_ptr<ODE> ode)
 
 }
 //-----------------------------------------------------------------------------
-void RK4::forward(double* y, double t, double dt) 
+void RK4::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
@@ -83,7 +83,7 @@ void RK4::forward(double* y, double t, double dt)
 
   // Local time
   double lt = t;
-  for (ulong j = 0; j < nsteps; ++j) 
+  for (ulong j = 0; j < nsteps; ++j)
   {
     // Evaluate rhs and calculate intermediate derivatives
     _ode->eval(y, lt, &k1[0]);
@@ -96,12 +96,12 @@ void RK4::forward(double* y, double t, double dt)
 
     _ode->eval(&tmp[0], lt + 0.5*ldt, &k3[0]);
     axpy(&tmp[0], y, ldt, &k3[0]);
-    
+
     _ode->eval(&tmp[0], lt + ldt, &k4[0]);
 
     for (uint i = 0; i < num_states(); ++i)
       y[i] += ldt*(k1[i] + 2.0*k2[i] + 2.0*k3[i] + k4[i])/6.0;
-    
+
     // Update local time
     lt += ldt;
   }

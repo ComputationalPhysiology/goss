@@ -30,7 +30,7 @@
 
 //#include <fenv.h>
 
-namespace goss 
+namespace goss
 {
 
   class ODESolver {
@@ -44,7 +44,7 @@ namespace goss
       params.add("ldt", -1.0);
       return params;
     }
-    
+
     // Default Constructor
     ODESolver () : parameters(), _ode(static_cast<ODE*>(0))
     {
@@ -60,21 +60,21 @@ namespace goss
     }
 
     // Destructor
-    virtual ~ODESolver () 
-    { 
+    virtual ~ODESolver ()
+    {
       // Do nothing
     }
 
     // Return a copy of itself
     virtual std::shared_ptr<ODESolver> copy() const = 0;
 
-    // Attach ODE and reset solver 
-    virtual void attach(std::shared_ptr<ODE> ode) 
-    { 
+    // Attach ODE and reset solver
+    virtual void attach(std::shared_ptr<ODE> ode)
+    {
       //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
       _ode = ode; reset();}
 
-    // Reset solver 
+    // Reset solver
     virtual void reset() { /* Do nothing */ }
 
     // Step solver an interval of time forward
@@ -102,7 +102,7 @@ namespace goss
     Parameters parameters;
 
   protected:
-    
+
     // Access to scratch space in ODE
     inline std::vector<double>& _f1() const
     {assert(_ode); return _ode->_f1;}
@@ -110,7 +110,7 @@ namespace goss
     inline std::vector<double>& _f2() const
     {assert(_ode); return _ode->_f2;}
 
-    // Shared pointer to ode 
+    // Shared pointer to ode
     std::shared_ptr<ODE> _ode;
 
   };

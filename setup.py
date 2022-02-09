@@ -1,7 +1,7 @@
-from skbuild import setup
-
 import sys
 import sysconfig
+
+from skbuild import setup
 
 setup(
     name="goss",

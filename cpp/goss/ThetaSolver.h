@@ -25,13 +25,13 @@
 
 #include "ImplicitODESolver.h"
 
-namespace goss 
+namespace goss
 {
 
   class ThetaSolver: public ImplicitODESolver
   {
   public:
-  
+
     // Default parameters
     static Parameters default_parameters()
     {
@@ -45,10 +45,10 @@ namespace goss
 
     // Default constructor
     ThetaSolver();
-    
+
     // Constructor
     ThetaSolver(std::shared_ptr<ODE> ode);
-    
+
     // Copy constructor
     ThetaSolver(const ThetaSolver& solver);
 
@@ -56,7 +56,7 @@ namespace goss
     ~ThetaSolver(){};
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
+    std::shared_ptr<ODESolver> copy() const
     { return std::make_shared<ThetaSolver>(*this); }
 
     // Attach ODE
@@ -69,11 +69,11 @@ namespace goss
     void forward(double* y, double t, double dt);
 
     protected:
-    
+
     std::vector<double> _z1, _ft1;
     bool _justrefined;
-    
+
   };
-  
+
 }
 #endif

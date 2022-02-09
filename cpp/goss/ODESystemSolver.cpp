@@ -33,27 +33,27 @@ int omp_get_thread_num(){
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-ODESystemSolver::ODESystemSolver(uint num_nodes_, 
-				 std::shared_ptr<ODESolver> solver_, 
+ODESystemSolver::ODESystemSolver(uint num_nodes_,
+				 std::shared_ptr<ODESolver> solver_,
 				 std::shared_ptr<ParameterizedODE> ode_) :
-  _num_nodes(num_nodes_), _num_threads(0), _solver(solver_), 
+  _num_nodes(num_nodes_), _num_threads(0), _solver(solver_),
   _threaded_solvers(0), _ode(ode_), _states(num_nodes_*ode_->num_states()),
   _field_parameters(num_nodes_*ode_->num_field_parameters()),
   _ldt_vec(solver_->is_adaptive() ? num_nodes_ : 0, solver_->get_internal_time_step()),
-  _is_adaptive(solver_->is_adaptive()), 
+  _is_adaptive(solver_->is_adaptive()),
   _has_field_parameters(ode_->num_field_parameters() > 0)
-{ 
+{
 
   // Attach ODE to solver
   _solver->attach(ode_);
 
   // Reset values for the field parameters and the states
   reset_default();
-  
+
 }
 //-----------------------------------------------------------------------------
 ODESystemSolver::~ODESystemSolver()
-{ 
+{
 //  for (uint i = 0; i < _threaded_solvers.size(); i++)
 //    delete _threaded_solvers[i];
 }
@@ -64,7 +64,7 @@ void ODESystemSolver::forward(double t, double interval)
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-#pragma omp parallel for schedule(guided, 20) 
+#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
       _forward_node(*_threaded_solvers[omp_get_thread_num()], node, t, interval);
   }
@@ -75,58 +75,58 @@ void ODESystemSolver::forward(double t, double interval)
   }
 }
 //-----------------------------------------------------------------------------
-void ODESystemSolver::get_field_state_components(double* component_field_states, 
-                                                 uint num_components, const uint* components, 
+void ODESystemSolver::get_field_state_components(double* component_field_states,
+                                                 uint num_components, const uint* components,
                                                  bool tangled_storage) const
 {
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-    //#pragma omp parallel for schedule(guided, 20) 
+    //#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
-     _get_field_states_node_comp(node, component_field_states, 
+     _get_field_states_node_comp(node, component_field_states,
                                  num_components, components,
                                  tangled_storage);
   }
   else
   {
     for (uint node = 0; node < _num_nodes; node++)
-     _get_field_states_node_comp(node, component_field_states, 
+     _get_field_states_node_comp(node, component_field_states,
                                  num_components, components,
                                  tangled_storage);
   }
 }
 //-----------------------------------------------------------------------------
-void ODESystemSolver::set_field_state_components(const double* component_field_states, 
-                                                 uint num_components, const uint* components, 
+void ODESystemSolver::set_field_state_components(const double* component_field_states,
+                                                 uint num_components, const uint* components,
                                                  bool tangled_storage)
 {
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-    //#pragma omp parallel for schedule(guided, 20) 
+    //#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
-     _set_field_states_node_comp(node, component_field_states, 
+     _set_field_states_node_comp(node, component_field_states,
                                  num_components, components,
                                  tangled_storage);
   }
   else
   {
     for (uint node = 0; node < _num_nodes; node++)
-     _set_field_states_node_comp(node, component_field_states, 
+     _set_field_states_node_comp(node, component_field_states,
                                  num_components, components,
                                  tangled_storage);
   }
 }
 //-----------------------------------------------------------------------------
-void ODESystemSolver::get_field_states(double* field_state_values, 
+void ODESystemSolver::get_field_states(double* field_state_values,
 				       bool tangled_storage) const
 {
-  
+
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-    //#pragma omp parallel for schedule(guided, 20) 
+    //#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
      _get_field_states_node(node, field_state_values, tangled_storage);
   }
@@ -135,17 +135,17 @@ void ODESystemSolver::get_field_states(double* field_state_values,
     for (uint node = 0; node < _num_nodes; node++)
      _get_field_states_node(node, field_state_values, tangled_storage);
   }
-  
+
 }
 //-----------------------------------------------------------------------------
-void ODESystemSolver::set_field_states(const double* field_state_values, 
+void ODESystemSolver::set_field_states(const double* field_state_values,
 				       bool tangled_storage)
 {
-  
+
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-    //#pragma omp parallel for schedule(guided, 20) 
+    //#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
      _set_field_states_node(node, field_state_values, tangled_storage);
   }
@@ -154,18 +154,18 @@ void ODESystemSolver::set_field_states(const double* field_state_values,
     for (uint node = 0; node < _num_nodes; node++)
      _set_field_states_node(node, field_state_values, tangled_storage);
   }
-  
+
 }
 //-----------------------------------------------------------------------------
-void ODESystemSolver::set_field_parameters(const double* field_param_values, 
+void ODESystemSolver::set_field_parameters(const double* field_param_values,
 					   bool tangled_storage)
 {
 
-  
+
   // Iterate over all nodes using threaded or non-threaded loop
   if(_num_threads > 0)
   {
-    //#pragma omp parallel for schedule(guided, 20) 
+    //#pragma omp parallel for schedule(guided, 20)
    for (uint node = 0; node < _num_nodes; node++)
      _set_field_parameters_node(node, field_param_values, tangled_storage);
   }
@@ -174,7 +174,7 @@ void ODESystemSolver::set_field_parameters(const double* field_param_values,
     for (uint node = 0; node < _num_nodes; node++)
      _set_field_parameters_node(node, field_param_values, tangled_storage);
   }
-  
+
 }
 //-----------------------------------------------------------------------------
 void ODESystemSolver::reset_default()
@@ -196,7 +196,7 @@ void ODESystemSolver::reset_default()
   // Iterate over nodes and set default values
   if(_num_threads > 0)
   {
-#pragma omp parallel for schedule(guided, 20) 
+#pragma omp parallel for schedule(guided, 20)
     for (uint node = 0; node < _num_nodes; node++)
       _reset_default_node(node, default_ic, default_field_params);
   }
@@ -210,12 +210,12 @@ void ODESystemSolver::reset_default()
 void ODESystemSolver::set_num_threads(uint num_threads)
 {
 #ifdef HAS_OPENMP
-  
+
   char* GOMP_CPU_AFFINITY;
   GOMP_CPU_AFFINITY = getenv("GOMP_CPU_AFFINITY");
   if (GOMP_CPU_AFFINITY!=NULL)
     printf("GOMP_CPU_AFFINITY: %s\n", GOMP_CPU_AFFINITY);
-  
+
   // Store num threads
   _num_threads = num_threads;
 
@@ -230,9 +230,9 @@ void ODESystemSolver::set_num_threads(uint num_threads)
   // Re-create threaded solvers
   for (uint i = 0; i<num_threads; i++)
     _threaded_solvers[i] = _solver->copy();
-  
+
 #else
-  
+
   // Keeps the compiler happy
   _num_threads = num_threads*0;
 

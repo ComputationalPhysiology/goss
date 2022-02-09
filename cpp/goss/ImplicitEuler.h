@@ -25,7 +25,7 @@
 
 #include "ImplicitODESolver.h"
 
-namespace goss 
+namespace goss
 {
 
   // Implicit Euler
@@ -53,7 +53,7 @@ namespace goss
     ImplicitEuler(const ImplicitEuler& solver);
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
+    std::shared_ptr<ODESolver> copy() const
     { return std::make_shared<ImplicitEuler>(*this); }
 
     // Destructor

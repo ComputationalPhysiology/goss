@@ -10,14 +10,14 @@
 namespace goss {
 
   // Implementation of gotran generated ODE
-  class PanfilovCSEArray : public ParameterizedODE 
+  class PanfilovCSEArray : public ParameterizedODE
   {
   public:
 
     // Constructor
-    PanfilovCSEArray() : ParameterizedODE(2, 3, 1, 0, 0), 
+    PanfilovCSEArray() : ParameterizedODE(2, 3, 1, 0, 0),
       time_constant(1.0), v_peak(35.0), v_rest(-85.0)
-      
+
     {
 
       // State names
@@ -96,7 +96,7 @@ namespace goss {
   private:
 
     // Parameters
-    double time_constant, v_peak, v_rest;    
+    double time_constant, v_peak, v_rest;
 
   };
 

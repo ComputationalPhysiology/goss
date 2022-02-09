@@ -9,7 +9,7 @@ To work with goss from python, you only need to install the python package. Clon
 ```
 python -m pip install .
 ```
-or use 
+or use
 ```
 python -m pip install -e .
 ```
@@ -45,8 +45,17 @@ cd build-cpp
 ctest
 ```
 
-## Contributing
+## Structure
 
 The bindings between python and C++ uses [pybind11](https://pybind11.readthedocs.io/en/stable/) and all the bindings are found in the file [python/wrapper.cpp](python/wrapper.cpp).
 
 The python package is built using [scikit-build](https://scikit-build.readthedocs.io/en/latest/index.html) which is a build system especially suited for python code with C++ extensions.
+
+## Contributing
+
+Contributions are very welcomed. To contribute please fork the repo, create a branch a submit a pull request. Before the pull request can be accepted it has to pass the test suit for the python and C++ code. Also note that we try to enforce an consistent coding style. To ensure that you follow the coding style you can install the pre-commit hook in the repo
+```
+python -m pip install pre-commit
+pre-commit install
+```
+For every future commit, you will now run a set of tests that will make sure that you follow the coding style.

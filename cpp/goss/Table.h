@@ -44,7 +44,7 @@ namespace goss
   ///
   ///   info(table);
 
-  class Table 
+  class Table
   {
   public:
 

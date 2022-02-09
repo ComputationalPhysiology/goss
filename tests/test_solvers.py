@@ -1,10 +1,13 @@
 import os
-from gotran import load_ode
 
-# from goss import *
-import goss
 import numpy as np
 import pytest
+from goss import goss_solvers
+from goss import jit
+from goss import ODESystemSolver
+from goss.solvers import RL1
+from gotran import load_ode
+
 
 parametrize = pytest.mark.parametrize
 
@@ -77,7 +80,7 @@ class TestODESolvers(object):
         dt = 0.0002
         tstop = 10
         ind_V = self.tentusscher.get_state_names().index("V")
-        dt_ref = 0.1
+        # dt_ref = 0.1
 
         solver = eval(solver_str)(self.tentusscher)
 
@@ -160,7 +163,7 @@ class TestODESystemSolver(object):
         system = ODESystemSolver(num_nodes, solver, self.ode)
         system.reset_default()
         field_states = np.zeros(self.ode.num_field_states() * num_nodes)
-        field_parameters = np.zeros(self.ode.num_field_parameters() * num_nodes)
+        # field_parameters = np.zeros(self.ode.num_field_parameters() * num_nodes)
 
         assert isinstance(system.states(), np.ndarray)
         assert len(system.states()) == num_nodes * self.ode.num_states()
@@ -179,22 +182,22 @@ class TestODESystemSolver(object):
 
         with pytest.raises(ValueError):
             system.set_field_states(
-                np.zeros(self.ode.num_field_states() * num_nodes // 2)
+                np.zeros(self.ode.num_field_states() * num_nodes // 2),
             )
 
         with pytest.raises(TypeError):
             system.set_field_states(
-                np.zeros(self.ode.num_field_states() * num_nodes, dtype=int)
+                np.zeros(self.ode.num_field_states() * num_nodes, dtype=int),
             )
 
         with pytest.raises(ValueError):
             system.set_field_parameters(
-                np.zeros(self.ode.num_field_states() * num_nodes // 2)
+                np.zeros(self.ode.num_field_states() * num_nodes // 2),
             )
 
         with pytest.raises(TypeError):
             system.set_field_parameters(
-                np.zeros(self.ode.num_field_states() * num_nodes, dtype=int)
+                np.zeros(self.ode.num_field_states() * num_nodes, dtype=int),
             )
 
         # system.get_field_state_components()

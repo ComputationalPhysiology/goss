@@ -10,12 +10,12 @@
 namespace goss {
 
   // Implementation of gotran generated ODE
-  class WinslowCSE : public ParameterizedODE 
+  class WinslowCSE : public ParameterizedODE
   {
   public:
 
     // Constructor
-    WinslowCSE() : ParameterizedODE(31, 68, 1, 2, 4), 
+    WinslowCSE() : ParameterizedODE(31, 68, 1, 2, 4),
       A_cap(0.0001534), C_sc(1.0), V_JSR(1.6e-07), V_NSR(2.1e-06),
         V_myo(2.584e-05), V_ss(1.2e-09), ist(0), Ca_o(2.0), K_o(4.0),
         Na_i(10.0), Na_o(138.0), G_KpMax(0.002216), G_KrMax(0.0034),
@@ -32,7 +32,7 @@ namespace goss {
         EGTAtot(10.0), HTRPNtot(0.14), KmCMDN(0.00238), KmCSQN(0.8),
         KmEGTA(0.00015), LTRPNtot(0.07), khtrpn_minus(6.6e-05),
         khtrpn_plus(20.0), kltrpn_minus(0.04), kltrpn_plus(40.0)
-      
+
     {
 
       // State names
@@ -545,7 +545,7 @@ namespace goss {
       kaplus, kbminus, kbplus, kcminus, kcplus, mcoop, ncoop, tau_tr,
       tau_xfer, v_1, v_maxf, v_maxr, ICahalf, PCa, PK, aL, bL, fL, gL, omega,
       CMDNtot, CSQNtot, EGTAtot, HTRPNtot, KmCMDN, KmCSQN, KmEGTA, LTRPNtot,
-      khtrpn_minus, khtrpn_plus, kltrpn_minus, kltrpn_plus;    
+      khtrpn_minus, khtrpn_plus, kltrpn_minus, kltrpn_plus;
 
   };
 

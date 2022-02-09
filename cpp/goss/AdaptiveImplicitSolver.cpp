@@ -25,27 +25,27 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver::AdaptiveImplicitSolver() : 
-  ImplicitODESolver(), num_accepted(0), num_rejected(0), step_accepted(false), 
-  reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.), 
-  _ldt(.1), _dt(.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.), 
-  facmin(0.5), facmax(2.0), 
-  facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0), 
+AdaptiveImplicitSolver::AdaptiveImplicitSolver() :
+  ImplicitODESolver(), num_accepted(0), num_rejected(0), step_accepted(false),
+  reached_tend(false), dt_v(0), accept_v(0), single_step_mode(false), _t(0.),
+  _ldt(.1), _dt(.1), _dt_prev(0.), _atol(1.e-5), _rtol(1.e-8), _iord(1.),
+  facmin(0.5), facmax(2.0),
+  facmaxb(facmax), stabfac(0.9), stabdown(1.0), stabup(1.2), err_old(-1.0),
   dt_old(0.0), _itol(0)
 {
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-AdaptiveImplicitSolver::AdaptiveImplicitSolver(const AdaptiveImplicitSolver& solver) 
-  : ImplicitODESolver(solver), num_accepted(solver.num_accepted), 
-    num_rejected(solver.num_rejected), step_accepted(solver.step_accepted), 
-    reached_tend(solver.reached_tend), dt_v(solver.dt_v), accept_v(solver.accept_v), 
-    single_step_mode(solver.single_step_mode), _t(solver._t), _ldt(solver._ldt), 
-    _dt(solver._dt), 
-    _dt_prev(solver._dt_prev), _atol(solver._atol), _rtol(solver._rtol), 
-    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax), 
-    facmaxb(solver.facmaxb), stabfac(solver.stabfac), stabdown(solver.stabdown), 
-    stabup(solver.stabup), err_old(solver.err_old), dt_old(solver.dt_old), 
+AdaptiveImplicitSolver::AdaptiveImplicitSolver(const AdaptiveImplicitSolver& solver)
+  : ImplicitODESolver(solver), num_accepted(solver.num_accepted),
+    num_rejected(solver.num_rejected), step_accepted(solver.step_accepted),
+    reached_tend(solver.reached_tend), dt_v(solver.dt_v), accept_v(solver.accept_v),
+    single_step_mode(solver.single_step_mode), _t(solver._t), _ldt(solver._ldt),
+    _dt(solver._dt),
+    _dt_prev(solver._dt_prev), _atol(solver._atol), _rtol(solver._rtol),
+    _iord(solver._iord), facmin(solver.facmin), facmax(solver.facmax),
+    facmaxb(solver.facmaxb), stabfac(solver.stabfac), stabdown(solver.stabdown),
+    stabup(solver.stabup), err_old(solver.err_old), dt_old(solver.dt_old),
     _itol(solver._itol)
 {
   // Do nothing
@@ -63,14 +63,14 @@ void AdaptiveImplicitSolver::reset()
   single_step_mode = false;
   _atol    = 1.0e-5;
   _rtol    = 1.0e-8;
-  
-  // We cannot choose the next timestep more then half of the previous 
+
+  // We cannot choose the next timestep more then half of the previous
   // timestep
-  facmin = 0.5; 
-  
-  // We can not choose the next timestep more then double of the previous 
-  // timestep  
-  facmaxb = 2.0; 
+  facmin = 0.5;
+
+  // We can not choose the next timestep more then double of the previous
+  // timestep
+  facmaxb = 2.0;
   facmax  = facmaxb;
   stabfac = 0.9; //std::pow(0.25,1/(iord+1));
   stabdown = 1.0;
@@ -80,13 +80,13 @@ void AdaptiveImplicitSolver::reset()
 
   num_accepted = 0;
   num_rejected = 0;
-  
+
   // Reset bases
   ImplicitODESolver::reset();
 }
 // FIXME: Have a closer look of origin of pointers passed to this function.
 //-----------------------------------------------------------------------------
-double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1, 
+double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
 				      double* f0_, double* f1_, double iord)
 {
   // Computation of an initial step size guess
@@ -95,7 +95,7 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
   // H = 0.01 * norm(y0)/(norm(f0)
   // The increment for explicit Euler is small compared to the solution
   // We assume that y0 and f0 are computed.
-  // y1 and f1 are just pointers to contigous memory which this 
+  // y1 and f1 are just pointers to contigous memory which this
   // function borrows
 
   uint i;
@@ -113,9 +113,9 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
     tmp  = y0[i]/sk;
     dny += tmp*tmp;
     //dnf += std::pow(f0_[i]/sk, 2);
-    //dny += std::pow(y0[i]/sk, 2); 
+    //dny += std::pow(y0[i]/sk, 2);
   }
-  
+
   if (dnf <= 1.0e-10 || dny <= 1.0e-10)
     dt = 1.0e-6;
   else
@@ -148,7 +148,7 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
     der12 = std::fabs(der2);
   else
     der12 = std::sqrt(dnf);
-  
+
   double dt1;
   if (der12 <= 1.0e-15)
   {
@@ -164,12 +164,12 @@ double AdaptiveImplicitSolver::dtinit(double t, double* y0, double* y1,
 
   if (100*std::fabs(dt) < dt1)
     return 100*std::fabs(dt);
-  
+
   return dt1;
 }
 
 //-----------------------------------------------------------------------------
-void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e, 
+void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
 					   double t_end)
 {
   uint i;
@@ -184,7 +184,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
   _recompute_jacobian = true;
 
   double yi_abs, yni_abs, max, sk, tmp;
-  for (i = 0; i < num_states(); ++i) 
+  for (i = 0; i < num_states(); ++i)
   {
     yi_abs = std::fabs(y[i]);
     yni_abs = std::fabs(yn[i]);
@@ -193,7 +193,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
     tmp = e[i]/sk;
     err += tmp*tmp;
   }
-  
+
   err = std::sqrt(err/num_states());
 
   // If the error is smaller than 1, the timestep is accepted, and we advance
@@ -209,8 +209,8 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
       //std::cout << "done=true" << std::endl;
       reached_tend = true;
     }
-  } 
-  else 
+  }
+  else
   {
     num_rejected += 1;
     step_accepted = false;
@@ -218,7 +218,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
 
   // Computation of dtnew
   const double lstabfac = stabfac*(2*max_iterations+1)/(2.0*max_iterations+_newton_iterations);
-  
+
   //printf("lstabfac=%1.2e\n", lstabfac);
   double fac = lstabfac*std::pow((1.0/err), (1.0/(_iord+1)));
   if (facmin > fac)
@@ -235,7 +235,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
 
   if (err_old > 0)
     fac *= _dt/dt_old*std::pow((err_old/err), (1.0/(_iord + 1)));
-  
+
   if (fac < stabup && fac > stabdown)
   {
     //printf("frac=%1.2e\n",fac);
@@ -249,7 +249,7 @@ void AdaptiveImplicitSolver::new_time_step(double* y, double* yn, double* e,
 
   if (_t + _dt >= t_end)
     _dt = t_end - _t;
-  
+
   dt_old = _dt_prev;
   err_old = err;
 }
@@ -264,7 +264,7 @@ void AdaptiveImplicitSolver::log_data(double dt, bool accepted)
 void AdaptiveImplicitSolver::dt_vector(DoubleVector *res)
 {
   res->n = dt_v.size();
-  res->data.reset(new double[dt_v.size()]); 
+  res->data.reset(new double[dt_v.size()]);
   for(uint i = 0; i < dt_v.size(); ++i)
     res->data[i] = dt_v[i];
 }
@@ -272,7 +272,7 @@ void AdaptiveImplicitSolver::dt_vector(DoubleVector *res)
 void AdaptiveImplicitSolver::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
-  res->data.reset(new double[accept_v.size()]); 
+  res->data.reset(new double[accept_v.size()]);
   for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
 }
@@ -290,17 +290,17 @@ double AdaptiveImplicitSolver::get_current_time_step()
 //-----------------------------------------------------------------------------
 void AdaptiveImplicitSolver::log_data(double, bool)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 //-----------------------------------------------------------------------------
 void AdaptiveImplicitSolver::dt_vector(DoubleVector*)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 //-----------------------------------------------------------------------------
 void AdaptiveImplicitSolver::accepted_vector(DoubleVector*)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 //-----------------------------------------------------------------------------
 double AdaptiveImplicitSolver::get_current_time()
@@ -316,7 +316,3 @@ double AdaptiveImplicitSolver::get_current_time_step()
 }
 //-----------------------------------------------------------------------------
 #endif
-
-
-
-

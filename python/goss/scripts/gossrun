@@ -85,7 +85,7 @@ def main(filename, params):
     user_ic = dict()
     for state_name, state_value in [(init_conditions[i*2], init_conditions[i*2+1]) \
                                     for i in range(int(len(init_conditions)/2))]:
-        
+
         user_ic[state_name] = float(state_value)
 
     # FIXME: Update GOSS to do this more easily within GOSS
@@ -131,7 +131,7 @@ def main(filename, params):
 
     # Create numpy array for monitored values
     monitored_values = np.zeros(len(monitored), dtype=np.float_)
-    
+
     # Allocate memory
     collected_values = np.zeros((len(plot_states)+len(monitored_plot), len(tsteps)))
 
@@ -160,10 +160,10 @@ def main(filename, params):
         p += 1
 
     del p
-    
+
     if collected_values.shape[0] == 0:
-        return 
-    
+        return
+
     # Plot data
     plt.rcParams["lines.linewidth"] = 2
     line_styles = cycle([c+s for s in ["-", "--", "-.", ":"]
@@ -187,7 +187,7 @@ def main(filename, params):
                     for value in plot_items])
     else:
         plt.ylabel("$\\mathrm{{{0}}}$".format(latex(plot_items[0])))
-        
+
     plt.xlabel("$\\mathrm{{{0}}}$".format(latex(x_name)))
     plt.title(ode.name.replace("_", "\\_"))
     plt.show()
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     from modelparameters.parameterdict import *
 
     code_params = GossCodeGenerator.default_parameters()
-    
+
     params = ParameterDict(\
         solver = OptionParam("ImplicitEuler", goss_solvers, \
                              description="The ODE solver used to integrate "\
@@ -210,17 +210,17 @@ if __name__ == "__main__":
         dt = ScalarParam(0.1, gt=0, description="Timestep for plotting."),\
         plot_y = Param(["V"], description="States or monitored to plot on the y axis."),\
         plot_x = Param("time", description="Values used for the x axis. Can be time "\
-                       "and any valid plot_y variable."), 
+                       "and any valid plot_y variable."),
         code = code_params,
         cppargs = Param("-O2 -g"), description="C++ compile arguments.")
-    
+
     params.parse_args(usage="usage: %prog FILE [options]")
-    
+
     if len(sys.argv) < 2:
         error("Expected a single gotran file argument.")
 
     if not os.path.isfile(sys.argv[1]):
         error("Expected the argument to be a file.", exception=IOError)
-	 
+
     file_name = sys.argv[1]
     main(file_name, params)

@@ -5,15 +5,15 @@
 #include <goss/ODE.h>
 #include <cmath>
 
-namespace goss 
+namespace goss
 {
 
   /*
      This is a test equation presented in a Paper by Fox and Goodwin
 
-     L. Fox, E.R. Goodwun, 
-     "Some new methods for the numerical integration 
-     of ordinary differential equations", 
+     L. Fox, E.R. Goodwun,
+     "Some new methods for the numerical integration
+     of ordinary differential equations",
      Proc. Cambridge Philos. Soc. 45 (1949) 373-388
 
      The ode is
@@ -33,10 +33,10 @@ namespace goss
   class FG : public ODE
   {
   public:
-    
+
     FG () : ODE(2){}
 
-    std::shared_ptr<ODE> copy() const 
+    std::shared_ptr<ODE> copy() const
     {
       return std::make_shared<FG>(*this);
     }
@@ -50,12 +50,12 @@ namespace goss
       f_vals[0] = -10*y1+6*z1;
       f_vals[1] = 13.5*y1-10*z1;
     }
-    
+
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _num_states;
       res->data.reset(new double[_num_states]);
-      exact(res->data.get(), 0.0); 
+      exact(res->data.get(), 0.0);
     }
 
     void exact(double* y, double t) const
@@ -63,9 +63,9 @@ namespace goss
       y[0] = 2.0/3.0*std::exp(1)*(std::exp(-t)+std::exp(-19*t));
       y[1] = std::exp(1)*(std::exp(-t)-std::exp(-19*t));
     }
-    
+
   //protected:
-  //  
+  //
   //  virtual void add_descr()
   //  {
   //    state_descr[0] = "y(t) = 2/3*exp*(exp(-t) + exp(-19t))";

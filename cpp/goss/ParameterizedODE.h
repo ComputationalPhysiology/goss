@@ -35,28 +35,28 @@ namespace goss {
   public:
 
     // Constructor
-    ParameterizedODE(uint num_states_, uint num_parameters_, uint num_field_states_, 
-		     uint num_field_parameters_, uint num_monitored_) : 
-      ODE(num_states_), 
-      _state_names(num_states_, ""), 
-      _field_state_names(num_field_states_, ""), 
-      _parameter_names(num_parameters_, ""), 
-      _field_parameter_names(num_field_parameters_, ""), 
-      _field_state_indices(num_field_states_, 0), 
+    ParameterizedODE(uint num_states_, uint num_parameters_, uint num_field_states_,
+		     uint num_field_parameters_, uint num_monitored_) :
+      ODE(num_states_),
+      _state_names(num_states_, ""),
+      _field_state_names(num_field_states_, ""),
+      _parameter_names(num_parameters_, ""),
+      _field_parameter_names(num_field_parameters_, ""),
+      _field_state_indices(num_field_states_, 0),
       _monitored_names(num_monitored_, ""),
       _param_to_value()
-    { 
+    {
       // Do nothing
     }
 
     // Copy constructor
-    ParameterizedODE(const ParameterizedODE& ode) : 
+    ParameterizedODE(const ParameterizedODE& ode) :
     ODE(ode),
     _state_names(ode._state_names),
     _field_state_names(ode._field_state_names),
     _parameter_names(ode._parameter_names),
     _field_parameter_names(ode._field_parameter_names),
-    _field_state_indices(ode._field_state_indices), 
+    _field_state_indices(ode._field_state_indices),
     _monitored_names(ode._monitored_names),
     _param_to_value(ode._param_to_value)
     {
@@ -82,7 +82,7 @@ namespace goss {
 
     // Evaluate the monitored
     virtual void eval_monitored(const double* states, double t, double* monitored) const = 0;
-    
+
     // Set all field parameters
     virtual void set_field_parameters(const double* field_params) = 0;
 
@@ -118,9 +118,9 @@ namespace goss {
     const std::vector<std::string>& get_monitored_names() const
     { return _monitored_names; }
 
-  protected: 
-    
-    // These vectors are initialized in this class, but need to be 
+  protected:
+
+    // These vectors are initialized in this class, but need to be
     // filled in derived classes.
 
     // Vector with state names
@@ -147,7 +147,7 @@ namespace goss {
   private:
 
     // Find a parameter value
-    inline double* _find_parameter(std::string name) const 
+    inline double* _find_parameter(std::string name) const
     {
       // Search parameter map
       std::map<std::string, double*>::const_iterator it = \
@@ -155,11 +155,11 @@ namespace goss {
       if (it == _param_to_value.end())
 	throw std::runtime_error("\"" + name + "\" is not a parameter in  "
 				 "this ODE.");
-      
+
       // Return value pointer
       return it->second;
     }
-    
+
   };
 }
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 from goss import ODE
 from gotran import load_ode

@@ -21,23 +21,27 @@ from collections import OrderedDict
 import numpy as np
 import types
 
-from . import cpp
+# from . import cpp
 from .compilemodule import jit as goss_jit
 
 try:
     import dolfin as d
-except:
+except ImportError:
     raise ImportError("dolfin is not present")
 
 # Check version
-from distutils.version import LooseVersion, StrictVersion
-if LooseVersion(d.__version__ ) <= LooseVersion("1.4.0"):
+from distutils.version import LooseVersion
+
+if LooseVersion(d.__version__) <= LooseVersion("1.4.0"):
     raise ImportError("dolfin version need to be 1.4.0 or higher")
 
-# Import Gotran and try import cuda solver 
-from goss import goss_solvers, ImplicitODESolver
+# Import Gotran and try import cuda solver
+from goss import goss_solvers
+from goss.solvers import ImplicitODESolver
 import goss.cuda
+
 enable_cuda = goss.cuda.cuda is not None
+
 
 def entity_to_dofs(V):
     assert isinstance(V, d.FunctionSpaceBase)
@@ -50,7 +54,7 @@ def entity_to_dofs(V):
     # FIXME: np.uintp?
     # Create an array
     num_entity_dofs = dm.num_entity_dofs(dim)
-    entity_to_dof = np.zeros(mesh.num_cells()*num_entity_dofs, np.intc)
+    entity_to_dof = np.zeros(mesh.num_cells() * num_entity_dofs, np.intc)
     num_fields = V.num_sub_spaces()
     if num_fields > 0:
         dms = [V.sub(i).dofmap() for i in range(num_fields)]
@@ -61,11 +65,14 @@ def entity_to_dofs(V):
     for cell in d.cells(mesh):
         index = cell.index()
         for field_ind, dm_l in enumerate(dms):
-            entity_to_dof[index*num_entity_dofs+field_ind:(index+1)*\
-                          num_entity_dofs+field_ind:num_fields] = \
-                          dms[field_ind].cell_dofs(index)
+            entity_to_dof[
+                index * num_entity_dofs
+                + field_ind : (index + 1) * num_entity_dofs
+                + field_ind : num_fields
+            ] = dms[field_ind].cell_dofs(index)
 
     return entity_to_dof
+
 
 def _set_parameter(self, name, value):
     """
@@ -78,24 +85,35 @@ def _set_parameter(self, name, value):
       The value of the parameter. If the value is a Function the parameter
       needs to be a field parameter.
     """
+    from . import _gosscpp
 
     assert isinstance(name, str), "expected a str as the name argument"
-    assert isinstance(value, (int, float, d.Function)),\
-           "expected a scalar or a Function for the value argument"
-    
+    assert isinstance(
+        value,
+        (int, float, d.Function),
+    ), "expected a scalar or a Function for the value argument"
+
     # If the value is a scalar just call the original set_parameter
     if isinstance(value, (float, int)):
-        cpp.ParameterizedODE.set_parameter(self, name, value)
+        _gosscpp.ParameterizedODE.set_parameter(self, name, value)
         self.changed_scalar_parameters[name] = value
     else:
         field_param_names = self.get_field_parameter_names()
-        assert name in field_param_names, "'%s' is not a field parameter in this ode" % name
+        assert name in field_param_names, (
+            "'%s' is not a field parameter in this ode" % name
+        )
         self.field_params[name] = value
         self.changed_field_parameters.append(name)
-        
 
-def dolfin_jit(ode, field_states=None, field_parameters=None,
-               monitored=None, code_params=None, cppargs=None):
+
+def dolfin_jit(
+    ode,
+    field_states=None,
+    field_parameters=None,
+    monitored=None,
+    code_params=None,
+    cppargs=None,
+):
     """
     Generate a goss::ODEParameterized from a gotran ode and JIT
     compile it. Add help methods to the jit compiled ODE to set field
@@ -117,16 +135,26 @@ def dolfin_jit(ode, field_states=None, field_parameters=None,
     cppargs : str
         Default C++ argument passed to the C++ compiler
     """
+    from . import _gosscpp
 
     # Compile ode
-    compiled_ode = goss_jit(ode, field_states, field_parameters,
-                            monitored, code_params, cppargs)
+    compiled_ode = goss_jit(
+        ode,
+        field_states,
+        field_parameters,
+        monitored,
+        code_params,
+        cppargs,
+    )
 
     compiled_ode.field_params = {}
     compiled_ode.changed_scalar_parameters = {}
     compiled_ode.changed_field_parameters = []
-    compiled_ode.set_parameter = types.MethodType(\
-        _set_parameter, compiled_ode, cpp.ParameterizedODE)
+    compiled_ode.set_parameter = types.MethodType(
+        _set_parameter,
+        compiled_ode,
+        _gosscpp.ParameterizedODE,
+    )
 
     # Store gotran ode model
     compiled_ode._gotran = ode
@@ -135,43 +163,52 @@ def dolfin_jit(ode, field_states=None, field_parameters=None,
 
     return compiled_ode
 
-dolfin_jit.func_doc = goss_jit.__doc__
+
+# dolfin_jit.func_doc = goss_jit.__doc__
+
 
 def family_and_degree_from_str(space):
     assert isinstance(space, str), "expected a str as the 'space' argument"
-        
+
     space = space.split("_")
-    assert all(space) and len(space)==2, "Expected a family name (CG, "\
-           "DG, P, Quadrature) and a degree separated by '_' as the "\
-           "space argument"
+    assert all(space) and len(space) == 2, (
+        "Expected a family name (CG, "
+        "DG, P, Quadrature) and a degree separated by '_' as the "
+        "space argument"
+    )
 
     if space[0] in ["Lagrange", "CG", "P"]:
-        assert space[1]=="1", "expected only P1 spaces"
+        assert space[1] == "1", "expected only P1 spaces"
         family = "Lagrange"
         degree = 1
     elif space[0] == "Quadrature":
-        assert space[1] in [str(d) for d in range(1,10)], \
-               "expected only Quadrature spaces with degree 1-9."
+        assert space[1] in [
+            str(d) for d in range(1, 10)
+        ], "expected only Quadrature spaces with degree 1-9."
         family = "Quadrature"
         degree = int(space[1])
     elif space[0] in ["DG", "Discontinuous Lagrange"]:
-        assert space[1] in [str(d) for d in range(10)], "expected only "\
-                   "discontinuous spaces with degree 0-9."
+        assert space[1] in [str(d) for d in range(10)], (
+            "expected only " "discontinuous spaces with degree 0-9."
+        )
         family = "Discontinuous Lagrange"
         degree = int(space[1])
     else:
-        assert False, "Expected a family name (CG, "\
-           "DG, P, Quadrature) and a degree separated by '_' as the "\
-           "space argument"
-        
+        assert False, (
+            "Expected a family name (CG, "
+            "DG, P, Quadrature) and a degree separated by '_' as the "
+            "space argument"
+        )
+
     return family, degree
-    
-    
+
+
 class DOLFINODESystemSolver(object):
     """
     DOLFINODESystemSolver is an adapter class for goss.ODESystemSolver
     making interfacing DOLFIN easier
     """
+
     @staticmethod
     def default_parameters():
 
@@ -182,7 +219,7 @@ class DOLFINODESystemSolver(object):
 
         for key, value in goss_solver_params.items():
             solver_params.add(key, value)
-        
+
         params = d.Parameters("DOLFINODESystemSolver")
         params.add("solver", "ImplicitEuler", goss_solvers)
         params.add("num_threads", 0, 0, 100)
@@ -194,15 +231,25 @@ class DOLFINODESystemSolver(object):
             cuda_params = d.Parameters("cuda_params")
             cuda_params.add("block_size", 256, 1, 1024)
             cuda_params.add("nvcc_options", "")
-            cuda_params.add("solver", default_cuda_params["solver"], \
-                            dict.get(default_cuda_params, "solver")._options)
+            cuda_params.add(
+                "solver",
+                default_cuda_params["solver"],
+                dict.get(default_cuda_params, "solver")._options,
+            )
             cuda_params.add("float_precision", "double", ["single", "double"])
-            cuda_params.add("ldt", default_cuda_params["ldt"], -1., 1.e6)
+            cuda_params.add("ldt", default_cuda_params["ldt"], -1.0, 1.0e6)
             params.add(cuda_params)
-        
+
         return params
 
-    def __init__(self, mesh, odes, domains=None, space="P_1", params=None):
+    def __init__(  # noqa: C901
+        self,
+        mesh,
+        odes,
+        domains=None,
+        space="P_1",
+        params=None,
+    ):
         """
         Arguments:
         ----------
@@ -220,60 +267,78 @@ class DOLFINODESystemSolver(object):
         params : dict (optional)
            A dict providing parameters for the Solvers
         """
+        # FIXME: This function is way to long
+        from . import _gosscpp
 
-        assert isinstance(mesh, (d.Mesh, d.Domain)), "expected a dolfin Mesh "\
-               "or domain for the mesh argument"
-        assert isinstance(odes, (dict, cpp.ParameterizedODE)), "expected a"\
-               " dict or a ParametersizedODE for the odes argument"
+        assert isinstance(mesh, (d.Mesh, d.Domain)), (
+            "expected a dolfin Mesh " "or domain for the mesh argument"
+        )
+        assert isinstance(odes, (dict, _gosscpp.ParameterizedODE)), (
+            "expected a" " dict or a ParametersizedODE for the odes argument"
+        )
 
         # Get family and degree from str
         family, degree = family_and_degree_from_str(space)
-        
+
         params = params or {}
-        
+
         self.parameters = self.default_parameters()
         self.parameters.update(params)
 
         top_dim = mesh.topology().dim()
 
-        if isinstance(odes, cpp.ParameterizedODE) or len(odes)==1:
+        if isinstance(odes, _gosscpp.ParameterizedODE) or len(odes) == 1:
             # Get rid of any default labels.
             if isinstance(odes, dict):
                 odes = odes.values()[0]
 
             num_field_states = odes.num_field_states()
             field_names = odes.get_field_state_names()
-            odes = {0:odes} 
+            odes = {0: odes}
             distinct_domains = [0]
-            assert domains is None, "domains only expected when more than 1 "\
-                   "ODE is given"
+            assert domains is None, (
+                "domains only expected when more than 1 " "ODE is given"
+            )
         else:
-            assert isinstance(domains, d.MeshFunctionSizet), "expected a "\
-                   "MeshFunction as the domains argument when more than "\
-                   "1 ODE is given"
+            assert isinstance(domains, d.MeshFunctionSizet), (
+                "expected a "
+                "MeshFunction as the domains argument when more than "
+                "1 ODE is given"
+            )
             expected_dim = 0 if family == "Lagrange" else top_dim
-            assert domains.dim() == expected_dim, "expected a domain to be a "\
-                   "MeshFunction of topological dimension {} for {} space".format(\
-                expected_dim, space)
-            
+            assert (
+                domains.dim() == expected_dim
+            ), "expected a domain to be a " "MeshFunction of topological dimension {} for {} space".format(
+                expected_dim,
+                space,
+            )
+
             # Check given domains
             distinct_domains = list(sorted(set(domains.array())))
-            assert d.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == \
-                   d.MPI.max(mesh.mpi_comm(), len(odes)), "expected the number "\
-                   "of distinct domains to be the same as the number of ODEs"
+            assert d.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == d.MPI.max(
+                mesh.mpi_comm(),
+                len(odes),
+            ), (
+                "expected the number "
+                "of distinct domains to be the same as the number of ODEs"
+            )
 
             # Check and compare the number of field states
             ode_list = odes.values()
             last_ode = ode_list.pop()
-            assert all(last_ode.num_field_states() == ode.num_field_states() \
-                       for ode in ode_list), "expected all odes to have the "\
-                       "same number of field states"
-            
+            assert all(
+                last_ode.num_field_states() == ode.num_field_states()
+                for ode in ode_list
+            ), ("expected all odes to have the " "same number of field states")
+
             last_field_state_names = last_ode.get_field_state_names()
-            assert all(last_ode.get_field_state_names() == \
-                       ode.get_field_state_names() for ode in ode_list), \
-                       "expected all odes to have the same name and order "\
-                       "of the field states (Might be changed in the future.)"
+            assert all(
+                last_field_state_names == ode.get_field_state_names()
+                for ode in ode_list
+            ), (
+                "expected all odes to have the same name and order "
+                "of the field states (Might be changed in the future.)"
+            )
 
             num_field_states = last_ode.num_field_states()
             field_names = last_ode.get_field_state_names()
@@ -297,13 +362,16 @@ class DOLFINODESystemSolver(object):
         mesh_entities = {}
 
         nested_dofs = len(distinct_domains) > 1 or num_field_states > 1
-        
+
         if enable_cuda and self.parameters.use_cuda:
-            float_type = np.float32 if params["cuda_params"]["float_precision"] \
-                         == "single" else np.float64
+            float_type = (
+                np.float32
+                if params["cuda_params"]["float_precision"] == "single"
+                else np.float64
+            )
         else:
             float_type = np.float_
-            
+
         for label in distinct_domains:
             dof_maps[label] = OrderedDict((key, []) for key in field_names)
             if num_field_states > 1:
@@ -313,36 +381,46 @@ class DOLFINODESystemSolver(object):
 
             # If domains given
             if domains:
-                local_mesh_entities = (domains.array()==label).nonzero()[0]
+                local_mesh_entities = (domains.array() == label).nonzero()[0]
                 if family == "Lagrange":
                     mesh_entities[label] = local_mesh_entities
                 else:
-                    mesh_entities_all = np.zeros(len(local_mesh_entities)*\
-                                                 num_entity_dofs_scalar, dtype=np.uintp)
+                    mesh_entities_all = np.zeros(
+                        len(local_mesh_entities) * num_entity_dofs_scalar,
+                        dtype=np.uintp,
+                    )
                     for index in range(num_entity_dofs_scalar):
-                        mesh_entities_all[index::num_entity_dofs_scalar] = \
-                                    local_mesh_entities*num_entity_dofs_scalar+index
+                        mesh_entities_all[index::num_entity_dofs_scalar] = (
+                            local_mesh_entities * num_entity_dofs_scalar + index
+                        )
 
                     mesh_entities[label] = mesh_entities_all
-                    
+
             else:
-                num_entities = mesh.num_vertices() if family == "Lagrange" \
-                               else mesh.num_cells()*num_entity_dofs_scalar
+                num_entities = (
+                    mesh.num_vertices()
+                    if family == "Lagrange"
+                    else mesh.num_cells() * num_entity_dofs_scalar
+                )
                 mesh_entities[label] = np.arange(num_entities, dtype=np.uintp)
 
             for local_dof_offset in range(num_field_states):
-                local_entities = mesh_entities[label]*num_field_states+local_dof_offset
+                local_entities = (
+                    mesh_entities[label] * num_field_states + local_dof_offset
+                )
                 dofs = mesh_entity_to_dof[local_entities]
-                dof_maps[label][field_names[local_dof_offset]] = \
-                                    dofs[(0<=dofs)*(dofs<num_local_dofs)]
+                dof_maps[label][field_names[local_dof_offset]] = dofs[
+                    (0 <= dofs) * (dofs < num_local_dofs)
+                ]
 
             # Check we have the same number of dofs per field name.
             if len(field_names) > 1:
-                assert all(len(dof_maps[label][field_names[0]]) == \
-                           len(dof_maps[label][field_name]) for field_name in \
-                           field_names[1:]), "expected all "\
-                           "fields to have the same number of dofs"
-            
+                assert all(
+                    len(dof_maps[label][field_names[0]])
+                    == len(dof_maps[label][field_name])
+                    for field_name in field_names[1:]
+                ), ("expected all " "fields to have the same number of dofs")
+
             # Num dofs per field state per label (only store one of the
             # field states as it has to be the same for all field states)
             num_dofs[label] = len(dof_maps[label][field_names[0]])
@@ -352,21 +430,33 @@ class DOLFINODESystemSolver(object):
                 dof_maps[label][names] = np.array(value, dtype=np.intc)
 
             # Allocate memory for value transfer to ODESystemSolver
-            goss_values[label] = np.zeros(num_dofs[label]*num_field_states, \
-                                          dtype=float_type)
+            goss_values[label] = np.zeros(
+                num_dofs[label] * num_field_states,
+                dtype=float_type,
+            )
 
             # Create a nested index set for putting values into field_states
             # in a ODESystemSolver
-            goss_indices[label] = OrderedDict((key, \
-                np.arange(offset, num_dofs[label]*num_field_states+offset, num_field_states, \
-                          dtype=np.intc)) for offset, key in enumerate(field_names))
+            goss_indices[label] = OrderedDict(
+                (
+                    key,
+                    np.arange(
+                        offset,
+                        num_dofs[label] * num_field_states + offset,
+                        num_field_states,
+                        dtype=np.intc,
+                    ),
+                )
+                for offset, key in enumerate(field_names)
+            )
 
         # Allocate memory for accessing values from DOLFIN Function
         if nested_dofs:
 
             # Always use np.float_ for the dolfin_values
-            self._dolfin_values = np.concatenate(\
-                tuple(value for value in goss_values.values())).astype(np.float_)
+            self._dolfin_values = np.concatenate(
+                tuple(value for value in goss_values.values()),
+            ).astype(np.float_)
         else:
             # If not nested_dofs just grab the goss_value array
             if float_type == np.float32:
@@ -376,7 +466,7 @@ class DOLFINODESystemSolver(object):
 
         # A dof index array used to access the dofs from the dolfin vector
         dof_maps["dolfin"] = np.arange(len(self._dolfin_values), dtype=np.intc)
-        
+
         # Store arguments
         self._mesh = mesh
         self._odes = odes
@@ -395,50 +485,72 @@ class DOLFINODESystemSolver(object):
             default_cuda_params["nvcc_options"] = cuda_params["nvcc_options"].split()
             default_cuda_params["solver"] = cuda_params["solver"]
             default_cuda_params["ldt"] = cuda_params["ldt"]
-            default_cuda_params["code"]["float_precision"] = cuda_params["float_precision"]
+            default_cuda_params["code"]["float_precision"] = cuda_params[
+                "float_precision"
+            ]
 
             cuda_parameters = {}
             for label, ode in odes.items():
                 cuda_parameters[label] = default_cuda_params.copy()
-                cuda_parameters[label]["code"]["parameters"]\
-                           ["field_parameters"] = ode._field_parameters or [""]
-                cuda_parameters[label]["code"]["states"]\
-                           ["field_states"] = ode._field_states or [""]
-            
+                cuda_parameters[label]["code"]["parameters"][
+                    "field_parameters"
+                ] = ode._field_parameters or [""]
+                cuda_parameters[label]["code"]["states"][
+                    "field_states"
+                ] = ode._field_states or [""]
+
             # Instantiate the ODESystemSolvers
-            self._ode_system_solvers = OrderedDict(\
-                (label, goss.cuda.CUDAODESystemSolver(\
-                    num_dofs[label], odes[label]._gotran, params=cuda_parameters[label])) \
-                for label in distinct_domains)
+            self._ode_system_solvers = OrderedDict(
+                (
+                    label,
+                    goss.cuda.CUDAODESystemSolver(
+                        num_dofs[label],
+                        odes[label]._gotran,
+                        params=cuda_parameters[label],
+                    ),
+                )
+                for label in distinct_domains
+            )
 
         else:
 
             # Instantiate the solver
-            solver = eval(self.parameters["solver"] , cpp.__dict__, {})()
-            
+            solver = eval(self.parameters["solver"], _gosscpp.__dict__, {})()
+
             for param, value in self.parameters["solver_params"].items():
                 if param in solver.parameters:
                     solver.parameters[param] = value
-                
+
             # Instantiate the ODESystemSolvers
-            self._ode_system_solvers = OrderedDict((label, cpp.ODESystemSolver(\
-                num_dofs[label], solver.copy(), odes[label])) for label in distinct_domains)
-            
+            self._ode_system_solvers = OrderedDict(
+                (
+                    label,
+                    _gosscpp.ODESystemSolver(
+                        num_dofs[label],
+                        solver.copy(),
+                        odes[label],
+                    ),
+                )
+                for label in distinct_domains
+            )
+
             # Set num of threads
             for solver in self._ode_system_solvers.values():
                 solver.set_num_threads(self.parameters["num_threads"])
-
 
         # Check for field parameters and set any changed parameters
         self._field_params_dofs = {}
         self._param_values = {}
         for label in distinct_domains:
             ode = odes[label]
-            
+
             # Scalar parameters are set and we need to update the
             # CUDAODESystemSolver
-            if enable_cuda and self.parameters.use_cuda and \
-                   ode.changed_scalar_parameters:
+            if (
+                enable_cuda
+                and self.parameters.use_cuda
+                and ode.changed_scalar_parameters
+            ):
 
                 # Get CUDAODESystemSolver and set parameters
                 cuda_solver = self._ode_system_solvers[label]
@@ -452,15 +564,18 @@ class DOLFINODESystemSolver(object):
                 continue
 
             # Check for any field params on this domain
-            if len(ode.field_params)>0:
+            if len(ode.field_params) > 0:
 
                 # function space of parameter Function
                 V_param = ode.field_params.values()[0].function_space()
 
-                assert V_param.ufl_element().family()==family and \
-                       V_param.ufl_element().degree()==degree, \
-                       "Expected space of ODESystemSolver to be the same as "\
-                       "passed field_parameters."
+                assert (
+                    V_param.ufl_element().family() == family
+                    and V_param.ufl_element().degree() == degree
+                ), (
+                    "Expected space of ODESystemSolver to be the same as "
+                    "passed field_parameters."
+                )
 
                 # Mesh entity and dof mappings
                 first_dof_param, last_dof_param = V_param.dofmap().ownership_range()
@@ -470,34 +585,43 @@ class DOLFINODESystemSolver(object):
 
                 # Get dofs local to geometric domain
                 dofs = mesh_entity_to_dof_param[mesh_entities[label]]
-                dofs = dofs[(0<=dofs)*(dofs<num_local_param_dofs)]
+                dofs = dofs[(0 <= dofs) * (dofs < num_local_param_dofs)]
                 self._field_params_dofs[label] = dofs
-            
+
             # Init memory for setting field_parameters
-            self._param_values[label] = np.zeros(\
-                num_dofs[label]*ode.num_field_parameters(), dtype=float_type)
+            self._param_values[label] = np.zeros(
+                num_dofs[label] * ode.num_field_parameters(),
+                dtype=float_type,
+            )
 
             for local_id, param in enumerate(ode.get_field_parameter_names()):
                 if param in ode.changed_field_parameters:
                     if nested_dofs:
-                        self._param_values[label][local_id::ode.num_field_parameters()] = \
-                                ode.field_params[param].vector().array()[\
-                            self._field_params_dofs[label]]
+                        self._param_values[label][
+                            local_id :: ode.num_field_parameters()
+                        ] = (
+                            ode.field_params[param]
+                            .vector()
+                            .array()[self._field_params_dofs[label]]
+                        )
                     else:
-                        self._param_values[label][local_id::ode.num_field_parameters()] = \
-                                ode.field_params[param].vector().array()
+                        self._param_values[label][
+                            local_id :: ode.num_field_parameters()
+                        ] = (ode.field_params[param].vector().array())
 
                 else:
-                    self._param_values[label][local_id::ode.num_field_parameters()] = \
-                                                            ode.get_parameter(param)
+                    self._param_values[label][
+                        local_id :: ode.num_field_parameters()
+                    ] = ode.get_parameter(param)
 
             # Reset any changed field parameters
             ode.changed_field_parameters = []
 
             # Set field_parameter values
             if label in self._param_values:
-                self._ode_system_solvers[label].set_field_parameters(\
-                    self._param_values[label])
+                self._ode_system_solvers[label].set_field_parameters(
+                    self._param_values[label],
+                )
 
         # Store dof mapping and field value storages
         self._dof_maps = dof_maps
@@ -516,28 +640,37 @@ class DOLFINODESystemSolver(object):
         """
         for label in self._distinct_domains:
             ode = self._odes[label]
-            field_params_changed = False
+            # field_params_changed = False
             for local_id, param in enumerate(ode.get_field_parameter_names()):
                 if param in ode.changed_field_parameters:
-                    field_params_changed = True
+                    # field_params_changed = True
                     if self._nested_dofs:
-                        self._param_values[label][local_id::ode.num_field_parameters()] = \
-                                ode.field_params[param].vector().array()[\
-                            self._field_params_dofs[label]]
+                        self._param_values[label][
+                            local_id :: ode.num_field_parameters()
+                        ] = (
+                            ode.field_params[param]
+                            .vector()
+                            .array()[self._field_params_dofs[label]]
+                        )
                     else:
-                        self._param_values[label][local_id::ode.num_field_parameters()] = \
-                                ode.field_params[param].vector().array()
+                        self._param_values[label][
+                            local_id :: ode.num_field_parameters()
+                        ] = (ode.field_params[param].vector().array())
 
             # Update system solver
             if ode.changed_field_parameters:
-                self._ode_system_solvers[label].set_field_parameters(\
-                    self._param_values[label])
+                self._ode_system_solvers[label].set_field_parameters(
+                    self._param_values[label],
+                )
                 ode.changed_field_parameters = []
 
             # Scalar parameters are set and we need to update the
             # CUDAODESystemSolver
-            if enable_cuda and self.parameters.use_cuda and \
-                   ode.changed_scalar_parameters:
+            if (
+                enable_cuda
+                and self.parameters.use_cuda
+                and ode.changed_scalar_parameters
+            ):
 
                 # Get CUDAODESystemSolver and set parameters
                 cuda_solver = self._ode_system_solvers[label]
@@ -557,7 +690,7 @@ class DOLFINODESystemSolver(object):
     @property
     def state_space(self):
         return self._state_space
-    
+
     @property
     def num_distinct_domains(self):
         return self._num_distinct_domains
@@ -568,8 +701,8 @@ class DOLFINODESystemSolver(object):
         """
         assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
-        #assert v in self._state_space, "expected v to be in the state space"
-        
+        # assert v in self._state_space, "expected v to be in the state space"
+
         # Get values from dolfin
         values = self._dolfin_values
 
@@ -592,17 +725,17 @@ class DOLFINODESystemSolver(object):
             elif self._float_type == np.float32:
 
                 values[:] = self._goss_values[label]
-        
+
         # Put solution back into DOLFIN Function
         v.vector()[self._dof_maps["dolfin"]] = values
-        
+
     def to_field_states(self, v):
         """
         Copy values in v to stored field states
         """
         assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
-        #assert v in self._state_space, "expected v to be in the state space"
+        # assert v in self._state_space, "expected v to be in the state space"
 
         # Get values from dolfin
         values = self._dolfin_values
@@ -622,7 +755,7 @@ class DOLFINODESystemSolver(object):
 
             # If single precision we need to copy
             elif self._float_type == np.float32:
-            
+
                 self._goss_values[label][:] = values
 
             # Transfer values to Solver
@@ -631,9 +764,9 @@ class DOLFINODESystemSolver(object):
     def step(self, interval, v):
         """
         Solve on the given time step (t0, t1).
-        
+
         End users are recommended to use solve instead.
-        
+
         Arguments:
         interval : tuple
           The time interval (t0, t1) for the step
@@ -641,9 +774,9 @@ class DOLFINODESystemSolver(object):
 
         assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
-        #assert v in self._state_space, "expected v to be in the state space"
+        # assert v in self._state_space, "expected v to be in the state space"
 
-        timer = d.Timer("ODE step")
+        timer = d.Timer("ODE step")  # noqa: F841
         (t0, t1) = interval
         dt = t1 - t0
 
@@ -667,22 +800,23 @@ class DOLFINODESystemSolver(object):
         # If not create copy the states and exit
         if not self._saved_states:
             if enable_cuda and self.parameters.use_cuda:
-                self._saved_states = dict(\
-                    (label, ode_system_solver.get_cuda_states().copy()) \
-                    for label, ode_system_solver in \
-                    self._ode_system_solvers.items())
-                
+                self._saved_states = dict(
+                    (label, ode_system_solver.get_cuda_states().copy())
+                    for label, ode_system_solver in self._ode_system_solvers.items()
+                )
+
             else:
-                self._saved_states = dict((label, ode_system_solver.states().copy()) \
-                                          for label, ode_system_solver in \
-                                          self._ode_system_solvers.items())
+                self._saved_states = dict(
+                    (label, ode_system_solver.states().copy())
+                    for label, ode_system_solver in self._ode_system_solvers.items()
+                )
             return
-        
+
         # Save states for each solver
         if enable_cuda and self.parameters.use_cuda:
             for label, ode_system_solver in self._ode_system_solvers.items():
                 self._saved_states[label][:] = ode_system_solver.get_cuda_states()
-            
+
         else:
             for label, ode_system_solver in self._ode_system_solvers.items():
                 self._saved_states[label][:] = ode_system_solver.states()
@@ -694,14 +828,12 @@ class DOLFINODESystemSolver(object):
         # If not create copy the states and exit
         if not self._saved_states:
             raise RuntimeError("Cannot restore any states when none are saved.")
-        
+
         # Restor the states from the saved one
         if enable_cuda and self.parameters.use_cuda:
             for label, ode_system_solver in self._ode_system_solvers.items():
                 ode_system_solver.set_cuda_states(self._saved_states[label])
-            
+
         else:
             for label, ode_system_solver in self._ode_system_solvers.items():
                 ode_system_solver.states()[:] = self._saved_states[label]
-
-    

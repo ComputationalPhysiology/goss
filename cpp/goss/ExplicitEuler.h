@@ -26,15 +26,15 @@
 
 #include "ODESolver.h"
 
-namespace goss 
+namespace goss
 {
 
   // An Explicit Euler solver
   class ExplicitEuler : public ODESolver
   {
-    
+
     public:
-    
+
     // Default constructor
     ExplicitEuler();
 
@@ -45,7 +45,7 @@ namespace goss
     ExplicitEuler(const ExplicitEuler& solver);
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const 
+    std::shared_ptr<ODESolver> copy() const
     { return std::make_shared<ExplicitEuler>(*this); }
 
     // Attach ODE to solver
@@ -56,13 +56,13 @@ namespace goss
 
     // Destructor
     ~ExplicitEuler ();
-    
+
   protected:
 
     // State derivative, allocated in attach(ode)
-    std::vector<double> _dFdt; 
-    
+    std::vector<double> _dFdt;
+
   };
-  
+
 }
 #endif

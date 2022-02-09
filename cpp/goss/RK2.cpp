@@ -50,7 +50,7 @@ RK2::~RK2 ()
 //-----------------------------------------------------------------------------
 void RK2::attach(std::shared_ptr<ODE> ode)
 {
-  
+
   ODESolver::attach(ode);
 
   if (ode->is_dae())
@@ -62,7 +62,7 @@ void RK2::attach(std::shared_ptr<ODE> ode)
   tmp.resize(num_states());
 }
 //-----------------------------------------------------------------------------
-void RK2::forward(double* y, double t, double dt) 
+void RK2::forward(double* y, double t, double dt)
 {
 
   assert(_ode);
@@ -74,14 +74,14 @@ void RK2::forward(double* y, double t, double dt)
 
   // Local time
   double lt = t;
-  for (ulong j = 0; j < nsteps; ++j) 
+  for (ulong j = 0; j < nsteps; ++j)
   {
     // Initial eval
     _ode->eval(y, lt, &k1[0]);
 
     // Explicit Euler step to find the midpoint solution
     axpy(&tmp[0], y, 0.5*ldt, &k1[0]);
-  
+
     // Evaluate derivative at midpoint
     _ode->eval(&tmp[0], lt+0.5*ldt, &k1[0]);
 

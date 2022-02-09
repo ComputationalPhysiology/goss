@@ -4,7 +4,7 @@
 #include <memory>
 #include <goss/ODE.h>
 
-namespace goss 
+namespace goss
 {
 
   /*
@@ -18,7 +18,7 @@ namespace goss
   class Robertson : public ODE
   {
   public:
-    
+
     Robertson () : ODE(3) {}
 
     std::shared_ptr<ODE> copy() const
@@ -33,16 +33,16 @@ namespace goss
       const double y1 = y[0];
       const double y2 = y[1];
       const double y3 = y[2];
-      f_vals[0] = -0.04*y1+1.0e4*y2*y3; 
+      f_vals[0] = -0.04*y1+1.0e4*y2*y3;
       f_vals[1] =  0.04*y1-1.0e4*y2*y3-3.0e7*y2*y2;
       f_vals[2] =  3.0e7*y2*y2;
     }
-    
+
     void get_ic(goss::DoubleVector *res) const
     {
       res->n = _num_states;
       res->data.reset(new double[_num_states]);
-      res->data[0] = 1.0; 
+      res->data[0] = 1.0;
       res->data[1] = 0.0;
       res->data[2] = 0.0;
     }

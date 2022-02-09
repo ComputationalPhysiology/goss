@@ -44,7 +44,7 @@ GRL2::GRL2(const GRL2& solver) : GRL1(solver), _y2(solver._y2)
 }
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()
-{ 
+{
   // Do nothing
 }
 //-----------------------------------------------------------------------------
@@ -65,13 +65,13 @@ void GRL2::attach(std::shared_ptr<ODE> ode)
 //-----------------------------------------------------------------------------
 void GRL2::forward(double* y, double t, double dt)
 {
-  
+
   // Calculate number of steps and size of timestep based on _ldt
   const double ldt_0 = parameters["ldt"];
   const double delta = parameters["delta"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
   const double ldt = dt/nsteps;
-  
+
   // Local time
   double lt = t;
 

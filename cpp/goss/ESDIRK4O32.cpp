@@ -27,25 +27,25 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32()
   : AdaptiveImplicitSolver(),
-    gamma(0.43586652150845899942), 
-    a21(gamma), 
-    a22(gamma), 
-    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
-    a32((-2*gamma+1)/(4*gamma)), 
-    a33(gamma), 
-    a41((6*gamma-1)/(12*gamma)), 
-    a42(-1/((24*gamma-12)*gamma)), 
-    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
-    a44(gamma), 
-    b1(a41), 
-    b2(a42), 
-    b3(a43), 
-    b4(a44), 
-    bh1(a31), 
-    bh2(a32), 
-    bh3(a33), 
-    c2(2.0*gamma), 
-    c3(1.0), 
+    gamma(0.43586652150845899942),
+    a21(gamma),
+    a22(gamma),
+    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)),
+    a32((-2*gamma+1)/(4*gamma)),
+    a33(gamma),
+    a41((6*gamma-1)/(12*gamma)),
+    a42(-1/((24*gamma-12)*gamma)),
+    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)),
+    a44(gamma),
+    b1(a41),
+    b2(a42),
+    b3(a43),
+    b4(a44),
+    bh1(a31),
+    bh2(a32),
+    bh3(a33),
+    c2(2.0*gamma),
+    c3(1.0),
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
@@ -55,63 +55,63 @@ ESDIRK4O32::ESDIRK4O32()
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32(std::shared_ptr<ODE> ode)
   : AdaptiveImplicitSolver(),
-    gamma(0.43586652150845899942), 
-    a21(gamma), 
-    a22(gamma), 
-    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
-    a32((-2*gamma+1)/(4*gamma)), 
-    a33(gamma), 
-    a41((6*gamma-1)/(12*gamma)), 
-    a42(-1/((24*gamma-12)*gamma)), 
-    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
-    a44(gamma), 
-    b1(a41), 
-    b2(a42), 
-    b3(a43), 
-    b4(a44), 
-    bh1(a31), 
-    bh2(a32), 
-    bh3(a33), 
-    c2(2.0*gamma), 
-    c3(1.0), 
+    gamma(0.43586652150845899942),
+    a21(gamma),
+    a22(gamma),
+    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)),
+    a32((-2*gamma+1)/(4*gamma)),
+    a33(gamma),
+    a41((6*gamma-1)/(12*gamma)),
+    a42(-1/((24*gamma-12)*gamma)),
+    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)),
+    a44(gamma),
+    b1(a41),
+    b2(a42),
+    b3(a43),
+    b4(a44),
+    bh1(a31),
+    bh2(a32),
+    bh3(a33),
+    c2(2.0*gamma),
+    c3(1.0),
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
   parameters.rename("ESDIRK4O32");
   _iord = 3;
   attach(ode);
-} 
+}
 //-----------------------------------------------------------------------------
 ESDIRK4O32::ESDIRK4O32(const ESDIRK4O32& solver)
   : AdaptiveImplicitSolver(solver),
-    gamma(0.43586652150845899942), 
-    a21(gamma), 
-    a22(gamma), 
-    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)), 
-    a32((-2*gamma+1)/(4*gamma)), 
-    a33(gamma), 
-    a41((6*gamma-1)/(12*gamma)), 
-    a42(-1/((24*gamma-12)*gamma)), 
-    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)), 
-    a44(gamma), 
-    b1(a41), 
-    b2(a42), 
-    b3(a43), 
-    b4(a44), 
-    bh1(a31), 
-    bh2(a32), 
-    bh3(a33), 
-    c2(2.0*gamma), 
-    c3(1.0), 
+    gamma(0.43586652150845899942),
+    a21(gamma),
+    a22(gamma),
+    a31((-4*gamma*gamma+6*gamma-1)/(4*gamma)),
+    a32((-2*gamma+1)/(4*gamma)),
+    a33(gamma),
+    a41((6*gamma-1)/(12*gamma)),
+    a42(-1/((24*gamma-12)*gamma)),
+    a43((-6*gamma*gamma+6*gamma-1)/(6*gamma-3)),
+    a44(gamma),
+    b1(a41),
+    b2(a42),
+    b3(a43),
+    b4(a44),
+    bh1(a31),
+    bh2(a32),
+    bh3(a33),
+    c2(2.0*gamma),
+    c3(1.0),
     c4(1.0),
-    z1(solver.num_states()), z2(solver.num_states()), 
-    z3(solver.num_states()), z4(solver.num_states()), 
+    z1(solver.num_states()), z2(solver.num_states()),
+    z3(solver.num_states()), z4(solver.num_states()),
     yn(solver.num_states()), yh(solver.num_states())
 {
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-ESDIRK4O32::~ESDIRK4O32() 
+ESDIRK4O32::~ESDIRK4O32()
 {
   // Do nothing
 }
@@ -148,7 +148,7 @@ void ESDIRK4O32::reset()
   AdaptiveImplicitSolver::reset();
 }
 //-----------------------------------------------------------------------------
-void ESDIRK4O32::forward(double* y, double t, double interval) 
+void ESDIRK4O32::forward(double* y, double t, double interval)
 {
   // NB sjekk definisjonen av prev vs hvilken dt som sendes til NewtonSolve!
 
@@ -164,16 +164,16 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   // Use the raw pointer enabling pointer swap
   yn0 = &yn[0];
 
-  //if (ldt>0) 
+  //if (ldt>0)
   //{
   //    // Calculates a local time step that is <= ldt,
   //    // and that divides dt into equally sized steps:
   //
-  //    n_steps = (int) ceil(dt/ldt -1E-12); 
+  //    n_steps = (int) ceil(dt/ldt -1E-12);
   //    dt /= n_steps; //could have used new variable, but dt was available...
   //}
 
-  _dt = _ldt;    
+  _dt = _ldt;
   bool step_ok; // done = false;
   reached_tend = false;
 
@@ -191,7 +191,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
   while (!reached_tend)
   {
-  
+
     // Computes the first node explicitly
     _ode->eval(y, _t, &z1[0]);
     nfevals += 1;
@@ -224,7 +224,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     //printf("z2=");
     for (i = 0; i < num_states(); ++i)
       z3[i] = z2[i] + y[i];
-    
+
     //printf(" before eval\n");
     _ode->eval(&z2[0], _t + c2*_dt, &_f1[0]);
     nfevals += 1;
@@ -240,7 +240,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
     }
     //printf(" after eval\n");
 
-    step_ok = newton_solve(&z3[0], &_prev[0], y, _t + c3*_dt, _dt, a33, 
+    step_ok = newton_solve(&z3[0], &_prev[0], y, _t + c3*_dt, _dt, a33,
 			   always_recompute_jacobian);
 
     // Need to check if the newton solver is converged.
@@ -277,7 +277,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
       _prev[i] = a41*z1[i] + a42*z2[i] + a43*z3[i];
     }
 
-    step_ok = newton_solve(&z4[0], &_prev[0], y, _t + c4*_dt, _dt, a44, 
+    step_ok = newton_solve(&z4[0], &_prev[0], y, _t + c4*_dt, _dt, a44,
 			   always_recompute_jacobian);
 
     // Need to check if the newton solver is converged.
@@ -295,14 +295,14 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
     for (i = 0; i < num_states(); ++i)
       z4[i] += y[i];
-    
+
     _ode->eval(&z4[0], _t + c4*_dt, &_f1[0]);
     nfevals += 1;
 
     for (i = 0; i < num_states(); ++i)
     {
       //printf("i=%d, dt=%1.4e, b1=%1.4e, b2=%1.4e, b3=%1.4e, b4=%1.4e\n",i,dt,b1,b2,b3,b4);
-      //printf("yn=%1.4e, y=%1.4e, z1=%1.4e, z2=%1.4e, z3=%1.4e, z4=%1.4e\n",yn[i],y[i],z1[i] ,z2[i] ,z3[i] ,f1[i]); 
+      //printf("yn=%1.4e, y=%1.4e, z1=%1.4e, z2=%1.4e, z3=%1.4e, z4=%1.4e\n",yn[i],y[i],z1[i] ,z2[i] ,z3[i] ,f1[i]);
       yn[i] = y[i] + _dt*(b1*z1[i] + b2*z2[i] + b3*z3[i] + b4*_f1[i]);
       yh[i] -= yn[i];//use this as the error vector
     }
@@ -326,10 +326,10 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 	{
           for (i = 0; i < num_states(); ++i)
             ret_ptr[i] = y[i];
-	  
+
           yn0 = y;
         }
-	
+
         return;
       }
 #endif
@@ -342,7 +342,7 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
   {
     for (i = 0; i < num_states(); ++i)
       ret_ptr[i] = y[i];
-    
+
     yn0 = y;
     //printf("Accepted at t=%1.4e, with dt=%1.4e\n",t,dt);
   }

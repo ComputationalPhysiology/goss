@@ -36,7 +36,7 @@ namespace goss {
   };
 
   // A small wrapper around a double pointer
-  struct DoubleVector2D 
+  struct DoubleVector2D
   {
 
     boost::scoped_array<double> data;

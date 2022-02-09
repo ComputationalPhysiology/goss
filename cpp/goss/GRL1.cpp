@@ -44,7 +44,7 @@ GRL1::GRL1(const GRL1& solver) : ODESolver(solver)
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
-{ 
+{
   // Do nothing
 }
 
@@ -53,7 +53,7 @@ void GRL1::attach(std::shared_ptr<ODE> ode)
 {
   // Attach ode using base class
   ODESolver::attach(ode);
-  
+
   if (ode->is_dae())
     goss_error("GRL1.cpp",
 	       "attaching ode",
@@ -63,13 +63,13 @@ void GRL1::attach(std::shared_ptr<ODE> ode)
 //-----------------------------------------------------------------------------
 void GRL1::forward(double* y, double t, double dt)
 {
-  
+
   // Calculate number of steps and size of timestep based on _ldt
   const double ldt_0 = parameters["ldt"];
   const double delta = parameters["delta"];
   const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
   const double ldt = dt/nsteps;
-  
+
   // Local time
   double lt = t;
 

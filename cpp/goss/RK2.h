@@ -26,15 +26,15 @@
 #include "ODESolver.h"
 #include "types.h"
 
-namespace goss 
+namespace goss
 {
 
   // Explicit Runge Kutta solver of 2nd order
-  class RK2 : public ODESolver 
+  class RK2 : public ODESolver
   {
-  
+
   public:
-    
+
     // Default constructor
     RK2();
 
@@ -56,11 +56,11 @@ namespace goss
     // Step solver an interval in time forward
     virtual void forward(double* y, double t, double dt);
 
-  protected: 
+  protected:
 
     // State derivative, allocated in attach(ode)
     std::vector<double> k1, tmp;
-    
+
     // Perform a weighted addition of y and z
     inline void axpy(double* x, const double* y, double a, const double* z);
 
@@ -69,7 +69,7 @@ namespace goss
 //-----------------------------------------------------------------------------
 inline void goss::RK2::axpy(double* x, const double* y, double a, const double* z)
 {
-  for (uint i = 0; i < num_states(); ++i) 
+  for (uint i = 0; i < num_states(); ++i)
     x[i] = y[i] + a*z[i];
 }
 //-----------------------------------------------------------------------------

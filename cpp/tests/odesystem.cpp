@@ -45,7 +45,7 @@ protected:
   std::shared_ptr<ODESolver> solver;
   boost::scoped_ptr<ODESystemSolver> system_solver;
   DoubleVector x_coarse, x_fine;
-  
+
   double run_system(double dt, double tstop, DoubleVector& x, uint num_threads=0)
   {
 
@@ -121,7 +121,7 @@ typedef testing::Types<Winslow, WinslowCSE, WinslowCSEArray, Panfilov, PanfilovC
 		       PanfilovCSEArray> ODEs;
 
 // Different list of Solvers
-typedef testing::Types<RK2, RK4, RKF32> ExplicitODESolvers; 
+typedef testing::Types<RK2, RK4, RKF32> ExplicitODESolvers;
 //typedef testing::Types<ImplicitEuler, ESDIRK4O32> ImplicitODESolvers;
 typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
 //typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
@@ -135,8 +135,8 @@ TYPED_TEST_CASE(OpenMPTester, ImplicitODESolvers);
 //TYPED_TEST_CASE(RLTester, RLODESolvers);
 //TYPED_TEST_CASE(ParameterizedODETester, ParameterizedODEs);
 
-// Run all included 
-TYPED_TEST(ODETester, IntegrationTest) 
+// Run all included
+TYPED_TEST(ODETester, IntegrationTest)
 {
 
   // Run coarse simulation
@@ -151,7 +151,7 @@ TYPED_TEST(ODETester, IntegrationTest)
   const double init_fine = this->run_system(0.001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
   // Check all of the data points are the same but not the same as the init
   for (uint i=1; i < this->x_fine.n; i++)
   {
@@ -163,7 +163,7 @@ TYPED_TEST(ODETester, IntegrationTest)
   }
 }
 
-TYPED_TEST(ExplicitTester, ExplicitSolverTest) 
+TYPED_TEST(ExplicitTester, ExplicitSolverTest)
 {
 
   // Run coarse simulation
@@ -178,7 +178,7 @@ TYPED_TEST(ExplicitTester, ExplicitSolverTest)
   const double init_fine = this->run_system(0.001, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
   // Check all of the data points are the same but not the same as the init
   for (uint i=1; i < this->x_fine.n; i++)
   {
@@ -190,7 +190,7 @@ TYPED_TEST(ExplicitTester, ExplicitSolverTest)
   }
 }
 
-TYPED_TEST(ImplicitTester, ImplicitSolverTest) 
+TYPED_TEST(ImplicitTester, ImplicitSolverTest)
 {
 
   // Run coarse simulation
@@ -205,7 +205,7 @@ TYPED_TEST(ImplicitTester, ImplicitSolverTest)
   const double init_fine = this->run_system(0.01, 10.0, this->x_fine);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
   // Check all of the data points are the same but not the same as the init
   for (uint i=1; i < this->x_fine.n; i++)
   {
@@ -217,7 +217,7 @@ TYPED_TEST(ImplicitTester, ImplicitSolverTest)
   }
 }
 
-TYPED_TEST(OpenMPTester, OpenMPSolverTester) 
+TYPED_TEST(OpenMPTester, OpenMPSolverTester)
 {
 
   // Run coarse simulation
@@ -232,7 +232,7 @@ TYPED_TEST(OpenMPTester, OpenMPSolverTester)
   const double init_fine = this->run_system(0.01, 10.0, this->x_fine, 4);
 
   ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-  
+
   // Check all of the data points are the same but not the same as the init
   for (uint i=1; i < this->x_fine.n; i++)
   {
@@ -244,7 +244,7 @@ TYPED_TEST(OpenMPTester, OpenMPSolverTester)
   }
 }
 
-//TYPED_TEST(RLTester, RLSolverTest) 
+//TYPED_TEST(RLTester, RLSolverTest)
 //{
 //
 //  // Run coarse simulation
@@ -254,5 +254,5 @@ TYPED_TEST(OpenMPTester, OpenMPSolverTester)
 //  this->run_system(0.0001, 10.0, this->x_fine);
 //
 //  ASSERT_NEAR(this->x_fine.data[0], this->x_coarse.data[0], 1.0);
-//  
+//
 //}

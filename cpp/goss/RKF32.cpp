@@ -29,24 +29,24 @@
 using namespace goss;
 
 //-----------------------------------------------------------------------------
-RKF32::RKF32() 
-  : AdaptiveExplicitSolver(), 
+RKF32::RKF32()
+  : AdaptiveExplicitSolver(),
     nfevals(0), ndtsa(0), ndtsr(0),
-    a21(1.0/2.0), 
-    a32(3.0/4.0), 
-    b1(2.0/9.0), 
-    b2(1.0/3.0), 
-    b3(4.0/9.0), 
-    bh1(7.0/24.0), 
-    bh2(1.0/4.0), 
-    bh3(1.0/3.0), 
-    bh4(1.0/8.0), 
-    d1(b1-bh1), 
-    d2(b2-bh2), 
-    d3(b3-bh3), 
-    d4(-bh4), 
-    c2(1.0/2.0), 
-    c3(3.0/4.0), 
+    a21(1.0/2.0),
+    a32(3.0/4.0),
+    b1(2.0/9.0),
+    b2(1.0/3.0),
+    b3(4.0/9.0),
+    bh1(7.0/24.0),
+    bh2(1.0/4.0),
+    bh3(1.0/3.0),
+    bh4(1.0/8.0),
+    d1(b1-bh1),
+    d2(b2-bh2),
+    d3(b3-bh3),
+    d4(-bh4),
+    c2(1.0/2.0),
+    c3(3.0/4.0),
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
 {
@@ -54,60 +54,60 @@ RKF32::RKF32()
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
-RKF32::RKF32(std::shared_ptr<ODE> ode) 
-  : AdaptiveExplicitSolver(), 
+RKF32::RKF32(std::shared_ptr<ODE> ode)
+  : AdaptiveExplicitSolver(),
     nfevals(0), ndtsa(0), ndtsr(0),
-    a21(1.0/2.0), 
-    a32(3.0/4.0), 
-    b1(2.0/9.0), 
-    b2(1.0/3.0), 
-    b3(4.0/9.0), 
-    bh1(7.0/24.0), 
-    bh2(1.0/4.0), 
-    bh3(1.0/3.0), 
-    bh4(1.0/8.0), 
-    d1(b1-bh1), 
-    d2(b2-bh2), 
-    d3(b3-bh3), 
-    d4(-bh4), 
-    c2(1.0/2.0), 
-    c3(3.0/4.0), 
+    a21(1.0/2.0),
+    a32(3.0/4.0),
+    b1(2.0/9.0),
+    b2(1.0/3.0),
+    b3(4.0/9.0),
+    bh1(7.0/24.0),
+    bh2(1.0/4.0),
+    bh3(1.0/3.0),
+    bh4(1.0/8.0),
+    d1(b1-bh1),
+    d2(b2-bh2),
+    d3(b3-bh3),
+    d4(-bh4),
+    c2(1.0/2.0),
+    c3(3.0/4.0),
     nbytes(0),
     ki(0), k1(0), k2(0), k3(0), k4(0), yn(0), e(0)
-{ 
+{
   parameters.rename("RKF32");
   _iord = 3;
   attach(ode);
 }
 //-----------------------------------------------------------------------------
-RKF32::RKF32(const RKF32& solver) 
-  : AdaptiveExplicitSolver(solver), 
+RKF32::RKF32(const RKF32& solver)
+  : AdaptiveExplicitSolver(solver),
     nfevals(solver.nfevals), ndtsa(solver.ndtsa), ndtsr(solver.ndtsr),
-    a21(1.0/2.0), 
-    a32(3.0/4.0), 
-    b1(2.0/9.0), 
-    b2(1.0/3.0), 
-    b3(4.0/9.0), 
-    bh1(7.0/24.0), 
-    bh2(1.0/4.0), 
-    bh3(1.0/3.0), 
-    bh4(1.0/8.0), 
-    d1(b1-bh1), 
-    d2(b2-bh2), 
-    d3(b3-bh3), 
-    d4(-bh4), 
-    c2(1.0/2.0), 
-    c3(3.0/4.0), 
+    a21(1.0/2.0),
+    a32(3.0/4.0),
+    b1(2.0/9.0),
+    b2(1.0/3.0),
+    b3(4.0/9.0),
+    bh1(7.0/24.0),
+    bh2(1.0/4.0),
+    bh3(1.0/3.0),
+    bh4(1.0/8.0),
+    d1(b1-bh1),
+    d2(b2-bh2),
+    d3(b3-bh3),
+    d4(-bh4),
+    c2(1.0/2.0),
+    c3(3.0/4.0),
     nbytes(solver.num_states()*sizeof(double)),
-    ki(solver.num_states()), k1(solver.num_states()), 
-    k2(solver.num_states()), k3(solver.num_states()), 
-    k4(solver.num_states()), yn(solver.num_states()), 
+    ki(solver.num_states()), k1(solver.num_states()),
+    k2(solver.num_states()), k3(solver.num_states()),
+    k4(solver.num_states()), yn(solver.num_states()),
     e(solver.num_states())
-{ 
+{
   // Do nothing
 }
 //-----------------------------------------------------------------------------
-RKF32::~RKF32() 
+RKF32::~RKF32()
 {
   // Do nothing
 }
@@ -115,7 +115,7 @@ RKF32::~RKF32()
 //-----------------------------------------------------------------------------
 void RKF32::attach(std::shared_ptr<ODE> ode)
 {
-  // Attach ode using base class. 
+  // Attach ode using base class.
   // NOTE: This will trigger call to reset
   ODESolver::attach(ode);
 
@@ -125,7 +125,7 @@ void RKF32::attach(std::shared_ptr<ODE> ode)
 	       "cannot integrate a DAE ode with an explicit solver.");
 
   // Initilize RK increments
-  ki.resize(num_states()); 
+  ki.resize(num_states());
   k1.resize(num_states());
   k2.resize(num_states());
   k3.resize(num_states());
@@ -150,12 +150,12 @@ void RKF32::reset()
   AdaptiveExplicitSolver::reset();
 }
 //-----------------------------------------------------------------------------
-void RKF32::forward(double* y, double t, double interval) 
+void RKF32::forward(double* y, double t, double interval)
 {
   uint i;
 
-  // We swap the result vector if a timestep is accepted. We therefore need 
-  // to store the pointer to the initial y-vector in order to ensure that 
+  // We swap the result vector if a timestep is accepted. We therefore need
+  // to store the pointer to the initial y-vector in order to ensure that
   // this memory segment contains the final result when the end is reached ...
   double* ret_ptr = y;
   double* swap, *yn0;
@@ -168,23 +168,23 @@ void RKF32::forward(double* y, double t, double interval)
 
   reached_tend = false;
 
-  // Local time It is only used in 
+  // Local time It is only used in
   _t = t;
 
   // FIXME: first i always true
-  if (first) 
+  if (first)
   {
     _ode->eval(y, t, &k1[0]);
     nfevals += 1;
   }
 
   // Set initial time step
-  if (_ldt < 0) 
+  if (_ldt < 0)
   {
     _dt = dtinit(t, y, yn0, &k1[0], &k2[0], _iord);
     nfevals += 1;
-  } 
-  else 
+  }
+  else
   {
     _dt = _ldt;
   }
@@ -196,12 +196,12 @@ void RKF32::forward(double* y, double t, double interval)
 
   while (!reached_tend)
   {
-    
+
     for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a21*k1[i];
 
     _ode->eval(&ki[0], t + c2*_dt, &k2[0]);
-    
+
     for (i = 0; i < num_states(); ++i)
       ki[i] = y[i] + _dt*a32*k2[i];
 
@@ -240,7 +240,7 @@ void RKF32::forward(double* y, double t, double interval)
       {
         if (ret_ptr != y)
 	{
-	  for (i = 0; i < num_states(); ++i) 
+	  for (i = 0; i < num_states(); ++i)
 	    ret_ptr[i] = y[i];
           //memcpy(ret_ptr, y, nbytes);
           yn0 = y;
@@ -249,7 +249,7 @@ void RKF32::forward(double* y, double t, double interval)
         return;
       }
 #endif
-    } 
+    }
     else
       ndtsr += 1;
 
@@ -259,7 +259,7 @@ void RKF32::forward(double* y, double t, double interval)
   // This can probably be done in a more elegant way
   if (ret_ptr != y)
   {
-    for (i = 0; i < num_states(); ++i) 
+    for (i = 0; i < num_states(); ++i)
       ret_ptr[i] = y[i];
     //memcpy(ret_ptr, y, nbytes);
     yn0 = y;
@@ -289,7 +289,7 @@ void RKF32::dt_vector(DoubleVector *res)
 void RKF32::accepted_vector(DoubleVector *res)
 {
   res->n    = accept_v.size();
-  res->data.reset(new double[accept_v.size()]); 
+  res->data.reset(new double[accept_v.size()]);
   for(uint i = 0; i < accept_v.size(); ++i)
     res->data[i] = float(accept_v[i]);
 }
@@ -298,18 +298,18 @@ void RKF32::accepted_vector(DoubleVector *res)
 //-----------------------------------------------------------------------------
 void RKF32::log_data(double, bool)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 void RKF32::dt_vector(DoubleVector*)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 //-----------------------------------------------------------------------------
 void RKF32::accepted_vector(DoubleVector*)
 {
-  std::cout << "DEBUG OFF!" << std::endl; 
+  std::cout << "DEBUG OFF!" << std::endl;
 }
 //-----------------------------------------------------------------------------
 #endif
