@@ -1,8 +1,9 @@
+import os
 from typing import NamedTuple
 from typing import Optional
-import os
-import numpy as np
+
 import gotran
+import numpy as np
 
 from .compilemodule import jit
 
@@ -79,7 +80,10 @@ class ODE:
         return jac
 
     def linearized_eval(
-        self, states: np.ndarray, time: float, only_linear: bool = False
+        self,
+        states: np.ndarray,
+        time: float,
+        only_linear: bool = False,
     ) -> LinearizedEval:
         states = self._check_state_input(states)
         linear = np.zeros_like(states)

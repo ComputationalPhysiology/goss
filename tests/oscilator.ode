@@ -2,4 +2,3 @@ states(x=1.0, y=0.)
 
 dx_dt = -y
 dy_dt = x
-

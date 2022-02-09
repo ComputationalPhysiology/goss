@@ -1,5 +1,4 @@
 """Expose names from the compiled cpp modules to the goss.cpp namespace"""
-
 # Copyright (C) 2012 Johan Hake
 #
 # This file is part of GOSS.
@@ -19,21 +18,23 @@
 #
 # First added:  2012-10-11
 # Last changed: 2012-10-11
-
-
 # Import pure python modules
-from . import codegeneration as codegeneration
+from __future__ import annotations
+
+from . import codegeneration
+from . import solvers
 from .compilemodule import jit
 from .ode import ODE
+from .systemsolver import ODESystemSolver
 
-# from ._gosscpp import ExplicitEuler, ODE, make_ode
+goss_solvers = [solvers.RL1]
 
-__all__ = ["codegeneration", "jit", "cpp"]
+__all__ = ["codegeneration", "jit", "ODE", "goss_solvers", "ODESystemSolver"]
 
 # If dolfin is present import it
-try:
-    from . import dolfinutils
+# try:
+#     from . import dolfinutils
 
-    __all__.extend(dolfinutils.__all__)
-except Exception as e:
-    pass
+#     __all__.extend(dolfinutils.__all__)
+# except ModuleNotFoundError as e:
+#     pass

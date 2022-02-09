@@ -9,7 +9,7 @@ To work with goss from python, you only need to install the python package. Clon
 ```
 python -m pip install .
 ```
-or use 
+or use
 ```
 python -m pip install -e .
 ```

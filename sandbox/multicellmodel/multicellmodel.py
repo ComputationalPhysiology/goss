@@ -20,7 +20,7 @@ class StimSubDomain(SubDomain):
         self.x0, self.y0 = center
         self.radius = radius
         SubDomain.__init__(self)
-        
+
     def inside(self, x, on_boundary):
         r = math.sqrt((x[0]-self.x0)**2 + (x[1]-self.y0)**2)
         if r < self.radius:
@@ -37,12 +37,12 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
                         fitzhughnagumo=["V"])
     labels = dict(tentusscher_panfilov_2006_epi_cell=10,
                   fitzhughnagumo=20)
-    
+
     labels = [labels[model] for model in cellmodel_strs]
     cellmodels = [dolfin_jit(\
         load_ode(cellmodel), field_states=field_states[cellmodel], \
         field_parameters=field_parameters[cellmodel]) for cellmodel in cellmodel_strs]
-    
+
     if len(cellmodels) > 1:
         # Create subdomains for applying the different ODEs
         subdomain = CompiledSubDomain("x[0] <= 5.0")
@@ -63,7 +63,7 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
                                "(x[1]-center_y)*(x[1]-center_y))/(sigma*sigma))",
                                center_x=3*L/4, center_y=L/4, offset=0.0, sigma=L/2, \
                                scale=1.0)
-    
+
     # Tentusscher parameter
     if 10 in labels:
         ode_tt = cellmodels[10]
@@ -74,33 +74,33 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
         g_CaL_func = Function(V)
         g_CaL_func.interpolate(param_scale)
         ode_tt.set_parameter("g_CaL", g_CaL_func)
-        
+
         plot(g_CaL_func, interactive=True, \
              title="Spatially varying g_CaL param in tenTusscher")
-    
+
     # FHN paramter
     if 20 in labels:
 
         ode_fhn = cellmodels[20]
-    
+
         # Set-up cardiac model
         k = 0.00004; V_rest = -85.; V_threshold = -70.; V_peak = 40.;
         V_amp = V_peak - V_rest; l = 0.63; b = 0.013;
-        
+
         param_scale.scale = b
         param_scale.offset = b
         param_scale.center_x = L/4
         param_scale.center_y = L/4
         b_func = Function(V)
         b_func.interpolate(param_scale)
-        
+
         plot(b_func, interactive=True, title="Spatially varying 'a' param in FHN")
-        
+
         cell_parameters = {"c_1": k*V_amp**2, "c_2": k*V_amp, "c_3": b/l,
                            "a": (V_threshold - V_rest)/V_amp,
                            "b": b_func, "V_rest":V_rest,
                            "V_peak": V_peak}
-        
+
         # Set FHN specific parameters
         for params in cell_parameters.items():
             ode_fhn.set_parameter(*params)
@@ -131,14 +131,14 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
                       "amplitude : 0.0) : 0.0", time=time, duration=duration, \
                       start=1.0, amplitude=amplitude)
     stimulus = Markerwise([stim], [stim_marker], stim_domain)
-    
+
     heart = CardiacModel(domain, time, M_i, M_e, cellmodels, stimulus)
     return heart
 
 def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
                         duration=1.0, membrane_potential="V"):
     from cbcbeat.gossplittingsolver import GOSSplittingSolver
-    
+
     # Set-up solver
     ps = GOSSplittingSolver.default_parameters()
     ps["pde_solver"] = "monodomain"
@@ -161,7 +161,7 @@ def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
 
     heart = setup_model(cellmodel_strs, domain, amplitude, duration, \
                         harmonic_mean=ps["pde_solver"] == "monodomain")
-    
+
     solver = GOSSplittingSolver(heart, ps)
 
     (v, vur) = solver.solution_fields()
@@ -183,7 +183,7 @@ def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
                 for param, func in ode.field_params.items():
                     func.vector()[:] = ode.get_parameter(param)
                     ode.set_parameter(param, func)
-        
+
         continue
     total.stop()
 
@@ -194,13 +194,13 @@ def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
     norm_u = norm(u)
     plot(v, title="Final u, t=%.1f (%s)" % (timestep[1], ps["pde_solver"]), \
          interactive=True, scale=0., range_max=40., range_min=-85.)
-    
+
 if __name__ == "__main__":
 
     cellmodel_strs = ["tentusscher_panfilov_2006_epi_cell", "fitzhughnagumo"]
     #cellmodel_strs = ["fitzhughnagumo"]
     #cellmodel_strs = ["tentusscher_panfilov_2006_epi_cell"]
-    
+
     # Define mesh
     domain = UnitSquareMesh(100, 100)
     domain.coordinates()[:] *= 10
@@ -221,8 +221,8 @@ if __name__ == "__main__":
     dt = dt_0
     #dt = [(0., dt_0), (1.0, dt_0/5), (1.0+stim_duration, dt_0)]
     T = 400.0  + 1.e-6  # mS 500.0
-        
+
     run_goss_ode_solver(cellmodel_strs, domain, dt, T, stim_amplitude, \
                         stim_duration, membrane_potential)
-    
+
     list_timings()

@@ -41,7 +41,7 @@ solver = GOSSplittingSolver(heart, ps)
 
 # Get solution fields
 (u, um) = solver.solution_fields()
- 
+
 # Initialize function with different functions
 # X planar
 init_expr = Expression("V_amp/2.*(1-tanh(sqrt(a/(8*D))*(x[0]-x0)))+V_init", \
@@ -64,12 +64,12 @@ for timestep, (u, vm) in solver.solve((0, tstop), dt):
         plot(u, scale=1., range_min=-90., range_max=40.)
 
     if MPI.rank(domain.mpi_comm()) == 0:
-        print timestep[0], "Min:", u.vector().min(), "Max:", u.vector().max()
+        print(timestep[0], "Min:", u.vector().min(), "Max:", u.vector().max())
     else:
         u.vector().min()
         u.vector().max()
 
 if MPI.rank(domain.mpi_comm()) == 0:
     list_timings()
-    
+
 interactive()

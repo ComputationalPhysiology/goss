@@ -58,7 +58,11 @@ def jit(
 
     # Code generators
     cgen = GossCodeGenerator(
-        ode, field_states, field_parameters, monitored, code_params
+        ode,
+        field_states,
+        field_parameters,
+        monitored,
+        code_params,
     )
     cgen.params.class_code = True
 

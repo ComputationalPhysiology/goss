@@ -1,8 +1,9 @@
-import numpy as np
-import pytest
 from pathlib import Path
+
 import goss
 import gotran
+import numpy as np
+import pytest
 
 
 here = Path(__file__).parent.absolute()
