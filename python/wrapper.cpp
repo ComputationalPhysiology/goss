@@ -9,11 +9,20 @@
 
 namespace py = pybind11;
 
+
 void init_ODESolvers(py::module &m)
 {
     py::class_<goss::ODESolver> solver_ODESolver(m, "ODESolver");
 
     solver_ODESolver.def("num_states", &goss::ODESolver::num_states)
+            .def("is_adaptive", &goss::ODESolver::is_adaptive)
+            .def_readwrite("ldt", &goss::ODESolver::ldt)
+            .def("reset", &goss::ODESolver::reset)
+            .def("get_internal_time_step", &goss::ODESolver::get_internal_time_step)
+            .def("get_ode",
+                 [](goss::ODESolver &self) {
+                     return std::shared_ptr<const goss::ODE>(self.get_ode());
+                 })
             .def("attach",
                  [](goss::ODESolver &self, std::shared_ptr<goss::ODE> ode) { self.attach(ode); });
 
@@ -161,7 +170,6 @@ PYBIND11_MODULE(_gosscpp, m)
 {
 
     m.doc() = "This is a Python bindings of C++ goss Library";
-
     init_ODE(m);
     init_ODESolvers(m);
 }

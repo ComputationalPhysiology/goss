@@ -20,73 +20,69 @@
 #include <cassert>
 #include <cmath>
 
-#include "log.h"
 #include "ExplicitEuler.h"
+#include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler() : ODESolver(), _dFdt(0)
 {
-  parameters.rename("ExplicitEuler");
+    parameters.rename("ExplicitEuler");
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) :
-  ODESolver(), _dFdt(0)
+ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) : ODESolver(), _dFdt(0)
 {
-  parameters.rename("ExplicitEuler");
-  attach(ode);
+    parameters.rename("ExplicitEuler");
+    attach(ode);
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(const ExplicitEuler& solver) :
-  ODESolver(solver), _dFdt(solver.num_states())
+ExplicitEuler::ExplicitEuler(const ExplicitEuler &solver)
+    : ODESolver(solver), _dFdt(solver.num_states())
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
 ExplicitEuler::~ExplicitEuler()
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
 void ExplicitEuler::attach(std::shared_ptr<ODE> ode)
 {
-  // Attach ODE
-  ODESolver::attach(ode);
+    // Attach ODE
+    ODESolver::attach(ode);
 
-  if (ode->is_dae())
-    goss_error("ExplicitEuler.cpp",
-	       "attaching ode",
-	       "cannot integrate a DAE ode with an explicit solver.");
+    if (ode->is_dae())
+        goss_error("ExplicitEuler.cpp", "attaching ode",
+                   "cannot integrate a DAE ode with an explicit solver.");
 
-  // Create memory for derivative evaluation
-  _dFdt.resize(num_states());
-
+    // Create memory for derivative evaluation
+    _dFdt.resize(num_states());
 }
 //-----------------------------------------------------------------------------
-void ExplicitEuler::forward(double* y, double t, double dt)
+void ExplicitEuler::forward(double *y, double t, double dt)
 {
 
-  assert(_ode);
+    assert(_ode);
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const double ldt_0 = parameters["ldt"];
-  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
-  const double ldt = dt/nsteps;
+    // Calculate number of steps and size of timestep based on _ldt
+    const double ldt_0 = ldt;
+    const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
+    const double ldt = dt / nsteps;
 
-  // Local time
-  double lt = t;
-  for (ulong step = 0; step < nsteps; ++step)
-  {
-    // Evaluate rhs
-    _ode->eval(y, lt, _dFdt.data());
+    // Local time
+    double lt = t;
+    for (ulong step = 0; step < nsteps; ++step) {
+        // Evaluate rhs
+        _ode->eval(y, lt, _dFdt.data());
 
-    // Update states
-    for (uint i = 0; i < num_states(); ++i)
-      y[i] += ldt*_dFdt[i];
+        // Update states
+        for (uint i = 0; i < num_states(); ++i)
+            y[i] += ldt * _dFdt[i];
 
-    // Increase time
-    lt += ldt;
-  }
+        // Increase time
+        lt += ldt;
+    }
 }
 //-----------------------------------------------------------------------------

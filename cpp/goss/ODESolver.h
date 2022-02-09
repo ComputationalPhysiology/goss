@@ -20,49 +20,50 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
-#include <memory>
 #include <iostream>
+#include <memory>
 
-#include "types.h"
 #include "ODE.h"
 #include "Parameters.h"
 #include "log.h"
+#include "types.h"
 
 //#include <fenv.h>
 
 namespace goss
 {
 
-  class ODESolver {
+class ODESolver
+{
 
   public:
-
     // Default parameters
     static Parameters default_parameters()
     {
-      Parameters params("ode_solver");
-      params.add("ldt", -1.0);
-      return params;
+        Parameters params("ode_solver");
+        params.add("ldt", -1.0);
+        return params;
     }
 
+    double ldt = -1.0;
+
     // Default Constructor
-    ODESolver () : parameters(), _ode(static_cast<ODE*>(0))
+    ODESolver() : parameters(), _ode(static_cast<ODE *>(0))
     {
-      parameters = default_parameters();
+        parameters = default_parameters();
     }
 
     // Copy constructor (Uses default copy constructor of ODE)
-    ODESolver (const ODESolver& solver) : parameters(solver.parameters),
-					  _ode(static_cast<ODE*>(0))
+    ODESolver(const ODESolver &solver) : parameters(solver.parameters), _ode(static_cast<ODE *>(0))
     {
-      if (solver._ode)
-	_ode = solver._ode->copy();
+        if (solver._ode)
+            _ode = solver._ode->copy();
     }
 
     // Destructor
-    virtual ~ODESolver ()
+    virtual ~ODESolver()
     {
-      // Do nothing
+        // Do nothing
     }
 
     // Return a copy of itself
@@ -71,49 +72,74 @@ namespace goss
     // Attach ODE and reset solver
     virtual void attach(std::shared_ptr<ODE> ode)
     {
-      //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
-      _ode = ode; reset();}
+        //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
+        _ode = ode;
+        reset();
+    }
 
     // Reset solver
-    virtual void reset() { /* Do nothing */ }
+    virtual void reset()
+    { /* Do nothing */
+    }
 
     // Step solver an interval of time forward
-    virtual void forward(double* y, double t, double interval) = 0;
+    virtual void forward(double *y, double t, double interval) = 0;
 
     // The size of the ODE
-    inline uint num_states() const { return _ode ? _ode->num_states() : 0; }
+    inline uint num_states() const
+    {
+        return _ode ? _ode->num_states() : 0;
+    }
 
     // Return the ODE (const version)
-    inline const std::shared_ptr<ODE> get_ode() const { return _ode; }
+    inline const std::shared_ptr<ODE> get_ode() const
+    {
+        return _ode;
+    }
 
     // Return the ODE
-    inline std::shared_ptr<ODE> get_ode() { return _ode; }
+    inline std::shared_ptr<ODE> get_ode()
+    {
+        return _ode;
+    }
 
     // Return the internal time step
-    inline virtual double get_internal_time_step() const { return -1.; }
+    inline virtual double get_internal_time_step() const
+    {
+        return -1.;
+    }
 
     // Set the internal time step
-    inline virtual void set_internal_time_step(double) {}
+    inline virtual void set_internal_time_step(double)
+    {
+    }
 
     // Return true if the Solver is adaptive
-    virtual bool is_adaptive() const { return false; }
+    virtual bool is_adaptive() const
+    {
+        return false;
+    }
 
     // Solver parameters
     Parameters parameters;
 
   protected:
-
     // Access to scratch space in ODE
-    inline std::vector<double>& _f1() const
-    {assert(_ode); return _ode->_f1;}
+    inline std::vector<double> &_f1() const
+    {
+        assert(_ode);
+        return _ode->_f1;
+    }
 
-    inline std::vector<double>& _f2() const
-    {assert(_ode); return _ode->_f2;}
+    inline std::vector<double> &_f2() const
+    {
+        assert(_ode);
+        return _ode->_f2;
+    }
 
     // Shared pointer to ode
     std::shared_ptr<ODE> _ode;
+};
 
-  };
-
-}
+} // namespace goss
 #endif

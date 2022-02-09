@@ -20,21 +20,20 @@
 #ifndef ExplicitEuler_h_IS_INCLUDED
 #define ExplicitEuler_h_IS_INCLUDED
 
-#include <vector>
-#include <memory>
 #include <cstdlib>
+#include <memory>
+#include <vector>
 
 #include "ODESolver.h"
 
 namespace goss
 {
 
-  // An Explicit Euler solver
-  class ExplicitEuler : public ODESolver
-  {
+// An Explicit Euler solver
+class ExplicitEuler : public ODESolver
+{
 
-    public:
-
+  public:
     // Default constructor
     ExplicitEuler();
 
@@ -42,27 +41,27 @@ namespace goss
     ExplicitEuler(std::shared_ptr<ODE> ode);
 
     // Copy constructor
-    ExplicitEuler(const ExplicitEuler& solver);
+    ExplicitEuler(const ExplicitEuler &solver);
 
     // Return a copy of itself
     std::shared_ptr<ODESolver> copy() const
-    { return std::make_shared<ExplicitEuler>(*this); }
+    {
+        return std::make_shared<ExplicitEuler>(*this);
+    }
 
     // Attach ODE to solver
     virtual void attach(std::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
-    void forward(double* y, double t, double interval);
+    void forward(double *y, double t, double interval);
 
     // Destructor
-    ~ExplicitEuler ();
+    ~ExplicitEuler();
 
   protected:
-
     // State derivative, allocated in attach(ode)
     std::vector<double> _dFdt;
+};
 
-  };
-
-}
+} // namespace goss
 #endif
