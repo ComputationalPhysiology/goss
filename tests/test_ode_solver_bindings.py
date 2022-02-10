@@ -81,6 +81,20 @@ def test_solve_oscilator(Solver, oscilator):
 
 
 @pytest.mark.parametrize("Solver", goss.goss_implicit_solvers)
-def test_compute_factorized_jacobian(Solver, tentusscher_2004):
-    solver = Solver(tentusscher_2004)
+def test_num_jac_comp(Solver, oscilator):
+    solver = Solver(oscilator)
     assert solver.num_jac_comp() == 0
+
+
+def test_AdaptiveImplicitSolver_methods(oscilator):
+    solver = goss.solvers.ESDIRK23a(oscilator)
+
+    # Just make sure notthing is failing when calling these methods
+    solver.get_num_accepted()
+    solver.get_num_rejected()
+    solver.set_single_step_mode(True)
+    solver.set_tol(atol=1e-5, rtol=1e-4)
+    assert np.isclose(solver.atol, 1e-5)
+    assert np.isclose(solver.rtol, 1e-4)
+    solver.set_iord(42)
+    assert solver.iord == 42

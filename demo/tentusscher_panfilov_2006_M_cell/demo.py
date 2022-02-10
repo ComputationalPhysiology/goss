@@ -8,10 +8,11 @@ ode = goss.ODE(gotran_ode)
 
 # solver = goss.solvers.ExplicitEuler(ode)
 # solver = goss.solvers.RL1(ode)
-solver = goss.solvers.GRL1(ode)
+# solver = goss.solvers.GRL1(ode)
+solver = goss.solvers.ESDIRK23a(ode)
 
 
-y, t = solver.solve(0, 1000, dt=0.01)
+y, t = solver.solve(0, 1000, dt=1.0)
 
 V_index = gotran_ode.state_symbols.index("V")
 Cai_index = gotran_ode.state_symbols.index("Ca_i")

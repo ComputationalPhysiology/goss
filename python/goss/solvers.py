@@ -124,6 +124,8 @@ class ImplicitODESolver(ODESolver, abc.ABC):
         return names
 
     def num_jac_comp(self) -> int:
+        """Return the number of times the jacobian
+        has been computed"""
         return self._cpp_object.num_jac_comp()
 
     def compute_factorized_jacobian(
@@ -153,8 +155,8 @@ class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
     def get_current_time(self) -> float:
         return self._cpp_object.get_current_time()
 
-    def get_current_time_time_step(self) -> float:
-        return self._cpp_object.get_current_time_time_step()
+    def get_current_time_step(self) -> float:
+        return self._cpp_object.get_current_time_step()
 
     def get_num_accepted(self) -> int:
         return self._cpp_object.get_num_accepted()
@@ -170,6 +172,18 @@ class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
 
     def set_iord(self, iord: int) -> None:
         self._cpp_object.set_iord(iord)
+
+    @property
+    def atol(self):
+        return self._cpp_object.get_atol()
+
+    @property
+    def rtol(self):
+        return self._cpp_object.get_rtol()
+
+    @property
+    def iord(self) -> int:
+        return self._cpp_object.get_iord()
 
 
 class ESDIRK23a(AdaptiveImplicitSolver):

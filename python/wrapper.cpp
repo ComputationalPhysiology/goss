@@ -119,7 +119,9 @@ void init_ODESolvers(py::module &m)
 
     py::class_<goss::AdaptiveImplicitSolver, goss::ImplicitODESolver> solver_AdaptiveImplicitSolver(
             m, "AdaptiveImplicitSolver");
-    solver_AdaptiveImplicitSolver
+    solver_AdaptiveImplicitSolver.def("get_atol", &goss::AdaptiveImplicitSolver::get_atol)
+            .def("get_rtol", &goss::AdaptiveImplicitSolver::get_rtol)
+            .def("get_iord", &goss::AdaptiveImplicitSolver::get_iord)
             .def("get_current_time", &goss::AdaptiveImplicitSolver::get_current_time)
             .def("get_current_time_step", &goss::AdaptiveImplicitSolver::get_current_time_step)
             .def("get_num_accepted", &goss::AdaptiveImplicitSolver::get_num_accepted)
