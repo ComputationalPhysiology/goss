@@ -27,13 +27,13 @@ class ODE:
             # not cause trouble for cppyy
             from . import _gosscpp
 
-            if isinstance(args[0], _gosscpp.ODE):
+            if isinstance(args[0], (_gosscpp.ODE, _gosscpp.ParameterizedODE)):
                 self._cpp_object = args[0]
             else:
                 raise ValueError(f"Unknown argument of type {type(args[0])}")
 
     def copy(self):
-        return ODE(self._cpp_object)
+        return self.__class__(self._cpp_object)
 
     @property
     def num_states(self) -> int:
@@ -74,6 +74,7 @@ class ODE:
         return self._cpp_object.eval(component, states, time)
 
     def compute_jacobian(self, states: np.ndarray, time: float) -> np.ndarray:
+        """Compute numerical jacobian"""
         states = self._check_state_input(states)
         jac = np.zeros((states.size, states.size))
         self._cpp_object.compute_jacobian(states, time, jac)
@@ -85,6 +86,7 @@ class ODE:
         time: float,
         only_linear: bool = False,
     ) -> LinearizedEval:
+        """Evaluate the linearized rhs"""
         states = self._check_state_input(states)
         linear = np.zeros_like(states)
         rhs = np.zeros_like(states)
@@ -94,3 +96,44 @@ class ODE:
         if only_linear:
             return LinearizedEval(rhs=rhs)
         return LinearizedEval(linear=linear, rhs=rhs)
+
+    def lu_factorize(self, mat: np.ndarray) -> None:
+        """In place LU Factorize matrix (jacobian)"""
+        self._cpp_object.lu_factorize(mat)
+
+    def forward_backward_subst(
+        self,
+        mat: np.ndarray,
+        b: np.ndarray,
+        x: np.ndarray,
+    ) -> None:
+        """Forward/Backward substitution of factorized matrix"""
+        self._cpp_object.forward_backward_subst(mat, b, x)
+
+
+class ParameterizedODE(ODE):
+    def __init__(self, *args, **kwargs):
+        """FIXME: Write about all possible ways
+        to initialize object
+        """
+        if "num_states" in kwargs and "num_parameters" in kwargs:
+            num_states = kwargs.get("num_states")
+            num_parameters = kwargs.get("num_parameters")
+            num_field_states = kwargs.get("num_field_states", 0)
+            num_field_parameters = kwargs.get("num_field_parameters", 0)
+            num_monitored = kwargs.get("num_monitored", 0)
+            from . import _gosscpp
+
+            self._cpp_object = _gosscpp.ParameterizedODE(
+                num_states,
+                num_parameters,
+                num_field_states,
+                num_field_parameters,
+                num_monitored,
+            )
+        else:
+            super().__init__(*args, **kwargs)
+
+    @property
+    def num_parameters(self) -> int:
+        return self._cpp_object.num_parameters()

@@ -5,6 +5,8 @@ import gotran
 import numpy as np
 import pytest
 
+# import scipy.linalg
+
 
 here = Path(__file__).parent.absolute()
 
@@ -38,9 +40,27 @@ def test_ode_eval_negative_index_raises_TypeError(oscilator):
         oscilator.eval_component(-1, np.array([0.1, 0.2]), 0)
 
 
-def test_ode_compute_jacobian(oscilator):
+def test_ode_compute_jacobian_oscilator(oscilator):
     jac = oscilator.compute_jacobian(np.array([0.1, 0.2]), 0)
     assert np.allclose(jac, np.array([[0, -1], [1, 0]]))
+
+
+def test_ode_jacobian_tentusscher_2004(tentusscher_2004):
+
+    ic = tentusscher_2004.get_ic()
+    jac = tentusscher_2004.compute_jacobian(ic, 0)
+    # jac_orig = jac.copy()
+    tentusscher_2004.lu_factorize(jac)
+    # TODO: Any way we can verify the implementation with this?
+    # p, l, u = scipy.linalg.lu(jac_orig)
+    # pl, u = scipy.linalg.lu(jac_orig, permute_l=True)
+
+    # assert np.allclose(jac, np.array([[0, -1], [1, 0]]))
+
+
+def test_forward_backward_subst():
+    # TODO: Find a way to test this one
+    pass
 
 
 def test_is_dae(oscilator):

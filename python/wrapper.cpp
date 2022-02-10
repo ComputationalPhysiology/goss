@@ -165,8 +165,8 @@ void init_ODE(py::module &m)
     m.def(
             "make_ode",
             [](std::uintptr_t e) {
-                goss::ODE *p = reinterpret_cast<goss::ODE *>(e);
-                return std::shared_ptr<const goss::ODE>(p);
+                goss::ParameterizedODE *p = reinterpret_cast<goss::ParameterizedODE *>(e);
+                return std::shared_ptr<const goss::ParameterizedODE>(p);
             },
             "Create a goss::ODE object from a pointer integer, typically returned by a just-in-time compiler");
 
@@ -216,9 +216,6 @@ void init_ODE(py::module &m)
     };
 
     py::class_<goss::ODE, PyODE, std::shared_ptr<goss::ODE>> ode(m, "ODE");
-
-
-    // // py::class_<goss::ODE, PyODE>(m, "ODE")
     ode.def(py::init<goss::uint>())
             .def(py::init<const PyODE &>())
             .def("num_states", &goss::ODE::num_states)
@@ -255,6 +252,27 @@ void init_ODE(py::module &m)
 
                      self.linearized_eval(states_ptr, time, linearized_ptr, rhs_ptr, only_linear);
                  })
+            .def("lu_factorize",
+                 [](const goss::ODE &self, py::array_t<double> mat) {
+                     py::buffer_info mat_info = mat.request();
+                     auto mat_ptr = static_cast<double *>(mat_info.ptr);
+
+                     self.lu_factorize(mat_ptr);
+                 })
+            .def("forward_backward_subst",
+                 [](const goss::ODE &self, const py::array_t<double> mat,
+                    const py::array_t<double> b, py::array_t<double> x) {
+                     py::buffer_info mat_info = mat.request();
+                     auto mat_ptr = static_cast<double *>(mat_info.ptr);
+
+                     py::buffer_info b_info = b.request();
+                     auto b_ptr = static_cast<double *>(b_info.ptr);
+
+                     py::buffer_info x_info = x.request();
+                     auto x_ptr = static_cast<double *>(x_info.ptr);
+
+                     self.forward_backward_subst(mat_ptr, b_ptr, x_ptr);
+                 })
             .def("eval",
                  [](goss::ODE &self, const py::array_t<double> states, double time,
                     const py::array_t<double> values) {
@@ -272,6 +290,58 @@ void init_ODE(py::module &m)
                      auto states_ptr = static_cast<double *>(states_info.ptr);
 
                      return self.eval(id, states_ptr, time);
+                 });
+
+    class PyParameterizedODE : public goss::ParameterizedODE
+    {
+      public:
+        /* Inherit the constructors */
+        using goss::ParameterizedODE::ParameterizedODE;
+
+        void eval_monitored(const double *states, double t, double *monitored) const override
+        {
+            PYBIND11_OVERLOAD_PURE_NAME(void, goss::ParameterizedODE, "eval_monitored",
+                                        eval_monitored, states, t, monitored);
+        }
+
+        void set_field_parameters(const double *field_params) override
+        {
+            PYBIND11_OVERLOAD_PURE_NAME(void, goss::ParameterizedODE, "set_field_parameters",
+                                        set_field_parameters, field_params);
+        }
+        void eval(const double *states, double time, double *values) override
+        {
+            PYBIND11_OVERLOAD_PURE_NAME(void, goss::ODE, "eval", eval, states, time, values);
+        }
+        void get_ic(goss::DoubleVector *values) const override
+        {
+            PYBIND11_OVERLOAD_PURE_NAME(void, goss::ODE, "get_ic", get_ic, values);
+        }
+        std::shared_ptr<ODE> copy() const override
+        {
+            PYBIND11_OVERLOAD_PURE_NAME(std::shared_ptr<goss::ODE>, goss::ODE, "copy", copy, );
+        }
+    };
+
+    py::class_<goss::ParameterizedODE, goss::ODE, PyParameterizedODE,
+               std::shared_ptr<goss::ParameterizedODE>>
+            parameterized_ode(m, "ParameterizedODE");
+    parameterized_ode.def(py::init<const PyParameterizedODE &>())
+            .def(py::init<unsigned int, unsigned int, unsigned int, unsigned int, unsigned int>())
+            .def("num_field_states", &goss::ParameterizedODE::num_field_states)
+            .def("num_parameters", &goss::ParameterizedODE::num_parameters)
+            .def("num_field_parameters", &goss::ParameterizedODE::num_field_parameters)
+            .def("num_monitored", &goss::ParameterizedODE::num_monitored)
+            .def("eval_monitored",
+                 [](goss::ParameterizedODE &self, const py::array_t<double> states, double t,
+                    py::array_t<double> monitored) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
+
+                     py::buffer_info monitored_info = monitored.request();
+                     auto monitored_ptr = static_cast<double *>(monitored_info.ptr);
+
+                     return self.eval_monitored(states_ptr, t, monitored_ptr);
                  });
 }
 

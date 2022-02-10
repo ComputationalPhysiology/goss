@@ -27,6 +27,7 @@ from . import codegeneration
 from . import solvers
 from .compilemodule import jit
 from .ode import ODE
+from .ode import ParameterizedODE
 from .systemsolver import ODESystemSolver
 
 goss_explicit_solvers: list[_t.Type[solvers.ODESolver]] = [
@@ -56,6 +57,7 @@ __all__ = [
     "goss_implicit_solvers",
     "goss_explicit_solvers",
     "ODESystemSolver",
+    "ParameterizedODE",
 ]
 
 # If dolfin is present import it

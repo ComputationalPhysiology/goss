@@ -73,7 +73,7 @@ class ODE
     // In place LU Factorize matrix (jacobian)
     virtual void lu_factorize(double *mat) const;
 
-    // Forward/Backward substitution of factoriesed matrix
+    // Forward/Backward substitution of factorized matrix
     virtual void forward_backward_subst(const double *mat, const double *b, double *x) const;
 
     // Returns true if the ODE is a DAE (then only implicit solvers can be used)
