@@ -93,7 +93,9 @@ class RL1(ODESolver):
 
 
 class GRL1(ODESolver):
-    pass
+    @property
+    def parameter_names(self) -> list[str]:
+        return ["ldt", "delta"]
 
 
 class ImplicitODESolver(ODESolver):

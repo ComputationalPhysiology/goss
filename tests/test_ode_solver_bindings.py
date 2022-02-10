@@ -45,12 +45,14 @@ def test_forward(Solver, oscilator):
 def test_parameters(Solver):
     solver = Solver()
     parameters = solver.parameters
+
     assert np.isclose(parameters["ldt"], -1.0)
 
-    new_value = 1.0
-    solver.set_parameter("ldt", new_value)
-    new_parameters = solver.parameters
-    assert np.isclose(new_parameters["ldt"], new_value)
+    for name in solver.parameter_names:
+        new_value = 42.0
+        solver.set_parameter(name, new_value)
+        new_parameters = solver.parameters
+        assert np.isclose(new_parameters[name], new_value), name
 
 
 @pytest.mark.parametrize("Solver", goss.goss_solvers)
