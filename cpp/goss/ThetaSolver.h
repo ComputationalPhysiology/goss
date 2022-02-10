@@ -20,28 +20,31 @@
 #ifndef ThetaSolver_h_IS_INCLUDED
 #define ThetaSolver_h_IS_INCLUDED
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "ImplicitODESolver.h"
 
 namespace goss
 {
 
-  class ThetaSolver: public ImplicitODESolver
-  {
+class ThetaSolver : public ImplicitODESolver
+{
   public:
-
     // Default parameters
     static Parameters default_parameters()
     {
-      Parameters p = ImplicitODESolver::default_parameters();
-      p.rename("ThetaSolver");
-      p.add("num_refinements_without_always_recomputing_jacobian", 2);
-      p.add("min_dt", 0.0001);
-      p.add("theta", 0.5, 0., 1.);
-      return p;
+        Parameters p = ImplicitODESolver::default_parameters();
+        p.rename("ThetaSolver");
+        p.add("num_refinements_without_always_recomputing_jacobian", 2);
+        p.add("min_dt", 0.0001);
+        p.add("theta", 0.5, 0., 1.);
+        return p;
     }
+
+    int num_refinements_without_always_recomputing_jacobian = 2;
+    double min_dt = 0.0001;
+    double theta = 0.5;
 
     // Default constructor
     ThetaSolver();
@@ -50,14 +53,16 @@ namespace goss
     ThetaSolver(std::shared_ptr<ODE> ode);
 
     // Copy constructor
-    ThetaSolver(const ThetaSolver& solver);
+    ThetaSolver(const ThetaSolver &solver);
 
     // Destructor
     ~ThetaSolver(){};
 
     // Return a copy of itself
     std::shared_ptr<ODESolver> copy() const
-    { return std::make_shared<ThetaSolver>(*this); }
+    {
+        return std::make_shared<ThetaSolver>(*this);
+    }
 
     // Attach ODE
     void attach(std::shared_ptr<ODE> ode);
@@ -66,14 +71,12 @@ namespace goss
     void reset();
 
     // Step solver an interval of time forward
-    void forward(double* y, double t, double dt);
+    void forward(double *y, double t, double dt);
 
-    protected:
-
+  protected:
     std::vector<double> _z1, _ft1;
     bool _justrefined;
+};
 
-  };
-
-}
+} // namespace goss
 #endif

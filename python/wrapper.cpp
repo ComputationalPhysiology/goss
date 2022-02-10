@@ -40,6 +40,7 @@ void init_ODESolvers(py::module &m)
             .def("attach",
                  [](goss::ODESolver &self, std::shared_ptr<goss::ODE> ode) { self.attach(ode); });
 
+
     py::class_<goss::ExplicitEuler, goss::ODESolver> solver_ExplicitEuler(m, "ExplicitEuler");
     solver_ExplicitEuler.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
@@ -73,6 +74,46 @@ void init_ODESolvers(py::module &m)
 
                      self.forward(y_ptr, t, interval);
                  });
+
+
+    // Implicit solvers
+
+    py::class_<goss::ImplicitODESolver, goss::ODESolver> solver_ImplicitODESolver(
+            m, "ImplicitODESolver");
+
+    solver_ImplicitODESolver.def_readwrite("eta_0", &goss::ImplicitODESolver::eta_0)
+            .def_readwrite("kappa", &goss::ImplicitODESolver::kappa)
+            .def_readwrite("relative_tolerance", &goss::ImplicitODESolver::relative_tolerance)
+            .def_readwrite("make_iterations", &goss::ImplicitODESolver::make_iterations)
+            .def_readwrite("max_relative_previous_residual",
+                           &goss::ImplicitODESolver::max_relative_previous_residual)
+            .def_readwrite("always_recompute_jacobian",
+                           &goss::ImplicitODESolver::always_recompute_jacobian)
+            .def("num_jac_comp", &goss::ImplicitODESolver::num_jac_comp)
+            .def("compute_factorized_jacobian",
+                 [](goss::ImplicitODESolver &self, const py::array_t<double> y, double t, double dt,
+                    double alpha) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.compute_factorized_jacobian(y_ptr, t, dt, alpha);
+                 });
+
+
+    py::class_<goss::ThetaSolver, goss::ImplicitODESolver> solver_ThetaSolver(m, "ThetaSolver");
+    solver_ThetaSolver.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def_readwrite("num_refinements_without_always_recomputing_jacobian",
+                           &goss::ThetaSolver::num_refinements_without_always_recomputing_jacobian)
+            .def_readwrite("min_dt", &goss::ThetaSolver::min_dt)
+            .def_readwrite("theta", &goss::ThetaSolver::theta)
+            .def("forward", [](goss::ThetaSolver &self, const py::array_t<double> y, double t,
+                               double interval) {
+                py::buffer_info y_info = y.request();
+                auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                self.forward(y_ptr, t, interval);
+            });
 }
 
 

@@ -20,43 +20,49 @@
 #ifndef ImplicitODESolver_h_IS_INCLUDED
 #define ImplicitODESolver_h_IS_INCLUDED
 
-#include <vector>
-#include <memory>
 #include "ODESolver.h"
 #include "Parameters.h"
+#include <memory>
+#include <vector>
 
 namespace goss
 {
 
-  // Base class of all Implicit Solvers
-  class ImplicitODESolver : public ODESolver
-  {
+// Base class of all Implicit Solvers
+class ImplicitODESolver : public ODESolver
+{
 
   public:
-
     // Default parameters
     static Parameters default_parameters()
     {
-      Parameters p = ODESolver::default_parameters();
-      p.rename("implicit_ode_solver");
-      p.add("eta_0", 1.0);
-      p.add("kappa", 0.1);
-      p.add("relative_tolerance", 1.e-12);
-      p.add("max_iterations", 30, 0, 1000);
-      p.add("max_relative_previous_residual", 0.01);
-      p.add("always_recompute_jacobian", false);
+        Parameters p = ODESolver::default_parameters();
+        p.rename("implicit_ode_solver");
+        p.add("eta_0", 1.0);
+        p.add("kappa", 0.1);
+        p.add("relative_tolerance", 1.e-12);
+        p.add("max_iterations", 30, 0, 1000);
+        p.add("max_relative_previous_residual", 0.01);
+        p.add("always_recompute_jacobian", false);
 
-      return p;
+        return p;
     }
+
+    double eta_0 = 1.0;
+    double kappa = 0.1;
+    double relative_tolerance = 1.e-12;
+    double make_iterations = 30;
+    double max_relative_previous_residual = 0.01;
+    bool always_recompute_jacobian = false;
 
     // Default constructor
     ImplicitODESolver();
 
     // Copy constructor
-    ImplicitODESolver(const ImplicitODESolver& solver);
+    ImplicitODESolver(const ImplicitODESolver &solver);
 
     // Destructor
-    virtual ~ImplicitODESolver ();
+    virtual ~ImplicitODESolver();
 
     // Reset solver
     virtual void reset();
@@ -65,28 +71,30 @@ namespace goss
     virtual void attach(std::shared_ptr<ODE> ode);
 
     // Step solver an interval of time forward
-    virtual void forward(double* y, double t, double interval) = 0;
+    virtual void forward(double *y, double t, double interval) = 0;
 
     // Solver specific compute jacobian method
-    void compute_factorized_jacobian(double* y, double t, double dt, double alpha);
+    void compute_factorized_jacobian(double *y, double t, double dt, double alpha);
 
     // Return the number of recomputation of the jacobian
-    int num_jac_comp(){ return _jac_comp; }
+    int num_jac_comp()
+    {
+        return _jac_comp;
+    }
 
   protected:
-
     // Scale a matrix
-    void mult(double fact, double* mat);
+    void mult(double fact, double *mat);
 
     // Add the mass matrix based on what states are differential
-    void add_mass_matrix(double *mat, double weight=1.0) const;
+    void add_mass_matrix(double *mat, double weight = 1.0) const;
 
     // This function is designed for SDIRK and Backward Euler:
-    virtual bool newton_solve(double* k, double* prev, double* y0, double t,
-			      double dt, double alpha, bool always_recompute_jacobian);
+    virtual bool newton_solve(double *k, double *prev, double *y0, double t, double dt,
+                              double alpha, bool always_recompute_jacobian);
 
     // Compute the norm of a vector
-    virtual double norm(double* vec);
+    virtual double norm(double *vec);
 
     // Variables used in the jacobian evaluation
     std::vector<double> _jac;
@@ -106,8 +114,7 @@ namespace goss
     int _rejects, _jac_comp;
     bool _recompute_jacobian;
     int _newton_iterations;
+};
 
-  };
-
-}
+} // namespace goss
 #endif

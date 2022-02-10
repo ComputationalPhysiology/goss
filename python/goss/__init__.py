@@ -21,15 +21,31 @@
 # Import pure python modules
 from __future__ import annotations
 
+import typing as _t
+
 from . import codegeneration
 from . import solvers
 from .compilemodule import jit
 from .ode import ODE
 from .systemsolver import ODESystemSolver
 
-goss_solvers = [solvers.ExplicitEuler, solvers.RL1, solvers.GRL1]
+goss_explicit_solvers: list[_t.Type[solvers.ODESolver]] = [
+    solvers.ExplicitEuler,
+    solvers.RL1,
+    solvers.GRL1,
+]
+goss_implicit_solvers: list[_t.Type[solvers.ODESolver]] = [solvers.ThetaSolver]
+goss_solvers = goss_explicit_solvers + goss_implicit_solvers
 
-__all__ = ["codegeneration", "jit", "ODE", "goss_solvers", "ODESystemSolver"]
+__all__ = [
+    "codegeneration",
+    "jit",
+    "ODE",
+    "goss_solvers",
+    "goss_implicit_solvers",
+    "goss_explicit_solvers",
+    "ODESystemSolver",
+]
 
 # If dolfin is present import it
 # try:

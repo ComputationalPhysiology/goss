@@ -30,7 +30,7 @@ def test_get_ode(Solver, oscilator):
     # or implement __eq__ for ODE
 
 
-@pytest.mark.parametrize("Solver", goss.goss_solvers)
+@pytest.mark.parametrize("Solver", goss.goss_explicit_solvers)
 def test_forward(Solver, oscilator):
     y = oscilator.get_ic()
     t = 0
@@ -46,10 +46,19 @@ def test_parameters(Solver):
     solver = Solver()
     parameters = solver.parameters
 
+    # All solvers should have this paramameter
     assert np.isclose(parameters["ldt"], -1.0)
 
-    for name in solver.parameter_names:
-        new_value = 42.0
+    for name, ptype in solver.parameter_names.items():
+
+        if ptype is int:
+            new_value = 42
+        elif ptype is float:
+            new_value = 42.0
+        elif ptype is bool:
+            # Use a different value
+            new_value = not parameters[name]
+
         solver.set_parameter(name, new_value)
         new_parameters = solver.parameters
         assert np.isclose(new_parameters[name], new_value), name

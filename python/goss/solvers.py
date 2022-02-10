@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 from collections import namedtuple
 from typing import Any
 from typing import Optional
@@ -11,7 +12,7 @@ from .ode import ODE
 Solution = namedtuple("Solution", ["y", "t"])
 
 
-class ODESolver:
+class ODESolver(abc.ABC):
     def __init__(self, *args, **kwargs):
         from . import _gosscpp
 
@@ -35,8 +36,8 @@ class ODESolver:
         return self._cpp_object.is_adaptive()
 
     @property
-    def parameter_names(self) -> list[str]:
-        return ["ldt"]
+    def parameter_names(self) -> dict[str, Any]:
+        return {"ldt": float}
 
     @property
     def parameters(self):
@@ -44,6 +45,13 @@ class ODESolver:
 
     def set_parameter(self, name: str, value: Any):
         assert name in self.parameter_names
+        if not isinstance(value, self.parameter_names[name]):
+            raise TypeError(
+                (
+                    f"Expected parameter {name} to be of type"
+                    f"{self.parameter_names[name]}, got {type(value)}"
+                ),
+            )
         setattr(self._cpp_object, name, value)
 
     def get_internal_time_step(self) -> float:
@@ -67,7 +75,7 @@ class ODESolver:
         dt: float,
         y0: Optional[np.ndarray] = None,
         skip_n: int = 1,
-    ) -> np.ndarray:
+    ) -> Solution:
         if y0 is None:
             # Use the initial conditions from the ODE
             y0 = self.get_ode().get_ic()
@@ -94,9 +102,48 @@ class RL1(ODESolver):
 
 class GRL1(ODESolver):
     @property
-    def parameter_names(self) -> list[str]:
-        return ["ldt", "delta"]
+    def parameter_names(self) -> dict[str, Any]:
+        names = super().parameter_names
+        names.update({"delta": float})
+        return names
 
 
-class ImplicitODESolver(ODESolver):
-    pass
+class ImplicitODESolver(ODESolver, abc.ABC):
+    @property
+    def parameter_names(self) -> dict[str, Any]:
+        names = super().parameter_names
+        names.update(
+            {
+                "kappa": float,
+                "relative_tolerance": float,
+                "make_iterations": int,
+                "max_relative_previous_residual": float,
+                "always_recompute_jacobian": bool,
+            },
+        )
+        return names
+
+    def num_jac_comp(self) -> int:
+        return self._cpp_object.num_jac_comp()
+
+    def compute_factorized_jacobian(
+        self,
+        y: np.ndarray,
+        t: float,
+        alpha: float,
+    ) -> None:
+        self._cpp_object.compute_factorized_jacobian(y, t, alpha)
+
+
+class ThetaSolver(ImplicitODESolver):
+    @property
+    def parameter_names(self) -> dict[str, Any]:
+        names = super().parameter_names
+        names.update(
+            {
+                "num_refinements_without_always_recomputing_jacobian": int,
+                "min_dt": float,
+                "theta": float,
+            },
+        )
+        return names
