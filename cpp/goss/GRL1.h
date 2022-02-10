@@ -20,29 +20,30 @@
 #ifndef GRL1_H_IS_INCLUDED
 #define GRL1_H_IS_INCLUDED
 
-#include <vector>
 #include <cmath>
 #include <memory>
+#include <vector>
 
-#include "types.h"
-#include "ODESolver.h"
 #include "ODE.h"
+#include "ODESolver.h"
+#include "types.h"
 
-namespace goss {
+namespace goss
+{
 
-  // First order accurate Generalized Rush-Larsen ODE Solver
-  class GRL1: public ODESolver
-  {
+// First order accurate Generalized Rush-Larsen ODE Solver
+class GRL1 : public ODESolver
+{
   public:
-
     // Default parameters
     static Parameters default_parameters()
     {
-      Parameters p = ODESolver::default_parameters();
-      p.rename("GRL1");
-      p.add("delta", 1e-8, 1e-12, 1e-8);
-      return p;
+        Parameters p = ODESolver::default_parameters();
+        p.rename("GRL1");
+        p.add("delta", 1e-8, 1e-12, 1e-8);
+        return p;
     }
+    double delta = 1e-8;
 
     // Default Constructor
     GRL1();
@@ -51,10 +52,13 @@ namespace goss {
     GRL1(std::shared_ptr<ODE> ode);
 
     // Copy constructor
-    GRL1(const GRL1& solver);
+    GRL1(const GRL1 &solver);
 
     // Return a copy of itself
-    std::shared_ptr<ODESolver> copy() const { return std::make_shared<GRL1>(*this); }
+    std::shared_ptr<ODESolver> copy() const
+    {
+        return std::make_shared<GRL1>(*this);
+    }
 
     // Destructor
     ~GRL1();
@@ -63,30 +67,30 @@ namespace goss {
     virtual void attach(std::shared_ptr<ODE> ode);
 
     // Step solver an interval in time forward
-    virtual void forward(double* y, double t, double dt);
+    virtual void forward(double *y, double t, double dt);
 
   protected:
-
     // One step of the GRL algorithm
-    inline void _one_step(double* y2, const double* y, const double* y0,
-			  const double t, const double dt, const double delta);
+    inline void _one_step(double *y2, const double *y, const double *y0, const double t,
+                          const double dt, const double delta);
+};
 
-  };
-
-  //-----------------------------------------------------------------------------
-  inline void GRL1::_one_step(double* y2, const double* y, const double* y0,
-			      const double t, const double dt, const double delta)
-  {
+//-----------------------------------------------------------------------------
+inline void GRL1::_one_step(double *y2, const double *y, const double *y0, const double t,
+                            const double dt, const double delta)
+{
     assert(_ode);
 
     // Evaluate full right hand side
     _ode->linearized_eval(y, t, _f1().data(), _f2().data(), false);
 
     for (uint i = 0; i < num_states(); ++i)
-      y2[i] = (std::fabs(_f1()[i]) > delta) ? y0[i] + _f2()[i]/_f1()[i]*(std::exp(_f1()[i]*dt) - 1.0) : y0[i] + _f2()[i]*dt;
-  }
-
-  //-----------------------------------------------------------------------------
-
+        y2[i] = (std::fabs(_f1()[i]) > delta)
+                        ? y0[i] + _f2()[i] / _f1()[i] * (std::exp(_f1()[i] * dt) - 1.0)
+                        : y0[i] + _f2()[i] * dt;
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace goss
 #endif

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from collections import namedtuple
 from typing import Any
+from typing import Optional
 
 import numpy as np
 
 from .ode import ODE
+
+Solution = namedtuple("Solution", ["y", "t"])
 
 
 class ODESolver:
@@ -56,6 +60,25 @@ class ODESolver:
         # FIXME: Consider making this pure
         self._cpp_object.forward(y, t, interval)
 
+    def solve(
+        self,
+        start: float,
+        end: float,
+        dt: float,
+        y0: Optional[np.ndarray] = None,
+        skip_n: int = 1,
+    ) -> np.ndarray:
+        if y0 is None:
+            # Use the initial conditions from the ODE
+            y0 = self.get_ode().get_ic()
+        interval = end - start
+        num_steps = int(np.ceil(interval / dt))
+        y = np.zeros((num_steps + 1, self.num_states))
+        t = np.arange(start, end + dt, dt)
+        y[0, :] = y0
+        self._cpp_object.solve(y, y0, t, num_steps, skip_n)
+        return Solution(y, t)
+
     @property
     def num_states(self):
         return self._cpp_object.num_states()
@@ -66,6 +89,10 @@ class ExplicitEuler(ODESolver):
 
 
 class RL1(ODESolver):
+    pass
+
+
+class GRL1(ODESolver):
     pass
 
 

@@ -36,7 +36,8 @@ def test_forward(Solver, oscilator):
     t = 0
     interval = 2.0
     solver = Solver(oscilator)
-    y_next = solver.forward(y, t, interval)
+    y_next = y.copy()
+    solver.forward(y_next, t, interval)
     assert np.allclose(y_next, [1, 2])
 
 
@@ -50,3 +51,13 @@ def test_parameters(Solver):
     solver.set_parameter("ldt", new_value)
     new_parameters = solver.parameters
     assert np.isclose(new_parameters["ldt"], new_value)
+
+
+@pytest.mark.parametrize("Solver", goss.goss_solvers)
+def test_solve_oscilator(Solver, oscilator):
+    solver = Solver(oscilator)
+    u, time = solver.solve(0, 10.0, dt=0.001)
+
+    # FIXME: Don't know why we need such a high tolerance here
+    assert np.isclose(u[:, 0], np.cos(time), rtol=0.14).all()
+    assert np.isclose(u[:, 1], np.sin(time), rtol=0.02).all()

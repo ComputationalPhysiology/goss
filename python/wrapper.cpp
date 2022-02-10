@@ -19,6 +19,20 @@ void init_ODESolvers(py::module &m)
             .def_readwrite("ldt", &goss::ODESolver::ldt)
             .def("reset", &goss::ODESolver::reset)
             .def("get_internal_time_step", &goss::ODESolver::get_internal_time_step)
+            .def("solve",
+                 [](goss::ODESolver &self, py::array_t<double> y, py::array_t<double> y0,
+                    py::array_t<double> t, const unsigned long num_timesteps, const int skip_n) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     py::buffer_info y0_info = y0.request();
+                     auto y0_ptr = static_cast<double *>(y0_info.ptr);
+
+                     py::buffer_info t_info = t.request();
+                     auto t_ptr = static_cast<double *>(t_info.ptr);
+
+                     self.solve(y_ptr, y0_ptr, t_ptr, num_timesteps, skip_n);
+                 })
             .def("get_ode",
                  [](goss::ODESolver &self) {
                      return std::shared_ptr<const goss::ODE>(self.get_ode());
@@ -42,6 +56,18 @@ void init_ODESolvers(py::module &m)
             .def(py::init<std::shared_ptr<goss::ODE>>())
             .def("forward",
                  [](goss::RL1 &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 });
+
+    py::class_<goss::GRL1, goss::ODESolver> solver_GRL1(m, "GRL1");
+    solver_GRL1.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def_readwrite("delta", &goss::GRL1::delta)
+            .def("forward",
+                 [](goss::GRL1 &self, const py::array_t<double> y, double t, double interval) {
                      py::buffer_info y_info = y.request();
                      auto y_ptr = static_cast<double *>(y_info.ptr);
 

@@ -85,6 +85,32 @@ class ODESolver
     // Step solver an interval of time forward
     virtual void forward(double *y, double t, double interval) = 0;
 
+    // Solve for a multiple time steps
+    virtual void solve(double *y, double *y0, double *t, const ulong num_timesteps,
+                       const int skip_n = 1)
+    {
+
+        assert(_ode);
+        uint _num_states = num_states();
+        double t_next, t_current;
+        double dt;
+        t_current = t[0];
+        ulong save_it = 1;
+        ulong j, it;
+        for (it = 1; it <= num_timesteps; it++) {
+            t_next = t[it];
+            dt = t_next - t_current;
+            forward(y0, t_current, dt);
+            if (skip_n && (it % skip_n) == 0) {
+                for (j = 0; j < _num_states; j++) {
+                    y[save_it * _num_states + j] = y0[j];
+                }
+                save_it++;
+            }
+            t_current = t_next;
+        }
+    }
+
     // The size of the ODE
     inline uint num_states() const
     {

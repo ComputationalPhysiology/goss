@@ -21,66 +21,63 @@
 #include <cmath>
 #include <cstdlib>
 
-#include "log.h"
-#include "Timer.h"
 #include "GRL1.h"
+#include "Timer.h"
+#include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 GRL1::GRL1() : ODESolver()
 {
-  parameters = GRL1::default_parameters();
+    parameters = GRL1::default_parameters();
 }
 //-----------------------------------------------------------------------------
 GRL1::GRL1(std::shared_ptr<ODE> ode) : ODESolver()
 {
-  parameters = GRL1::default_parameters();
-  attach(ode);
+    parameters = GRL1::default_parameters();
+    attach(ode);
 }
 //-----------------------------------------------------------------------------
-GRL1::GRL1(const GRL1& solver) : ODESolver(solver)
+GRL1::GRL1(const GRL1 &solver) : ODESolver(solver)
 {
 }
 //-----------------------------------------------------------------------------
 GRL1::~GRL1()
 {
-  // Do nothing
+    // Do nothing
 }
 
 //-----------------------------------------------------------------------------
 void GRL1::attach(std::shared_ptr<ODE> ode)
 {
-  // Attach ode using base class
-  ODESolver::attach(ode);
+    // Attach ode using base class
+    ODESolver::attach(ode);
 
-  if (ode->is_dae())
-    goss_error("GRL1.cpp",
-	       "attaching ode",
-	       "cannot integrate a DAE ode with an explicit solver.");
-
+    if (ode->is_dae())
+        goss_error("GRL1.cpp", "attaching ode",
+                   "cannot integrate a DAE ode with an explicit solver.");
 }
 //-----------------------------------------------------------------------------
-void GRL1::forward(double* y, double t, double dt)
+void GRL1::forward(double *y, double t, double dt)
 {
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const double ldt_0 = parameters["ldt"];
-  const double delta = parameters["delta"];
-  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
-  const double ldt = dt/nsteps;
+    // Calculate number of steps and size of timestep based on _ldt
+    const double ldt_0 = parameters["ldt"];
+    const double _delta = delta;
+    const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
+    const double ldt = dt / nsteps;
 
-  // Local time
-  double lt = t;
+    // Local time
+    double lt = t;
 
-  for (ulong step = 0; step < nsteps; ++step)
-  {
+    for (ulong step = 0; step < nsteps; ++step) {
 
-    // One step
-    _one_step(y, y, y, lt, ldt, delta);
+        // One step
+        _one_step(y, y, y, lt, ldt, _delta);
 
-    // Increase time
-    lt += ldt;
-  }
+        // Increase time
+        lt += ldt;
+    }
 }
 //-----------------------------------------------------------------------------
