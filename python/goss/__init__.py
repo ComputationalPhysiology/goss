@@ -34,7 +34,18 @@ goss_explicit_solvers: list[_t.Type[solvers.ODESolver]] = [
     solvers.RL1,
     solvers.GRL1,
 ]
-goss_implicit_solvers: list[_t.Type[solvers.ODESolver]] = [solvers.ThetaSolver]
+goss_implicit_solvers: list[_t.Type[solvers.ODESolver]] = [
+    solvers.ThetaSolver,
+    solvers.ESDIRK23a,
+]
+
+goss_adaptive_solvers = [solvers.ESDIRK23a]
+goss_non_adaptive_solvers = [
+    solvers.ExplicitEuler,
+    solvers.RL1,
+    solvers.GRL1,
+    solvers.ThetaSolver,
+]
 goss_solvers = goss_explicit_solvers + goss_implicit_solvers
 
 __all__ = [

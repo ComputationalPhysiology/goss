@@ -116,7 +116,7 @@ class ImplicitODESolver(ODESolver, abc.ABC):
             {
                 "kappa": float,
                 "relative_tolerance": float,
-                "make_iterations": int,
+                "max_iterations": int,
                 "max_relative_previous_residual": float,
                 "always_recompute_jacobian": bool,
             },
@@ -147,3 +147,54 @@ class ThetaSolver(ImplicitODESolver):
             },
         )
         return names
+
+
+class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
+    def get_current_time(self) -> float:
+        return self._cpp_object.get_current_time()
+
+    def get_current_time_time_step(self) -> float:
+        return self._cpp_object.get_current_time_time_step()
+
+    def get_num_accepted(self) -> int:
+        return self._cpp_object.get_num_accepted()
+
+    def get_num_rejected(self) -> int:
+        return self._cpp_object.get_num_rejected()
+
+    def set_single_step_mode(self, mode: bool) -> None:
+        self._cpp_object.set_single_step_mode(mode)
+
+    def set_tol(self, atol: float, rtol: float = 1e-8) -> None:
+        self._cpp_object.set_tol(atol, rtol)
+
+    def set_iord(self, iord: int) -> None:
+        self._cpp_object.set_iord(iord)
+
+
+class ESDIRK23a(AdaptiveImplicitSolver):
+    @property
+    def parameter_names(self) -> dict[str, Any]:
+        names = super().parameter_names
+        names.update(
+            {
+                "num_refinements_without_always_recomputing_jacobian": int,
+                "min_dt": float,
+            },
+        )
+        return names
+
+    @property
+    def nfevals(self):
+        """Number of right hand side evaluations"""
+        return self._cpp_object.nfevals
+
+    @property
+    def ndtsa(self):
+        """Number of accepted timesteps"""
+        return self._cpp_object.ndtsa
+
+    @property
+    def ndtsr(self):
+        """Number of rejected timesteps"""
+        return self._cpp_object.ndtsr

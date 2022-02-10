@@ -125,7 +125,7 @@ _class_template = """namespace goss {{
 
 }}
 
-extern "C" DLL_EXPORT goss::ParameterizedODE * create_ODE()
+extern "C" DLL_EXPORT goss::ParameterizedODE * create_{ModelName}()
 {{
   return new goss::{ModelName};
 }}

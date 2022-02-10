@@ -15,10 +15,16 @@ def test_constructor_empty(Solver):
     assert solver.num_states == 0
 
 
-@pytest.mark.parametrize("Solver", goss.goss_solvers)
-def test_is_adaptive(Solver):
+@pytest.mark.parametrize("Solver", goss.goss_non_adaptive_solvers)
+def test_is_adaptive_False(Solver):
     solver = Solver()
     assert solver.is_adaptive is False
+
+
+@pytest.mark.parametrize("Solver", goss.goss_adaptive_solvers)
+def test_is_adaptive_True(Solver):
+    solver = Solver()
+    assert solver.is_adaptive is True
 
 
 @pytest.mark.parametrize("Solver", goss.goss_solvers)
@@ -72,3 +78,9 @@ def test_solve_oscilator(Solver, oscilator):
     # FIXME: Don't know why we need such a high tolerance here
     assert np.isclose(u[:, 0], np.cos(time), rtol=0.14).all()
     assert np.isclose(u[:, 1], np.sin(time), rtol=0.02).all()
+
+
+@pytest.mark.parametrize("Solver", goss.goss_implicit_solvers)
+def test_compute_factorized_jacobian(Solver, tentusscher_2004):
+    solver = Solver(tentusscher_2004)
+    assert solver.num_jac_comp() == 0

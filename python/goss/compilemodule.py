@@ -28,7 +28,7 @@ from .codegeneration import GossCodeGenerator
 here = Path(__file__).parent.absolute()
 
 
-def jit(
+def cppyy_jit(
     ode,
     field_states=None,
     field_parameters=None,
@@ -78,15 +78,56 @@ def jit(
 
     cppyy.cppdef(cpp_code)
 
-    # _cppyygbl = __import__("cppyy.gbl", fromlist=["create_ODE"])
-    # submodule = getattr(_cppyygbl, "create_ODE")()
-    from cppyy.gbl import create_ODE
+    _cppyygbl = __import__("cppyy.gbl", fromlist=[f"create_{cgen.name}"])
+    submodule = getattr(_cppyygbl, f"create_{cgen.name}")()
+    # from cppyy.gbl import create_ODE
 
-    submodule = create_ODE()
+    # submodule = create_ODE()
     import cppyy.ll
 
-    python_object = cppyy.ll.as_ctypes(submodule)
+    return cppyy.ll.as_ctypes(submodule)
 
+
+def make_ode(python_object):
     from . import _gosscpp
 
     return _gosscpp.make_ode(python_object.value)
+
+
+def jit(
+    ode,
+    field_states=None,
+    field_parameters=None,
+    monitored=None,
+    code_params=None,
+    cppargs=None,
+):
+    """
+    Generate a goss::ODEParameterized from a gotran ode and JIT compile it
+
+    Arguments:
+    ----------
+    ode : gotran.ODE
+        The gotran ode, either as an ODE or as an ODERepresentation
+    field_states : list
+        A list of state names, which should be treated as field states
+    field_parameters : list
+        A list of parameter names, which should be treated as field parameters
+    monitored : list
+        A list of names of intermediates of the ODE. Code for monitoring
+        the intermediates will be generated.
+    code_params : dict
+        Parameters controling the code generation
+    cppargs : str
+        Default C++ argument passed to the C++ compiler
+    """
+
+    python_object = cppyy_jit(
+        ode=ode,
+        field_states=field_states,
+        field_parameters=field_parameters,
+        monitored=monitored,
+        code_params=code_params,
+        cppargs=cppargs,
+    )
+    return make_ode(python_object=python_object)

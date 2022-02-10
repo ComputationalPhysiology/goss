@@ -84,7 +84,7 @@ void init_ODESolvers(py::module &m)
     solver_ImplicitODESolver.def_readwrite("eta_0", &goss::ImplicitODESolver::eta_0)
             .def_readwrite("kappa", &goss::ImplicitODESolver::kappa)
             .def_readwrite("relative_tolerance", &goss::ImplicitODESolver::relative_tolerance)
-            .def_readwrite("make_iterations", &goss::ImplicitODESolver::make_iterations)
+            .def_readwrite("max_iterations", &goss::ImplicitODESolver::max_iterations)
             .def_readwrite("max_relative_previous_residual",
                            &goss::ImplicitODESolver::max_relative_previous_residual)
             .def_readwrite("always_recompute_jacobian",
@@ -98,7 +98,6 @@ void init_ODESolvers(py::module &m)
 
                      self.compute_factorized_jacobian(y_ptr, t, dt, alpha);
                  });
-
 
     py::class_<goss::ThetaSolver, goss::ImplicitODESolver> solver_ThetaSolver(m, "ThetaSolver");
     solver_ThetaSolver.def(py::init<>())
@@ -114,6 +113,47 @@ void init_ODESolvers(py::module &m)
 
                 self.forward(y_ptr, t, interval);
             });
+
+
+    // Adaptive Implicit solvers
+
+    py::class_<goss::AdaptiveImplicitSolver, goss::ImplicitODESolver> solver_AdaptiveImplicitSolver(
+            m, "AdaptiveImplicitSolver");
+    solver_AdaptiveImplicitSolver
+            .def("get_current_time", &goss::AdaptiveImplicitSolver::get_current_time)
+            .def("get_current_time_step", &goss::AdaptiveImplicitSolver::get_current_time_step)
+            .def("get_num_accepted", &goss::AdaptiveImplicitSolver::get_num_accepted)
+            .def("get_num_rejected", &goss::AdaptiveImplicitSolver::get_num_rejected)
+            .def("set_single_step_mode", [](goss::AdaptiveImplicitSolver &self,
+                                            bool mode) { self.set_single_step_mode(mode); })
+            .def("set_tol", [](goss::AdaptiveImplicitSolver &self, double atol,
+                               double rtol = 1.0e-8) { self.set_tol(atol, rtol); })
+            .def("set_iord",
+                 [](goss::AdaptiveImplicitSolver &self, int iord) { self.set_iord(iord); });
+
+    py::class_<goss::ESDIRK23a, goss::AdaptiveImplicitSolver> solver_ESDIRK23a(m, "ESDIRK23a");
+    solver_ESDIRK23a.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def_readwrite("num_refinements_without_always_recomputing_jacobian",
+                           &goss::ESDIRK23a::num_refinements_without_always_recomputing_jacobian)
+            .def_readwrite("min_dt", &goss::ESDIRK23a::min_dt)
+            .def_readonly("nfevals", &goss::ESDIRK23a::nfevals)
+            .def_readonly("ndtsa", &goss::ESDIRK23a::ndtsa)
+            .def_readonly("ndtsr", &goss::ESDIRK23a::ndtsr)
+            .def("forward",
+                 [](goss::ESDIRK23a &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 })
+            .def("compute_ode_jacobian",
+                 [](goss::ESDIRK23a &self, const py::array_t<double> y, double t) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.compute_ode_jacobian(y_ptr, t);
+                 });
 }
 
 
