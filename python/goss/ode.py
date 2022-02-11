@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from typing import NamedTuple
 from typing import Optional
@@ -154,3 +156,34 @@ class ParameterizedODE(ODE):
         monitored = np.zeros(self.num_monitored)
         self._cpp_object.eval_monitored(states, time, monitored)
         return monitored
+
+    def set_field_parameters(self, field_params: np.ndarray) -> None:
+        assert field_params.shape == (self.num_field_parameters,)
+        self._cpp_object.set_field_parameters(field_params)
+
+    def set_parameters(self, name: str, value: float) -> None:
+        self._cpp_object.set_parameter(name, value)
+
+    @property
+    def state_names(self) -> list[str]:
+        return self._cpp_object.get_state_names()
+
+    @property
+    def field_state_names(self) -> list[str]:
+        return self._cpp_object.get_field_state_names()
+
+    @property
+    def parameter_names(self) -> list[str]:
+        return self._cpp_object.get_parameter_names()
+
+    @property
+    def field_parameter_names(self) -> list[str]:
+        return self._cpp_object.get_field_parameter_names()
+
+    @property
+    def field_state_indices(self) -> list[str]:
+        return self._cpp_object.get_field_state_indices()
+
+    @property
+    def monitored_names(self) -> list[str]:
+        return self._cpp_object.get_monitored_names()

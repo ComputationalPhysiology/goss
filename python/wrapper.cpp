@@ -342,7 +342,30 @@ void init_ODE(py::module &m)
                      auto monitored_ptr = static_cast<double *>(monitored_info.ptr);
 
                      return self.eval_monitored(states_ptr, t, monitored_ptr);
-                 });
+                 })
+            .def("set_field_parameters",
+                 [](goss::ParameterizedODE &self, const py::array_t<double> field_params) {
+                     py::buffer_info field_params_info = field_params.request();
+                     auto field_params_ptr = static_cast<double *>(field_params_info.ptr);
+
+                     self.set_field_parameters(field_params_ptr);
+                 })
+            .def("set_parameter",
+                 [](goss::ParameterizedODE &self, std::string name, double value) {
+                     self.set_parameter(name, value);
+                 })
+            .def("get_parameter",
+                 [](const goss::ParameterizedODE &self, std::string name) {
+                     return self.get_parameter(name);
+                 })
+            .def("get_state_names", &goss::ParameterizedODE::get_state_names)
+            .def("get_field_state_names", &goss::ParameterizedODE::get_field_state_names)
+            .def("get_parameter_names", &goss::ParameterizedODE::get_parameter_names)
+            .def("get_field_parameter_names", &goss::ParameterizedODE::get_field_parameter_names)
+            .def("get_field_state_indices", &goss::ParameterizedODE::get_field_state_indices)
+            .def("get_monitored_names", &goss::ParameterizedODE::get_monitored_names);
+
+
 }
 
 PYBIND11_MODULE(_gosscpp, m)

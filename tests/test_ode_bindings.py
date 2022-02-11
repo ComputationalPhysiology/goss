@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import goss
-import gotran
 import numpy as np
 import pytest
 
@@ -80,8 +79,8 @@ def test_linearized_rhs_only_linear_True(oscilator, only_linear):
     assert np.allclose(rhs, np.array([-0.2, 0.1]))
 
 
-def test_ode_contructors():
-    ode = goss.ODE(gotran.load_ode(here.joinpath("oscilator.ode")))
+def test_ode_contructors(oscilator_ode):
+    ode = goss.ODE(oscilator_ode)
     ode_copy = ode.copy()
     ode_path = goss.ODE(here.joinpath("oscilator.ode"))
     assert ode.num_states == ode_copy.num_states == ode_path.num_states
