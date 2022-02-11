@@ -149,3 +149,8 @@ class ParameterizedODE(ODE):
     @property
     def num_monitored(self) -> int:
         return self._cpp_object.num_monitored()
+
+    def eval_monitored(self, states: np.ndarray, time: float) -> np.ndarray:
+        monitored = np.zeros(self.num_monitored)
+        self._cpp_object.eval_monitored(states, time, monitored)
+        return monitored

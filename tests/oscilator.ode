@@ -3,3 +3,4 @@ states(x=1.0, y=0.)
 
 dx_dt = -a * y
 dy_dt = b * x
+energy = a * y + b * x
