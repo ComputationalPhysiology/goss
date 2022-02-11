@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(OpenMP REQUIRED)
+
 # See https://gitlab.kitware.com/cmake/cmake/-/issues/16414
 if (TARGET goss)
   add_library(Goss::goss ALIAS goss)
@@ -44,6 +46,11 @@ set(python_module_name _gosscpp)
 # Create the binding library
 pybind11_add_module(_gosscpp MODULE wrapper.cpp)
 target_link_libraries(_gosscpp PRIVATE Goss::goss)
+
+if (OpenMP_FOUND)
+  message("WILL USE OPENMP!!!!!!")
+  target_link_libraries(_gosscpp PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 # Add strict compiler flags
 include(CheckCXXCompilerFlag)

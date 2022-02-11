@@ -1,14 +1,13 @@
 #include <goss/goss.h>
-#include <memory>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#include <memory>
 #include <vector>
 
-
 namespace py = pybind11;
-
 
 void init_ODESolvers(py::module &m)
 {
@@ -40,8 +39,8 @@ void init_ODESolvers(py::module &m)
             .def("attach",
                  [](goss::ODESolver &self, std::shared_ptr<goss::ODE> ode) { self.attach(ode); });
 
-
-    py::class_<goss::ExplicitEuler, goss::ODESolver, std::shared_ptr<goss::ExplicitEuler>> solver_ExplicitEuler(m, "ExplicitEuler");
+    py::class_<goss::ExplicitEuler, goss::ODESolver, std::shared_ptr<goss::ExplicitEuler>>
+            solver_ExplicitEuler(m, "ExplicitEuler");
     solver_ExplicitEuler.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
             .def("forward", [](goss::ExplicitEuler &self, const py::array_t<double> y, double t,
@@ -75,11 +74,10 @@ void init_ODESolvers(py::module &m)
                      self.forward(y_ptr, t, interval);
                  });
 
-
     // Implicit solvers
 
-    py::class_<goss::ImplicitODESolver, goss::ODESolver, std::shared_ptr<goss::ImplicitODESolver>> solver_ImplicitODESolver(
-            m, "ImplicitODESolver");
+    py::class_<goss::ImplicitODESolver, goss::ODESolver, std::shared_ptr<goss::ImplicitODESolver>>
+            solver_ImplicitODESolver(m, "ImplicitODESolver");
 
     solver_ImplicitODESolver.def_readwrite("eta_0", &goss::ImplicitODESolver::eta_0)
             .def_readwrite("kappa", &goss::ImplicitODESolver::kappa)
@@ -99,7 +97,8 @@ void init_ODESolvers(py::module &m)
                      self.compute_factorized_jacobian(y_ptr, t, dt, alpha);
                  });
 
-    py::class_<goss::ThetaSolver, goss::ImplicitODESolver, std::shared_ptr<goss::ThetaSolver>> solver_ThetaSolver(m, "ThetaSolver");
+    py::class_<goss::ThetaSolver, goss::ImplicitODESolver, std::shared_ptr<goss::ThetaSolver>>
+            solver_ThetaSolver(m, "ThetaSolver");
     solver_ThetaSolver.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
             .def_readwrite("num_refinements_without_always_recomputing_jacobian",
@@ -114,11 +113,11 @@ void init_ODESolvers(py::module &m)
                 self.forward(y_ptr, t, interval);
             });
 
-
     // Adaptive Implicit solvers
 
-    py::class_<goss::AdaptiveImplicitSolver, goss::ImplicitODESolver, std::shared_ptr<goss::AdaptiveImplicitSolver>> solver_AdaptiveImplicitSolver(
-            m, "AdaptiveImplicitSolver");
+    py::class_<goss::AdaptiveImplicitSolver, goss::ImplicitODESolver,
+               std::shared_ptr<goss::AdaptiveImplicitSolver>>
+            solver_AdaptiveImplicitSolver(m, "AdaptiveImplicitSolver");
     solver_AdaptiveImplicitSolver.def("get_atol", &goss::AdaptiveImplicitSolver::get_atol)
             .def("get_rtol", &goss::AdaptiveImplicitSolver::get_rtol)
             .def("get_iord", &goss::AdaptiveImplicitSolver::get_iord)
@@ -133,7 +132,8 @@ void init_ODESolvers(py::module &m)
             .def("set_iord",
                  [](goss::AdaptiveImplicitSolver &self, int iord) { self.set_iord(iord); });
 
-    py::class_<goss::ESDIRK23a, goss::AdaptiveImplicitSolver, std::shared_ptr<goss::ESDIRK23a>> solver_ESDIRK23a(m, "ESDIRK23a");
+    py::class_<goss::ESDIRK23a, goss::AdaptiveImplicitSolver, std::shared_ptr<goss::ESDIRK23a>>
+            solver_ESDIRK23a(m, "ESDIRK23a");
     solver_ESDIRK23a.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
             .def_readwrite("num_refinements_without_always_recomputing_jacobian",
@@ -158,17 +158,16 @@ void init_ODESolvers(py::module &m)
                  });
 }
 
-
 void init_ODE(py::module &m)
 {
-
     m.def(
             "make_ode",
             [](std::uintptr_t e) {
                 goss::ParameterizedODE *p = reinterpret_cast<goss::ParameterizedODE *>(e);
                 return std::shared_ptr<const goss::ParameterizedODE>(p);
             },
-            "Create a goss::ODE object from a pointer integer, typically returned by a just-in-time compiler");
+            "Create a goss::ODE object from a pointer integer, typically returned by "
+            "a just-in-time compiler");
 
     class PyODE : public goss::ODE
     {
@@ -350,36 +349,53 @@ void init_ODE(py::module &m)
 
                      self.set_field_parameters(field_params_ptr);
                  })
-            .def("set_parameter",
-                 [](goss::ParameterizedODE &self, std::string name, double value) {
-                     self.set_parameter(name, value);
-                 })
-            .def("get_parameter",
-                 [](const goss::ParameterizedODE &self, std::string name) {
-                     return self.get_parameter(name);
-                 })
+            .def("set_parameter", [](goss::ParameterizedODE &self, std::string name,
+                                     double value) { self.set_parameter(name, value); })
+            .def("get_parameter", [](const goss::ParameterizedODE &self,
+                                     std::string name) { return self.get_parameter(name); })
             .def("get_state_names", &goss::ParameterizedODE::get_state_names)
             .def("get_field_state_names", &goss::ParameterizedODE::get_field_state_names)
             .def("get_parameter_names", &goss::ParameterizedODE::get_parameter_names)
             .def("get_field_parameter_names", &goss::ParameterizedODE::get_field_parameter_names)
             .def("get_field_state_indices", &goss::ParameterizedODE::get_field_state_indices)
             .def("get_monitored_names", &goss::ParameterizedODE::get_monitored_names);
-
-
 }
 
 void init_ODESystemSolver(py::module &m)
 {
     py::class_<goss::ODESystemSolver> solver_ODESystemSolver(m, "ODESystemSolver");
 
-    solver_ODESystemSolver.def(py::init<goss::uint, std::shared_ptr<goss::ODESolver>, std::shared_ptr<goss::ParameterizedODE>>())
-        .def("num_nodes", &goss::ODESystemSolver::num_nodes);
+    solver_ODESystemSolver
+            .def(py::init<goss::uint, std::shared_ptr<goss::ODESolver>,
+                          std::shared_ptr<goss::ParameterizedODE>>())
+            .def("num_nodes", &goss::ODESystemSolver::num_nodes)
+            .def("get_num_threads", &goss::ODESystemSolver::get_num_threads)
+            .def("set_num_threads",
+                 [](goss::ODESystemSolver &self, goss::uint num_threads) {
+                     self.set_num_threads(num_threads);
+                 })
+            .def("reset_default", &goss::ODESystemSolver::reset_default)
+            .def("ode", &goss::ODESystemSolver::ode)
+            .def("solver", &goss::ODESystemSolver::solver)
+            .def("states",
+                 [](goss::ODESystemSolver &self) {
+                     const double *states = self.states();
+                     auto num_states = self.ode()->num_states();
+                     auto num_nodes = self.num_nodes();
+                     return py::array_t<double>(std::vector<ptrdiff_t>{num_nodes, num_states},
+                                                states);
+                 })
+            .def("states_at_node", [](goss::ODESystemSolver &self, goss::uint node) {
+                const double *states = self.states(node);
+                auto num_states = self.ode()->num_states();
+                return py::array_t<double>(num_states, states);
+            });
 }
 
 PYBIND11_MODULE(_gosscpp, m)
 {
-
     m.doc() = "This is a Python bindings of C++ goss Library";
+    m.def("has_openmp", &has_openmp, "Method for checking if goss compiled with OpenMP support");
     init_ODE(m);
     init_ODESolvers(m);
     init_ODESystemSolver(m);

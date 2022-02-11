@@ -27,6 +27,8 @@
 #include "log.h"
 #include "ODESolver.h"
 
+bool has_openmp();
+
 namespace goss
 {
 

@@ -49,6 +49,13 @@ goss_non_adaptive_solvers = [
 ]
 goss_solvers = goss_explicit_solvers + goss_implicit_solvers
 
+
+def has_openmp() -> bool:
+    from . import _gosscpp  # type: ignore
+
+    return _gosscpp.has_openmp()
+
+
 __all__ = [
     "codegeneration",
     "jit",

@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#ifdef HAS_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -33,60 +33,66 @@
 namespace goss
 {
 
-  /// A timer can be used for timing tasks. The basic usage is
-  ///
-  ///   Timer timer("Assembling over cells");
-  ///
-  /// The timer is started at construction and timing ends
-  /// when the timer is destroyed (goes out of scope). It is
-  /// also possible to start and stop a timer explicitly by
-  ///
-  ///   timer.start();
-  ///   timer.stop();
-  ///
-  /// Timings are stored globally and a summary may be printed
-  /// by calling
-  ///
-  ///   list_timings();
+/// A timer can be used for timing tasks. The basic usage is
+///
+///   Timer timer("Assembling over cells");
+///
+/// The timer is started at construction and timing ends
+/// when the timer is destroyed (goes out of scope). It is
+/// also possible to start and stop a timer explicitly by
+///
+///   timer.start();
+///   timer.stop();
+///
+/// Timings are stored globally and a summary may be printed
+/// by calling
+///
+///   list_timings();
 
-  class Timer
-  {
+class Timer
+{
   public:
-
     /// Create timer
     Timer(std::string task) : _task(""), t(time()), stopped(false)
     {
-      _task = task;
+        _task = task;
     }
 
     /// Destructor
     ~Timer()
-    { if (!stopped) stop(); }
+    {
+        if (!stopped)
+            stop();
+    }
 
     /// Start timer
     void start()
-    { t = time(); stopped = false; }
+    {
+        t = time();
+        stopped = false;
+    }
 
     /// Stop timer
     double stop()
     {
-      t = time() - t;
-#ifdef HAS_OPENMP
-      if (omp_get_thread_num() == 0)
-	LogManager::logger.register_timing(_task, t);
+        t = time() - t;
+#ifdef _OPENMP
+        if (omp_get_thread_num() == 0)
+            LogManager::logger.register_timing(_task, t);
 #else
-      LogManager::logger.register_timing(_task, t);
+        LogManager::logger.register_timing(_task, t);
 #endif
-      stopped = true;
-      return t;
+        stopped = true;
+        return t;
     }
 
     /// Return value of timer (or time at start if not stopped)
     double value() const
-    { return t; }
+    {
+        return t;
+    }
 
   private:
-
     // Name of task
     std::string _task;
 
@@ -95,9 +101,8 @@ namespace goss
 
     // True if timer has been stopped
     bool stopped;
+};
 
-  };
-
-}
+} // namespace goss
 
 #endif
