@@ -34,7 +34,6 @@ def cppyy_jit(
     field_parameters=None,
     monitored=None,
     code_params=None,
-    cppargs=None,
 ):
     """
     Generate a goss::ODEParameterized from a gotran ode and JIT compile it
@@ -52,8 +51,6 @@ def cppyy_jit(
         the intermediates will be generated.
     code_params : dict
         Parameters controling the code generation
-    cppargs : str
-        Default C++ argument passed to the C++ compiler
     """
 
     # Code generators
@@ -63,6 +60,7 @@ def cppyy_jit(
         field_parameters,
         monitored,
         code_params,
+        add_signature_to_name=True,
     )
     cgen.params.class_code = True
 
@@ -70,6 +68,7 @@ def cppyy_jit(
 
     # Init state code
     cpp_code = cgen.file_code()
+
     import cppyy
 
     cppyy.add_include_path(here.joinpath("include").as_posix())
@@ -80,9 +79,7 @@ def cppyy_jit(
 
     _cppyygbl = __import__("cppyy.gbl", fromlist=[f"create_{cgen.name}"])
     submodule = getattr(_cppyygbl, f"create_{cgen.name}")()
-    # from cppyy.gbl import create_ODE
 
-    # submodule = create_ODE()
     import cppyy.ll
 
     return cppyy.ll.as_ctypes(submodule)
@@ -100,7 +97,6 @@ def jit(
     field_parameters=None,
     monitored=None,
     code_params=None,
-    cppargs=None,
 ):
     """
     Generate a goss::ODEParameterized from a gotran ode and JIT compile it
@@ -118,8 +114,6 @@ def jit(
         the intermediates will be generated.
     code_params : dict
         Parameters controling the code generation
-    cppargs : str
-        Default C++ argument passed to the C++ compiler
     """
 
     python_object = cppyy_jit(
@@ -128,6 +122,5 @@ def jit(
         field_parameters=field_parameters,
         monitored=monitored,
         code_params=code_params,
-        cppargs=cppargs,
     )
     return make_ode(python_object=python_object)

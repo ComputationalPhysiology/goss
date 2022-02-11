@@ -1,4 +1,5 @@
+parameters(a=1.0, b=1.0)
 states(x=1.0, y=0.)
 
-dx_dt = -y
-dy_dt = x
+dx_dt = -a * y
+dy_dt = b * x

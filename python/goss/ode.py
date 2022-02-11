@@ -17,10 +17,10 @@ class ODE:
     def __init__(self, *args, **kwargs):
 
         if isinstance(args[0], gotran.ODE):
-            self._cpp_object = jit(args[0])
-        elif isinstance(args[0], os.PathLike):
+            self._cpp_object = jit(args[0], **kwargs)
+        elif isinstance(args[0], (os.PathLike, str)):
             # Assume this is a gotran ode file
-            self._cpp_object = jit(gotran.load_ode(args[0]))
+            self._cpp_object = jit(gotran.load_ode(args[0]), **kwargs)
 
         else:
             # Need to import this module here in order to
@@ -137,3 +137,15 @@ class ParameterizedODE(ODE):
     @property
     def num_parameters(self) -> int:
         return self._cpp_object.num_parameters()
+
+    @property
+    def num_field_parameters(self) -> int:
+        return self._cpp_object.num_field_parameters()
+
+    @property
+    def num_field_states(self) -> int:
+        return self._cpp_object.num_field_states()
+
+    @property
+    def num_monitored(self) -> int:
+        return self._cpp_object.num_monitored()

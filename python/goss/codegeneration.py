@@ -20,8 +20,10 @@ __all__ = ["GossCodeGenerator"]
 # Model parameter imports
 from modelparameters.parameterdict import ParameterDict
 from modelparameters.parameters import Param
+import hashlib
 
 # Gotran imports
+import gotran
 from gotran.codegeneration.codegenerators import CppCodeGenerator
 
 from gotran.codegeneration.algorithmcomponents import (
@@ -207,6 +209,7 @@ class GossCodeGenerator(CppCodeGenerator):
         field_parameters=None,
         monitored=None,
         code_params=None,
+        add_signature_to_name=False,
     ):
         """
         A class for generating a C++ subclass of a goss::ODEParameterized
@@ -299,13 +302,26 @@ class GossCodeGenerator(CppCodeGenerator):
             else name[0].upper() + (name[1:] if len(name) > 1 else "")
         )
 
+        if add_signature_to_name:
+            signature = hashlib.sha1(
+                (
+                    ode.signature()
+                    + repr(code_params)
+                    + repr(field_states)
+                    + repr(field_parameters)
+                    + repr(monitored)
+                    + gotran.__version__
+                ).encode(),
+            ).hexdigest()
+            self.name += "_" + signature
+
         self.ode = ode
         self.field_states = field_states
         self.field_parameters = field_parameters
         self.monitored = monitored
 
         # Fill the forms with content
-        self.file_form["MODELNAME"] = name.upper()
+        self.file_form["MODELNAME"] = self.name.upper()
         self.class_form["ModelName"] = self.name
         self.class_form["num_states"] = ode.num_full_states
         self.class_form["num_parameters"] = ode.num_parameters
