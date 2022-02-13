@@ -129,3 +129,23 @@ def test_field_states(tentusscher_2004_fields):
     system_solver.field_states = field_states
     zero_field_states = system_solver.field_states
     assert (zero_field_states == 0).all()
+
+
+def test_field_parameters(tentusscher_2004_fields):
+    solver = goss.solvers.ExplicitEuler()
+    num_nodes = 3
+    system_solver = goss.ODESystemSolver(num_nodes, solver, tentusscher_2004_fields)
+
+    field_parameter_names = tentusscher_2004_fields.field_parameter_names
+    field_parameters = system_solver.field_parameters
+    parameters = tentusscher_2004_fields.parameters
+
+    # Check default values
+    for i, name in enumerate(field_parameter_names):
+        assert np.allclose(field_parameters[:, i], parameters[name])
+
+    # Test setter
+    field_parameters[:] = 0
+    system_solver.field_parameters = field_parameters
+    zero_parameters = system_solver.field_parameters
+    assert (zero_parameters == 0).all()

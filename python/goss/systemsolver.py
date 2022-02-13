@@ -65,6 +65,25 @@ class ODESystemSolver:
             )
 
     @property
+    def field_parameters(self) -> np.ndarray:
+        field_parameters = np.zeros((self.num_nodes, self.ode.num_field_parameters))
+        self._cpp_object.get_field_parameters(field_parameters, self._tangled_storage)
+        return field_parameters
+
+    @field_parameters.setter
+    def field_parameters(self, field_parameters: np.ndarray) -> None:
+        field_parameters = np.ascontiguousarray(field_parameters)
+        if field_parameters.shape != (self.num_nodes, self.ode.num_field_parameters):
+            raise ValueError(
+                (
+                    "Expected shape of field parameters to be "
+                    f"{(self.num_nodes, self.ode.num_field_parameters)}, "
+                    f"got {field_parameters.shape}."
+                ),
+            )
+        self._cpp_object.set_field_parameters(field_parameters, self._tangled_storage)
+
+    @property
     def field_states(self) -> np.ndarray:
         field_states = np.zeros((self.num_nodes, self.ode.num_field_states))
         self._cpp_object.get_field_states(field_states, self._tangled_storage)

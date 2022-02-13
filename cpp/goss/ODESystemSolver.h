@@ -18,31 +18,30 @@
 #ifndef ODESYSTEMSOLVER_h_IS_INCLUDED
 #define ODESYSTEMSOLVER_h_IS_INCLUDED
 
-#include <vector>
 #include <memory>
+#include <vector>
 
-#include "types.h"
 #include "DoubleVector.h"
+#include "ODESolver.h"
 #include "ParameterizedODE.h"
 #include "log.h"
-#include "ODESolver.h"
+#include "types.h"
 
 bool has_openmp();
 
 namespace goss
 {
 
-  class ODESolver;
+class ODESolver;
 
-  // class to handle the update systems of the same ODE
-  class ODESystemSolver
-  {
+// class to handle the update systems of the same ODE
+class ODESystemSolver
+{
 
   public:
-
     // Constructor
     ODESystemSolver(uint nodes, std::shared_ptr<ODESolver> solver,
-		    std::shared_ptr<ParameterizedODE> ode);
+                    std::shared_ptr<ParameterizedODE> ode);
 
     // Destructor
     ~ODESystemSolver();
@@ -51,23 +50,24 @@ namespace goss
     void forward(double t, double interval);
 
     // Return components of system field state values
-    void get_field_state_components(double* component_field_states,
-                                    uint num_components, const uint* components,
-                                    bool tangled_storage=true) const;
+    void get_field_state_components(double *component_field_states, uint num_components,
+                                    const uint *components, bool tangled_storage = true) const;
 
     // Set components of system field state values
-    void set_field_state_components(const double* component_field_states,
-                                    uint num_components, const uint* components,
-                                    bool tangled_storage=true);
+    void set_field_state_components(const double *component_field_states, uint num_components,
+                                    const uint *components, bool tangled_storage = true);
 
     // Return system field state values
-    void get_field_states(double* system_field_states, bool tangled_storage=true) const;
+    void get_field_states(double *system_field_states, bool tangled_storage = true) const;
 
     // Set system field state values
-    void set_field_states(const double* system_field_states, bool tangled_storage=true);
+    void set_field_states(const double *system_field_states, bool tangled_storage = true);
+
+    // Reutrn system field parameter values
+    void get_field_parameters(double *system_field_params, bool tangled_storage = true) const;
 
     // Set system field parameter values
-    void set_field_parameters(const double* system_field_params, bool tangled_storage=true);
+    void set_field_parameters(const double *system_field_params, bool tangled_storage = true);
 
     // Use initial condition and initial values of field parameters to
     // reset System variables
@@ -77,65 +77,81 @@ namespace goss
     void set_num_threads(uint num_threads);
 
     // Get a const pointer to the whole states data array
-    const double* states() const {return _states.data();}
+    const double *states() const
+    {
+        return _states.data();
+    }
 
     // Get a pointer to the whole states data array
-    double* states(){return _states.data();}
+    double *states()
+    {
+        return _states.data();
+    }
 
     // Get a const pointer to the states data of one node
-    const double* states(uint node) const {return &_states[node*_ode->num_states()];}
+    const double *states(uint node) const
+    {
+        return &_states[node * _ode->num_states()];
+    }
 
     // Get a pointer to the states data of one node
-    double* states(uint node){return &_states[node*_ode->num_states()];}
+    double *states(uint node)
+    {
+        return &_states[node * _ode->num_states()];
+    }
 
     // Get the number of threads
     inline uint get_num_threads() const;
 
     // Get the ParameterizedODE
-    inline std::shared_ptr<ParameterizedODE> ode() {return _ode;}
+    inline std::shared_ptr<ParameterizedODE> ode()
+    {
+        return _ode;
+    }
 
     // Get the ODESolver
-    inline std::shared_ptr<ODESolver> solver() {return _solver;}
+    inline std::shared_ptr<ODESolver> solver()
+    {
+        return _solver;
+    }
 
     // Get the number of nodes
-    inline uint num_nodes() {return _num_nodes;}
+    inline uint num_nodes()
+    {
+        return _num_nodes;
+    }
 
   private:
-
     // Help functions used in normal and OpenMP runs
     // ---------------------------------------------
 
     // Reset default values for a given node
-    inline void _reset_default_node(uint node, const DoubleVector& default_ic,
-				    const std::vector<double>& default_field_params);
+    inline void _reset_default_node(uint node, const DoubleVector &default_ic,
+                                    const std::vector<double> &default_field_params);
 
     // Forward states for a given node
-    inline void _forward_node(ODESolver& solver, uint node, double t, double interval);
+    inline void _forward_node(ODESolver &solver, uint node, double t, double interval);
 
     // Set field states for a given node
-    inline void _set_field_states_node(uint node, const double* values,
-				       bool tangled_storage);
+    inline void _set_field_states_node(uint node, const double *values, bool tangled_storage);
 
     // Get field states for a given node
-    inline void _get_field_states_node(uint node, double* values,
-				       bool tangled_storage) const;
+    inline void _get_field_states_node(uint node, double *values, bool tangled_storage) const;
 
 
     // Set field state components for a given node
-    inline void _set_field_states_node_comp(uint node, const double* values,
-                                            uint num_components,
-                                            const uint* components,
-                                            bool tangled_storage);
+    inline void _set_field_states_node_comp(uint node, const double *values, uint num_components,
+                                            const uint *components, bool tangled_storage);
 
     // Get field state components for a given node
-    inline void _get_field_states_node_comp(uint node, double* values,
-                                            uint num_components,
-                                            const uint* components,
-                                            bool tangled_storage) const;
+    inline void _get_field_states_node_comp(uint node, double *values, uint num_components,
+                                            const uint *components, bool tangled_storage) const;
+
+    // Get field parameter values
+    inline void _get_field_parameters_node(uint node, double *values, bool tangled_storage) const;
 
     // Set field parameter values
-    inline void _set_field_parameters_node(uint node, const double* values,
-					   bool tangled_storage);
+    inline void _set_field_parameters_node(uint node, const double *values, bool tangled_storage);
 
     // Number of nodes
     const uint _num_nodes;
@@ -147,7 +163,7 @@ namespace goss
     std::shared_ptr<ODESolver> _solver;
 
     // Solvers used in OpenMP threaded runs
-    std::vector<std::shared_ptr<ODESolver> > _threaded_solvers;
+    std::vector<std::shared_ptr<ODESolver>> _threaded_solvers;
 
     // Local pointer to ODE (No ownership. Solver owes ODE)
     std::shared_ptr<ParameterizedODE> _ode;
@@ -166,144 +182,128 @@ namespace goss
 
     // Flag for having field parameters
     const bool _has_field_parameters;
-
-  };
-  //---------------------------------------------------------------------------
-  uint ODESystemSolver::get_num_threads() const
-  {
+};
+//---------------------------------------------------------------------------
+uint ODESystemSolver::get_num_threads() const
+{
     return _num_threads;
-  }
-  //---------------------------------------------------------------------------
-  void ODESystemSolver::_reset_default_node(uint node, const DoubleVector& default_ic,
-					  const std::vector<double>& default_field_params)
-  {
+}
+//---------------------------------------------------------------------------
+void ODESystemSolver::_reset_default_node(uint node, const DoubleVector &default_ic,
+                                          const std::vector<double> &default_field_params)
+{
 
     // Set field parameters
-    if (_has_field_parameters)
-    {
+    if (_has_field_parameters) {
 
-      // Update field parameters
-      for (uint i = 0; i < _ode->num_field_parameters(); i++)
-      {
-	_field_parameters[_ode->num_field_parameters()*node + i] =	\
-	  default_field_params[i];
-      }
+        // Update field parameters
+        for (uint i = 0; i < _ode->num_field_parameters(); i++) {
+            _field_parameters[_ode->num_field_parameters() * node + i] = default_field_params[i];
+        }
     }
 
     // Set states
     for (uint i = 0; i < _ode->num_states(); i++)
-      _states[_ode->num_states()*node + i] = default_ic.data[i];
+        _states[_ode->num_states() * node + i] = default_ic.data[i];
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_forward_node(ODESolver &solver_, uint node, double t, double interval)
+{
 
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_forward_node(ODESolver& solver_, uint node, double t,
-				      double interval)
-  {
+    // Update field parameters if any
+    if (_has_field_parameters) {
 
-  // Update field parameters if any
-    if (_has_field_parameters)
-    {
-
-      // Get local ode. Nead to grab ode from solver so it also works in a
-      // threader version
-      ParameterizedODE& ode_ = dynamic_cast<ParameterizedODE&>(*solver_.get_ode());
-      ode_.set_field_parameters(&_field_parameters[node*ode_.num_field_parameters()]);
-
+        // Get local ode. Nead to grab ode from solver so it also works in a
+        // threader version
+        ParameterizedODE &ode_ = dynamic_cast<ParameterizedODE &>(*solver_.get_ode());
+        ode_.set_field_parameters(&_field_parameters[node * ode_.num_field_parameters()]);
     }
 
     // Set internal time step if adaptive
     if (_is_adaptive)
-      solver_.set_internal_time_step(_ldt_vec[node]);
+        solver_.set_internal_time_step(_ldt_vec[node]);
 
     // Forward solver_
-    solver_.forward(&_states[node*_ode->num_states()], t, interval);
+    solver_.forward(&_states[node * _ode->num_states()], t, interval);
 
     // Get internal time step if adaptive
     if (_is_adaptive)
-      _ldt_vec[node] = solver_.get_internal_time_step();
-
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_set_field_states_node(uint node, const double* values,
-					       bool tangled_storage)
-  {
-    uint ind = 0;
-
-    for (uint i = 0; i < _ode->num_field_states(); i++)
-    {
-      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
-	_num_nodes*i + node;
-      _states[node*_ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
-    }
-
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_get_field_states_node_comp(uint node, double* values,
-                                                    uint num_components,
-                                                    const uint* components,
-                                                    bool tangled_storage) const
-  {
-    uint ind = 0;
-    uint i = 0;
-
-    for (uint ic = 0; ic < num_components; ic++)
-    {
-      i = components[ic];
-      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
-	_num_nodes*i + node;
-
-      values[ind] = _states[node*_ode->num_states() +		\
-			    _ode->get_field_state_indices()[i]];
-    }
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_set_field_states_node_comp(uint node, const double* values,
-                                                    uint num_components,
-                                                    const uint* components,
-                                                    bool tangled_storage)
-  {
-    uint ind = 0;
-    uint i = 0;
-
-    for (uint ic = 0; ic < num_components; ic++)
-    {
-      i = components[ic];
-      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
-	_num_nodes*i + node;
-      _states[node*_ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
-    }
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_get_field_states_node(uint node, double* values,
-					       bool tangled_storage) const
-  {
-    uint ind = 0;
-
-    for (uint i = 0; i < _ode->num_field_states(); i++)
-    {
-      ind = tangled_storage ? node*_ode->num_field_states() + i :	\
-	_num_nodes*i + node;
-
-      values[ind] = _states[node*_ode->num_states() +		\
-			    _ode->get_field_state_indices()[i]];
-    }
-
-  }
-  //-----------------------------------------------------------------------------
-  void ODESystemSolver::_set_field_parameters_node(uint node, const double* values,
-						   bool tangled_storage)
-  {
-
-    uint ind = 0;
-
-    for (uint i = 0; i < _ode->num_field_parameters(); i++)
-    {
-      ind = tangled_storage ? node*_ode->num_field_parameters() + i :	\
-	_num_nodes*i + node;
-      _field_parameters[node*_ode->num_field_parameters() + i] = values[ind];
-    }
-
-  }
-//-----------------------------------------------------------------------------
+        _ldt_vec[node] = solver_.get_internal_time_step();
 }
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_set_field_states_node(uint node, const double *values, bool tangled_storage)
+{
+    uint ind = 0;
+
+    for (uint i = 0; i < _ode->num_field_states(); i++) {
+        ind = tangled_storage ? node * _ode->num_field_states() + i : _num_nodes * i + node;
+        _states[node * _ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
+    }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_get_field_states_node_comp(uint node, double *values, uint num_components,
+                                                  const uint *components,
+                                                  bool tangled_storage) const
+{
+    uint ind = 0;
+    uint i = 0;
+
+    for (uint ic = 0; ic < num_components; ic++) {
+        i = components[ic];
+        ind = tangled_storage ? node * _ode->num_field_states() + i : _num_nodes * i + node;
+
+        values[ind] = _states[node * _ode->num_states() + _ode->get_field_state_indices()[i]];
+    }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_set_field_states_node_comp(uint node, const double *values,
+                                                  uint num_components, const uint *components,
+                                                  bool tangled_storage)
+{
+    uint ind = 0;
+    uint i = 0;
+
+    for (uint ic = 0; ic < num_components; ic++) {
+        i = components[ic];
+        ind = tangled_storage ? node * _ode->num_field_states() + i : _num_nodes * i + node;
+        _states[node * _ode->num_states() + _ode->get_field_state_indices()[i]] = values[ind];
+    }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_get_field_states_node(uint node, double *values, bool tangled_storage) const
+{
+    uint ind = 0;
+
+    for (uint i = 0; i < _ode->num_field_states(); i++) {
+        ind = tangled_storage ? node * _ode->num_field_states() + i : _num_nodes * i + node;
+
+        values[ind] = _states[node * _ode->num_states() + _ode->get_field_state_indices()[i]];
+    }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_get_field_parameters_node(uint node, double *values,
+                                                 bool tangled_storage) const
+{
+    uint ind = 0;
+
+    for (uint i = 0; i < _ode->num_field_parameters(); i++) {
+        ind = tangled_storage ? node * _ode->num_field_parameters() + i : _num_nodes * i + node;
+
+        values[ind] = _field_parameters[node * _ode->num_field_parameters() + i];
+    }
+}
+//-----------------------------------------------------------------------------
+void ODESystemSolver::_set_field_parameters_node(uint node, const double *values,
+                                                 bool tangled_storage)
+{
+
+    uint ind = 0;
+
+    for (uint i = 0; i < _ode->num_field_parameters(); i++) {
+        ind = tangled_storage ? node * _ode->num_field_parameters() + i : _num_nodes * i + node;
+        _field_parameters[node * _ode->num_field_parameters() + i] = values[ind];
+    }
+}
+//-----------------------------------------------------------------------------
+} // namespace goss
 #endif

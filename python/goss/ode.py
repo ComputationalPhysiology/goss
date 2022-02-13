@@ -161,8 +161,16 @@ class ParameterizedODE(ODE):
         assert field_params.shape == (self.num_field_parameters,)
         self._cpp_object.set_field_parameters(field_params)
 
-    def set_parameters(self, name: str, value: float) -> None:
+    def set_parameter(self, name: str, value: float) -> None:
         self._cpp_object.set_parameter(name, value)
+
+    def get_parameter(self, name: str) -> float:
+        return self._cpp_object.get_parameter(name)
+
+    @property
+    def parameters(self) -> dict[str, float]:
+        # FIXME: This can potentially be slow if we have a lot of parameters
+        return {name: self.get_parameter(name) for name in self.parameter_names}
 
     @property
     def state_names(self) -> list[str]:

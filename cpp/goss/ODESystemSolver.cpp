@@ -140,6 +140,20 @@ void ODESystemSolver::set_field_states(const double *field_state_values, bool ta
     }
 }
 //-----------------------------------------------------------------------------
+void ODESystemSolver::get_field_parameters(double *field_param_values, bool tangled_storage) const
+{
+
+    // Iterate over all nodes using threaded or non-threaded loop
+    if (_num_threads > 0) {
+        //#pragma omp parallel for schedule(guided, 20)
+        for (uint node = 0; node < _num_nodes; node++)
+            _get_field_parameters_node(node, field_param_values, tangled_storage);
+    } else {
+        for (uint node = 0; node < _num_nodes; node++)
+            _get_field_parameters_node(node, field_param_values, tangled_storage);
+    }
+}
+//-----------------------------------------------------------------------------
 void ODESystemSolver::set_field_parameters(const double *field_param_values, bool tangled_storage)
 {
 

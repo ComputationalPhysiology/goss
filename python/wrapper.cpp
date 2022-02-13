@@ -397,6 +397,26 @@ void init_ODESystemSolver(py::module &m)
 
                      self.set_field_states(system_field_states_ptr, tangled_storage);
                  })
+            .def("get_field_parameters",
+                 [](const goss::ODESystemSolver &self, py::array_t<double> system_field_parameters,
+                    bool tangled_storage) {
+                     py::buffer_info system_field_parameters_info =
+                             system_field_parameters.request();
+                     auto system_field_parameters_ptr =
+                             static_cast<double *>(system_field_parameters_info.ptr);
+
+                     self.get_field_parameters(system_field_parameters_ptr, tangled_storage);
+                 })
+            .def("set_field_parameters",
+                 [](goss::ODESystemSolver &self, const py::array_t<double> system_field_parameters,
+                    bool tangled_storage) {
+                     py::buffer_info system_field_parameters_info =
+                             system_field_parameters.request();
+                     auto system_field_parameters_ptr =
+                             static_cast<double *>(system_field_parameters_info.ptr);
+
+                     self.set_field_parameters(system_field_parameters_ptr, tangled_storage);
+                 })
             .def("get_field_state_components",
                  [](const goss::ODESystemSolver &self, py::array_t<double> component_field_states,
                     const goss::uint num_components, py::array_t<goss::uint> components,
