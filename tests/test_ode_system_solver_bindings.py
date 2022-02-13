@@ -55,60 +55,6 @@ def test_states(oscilator):
         assert np.allclose(states[node, :], ic)
 
 
-def test_get_field_state_components_raise_RuntimeError_when_no_fields_states(oscilator):
-    solver = goss.solvers.ExplicitEuler()
-    num_nodes = 3
-    system_solver = goss.ODESystemSolver(num_nodes, solver, oscilator)
-    with pytest.raises(RuntimeError):
-        system_solver.get_field_state_components([0])
-
-
-def test_get_field_state_components_multiple(tentusscher_2004_fields):
-    solver = goss.solvers.ExplicitEuler()
-    num_nodes = 3
-    system_solver = goss.ODESystemSolver(num_nodes, solver, tentusscher_2004_fields)
-
-    ic = tentusscher_2004_fields.get_ic()
-    field_state_indices = tentusscher_2004_fields.field_state_indices
-    assert len(field_state_indices) == 2
-    field_state_values = ic[field_state_indices]
-
-    states = system_solver.states
-    assert states.shape == (num_nodes, tentusscher_2004_fields.num_states)
-
-    field_states_comp = system_solver.get_field_state_components([0, 1])
-    assert (field_states_comp[:, 0] == field_state_values[0]).all()
-    assert (field_states_comp[:, 1] == field_state_values[1]).all()
-
-    field_states_comp = system_solver.get_field_state_components([1, 0])
-    assert (field_states_comp[:, 0] == field_state_values[1]).all()
-    assert (field_states_comp[:, 1] == field_state_values[0]).all()
-
-
-@pytest.mark.parametrize(
-    "component",
-    [
-        0,
-        pytest.param(1, marks=pytest.mark.xfail(reason="some bug")),
-    ],
-)
-def test_get_field_state_components_single(component, tentusscher_2004_fields):
-    solver = goss.solvers.ExplicitEuler()
-    num_nodes = 3
-    system_solver = goss.ODESystemSolver(num_nodes, solver, tentusscher_2004_fields)
-
-    ic = tentusscher_2004_fields.get_ic()
-    field_state_indices = tentusscher_2004_fields.field_state_indices
-    assert len(field_state_indices) == 2
-    field_state_values = ic[field_state_indices]
-
-    states = system_solver.states
-    assert states.shape == (num_nodes, tentusscher_2004_fields.num_states)
-
-    field_states_comp = system_solver.get_field_state_components([component])
-    assert (field_states_comp == field_state_values[component]).all()
-
-
 def test_field_states(tentusscher_2004_fields: goss.ParameterizedODE):
     solver = goss.solvers.ExplicitEuler()
     num_nodes = 3

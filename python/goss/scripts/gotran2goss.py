@@ -1,5 +1,4 @@
-from __future__ import annotations
-
+from typing import List
 from typing import Optional
 
 __author__ = "Johan Hake (hake.dev@gmail.com)"
@@ -12,8 +11,6 @@ import typer
 
 from modelparameters import utils
 from gotran.model.loadmodel import load_ode
-
-# from gotran import list_timings
 from goss.codegeneration import GossCodeGenerator
 
 
@@ -36,15 +33,15 @@ def main(
         help="Specify output file name",
     ),
     output: str = typer.Option("", help="Specify output file name"),
-    field_parameters: Optional[list[str]] = typer.Option(
+    field_parameters: Optional[List[str]] = typer.Option(
         None,
         help="Parameters which should be treated as field parameters.",
     ),
-    field_states: Optional[list[str]] = typer.Option(
+    field_states: Optional[List[str]] = typer.Option(
         None,
         help="States which should be treated as field states.",
     ),
-    monitored: Optional[list[str]] = typer.Option(
+    monitored: Optional[List[str]] = typer.Option(
         None,
         help="Monitored intermediates.",
     ),

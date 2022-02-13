@@ -55,15 +55,6 @@ class ODESystemSolver:
         """Get the whole states data array"""
         return self._cpp_object.states()
 
-    def _check_field_components(self, components: np.ndarray):
-        if components.max() >= self.ode.num_field_states:
-            raise RuntimeError(
-                (
-                    f"Number of field states are {self.ode.num_field_states}. "
-                    f"Cannot evalute field component number {components.max()}"
-                ),
-            )
-
     @property
     def field_parameters(self) -> np.ndarray:
         field_parameters = np.zeros((self.num_nodes, self.ode.num_field_parameters))
@@ -104,47 +95,3 @@ class ODESystemSolver:
 
     def forward(self, t: float, interval: float) -> None:
         self._cpp_object.forward(t, interval)
-
-    # def set_field_state_components(
-    #     self,
-    #     component_field_states: np.ndarray,
-    #     components: np.ndarray,
-    #     tangled_storage: bool = True,
-    # ) -> np.ndarray:
-
-    #     components = np.asarray(components, dtype=np.uint32)
-    #     self._check_field_components(components)
-
-    #     pass
-
-    def get_field_state_components(
-        self,
-        components: np.ndarray,
-        tangled_storage: bool = True,
-    ) -> np.ndarray:
-        """Return components of system field state values"""
-
-        components = np.asarray(components, dtype=np.uint32)
-        self._check_field_components(components)
-        num_components = np.uint32(components.size)
-
-        if num_components == 0:
-            return np.array([])
-
-        if num_components == 1:
-            tangled_storage = False
-
-        component_field_states = np.zeros((self.num_nodes, num_components))
-
-        # Tangled storage is a switch indicating C-contiguous or
-        # F-contigous arrays
-
-        self._cpp_object.get_field_state_components(
-            component_field_states,
-            num_components,
-            components,
-            tangled_storage,
-        )
-        if num_components > 1:
-            return component_field_states[:, components]
-        return component_field_states
