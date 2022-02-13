@@ -25,3 +25,12 @@ def tentusscher_2004_ode():
 @pytest.fixture(scope="session")
 def tentusscher_2004(tentusscher_2004_ode):
     return ParameterizedODE(tentusscher_2004_ode)
+
+
+@pytest.fixture(scope="session")
+def tentusscher_2004_fields(tentusscher_2004_ode):
+    return ParameterizedODE(
+        tentusscher_2004_ode,
+        field_states=["Ca_i", "V"],
+        field_parameters=["g_Kr", "g_Na", "g_Ks"],
+    )

@@ -377,6 +377,54 @@ void init_ODESystemSolver(py::module &m)
             .def("reset_default", &goss::ODESystemSolver::reset_default)
             .def("ode", &goss::ODESystemSolver::ode)
             .def("solver", &goss::ODESystemSolver::solver)
+            .def("forward", [](goss::ODESystemSolver &self, double t,
+                               double interval) { self.forward(t, interval); })
+            .def("get_field_states",
+                 [](const goss::ODESystemSolver &self, py::array_t<double> system_field_states,
+                    bool tangled_storage) {
+                     py::buffer_info system_field_states_info = system_field_states.request();
+                     auto system_field_states_ptr =
+                             static_cast<double *>(system_field_states_info.ptr);
+
+                     self.get_field_states(system_field_states_ptr, tangled_storage);
+                 })
+            .def("set_field_states",
+                 [](goss::ODESystemSolver &self, const py::array_t<double> system_field_states,
+                    bool tangled_storage) {
+                     py::buffer_info system_field_states_info = system_field_states.request();
+                     auto system_field_states_ptr =
+                             static_cast<double *>(system_field_states_info.ptr);
+
+                     self.set_field_states(system_field_states_ptr, tangled_storage);
+                 })
+            .def("get_field_state_components",
+                 [](const goss::ODESystemSolver &self, py::array_t<double> component_field_states,
+                    const goss::uint num_components, py::array_t<goss::uint> components,
+                    bool tangled_storage) {
+                     py::buffer_info component_field_states_info = component_field_states.request();
+                     auto component_field_states_ptr =
+                             static_cast<double *>(component_field_states_info.ptr);
+
+                     py::buffer_info components_info = components.request();
+                     auto components_ptr = static_cast<goss::uint *>(components_info.ptr);
+
+                     self.get_field_state_components(component_field_states_ptr, num_components,
+                                                     components_ptr, tangled_storage);
+                 })
+            .def("set_field_state_components",
+                 [](goss::ODESystemSolver &self, const py::array_t<double> component_field_states,
+                    const goss::uint num_components, py::array_t<goss::uint> components,
+                    bool tangled_storage) {
+                     py::buffer_info component_field_states_info = component_field_states.request();
+                     auto component_field_states_ptr =
+                             static_cast<double *>(component_field_states_info.ptr);
+
+                     py::buffer_info components_info = components.request();
+                     auto components_ptr = static_cast<goss::uint *>(components_info.ptr);
+
+                     self.set_field_state_components(component_field_states_ptr, num_components,
+                                                     components_ptr, tangled_storage);
+                 })
             .def("states",
                  [](goss::ODESystemSolver &self) {
                      const double *states = self.states();

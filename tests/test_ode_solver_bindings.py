@@ -15,6 +15,11 @@ def test_constructor_empty(Solver):
     assert solver.num_states == 0
 
 
+def test_invalid_argument_constructor():
+    with pytest.raises(ValueError):
+        goss.solvers.ExplicitEuler("invalid_argument")
+
+
 @pytest.mark.parametrize("Solver", goss.goss_non_adaptive_solvers)
 def test_is_adaptive_False(Solver):
     solver = Solver()
