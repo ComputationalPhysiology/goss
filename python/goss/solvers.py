@@ -44,7 +44,10 @@ class ODESolver(abc.ABC):
         return {name: getattr(self._cpp_object, name) for name in self.parameter_names}
 
     def set_parameter(self, name: str, value: Any):
-        assert name in self.parameter_names
+        if name not in self.parameter_names:
+            raise KeyError(
+                f"Invalid parameter {name}, expected one of {self.parameter_names}",
+            )
         if not isinstance(value, self.parameter_names[name]):
             raise TypeError(
                 (

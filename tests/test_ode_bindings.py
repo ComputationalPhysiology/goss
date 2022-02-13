@@ -20,8 +20,27 @@ def test_get_ic(oscilator):
 
 
 def test_ode_eval_full(oscilator):
+
     values = oscilator.eval(np.array([0.1, 0.2]), 0)
     assert np.allclose(values, np.array([-0.2, 0.1]))
+
+
+def test_forward_backward_subst(tentusscher_2004):
+    ic = tentusscher_2004.get_ic()
+    jac = tentusscher_2004.compute_jacobian(ic, 0)
+    x = np.zeros_like(ic)
+    tentusscher_2004.forward_backward_subst(jac, ic, x)
+    # TODO: Add some asserts here
+
+
+def test_ode_eval_full_list(oscilator):
+    values = oscilator.eval([0.1, 0.2], 0)
+    assert np.allclose(values, np.array([-0.2, 0.1]))
+
+
+def test_ode_eval_full_invalid_states_raises_ValueError(oscilator):
+    with pytest.raises(ValueError):
+        oscilator.eval(np.array([0.1, 0.2, 0.3]), 0)
 
 
 def test_ode_eval_index(oscilator):
@@ -57,11 +76,6 @@ def test_ode_jacobian_tentusscher_2004(tentusscher_2004):
     # assert np.allclose(jac, np.array([[0, -1], [1, 0]]))
 
 
-def test_forward_backward_subst():
-    # TODO: Find a way to test this one
-    pass
-
-
 def test_is_dae(oscilator):
     assert oscilator.is_dae is False
 
@@ -84,3 +98,8 @@ def test_ode_contructors(oscilator_ode):
     ode_copy = ode.copy()
     ode_path = goss.ODE(here.joinpath("oscilator.ode"))
     assert ode.num_states == ode_copy.num_states == ode_path.num_states
+
+
+def test_invalid_ode_construtor():
+    with pytest.raises(ValueError):
+        goss.ODE(42)

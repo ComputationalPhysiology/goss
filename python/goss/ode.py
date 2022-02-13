@@ -157,9 +157,9 @@ class ParameterizedODE(ODE):
         self._cpp_object.eval_monitored(states, time, monitored)
         return monitored
 
-    def set_field_parameters(self, field_params: np.ndarray) -> None:
-        assert field_params.shape == (self.num_field_parameters,)
-        self._cpp_object.set_field_parameters(field_params)
+    # def set_field_parameters(self, field_params: np.ndarray) -> None:
+    #     assert field_params.shape == (self.num_field_parameters,)
+    #     self._cpp_object.set_field_parameters(field_params)
 
     def set_parameter(self, name: str, value: float) -> None:
         self._cpp_object.set_parameter(name, value)

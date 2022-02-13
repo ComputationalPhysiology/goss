@@ -453,10 +453,14 @@ void init_ODESystemSolver(py::module &m)
                      return py::array_t<double>(std::vector<ptrdiff_t>{num_nodes, num_states},
                                                 states);
                  })
-            .def("states_at_node", [](goss::ODESystemSolver &self, goss::uint node) {
-                const double *states = self.states(node);
-                auto num_states = self.ode()->num_states();
-                return py::array_t<double>(num_states, states);
+            .def("states_at_node",
+                 [](goss::ODESystemSolver &self, goss::uint node) {
+                     const double *states = self.states(node);
+                     auto num_states = self.ode()->num_states();
+                     return py::array_t<double>(num_states, states);
+                 })
+            .def("forward", [](goss::ODESystemSolver &self, double t, double interval) {
+                self.forward(t, interval);
             });
 }
 

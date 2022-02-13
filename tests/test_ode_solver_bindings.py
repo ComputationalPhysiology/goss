@@ -75,6 +75,18 @@ def test_parameters(Solver):
         assert np.isclose(new_parameters[name], new_value), name
 
 
+def test_set_invalid_parameter_type():
+    solver = goss.solvers.ExplicitEuler()
+    with pytest.raises(TypeError):
+        solver.set_parameter("ldt", "hello")
+
+
+def test_set_invalid_parameter_name():
+    solver = goss.solvers.ExplicitEuler()
+    with pytest.raises(KeyError):
+        solver.set_parameter("invalid_parmeter", 42.0)
+
+
 @pytest.mark.parametrize("Solver", goss.goss_solvers)
 def test_solve_oscilator(Solver, oscilator):
     solver = Solver(oscilator)

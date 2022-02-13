@@ -102,6 +102,9 @@ class ODESystemSolver:
             )
         self._cpp_object.set_field_states(field_states, self._tangled_storage)
 
+    def forward(self, t: float, interval: float) -> None:
+        self._cpp_object.forward(t, interval)
+
     # def set_field_state_components(
     #     self,
     #     component_field_states: np.ndarray,

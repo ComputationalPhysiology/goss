@@ -109,7 +109,7 @@ def test_get_field_state_components_single(component, tentusscher_2004_fields):
     assert (field_states_comp == field_state_values[component]).all()
 
 
-def test_field_states(tentusscher_2004_fields):
+def test_field_states(tentusscher_2004_fields: goss.ParameterizedODE):
     solver = goss.solvers.ExplicitEuler()
     num_nodes = 3
     system_solver = goss.ODESystemSolver(num_nodes, solver, tentusscher_2004_fields)
@@ -131,14 +131,19 @@ def test_field_states(tentusscher_2004_fields):
     assert (zero_field_states == 0).all()
 
 
-def test_field_parameters(tentusscher_2004_fields):
+def test_field_parameters(tentusscher_2004_fields: goss.ParameterizedODE):
     solver = goss.solvers.ExplicitEuler()
-    num_nodes = 3
+    num_nodes = 4
     system_solver = goss.ODESystemSolver(num_nodes, solver, tentusscher_2004_fields)
 
     field_parameter_names = tentusscher_2004_fields.field_parameter_names
     field_parameters = system_solver.field_parameters
     parameters = tentusscher_2004_fields.parameters
+
+    assert field_parameters.shape == (
+        num_nodes,
+        tentusscher_2004_fields.num_field_parameters,
+    )
 
     # Check default values
     for i, name in enumerate(field_parameter_names):
