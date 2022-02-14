@@ -4,6 +4,14 @@ from .ode import ParameterizedODE
 from .solvers import ODESolver
 
 
+def has_shape(y: np.ndarray, xdim: int, ydim: int) -> bool:
+    if y.shape == (xdim, ydim):
+        return True
+    if y.size == xdim * ydim:
+        return True
+    return False
+
+
 class ODESystemSolver:
     def __init__(self, num_nodes: int, solver: ODESolver, ode: ParameterizedODE):
 
@@ -64,7 +72,11 @@ class ODESystemSolver:
     @field_parameters.setter
     def field_parameters(self, field_parameters: np.ndarray) -> None:
         field_parameters = np.ascontiguousarray(field_parameters)
-        if field_parameters.shape != (self.num_nodes, self.ode.num_field_parameters):
+        if not has_shape(
+            field_parameters,
+            self.num_nodes,
+            self.ode.num_field_parameters,
+        ):
             raise ValueError(
                 (
                     "Expected shape of field parameters to be "
@@ -83,7 +95,7 @@ class ODESystemSolver:
     @field_states.setter
     def field_states(self, field_states: np.ndarray) -> None:
         field_states = np.ascontiguousarray(field_states)
-        if field_states.shape != (self.num_nodes, self.ode.num_field_states):
+        if not has_shape(field_states, self.num_nodes, self.ode.num_field_states):
             raise ValueError(
                 (
                     "Expected shape of field states to be "

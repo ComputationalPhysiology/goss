@@ -19,7 +19,6 @@ from __future__ import annotations
 
 __all__ = ["DOLFINODESystemSolver", "family_and_degree_from_str"]
 
-from collections import OrderedDict
 import numpy as np
 
 import typing
@@ -240,6 +239,7 @@ class GossDofs(typing.NamedTuple):
     dof_maps: dict[KeyType, np.ndarray]
     mesh_entities: dict[KeyType, np.ndarray]
     nested_dofs: bool
+    dolfin_values: np.ndarray
 
 
 def first_value(d: dict):
@@ -281,7 +281,7 @@ def setup_dofs(
     float_type = np.float_
 
     for label in distinct_domains:
-        dof_maps[label] = OrderedDict((key, []) for key in field_names)
+        dof_maps[label] = {key: [] for key in field_names}
         if num_field_states > 1:
             num_entity_dofs_scalar = V.sub(0).dofmap().num_entity_dofs(top_dim)
         else:
@@ -342,18 +342,15 @@ def setup_dofs(
 
         # Create a nested index set for putting values into field_states
         # in a ODESystemSolver
-        goss_indices[label] = OrderedDict(
-            (
-                key,
-                np.arange(
-                    offset,
-                    num_dofs[label] * num_field_states + offset,
-                    num_field_states,
-                    dtype=np.intc,
-                ),
+        goss_indices[label] = {
+            key: np.arange(
+                offset,
+                num_dofs[label] * num_field_states + offset,
+                num_field_states,
+                dtype=np.intc,
             )
             for offset, key in enumerate(field_names)
-        )
+        }
 
     # Allocate memory for accessing values from DOLFIN Function
     if nested_dofs:
@@ -379,6 +376,7 @@ def setup_dofs(
         dof_maps=dof_maps,
         mesh_entities=mesh_entities,
         nested_dofs=nested_dofs,
+        dolfin_values=dolfin_values,
     )
 
 
@@ -580,12 +578,12 @@ class DOLFINODESystemSolver(object):
                         ] = (
                             ode.field_params[param]
                             .vector()
-                            .array()[self._field_params_dofs[label]]
+                            .get_local()[self._field_params_dofs[label]]
                         )
                     else:
                         self._param_values[label][
                             local_id :: ode.num_field_parameters
-                        ] = (ode.field_params[param].vector().array())
+                        ] = (ode.field_params[param].vector().get_local())
 
                 else:
                     self._param_values[label][
@@ -597,7 +595,7 @@ class DOLFINODESystemSolver(object):
 
             # Set field_parameter values
             if label in self._param_values:
-                self._ode_system_solvers[label].sfield_parameters = (
+                self._ode_system_solvers[label].field_parameters = (
                     self._param_values[label],
                 )
 
@@ -623,18 +621,18 @@ class DOLFINODESystemSolver(object):
             for local_id, param in enumerate(ode.field_parameter_names):
                 if param in ode.changed_field_parameters:
                     # field_params_changed = True
-                    if self._nested_dofs:
+                    if self._dofs.nested_dofs:
                         self._param_values[label][
                             local_id :: ode.num_field_parameters
                         ] = (
                             ode.field_params[param]
                             .vector()
-                            .array()[self._field_params_dofs[label]]
+                            .get_local()[self._field_params_dofs[label]]
                         )
                     else:
                         self._param_values[label][
                             local_id :: ode.num_field_parameters()
-                        ] = (ode.field_params[param].vector().array())
+                        ] = (ode.field_params[param].vector().get_local())
 
             # Update system solver
             if ode.changed_field_parameters:
@@ -669,30 +667,30 @@ class DOLFINODESystemSolver(object):
         # assert v in self._state_space, "expected v to be in the state space"
 
         # Get values from dolfin
-        values = self._dolfin_values
+        values = self._dofs.dolfin_values
 
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
 
             # Fetch solution from stored field states
-            ode_system_solver.get_field_states(self._goss_values[label])
+            self._dofs.goss_values[label] = ode_system_solver.field_states.flatten()
 
             # Iterate over the fields and collect values and put back
             # into dolfin transit array if nested dofs
-            if self._nested_dofs:
+            if self._dofs.nested_dofs:
                 for field_name in self._field_names:
-                    goss_indices = self._goss_indices[label][field_name]
-                    dof_maps = self._dof_maps[label][field_name]
+                    goss_indices = self._dofs.goss_indices[label][field_name]
+                    dof_maps = self._dofs.dof_maps[label][field_name]
 
                     # Get each field for each distinct domain
-                    values[dof_maps] = self._goss_values[label][goss_indices]
+                    values[dof_maps] = self._dofs.goss_values[label][goss_indices]
 
             elif self._float_type == np.float32:
 
-                values[:] = self._goss_values[label]
+                values[:] = self._dofs.goss_values[label]
 
         # Put solution back into DOLFIN Function
-        v.vector()[self._dof_maps["dolfin"]] = values
+        v.vector()[self._dofs.dof_maps["dolfin"]] = values
 
     def to_field_states(self, v):
         """
@@ -703,28 +701,28 @@ class DOLFINODESystemSolver(object):
         # assert v in self._state_space, "expected v to be in the state space"
 
         # Get values from dolfin
-        values = self._dolfin_values
-        v.vector().get_local(values, self._dof_maps["dolfin"])
+        values = self._dofs.dolfin_values
+        values[:] = v.vector()[self._dofs.dof_maps["dolfin"]]
 
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
 
             # Iterate over the fields and collect values if nested dofs
-            if self._nested_dofs:
+            if self._dofs.nested_dofs:
                 for field_name in self._field_names:
-                    goss_indices = self._goss_indices[label][field_name]
-                    dof_maps = self._dof_maps[label][field_name]
+                    goss_indices = self._dofs.goss_indices[label][field_name]
+                    dof_maps = self._dofs.dof_maps[label][field_name]
 
                     # Get each field for each distinct domain
-                    self._goss_values[label][goss_indices] = values[dof_maps]
+                    self._dofs.goss_values[label][goss_indices] = values[dof_maps]
 
             # If single precision we need to copy
             elif self._float_type == np.float32:
 
-                self._goss_values[label][:] = values
+                self._dofs.goss_values[label][:] = values
 
             # Transfer values to Solver
-            ode_system_solver.set_field_states(self._goss_values[label])
+            ode_system_solver.field_states = self._dofs.goss_values[label]
 
     def step(self, interval, v):
         """
@@ -764,27 +762,15 @@ class DOLFINODESystemSolver(object):
         """
         # If not create copy the states and exit
         if not self._saved_states:
-            if enable_cuda and self.parameters.use_cuda:
-                self._saved_states = dict(
-                    (label, ode_system_solver.get_cuda_states().copy())
-                    for label, ode_system_solver in self._ode_system_solvers.items()
-                )
-
-            else:
-                self._saved_states = dict(
-                    (label, ode_system_solver.states().copy())
-                    for label, ode_system_solver in self._ode_system_solvers.items()
-                )
+            self._saved_states = dict(
+                (label, ode_system_solver.states().copy())
+                for label, ode_system_solver in self._ode_system_solvers.items()
+            )
             return
 
         # Save states for each solver
-        if enable_cuda and self.parameters.use_cuda:
-            for label, ode_system_solver in self._ode_system_solvers.items():
-                self._saved_states[label][:] = ode_system_solver.get_cuda_states()
-
-        else:
-            for label, ode_system_solver in self._ode_system_solvers.items():
-                self._saved_states[label][:] = ode_system_solver.states()
+        for label, ode_system_solver in self._ode_system_solvers.items():
+            self._saved_states[label][:] = ode_system_solver.states()
 
     def restore_states(self):
         """
@@ -795,10 +781,5 @@ class DOLFINODESystemSolver(object):
             raise RuntimeError("Cannot restore any states when none are saved.")
 
         # Restor the states from the saved one
-        if enable_cuda and self.parameters.use_cuda:
-            for label, ode_system_solver in self._ode_system_solvers.items():
-                ode_system_solver.set_cuda_states(self._saved_states[label])
-
-        else:
-            for label, ode_system_solver in self._ode_system_solvers.items():
-                ode_system_solver.states()[:] = self._saved_states[label]
+        for label, ode_system_solver in self._ode_system_solvers.items():
+            ode_system_solver.states()[:] = self._saved_states[label]
