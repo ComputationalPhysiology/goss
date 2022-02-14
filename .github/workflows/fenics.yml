@@ -12,8 +12,8 @@ jobs:
       - name: Install boost
         run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev pkg-config libc6-dev ninja-build g++ cmake ninja-build
       - name: Upgrade pip
-        run: python3 -m pip install pip --upgrade
+        run: sudo python3 -m pip install pip --upgrade
       - name: Install python dependencies
-        run: python3 -m pip install -e ".[test,cbcbeat]"
+        run: sudo python3 -m pip install ".[test,cbcbeat]"
       - name: Run tests
         run: python3 -m pytest -m fenics

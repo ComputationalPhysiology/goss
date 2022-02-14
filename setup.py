@@ -47,7 +47,7 @@ setup(
         "-DPython3_LIBRARIES=" + sysconfig.get_config_var("LIBDEST"),
         "-DPython3_INCLUDE_DIRS=" + sysconfig.get_config_var("INCLUDEPY"),
     ],
-    packages=["goss"],
+    packages=["goss", "goss.scripts"],
     package_dir={"": "python"},
     cmake_install_dir="python/goss/",
     classifiers=[
