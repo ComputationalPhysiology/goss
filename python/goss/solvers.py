@@ -28,8 +28,16 @@ class ODESolver(abc.ABC):
             self._cpp_object = cpp_solver()
         elif isinstance(args[0], ODE):
             self._cpp_object = cpp_solver(args[0]._cpp_object)
+        elif isinstance(args[0], _gosscpp.ODESolver):
+            self._cpp_object = args[0]
         else:
             raise ValueError(f"Unknown argument of type {type(args[0])}")
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}()"
 
     @property
     def is_adaptive(self) -> bool:
@@ -67,7 +75,7 @@ class ODESolver(abc.ABC):
         return ODE(self._cpp_object.get_ode())
 
     def copy(self):
-        return self.__class__(self._cpp_object)
+        return self.__class__(self._cpp_object.copy())
 
     def forward(self, y: np.ndarray, t: float, interval: float):
         # FIXME: Consider making this pure

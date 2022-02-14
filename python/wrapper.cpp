@@ -43,6 +43,7 @@ void init_ODESolvers(py::module &m)
             solver_ExplicitEuler(m, "ExplicitEuler");
     solver_ExplicitEuler.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::ExplicitEuler::copy)
             .def("forward", [](goss::ExplicitEuler &self, const py::array_t<double> y, double t,
                                double interval) {
                 py::buffer_info y_info = y.request();
@@ -54,6 +55,7 @@ void init_ODESolvers(py::module &m)
     py::class_<goss::RL1, goss::ODESolver, std::shared_ptr<goss::RL1>> solver_RL1(m, "RL1");
     solver_RL1.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::RL1::copy)
             .def("forward",
                  [](goss::RL1 &self, const py::array_t<double> y, double t, double interval) {
                      py::buffer_info y_info = y.request();
@@ -66,6 +68,7 @@ void init_ODESolvers(py::module &m)
     solver_GRL1.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
             .def_readwrite("delta", &goss::GRL1::delta)
+            .def("copy", &goss::GRL1::copy)
             .def("forward",
                  [](goss::GRL1 &self, const py::array_t<double> y, double t, double interval) {
                      py::buffer_info y_info = y.request();
@@ -101,6 +104,7 @@ void init_ODESolvers(py::module &m)
             solver_ThetaSolver(m, "ThetaSolver");
     solver_ThetaSolver.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::ThetaSolver::copy)
             .def_readwrite("num_refinements_without_always_recomputing_jacobian",
                            &goss::ThetaSolver::num_refinements_without_always_recomputing_jacobian)
             .def_readwrite("min_dt", &goss::ThetaSolver::min_dt)
@@ -136,6 +140,7 @@ void init_ODESolvers(py::module &m)
             solver_ESDIRK23a(m, "ESDIRK23a");
     solver_ESDIRK23a.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::ESDIRK23a::copy)
             .def_readwrite("num_refinements_without_always_recomputing_jacobian",
                            &goss::ESDIRK23a::num_refinements_without_always_recomputing_jacobian)
             .def_readwrite("min_dt", &goss::ESDIRK23a::min_dt)
