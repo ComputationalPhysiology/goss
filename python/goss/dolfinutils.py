@@ -29,22 +29,21 @@ try:
 except ImportError:
     raise ImportError("dolfin is not present")
 
-# Check version
-from distutils.version import LooseVersion
-
-if LooseVersion(d.__version__) <= LooseVersion("1.4.0"):
-    raise ImportError("dolfin version need to be 1.4.0 or higher")
-
 # Import Gotran and try import cuda solver
-from goss import goss_solvers
-from goss.solvers import ImplicitODESolver
-import goss.cuda
+# from goss import goss_solvers
+# from goss.solvers import ImplicitODESolver
+from .ode import ParameterizedODE
+from .solvers import GRL1
+from .systemsolver import ODESystemSolver
 
-enable_cuda = goss.cuda.cuda is not None
+# import goss.cuda
+
+# enable_cuda = goss.cuda.cuda is not None
+enable_cuda = False
 
 
 def entity_to_dofs(V):
-    assert isinstance(V, d.FunctionSpaceBase)
+    assert isinstance(V, d.FunctionSpace)
     mesh = V.mesh()
     dim = mesh.topology().dim()
     dm = V.dofmap()
@@ -144,7 +143,6 @@ def dolfin_jit(
         field_parameters,
         monitored,
         code_params,
-        cppargs,
     )
 
     compiled_ode.field_params = {}
@@ -212,35 +210,7 @@ class DOLFINODESystemSolver(object):
     @staticmethod
     def default_parameters():
 
-        # Include default params for ImplicitODESolvers
-        # FIXME: Considre adding more?
-        goss_solver_params = ImplicitODESolver.default_parameters()
-        solver_params = d.Parameters("solver_params")
-
-        for key, value in goss_solver_params.items():
-            solver_params.add(key, value)
-
-        params = d.Parameters("DOLFINODESystemSolver")
-        params.add("solver", "ImplicitEuler", goss_solvers)
-        params.add("num_threads", 0, 0, 100)
-        params.add(solver_params)
-        params.add("use_cuda", False)
-
-        if enable_cuda:
-            default_cuda_params = goss.cuda.CUDAODESystemSolver.default_parameters()
-            cuda_params = d.Parameters("cuda_params")
-            cuda_params.add("block_size", 256, 1, 1024)
-            cuda_params.add("nvcc_options", "")
-            cuda_params.add(
-                "solver",
-                default_cuda_params["solver"],
-                dict.get(default_cuda_params, "solver")._options,
-            )
-            cuda_params.add("float_precision", "double", ["single", "double"])
-            cuda_params.add("ldt", default_cuda_params["ldt"], -1.0, 1.0e6)
-            params.add(cuda_params)
-
-        return params
+        return {"solver": "GRL1", "num_threads": 0, "use_cuda": False}
 
     def __init__(  # noqa: C901
         self,
@@ -268,12 +238,11 @@ class DOLFINODESystemSolver(object):
            A dict providing parameters for the Solvers
         """
         # FIXME: This function is way to long
-        from . import _gosscpp
 
-        assert isinstance(mesh, (d.Mesh, d.Domain)), (
+        assert isinstance(mesh, d.Mesh), (
             "expected a dolfin Mesh " "or domain for the mesh argument"
         )
-        assert isinstance(odes, (dict, _gosscpp.ParameterizedODE)), (
+        assert isinstance(odes, (dict, ParameterizedODE)), (
             "expected a" " dict or a ParametersizedODE for the odes argument"
         )
 
@@ -287,13 +256,15 @@ class DOLFINODESystemSolver(object):
 
         top_dim = mesh.topology().dim()
 
-        if isinstance(odes, _gosscpp.ParameterizedODE) or len(odes) == 1:
+        if isinstance(odes, ParameterizedODE) or len(odes) == 1:
             # Get rid of any default labels.
-            if isinstance(odes, dict):
-                odes = odes.values()[0]
 
-            num_field_states = odes.num_field_states()
-            field_names = odes.get_field_state_names()
+            if isinstance(odes, dict):
+                # Grab the first one
+                odes = next(iter(odes.values()))
+
+            num_field_states = odes.num_field_states
+            field_names = odes.field_state_names
             odes = {0: odes}
             distinct_domains = [0]
             assert domains is None, (
@@ -363,14 +334,7 @@ class DOLFINODESystemSolver(object):
 
         nested_dofs = len(distinct_domains) > 1 or num_field_states > 1
 
-        if enable_cuda and self.parameters.use_cuda:
-            float_type = (
-                np.float32
-                if params["cuda_params"]["float_precision"] == "single"
-                else np.float64
-            )
-        else:
-            float_type = np.float_
+        float_type = np.float_
 
         for label in distinct_domains:
             dof_maps[label] = OrderedDict((key, []) for key in field_names)
@@ -475,68 +439,30 @@ class DOLFINODESystemSolver(object):
         self._state_space = V
         self._saved_states = {}
 
-        if enable_cuda and self.parameters.use_cuda:
+        # Instantiate the solver
+        # solver = eval(self.parameters["solver"], _gosscpp.__dict__, {})()
 
-            default_cuda_params = goss.cuda.CUDAODESystemSolver.default_parameters()
-            cuda_params = params["cuda_params"]
+        # for param, value in self.parameters["solver_params"].items():
+        #     if param in solver.parameters:
+        #         solver.parameters[param] = value
+        solver = GRL1()
 
-            # Transfer cuda_params to CUDAODESystemSolver parameters
-            default_cuda_params["block_size"] = cuda_params["block_size"]
-            default_cuda_params["nvcc_options"] = cuda_params["nvcc_options"].split()
-            default_cuda_params["solver"] = cuda_params["solver"]
-            default_cuda_params["ldt"] = cuda_params["ldt"]
-            default_cuda_params["code"]["float_precision"] = cuda_params[
-                "float_precision"
-            ]
-
-            cuda_parameters = {}
-            for label, ode in odes.items():
-                cuda_parameters[label] = default_cuda_params.copy()
-                cuda_parameters[label]["code"]["parameters"][
-                    "field_parameters"
-                ] = ode._field_parameters or [""]
-                cuda_parameters[label]["code"]["states"][
-                    "field_states"
-                ] = ode._field_states or [""]
-
-            # Instantiate the ODESystemSolvers
-            self._ode_system_solvers = OrderedDict(
-                (
-                    label,
-                    goss.cuda.CUDAODESystemSolver(
-                        num_dofs[label],
-                        odes[label]._gotran,
-                        params=cuda_parameters[label],
-                    ),
-                )
-                for label in distinct_domains
+        # Instantiate the ODESystemSolvers
+        self._ode_system_solvers = OrderedDict(
+            (
+                label,
+                ODESystemSolver(
+                    num_nodes=num_dofs[label],
+                    solver=solver.copy(),
+                    ode=odes[label],
+                ),
             )
+            for label in distinct_domains
+        )
 
-        else:
-
-            # Instantiate the solver
-            solver = eval(self.parameters["solver"], _gosscpp.__dict__, {})()
-
-            for param, value in self.parameters["solver_params"].items():
-                if param in solver.parameters:
-                    solver.parameters[param] = value
-
-            # Instantiate the ODESystemSolvers
-            self._ode_system_solvers = OrderedDict(
-                (
-                    label,
-                    _gosscpp.ODESystemSolver(
-                        num_dofs[label],
-                        solver.copy(),
-                        odes[label],
-                    ),
-                )
-                for label in distinct_domains
-            )
-
-            # Set num of threads
-            for solver in self._ode_system_solvers.values():
-                solver.set_num_threads(self.parameters["num_threads"])
+        # Set num of threads
+        for solver in self._ode_system_solvers.values():
+            solver.num_threads = self.parameters["num_threads"]
 
         # Check for field parameters and set any changed parameters
         self._field_params_dofs = {}
@@ -560,7 +486,7 @@ class DOLFINODESystemSolver(object):
                 ode.changed_scalar_parameters = {}
 
             # If there are no field parameters
-            if ode.num_field_parameters() == 0:
+            if ode.num_field_parameters == 0:
                 continue
 
             # Check for any field params on this domain
