@@ -51,7 +51,7 @@ class ImplicitODESolver : public ODESolver
     double eta_0 = 1.0;
     double kappa = 0.1;
     double relative_tolerance = 1.e-12;
-    double max_iterations = 30;
+    int max_iterations = 30;
     double max_relative_previous_residual = 0.01;
     bool always_recompute_jacobian = false;
 

@@ -60,15 +60,15 @@ def test_parameters(Solver):
     # All solvers should have this paramameter
     assert np.isclose(parameters["ldt"], -1.0)
 
-    for name, ptype in solver.parameter_names.items():
+    for name, default_value in Solver.default_parameters().items():
 
-        if ptype is int:
-            new_value = 42
-        elif ptype is float:
-            new_value = 42.0
-        elif ptype is bool:
+        if isinstance(default_value, bool):
             # Use a different value
             new_value = not parameters[name]
+        elif isinstance(default_value, int):
+            new_value = 42
+        elif isinstance(default_value, float):
+            new_value = 42.0
 
         solver.set_parameter(name, new_value)
         new_parameters = solver.parameters

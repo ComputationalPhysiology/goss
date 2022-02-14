@@ -35,24 +35,26 @@ class ODESolver(abc.ABC):
     def is_adaptive(self) -> bool:
         return self._cpp_object.is_adaptive()
 
-    @property
-    def parameter_names(self) -> dict[str, Any]:
-        return {"ldt": float}
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        return {"ldt": -1.0}
 
     @property
     def parameters(self):
-        return {name: getattr(self._cpp_object, name) for name in self.parameter_names}
+        parameters = self.__class__.default_parameters()
+        return {name: getattr(self._cpp_object, name) for name in parameters}
 
     def set_parameter(self, name: str, value: Any):
-        if name not in self.parameter_names:
+        parameters = self.__class__.default_parameters()
+        if name not in parameters:
             raise KeyError(
-                f"Invalid parameter {name}, expected one of {self.parameter_names}",
+                f"Invalid parameter {name}, expected one of {parameters.keys()}",
             )
-        if not isinstance(value, self.parameter_names[name]):
+        if not isinstance(value, type(parameters[name])):
             raise TypeError(
                 (
                     f"Expected parameter {name} to be of type"
-                    f"{self.parameter_names[name]}, got {type(value)}"
+                    f"{type(parameters[name])}, got {type(value)}"
                 ),
             )
         setattr(self._cpp_object, name, value)
@@ -104,24 +106,25 @@ class RL1(ODESolver):
 
 
 class GRL1(ODESolver):
-    @property
-    def parameter_names(self) -> dict[str, Any]:
-        names = super().parameter_names
-        names.update({"delta": float})
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        names = ODESolver.default_parameters()
+        names.update({"delta": 1e-8})
         return names
 
 
 class ImplicitODESolver(ODESolver, abc.ABC):
-    @property
-    def parameter_names(self) -> dict[str, Any]:
-        names = super().parameter_names
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        names = ODESolver.default_parameters()
         names.update(
             {
-                "kappa": float,
-                "relative_tolerance": float,
-                "max_iterations": int,
-                "max_relative_previous_residual": float,
-                "always_recompute_jacobian": bool,
+                "eta_0": 1.0,
+                "kappa": 0.1,
+                "relative_tolerance": 1e-12,
+                "max_iterations": 30,
+                "max_relative_previous_residual": 0.01,
+                "always_recompute_jacobian": False,
             },
         )
         return names
@@ -141,14 +144,14 @@ class ImplicitODESolver(ODESolver, abc.ABC):
 
 
 class ThetaSolver(ImplicitODESolver):
-    @property
-    def parameter_names(self) -> dict[str, Any]:
-        names = super().parameter_names
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        names = ImplicitODESolver.default_parameters()
         names.update(
             {
-                "num_refinements_without_always_recomputing_jacobian": int,
-                "min_dt": float,
-                "theta": float,
+                "num_refinements_without_always_recomputing_jacobian": 2,
+                "min_dt": 0.0001,
+                "theta": 0.5,
             },
         )
         return names
@@ -190,13 +193,13 @@ class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
 
 
 class ESDIRK23a(AdaptiveImplicitSolver):
-    @property
-    def parameter_names(self) -> dict[str, Any]:
-        names = super().parameter_names
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        names = AdaptiveImplicitSolver.default_parameters()
         names.update(
             {
-                "num_refinements_without_always_recomputing_jacobian": int,
-                "min_dt": float,
+                "num_refinements_without_always_recomputing_jacobian": 2,
+                "min_dt": 0.001,
             },
         )
         return names
