@@ -12,6 +12,11 @@ from modelparameters import utils
 app = typer.Typer(no_args_is_help=True, help=__doc__)
 
 
+@app.command("solvers", help="List available solvers")
+def solvers():
+    typer.echo("TBW")
+
+
 @app.command("gotran2goss", help="Convert .ode file to goss file")
 def gotran2goss(
     filename: Path = typer.Argument(

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import goss.scripts
+import goss
 import pytest
 from typer.testing import CliRunner
 
@@ -18,8 +18,8 @@ def output_file():
 
 def test_gotran2goss(output_file):
     result = runner.invoke(
-        goss.scripts.gotran2goss.app,
-        ["--output", output_file.as_posix(), odefile.as_posix()],
+        goss.cli.app,
+        ["gotran2goss", "--output", output_file.as_posix(), odefile.as_posix()],
     )
     assert result.exit_code == 0
     assert output_file.is_file()
@@ -27,8 +27,8 @@ def test_gotran2goss(output_file):
 
 def test_gotran2goss_no_outout_and_list_timings():
     result = runner.invoke(
-        goss.scripts.gotran2goss.app,
-        ["--list-timings", odefile.as_posix()],
+        goss.cli.app,
+        ["gotran2goss", "--list-timings", odefile.as_posix()],
     )
     assert result.exit_code == 0
     output = odefile.with_suffix(".h")

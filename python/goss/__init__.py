@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import typing as _t
 
+from . import cli
 from . import codegeneration
 from . import solvers
 from .compilemodule import jit
@@ -65,6 +66,7 @@ __all__ = [
     "goss_explicit_solvers",
     "ODESystemSolver",
     "ParameterizedODE",
+    "cli",
 ]
 
 # If dolfin is present import it
@@ -75,5 +77,5 @@ try:
     __all__.extend(["dolfinutils", "DOLFINODESystemSolver"])
 
 
-except ModuleNotFoundError:
+except ImportError:
     pass

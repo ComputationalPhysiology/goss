@@ -28,8 +28,8 @@ import typing
 
 try:
     import dolfin as d
-except ImportError:
-    raise ImportError("dolfin is not present")
+except ImportError as e:
+    raise ImportError("dolfin is not present") from e
 
 # Import Gotran and try import cuda solver
 # from goss import goss_solvers
