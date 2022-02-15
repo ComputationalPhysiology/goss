@@ -24,7 +24,6 @@ from __future__ import annotations
 import typing as _t
 
 from . import codegeneration
-from . import scripts
 from . import solvers
 from .compilemodule import jit
 from .ode import ODE
@@ -66,7 +65,6 @@ __all__ = [
     "goss_explicit_solvers",
     "ODESystemSolver",
     "ParameterizedODE",
-    "scripts",
 ]
 
 # If dolfin is present import it
