@@ -119,4 +119,3 @@ def test_DOLFINODESystemSolver_muliple_ODEs(tentusscher_2004_ode, fitzhughnagumo
 
     # But there should be some variation
     assert np.max(np.abs(np.diff(solution.vector().get_local()))) > 1e-4
-    breakpoint()
