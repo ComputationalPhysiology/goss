@@ -4,11 +4,11 @@ FitzHughNagumo and ten-Tusscher model.
 """
 
 import math
+import numpy as np
 
 from dolfin import *
 from cbcbeat import *
-from gotran import load_ode
-from goss.dolfinutils import dolfin_jit
+from goss import ODE
 
 parameters["form_compiler"]["representation"] = "uflacs"
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -27,83 +27,28 @@ class StimSubDomain(SubDomain):
             return True
         return False
 
-def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
-                harmonic_mean=False):
-    "Set-up cardiac model based on a slightly non-standard set of parameters."
+def setup_cardiac_model(cellmodel_strs, domain, labels, amplitude, duration, harmonic_mean=False):
 
     field_parameters = dict(tentusscher_panfilov_2006_epi_cell=["g_CaL"],
                             fitzhughnagumo=["b"])
     field_states = dict(tentusscher_panfilov_2006_epi_cell=["V"],
                         fitzhughnagumo=["V"])
-    labels = dict(tentusscher_panfilov_2006_epi_cell=10,
-                  fitzhughnagumo=20)
 
-    labels = [labels[model] for model in cellmodel_strs]
-    cellmodels = [dolfin_jit(\
-        load_ode(cellmodel), field_states=field_states[cellmodel], \
-        field_parameters=field_parameters[cellmodel]) for cellmodel in cellmodel_strs]
+    cellmodels = [ODE(cellmodel, \
+                      field_states=field_states[cellmodel], \
+                      field_parameters=field_parameters[cellmodel]) \
+                  for cellmodel in cellmodel_strs]
+    cellmodels_cpp = [cellmodel._cpp_object for cellmodel in cellmodels]
 
     if len(cellmodels) > 1:
         # Create subdomains for applying the different ODEs
         subdomain = CompiledSubDomain("x[0] <= 5.0")
-        cellmodel_domains = VertexFunction("size_t", domain, 10)
+        cellmodel_domains = MeshFunction("size_t", domain, 0, 10)
         subdomain.mark(cellmodel_domains, 20)
-        plot(cellmodel_domains, title="10:tenTusscher; 20:FHN", interactive=True)
-        cellmodels = Markerwise(cellmodels, labels, cellmodel_domains)
+        cellmodels = MultiCellModel(cellmodels_cpp, labels, cellmodel_domains)
     else:
-        cellmodel_domains = VertexFunction("size_t", domain, labels[0])
-        cellmodels = Markerwise(cellmodels, labels, cellmodel_domains)
-
-    # Create scalar FunctionSpace
-    V = FunctionSpace(domain, "CG", 1)
-    L = domain.coordinates().max()
-
-    # Alter spatially varying paramters:
-    param_scale = Expression("offset+scale*exp(-((x[0]-center_x)*(x[0]-center_x)+"\
-                               "(x[1]-center_y)*(x[1]-center_y))/(sigma*sigma))",
-                               center_x=3*L/4, center_y=L/4, offset=0.0, sigma=L/2, \
-                               scale=1.0)
-
-    # Tentusscher parameter
-    if 10 in labels:
-        ode_tt = cellmodels[10]
-        g_CaL_0 = ode_tt.get_parameter("g_CaL")
-        param_scale.offset = g_CaL_0
-        param_scale.scale = -g_CaL_0*0.95
-        param_scale.center_y = 3*L/4
-        g_CaL_func = Function(V)
-        g_CaL_func.interpolate(param_scale)
-        ode_tt.set_parameter("g_CaL", g_CaL_func)
-
-        plot(g_CaL_func, interactive=True, \
-             title="Spatially varying g_CaL param in tenTusscher")
-
-    # FHN paramter
-    if 20 in labels:
-
-        ode_fhn = cellmodels[20]
-
-        # Set-up cardiac model
-        k = 0.00004; V_rest = -85.; V_threshold = -70.; V_peak = 40.;
-        V_amp = V_peak - V_rest; l = 0.63; b = 0.013;
-
-        param_scale.scale = b
-        param_scale.offset = b
-        param_scale.center_x = L/4
-        param_scale.center_y = L/4
-        b_func = Function(V)
-        b_func.interpolate(param_scale)
-
-        plot(b_func, interactive=True, title="Spatially varying 'a' param in FHN")
-
-        cell_parameters = {"c_1": k*V_amp**2, "c_2": k*V_amp, "c_3": b/l,
-                           "a": (V_threshold - V_rest)/V_amp,
-                           "b": b_func, "V_rest":V_rest,
-                           "V_peak": V_peak}
-
-        # Set FHN specific parameters
-        for params in cell_parameters.items():
-            ode_fhn.set_parameter(*params)
+        cellmodel_domains = MeshFunction("size_t", domain, 0, labels[0])
+        cellmodels = MultiCellModel(cellmodels_cpp, labels, cellmodel_domains)
 
     # Define conductivities
     chi = 12000.0   # cm^{-1}
@@ -112,6 +57,7 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
     s_el = 200.0/chi # mS
     s_et = s_el/1.2 # mS
 
+    # Conductivities
     if harmonic_mean:
         sl = s_il*s_el/(s_il+s_el)
         st = s_it*s_et/(s_it+s_et)
@@ -121,22 +67,91 @@ def setup_model(cellmodel_strs, domain, amplitude=50, duration=1,
 
     M_e = as_tensor(((Constant(s_el), 0), (0, Constant(s_et))))
 
+    # Stimulus
     stim_marker = 1
     domain_size = domain.coordinates().max()
     stim_subdomain = StimSubDomain((domain_size/2., 0.), domain_size/5.)
-    stim_domain = CellFunction("size_t", domain, 0)
+    stim_domain = MeshFunction("size_t", domain, domain.topology().dim(), 0)
     stim_subdomain.mark(stim_domain, stim_marker)
     time = Constant(0.0)
     stim = Expression("time > start ? (time <= (duration + start) ? "\
                       "amplitude : 0.0) : 0.0", time=time, duration=duration, \
-                      start=1.0, amplitude=amplitude)
+                      start=1.0, amplitude=amplitude, degree=2)
     stimulus = Markerwise([stim], [stim_marker], stim_domain)
 
+    # Create and return CardiacModel
+    assert isinstance(domain, Mesh)
     heart = CardiacModel(domain, time, M_i, M_e, cellmodels, stimulus)
     return heart
 
-def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
+def setup_ode_parameters(labels, ode_solver):
+
+    # Create scalar FunctionSpace
+    V = FunctionSpace(domain, "CG", 1)
+    L = domain.coordinates().max()
+
+    # Alter spatially varying paramters:
+    param_scale = Expression("offset+scale*exp(-((x[0]-center_x)*(x[0]-center_x)+"\
+                               "(x[1]-center_y)*(x[1]-center_y))/(sigma*sigma))",
+                               center_x=3*L/4, center_y=L/4, offset=0.0, sigma=L/2, \
+                               scale=1.0, degree=2)
+
+    # Tentusscher parameter
+    if 10 in labels:
+        p_id = 0 # g_CaL has index 0 is the list of Tentusscher parameters
+        ode_tt = ode_solver._odes[10]
+        ode_tt_system = ode_solver._ode_system_solvers[10]
+        g_CaL = ode_tt_system.field_parameters[:, p_id]
+        g_CaL_0 = 0
+        if np.all(g_CaL == g_CaL[0]):
+            g_CaL_0 = g_CaL[0]
+
+        param_scale.offset = g_CaL_0 #.astype(float)
+        param_scale.scale = -g_CaL_0*0.95
+        param_scale.center_y = 3*L/4
+
+        g_CaL_func = Function(V)
+        g_CaL_func.interpolate(param_scale)
+
+        g_CaL_new = g_CaL_func.vector().get_local()[ode_solver._field_params_dofs[10]] 
+        ode_tt_system.field_parameters[:, p_id] = g_CaL_new
+
+    # FHN paramater
+    if 20 in labels:
+        p_id = 0 # b has index 0 in FHN parameters
+        ode_fhn = ode_solver._odes[20]
+        ode_fhn_system = ode_solver._ode_system_solvers[20]
+
+        # Set-up cardiac model
+        k = 0.00004; V_rest = -85.; V_threshold = -70.; V_peak = 40.;
+        V_amp = V_peak - V_rest; l = 0.63; b = 0.013;
+
+        param_scale.scale = b
+        param_scale.offset = b
+        param_scale.center_x = L/4
+        param_scale.center_y = L/4
+
+        b_func = Function(V)
+        b_func.interpolate(param_scale)
+
+        # plot(b_func, interactive=True, title="Spatially varying 'a' param in FHN")
+
+        cell_parameters = {"c_1": k*V_amp**2, "c_2": k*V_amp, "c_3": b/l,
+                           "a": (V_threshold - V_rest)/V_amp,
+                           # "b": b_func,
+                           "V_rest":V_rest,
+                           "V_peak": V_peak}
+
+        # Set FHN specific parameters
+        for params in cell_parameters.items():
+            ode_fhn.set_parameter(*params)
+
+        b_new = b_func.vector().get_local()[ode_solver._field_params_dofs[20]]
+        ode_fhn_system.field_parameters[:, p_id] = b_new
+
+def run_goss_ode_solver(cellmodel_strs, domain, dt, T, amplitude=50., \
                         duration=1.0, membrane_potential="V"):
+
     from cbcbeat.gossplittingsolver import GOSSplittingSolver
 
     # Set-up solver
@@ -159,10 +174,19 @@ def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
     ps["ode_solver"]["num_threads"] = 0
     #ps["ode_solver"]["membrane_potential"] = membrane_potential
 
-    heart = setup_model(cellmodel_strs, domain, amplitude, duration, \
-                        harmonic_mean=ps["pde_solver"] == "monodomain")
+    # heart = setup_model(cellmodel_strs, domain, amplitude, duration, \
+    #                     harmonic_mean=ps["pde_solver"] == "monodomain")
 
+    labels = dict(tentusscher_panfilov_2006_epi_cell=10,
+                  fitzhughnagumo=20)
+    labels = [labels[model] for model in cellmodel_strs]
+
+    heart = setup_cardiac_model(cellmodel_strs, domain, labels, amplitude, duration, \
+                                harmonic_mean=ps["pde_solver"] == "monodomain")
     solver = GOSSplittingSolver(heart, ps)
+
+    # Setup the field parameters after creating the ode solver here
+    setup_ode_parameters(labels, solver.ode_solver)
 
     (v, vur) = solver.solution_fields()
 
@@ -180,10 +204,10 @@ def run_goss_ode_solver(cellmodels, domain, dt, T, amplitude=50., \
              range_max=40., range_min=-85.)
         if timestep[0] == 130.:
             for label, ode in solver.ode_solver._odes.items():
-                for param, func in ode.field_params.items():
-                    func.vector()[:] = ode.get_parameter(param)
-                    ode.set_parameter(param, func)
-
+                system_solver = solver.ode_solver._ode_system_solvers[label]
+                for local_id, param in enumerate(ode.field_parameter_names):
+                    system_solver.field_parameters = \
+                        solver.ode_solver._param_values[label][local_id :: ode.num_field_parameters]
         continue
     total.stop()
 
@@ -225,4 +249,4 @@ if __name__ == "__main__":
     run_goss_ode_solver(cellmodel_strs, domain, dt, T, stim_amplitude, \
                         stim_duration, membrane_potential)
 
-    list_timings()
+    list_timings(TimingClear.keep, [TimingType.user])
