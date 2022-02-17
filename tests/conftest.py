@@ -13,6 +13,11 @@ def oscilator_ode():
 
 
 @pytest.fixture(scope="session")
+def fitzhughnagumo_ode():
+    return load_ode(here.joinpath("fitzhughnagumo.ode"))
+
+
+@pytest.fixture(scope="session")
 def oscilator(oscilator_ode):
     return ParameterizedODE(oscilator_ode)
 

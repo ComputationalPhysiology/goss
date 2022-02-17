@@ -23,9 +23,6 @@ import numpy as np
 
 import typing
 
-# from . import cpp
-# from .compilemodule import jit as goss_jit
-
 try:
     import dolfin as d
 except ImportError as e:
@@ -103,11 +100,22 @@ class DOLFINParameterizedODE(ParameterizedODE):
             self.field_params[name] = value
             self.changed_field_parameters.append(name)
 
+    def convert(
+        odes: typing.Union[ParameterizedODE, dict[int, ParameterizedODE]],
+    ) -> dict[int, DOLFINParameterizedODE]:
+        if isinstance(odes, ParameterizedODE):
+            return {0: DOLFINParameterizedODE(odes)}
+
+        return {label: DOLFINParameterizedODE(ode) for label, ode in odes.items()}
+
 
 def family_and_degree_from_str(space: str) -> typing.Tuple[str, int]:
     assert isinstance(space, str), "expected a str as the 'space' argument"
 
     family, degree = space.split("_")
+
+    if family in ["P", "CG"]:
+        family = "Lagrange"
     return family, int(degree)
 
 
@@ -129,7 +137,8 @@ def first_value(d: dict):
 def setup_dofs(
     V: d.FunctionSpace,
     field_names: list[str],
-    domains: typing.Optional[d.MeshFunction] = None,
+    domains: typing.Optional[d.cpp.mesh.MeshFunctionSizet] = None,
+    distinct_domains: typing.Optional[list[int]] = None,
 ):
 
     mesh = V.mesh()
@@ -140,7 +149,10 @@ def setup_dofs(
     family = V.ufl_element().family()
 
     top_dim = mesh.topology().dim()
-    distinct_domains = [0]
+    if distinct_domains is None:
+        distinct_domains = [0]
+        if domains is not None:
+            distinct_domains = list(sorted(set(domains.array())))
     # Create dof storage for the dolfin function
 
     # Get the mesh entity to dof mappings
@@ -259,6 +271,48 @@ def setup_dofs(
     )
 
 
+def check_domains(domains, odes, mesh, space) -> list[int]:
+    top_dim = mesh.topology().dim()
+    family, degree = family_and_degree_from_str(space)
+
+    assert isinstance(domains, d.cpp.mesh.MeshFunctionSizet), (
+        "expected a "
+        "MeshFunction as the domains argument when more than "
+        "1 ODE is given"
+    )
+    expected_dim = 0 if family == "Lagrange" else top_dim
+    assert (
+        domains.dim() == expected_dim
+    ), "expected a domain to be a " "MeshFunction of topological dimension {} for {} space".format(
+        expected_dim,
+        space,
+    )
+
+    # Check given domains
+    distinct_domains = list(sorted(set(domains.array())))
+    assert d.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == d.MPI.max(
+        mesh.mpi_comm(),
+        len(odes),
+    ), (
+        "expected the number "
+        "of distinct domains to be the same as the number of ODEs"
+    )
+
+    # Check and compare the number of field states
+    first_ode = first_value(odes)
+    assert all(
+        first_ode.num_field_states == ode.num_field_states for ode in odes.values()
+    ), "expected all odes to have the same number of field states"
+
+    assert all(
+        first_ode.field_state_names == ode.field_state_names for ode in odes.values()
+    ), (
+        "expected all odes to have the same name and order "
+        "of the field states (Might be changed in the future.)"
+    )
+    return distinct_domains
+
+
 class DOLFINODESystemSolver:
     """
     DOLFINODESystemSolver is an adapter class for goss.ODESystemSolver
@@ -315,71 +369,33 @@ class DOLFINODESystemSolver:
         solver: solvers.ODESolver = eval(self.parameters["solver"], solvers.__dict__)()
         solver.update_parameters(self.parameters.get("solver_parameters", {}))
 
-        top_dim = mesh.topology().dim()
+        odes = DOLFINParameterizedODE.convert(odes)
 
-        if isinstance(odes, ParameterizedODE) or len(odes) == 1:
-            # Get rid of any default labels.
-
-            if isinstance(odes, dict):
-                # Grab the first one
-                odes = first_value(odes)
-
-            num_field_states = odes.num_field_states
-            field_names = odes.field_state_names
-            odes = {0: DOLFINParameterizedODE(odes)}
-            distinct_domains = [0]
+        distinct_domains = [0]
+        if len(odes) > 1:
+            distinct_domains = check_domains(domains, odes, mesh, space)
+        else:
+            # FIXME: Do we really need to check this?
             assert domains is None, (
                 "domains only expected when more than 1 " "ODE is given"
             )
-        else:
-            assert isinstance(domains, d.MeshFunctionSizet), (
-                "expected a "
-                "MeshFunction as the domains argument when more than "
-                "1 ODE is given"
-            )
-            expected_dim = 0 if family == "Lagrange" else top_dim
-            assert (
-                domains.dim() == expected_dim
-            ), "expected a domain to be a " "MeshFunction of topological dimension {} for {} space".format(
-                expected_dim,
-                space,
-            )
 
-            # Check given domains
-            distinct_domains = list(sorted(set(domains.array())))
-            assert d.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == d.MPI.max(
-                mesh.mpi_comm(),
-                len(odes),
-            ), (
-                "expected the number "
-                "of distinct domains to be the same as the number of ODEs"
-            )
-
-            # Check and compare the number of field states
-            ode_list = odes.values()
-            last_ode = ode_list.pop()
-            assert all(
-                last_ode.num_field_states() == ode.num_field_states()
-                for ode in ode_list
-            ), ("expected all odes to have the " "same number of field states")
-
-            last_field_state_names = last_ode.field_state_names
-            assert all(
-                last_field_state_names == ode.field_state_names for ode in ode_list
-            ), (
-                "expected all odes to have the same name and order "
-                "of the field states (Might be changed in the future.)"
-            )
-
-            num_field_states = last_ode.num_field_states()
-            field_names = last_ode.field_state_names
+        ode = first_value(odes)
+        num_field_states = ode.num_field_states
+        field_names = ode.field_state_names
+        distinct_domains = list(odes.keys())
 
         if num_field_states > 1:
             V = d.VectorFunctionSpace(mesh, family, degree, dim=num_field_states)
         else:
             V = d.FunctionSpace(mesh, family, degree)
 
-        dofs = setup_dofs(V, field_names, domains)
+        dofs = setup_dofs(
+            V=V,
+            field_names=field_names,
+            domains=domains,
+            distinct_domains=distinct_domains,
+        )
 
         float_type = np.float_
         # Store arguments
@@ -389,13 +405,6 @@ class DOLFINODESystemSolver:
         self._float_type = float_type
         self._state_space = V
         self._saved_states = {}
-
-        # Instantiate the solver
-        # solver = eval(self.parameters["solver"], _gosscpp.__dict__, {})()
-
-        # for param, value in self.parameters["solver_params"].items():
-        #     if param in solver.parameters:
-        #         solver.parameters[param] = value
 
         # Instantiate the ODESystemSolvers
         self._ode_system_solvers = {
