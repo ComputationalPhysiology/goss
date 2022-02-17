@@ -6,21 +6,24 @@ FitzHughNagumo and ten-Tusscher model.
 import math
 import numpy as np
 
-from dolfin import *
-from cbcbeat import *
-from goss import ODE
+import dolfin
+import cbcbeat
 
-parameters["form_compiler"]["representation"] = "uflacs"
-parameters["form_compiler"]["cpp_optimize"] = True
-parameters["form_compiler"]["optimize"] = True
-parameters["form_compiler"]["quadrature_degree"] = 2
+# from dolfin import *
+# from cbcbeat import *
+from goss.dolfinutils import DOLFINParameterizedODE
+
+dolfin.parameters["form_compiler"]["representation"] = "uflacs"
+dolfin.parameters["form_compiler"]["cpp_optimize"] = True
+dolfin.parameters["form_compiler"]["optimize"] = True
+dolfin.parameters["form_compiler"]["quadrature_degree"] = 2
 
 
-class StimSubDomain(SubDomain):
+class StimSubDomain(dolfin.SubDomain):
     def __init__(self, center, radius):
         self.x0, self.y0 = center
         self.radius = radius
-        SubDomain.__init__(self)
+        super().__init__()
 
     def inside(self, x, on_boundary):
         r = math.sqrt((x[0] - self.x0) ** 2 + (x[1] - self.y0) ** 2)
@@ -39,73 +42,31 @@ def setup_cardiac_model(
     field_states = dict(tentusscher_panfilov_2006_epi_cell=["V"], fitzhughnagumo=["V"])
 
     cellmodels = [
-        ODE(
+        DOLFINParameterizedODE(
             cellmodel,
             field_states=field_states[cellmodel],
             field_parameters=field_parameters[cellmodel],
         )
         for cellmodel in cellmodel_strs
     ]
-    cellmodels_cpp = [cellmodel._cpp_object for cellmodel in cellmodels]
+    # cellmodels_cpp = [cellmodel._cpp_object for cellmodel in cellmodels]
 
     if len(cellmodels) > 1:
         # Create subdomains for applying the different ODEs
-        subdomain = CompiledSubDomain("x[0] <= 5.0")
-        cellmodel_domains = MeshFunction("size_t", domain, 0, 10)
+        subdomain = dolfin.CompiledSubDomain("x[0] <= 5.0")
+        cellmodel_domains = dolfin.MeshFunction("size_t", domain, 0, 10)
         subdomain.mark(cellmodel_domains, 20)
-        cellmodels = MultiCellModel(cellmodels_cpp, labels, cellmodel_domains)
+        cellmodels = cbcbeat.MultiCellModel(cellmodels, labels, cellmodel_domains)
     else:
-        cellmodel_domains = MeshFunction("size_t", domain, 0, labels[0])
-        cellmodels = MultiCellModel(cellmodels_cpp, labels, cellmodel_domains)
-
-    # Define conductivities
-    chi = 12000.0  # cm^{-1}
-    s_il = 300.0 / chi  # mS
-    s_it = s_il / 2  # mS
-    s_el = 200.0 / chi  # mS
-    s_et = s_el / 1.2  # mS
-
-    # Conductivities
-    if harmonic_mean:
-        sl = s_il * s_el / (s_il + s_el)
-        st = s_it * s_et / (s_it + s_et)
-        M_i = as_tensor(((Constant(sl), 0), (0, Constant(st))))
-    else:
-        M_i = as_tensor(((Constant(s_il), 0), (0, Constant(s_it))))
-
-    M_e = as_tensor(((Constant(s_el), 0), (0, Constant(s_et))))
-
-    # Stimulus
-    stim_marker = 1
-    domain_size = domain.coordinates().max()
-    stim_subdomain = StimSubDomain((domain_size / 2.0, 0.0), domain_size / 5.0)
-    stim_domain = MeshFunction("size_t", domain, domain.topology().dim(), 0)
-    stim_subdomain.mark(stim_domain, stim_marker)
-    time = Constant(0.0)
-    stim = Expression(
-        "time > start ? (time <= (duration + start) ? " "amplitude : 0.0) : 0.0",
-        time=time,
-        duration=duration,
-        start=1.0,
-        amplitude=amplitude,
-        degree=2,
-    )
-    stimulus = Markerwise([stim], [stim_marker], stim_domain)
-
-    # Create and return CardiacModel
-    assert isinstance(domain, Mesh)
-    heart = CardiacModel(domain, time, M_i, M_e, cellmodels, stimulus)
-    return heart
-
-
-def setup_ode_parameters(labels, ode_solver):
+        cellmodel_domains = dolfin.MeshFunction("size_t", domain, 0, labels[0])
+        cellmodels = cbcbeat.MultiCellModel(cellmodels, labels, cellmodel_domains)
 
     # Create scalar FunctionSpace
-    V = FunctionSpace(domain, "CG", 1)
+    V = dolfin.FunctionSpace(domain, "CG", 1)
     L = domain.coordinates().max()
 
     # Alter spatially varying paramters:
-    param_scale = Expression(
+    param_scale = dolfin.Expression(
         "offset+scale*exp(-((x[0]-center_x)*(x[0]-center_x)+"
         "(x[1]-center_y)*(x[1]-center_y))/(sigma*sigma))",
         center_x=3 * L / 4,
@@ -118,29 +79,22 @@ def setup_ode_parameters(labels, ode_solver):
 
     # Tentusscher parameter
     if 10 in labels:
-        p_id = 0  # g_CaL has index 0 is the list of Tentusscher parameters
-        ode_tt = ode_solver._odes[10]
-        ode_tt_system = ode_solver._ode_system_solvers[10]
-        g_CaL = ode_tt_system.field_parameters[:, p_id]
-        g_CaL_0 = 0
-        if np.all(g_CaL == g_CaL[0]):
-            g_CaL_0 = g_CaL[0]
-
-        param_scale.offset = g_CaL_0  # .astype(float)
+        ode_tt = cellmodels[10]
+        g_CaL_0 = ode_tt.get_parameter("g_CaL")
+        param_scale.offset = g_CaL_0
         param_scale.scale = -g_CaL_0 * 0.95
         param_scale.center_y = 3 * L / 4
-
-        g_CaL_func = Function(V)
+        g_CaL_func = dolfin.Function(V)
         g_CaL_func.interpolate(param_scale)
+        ode_tt.set_parameter("g_CaL", g_CaL_func)
 
-        g_CaL_new = g_CaL_func.vector().get_local()[ode_solver._field_params_dofs[10]]
-        ode_tt_system.field_parameters[:, p_id] = g_CaL_new
+        # dolfin.plot(g_CaL_func, interactive=True, \
+        #      title="Spatially varying g_CaL param in tenTusscher")
 
-    # FHN paramater
+    # FHN paramter
     if 20 in labels:
-        p_id = 0  # b has index 0 in FHN parameters
-        ode_fhn = ode_solver._odes[20]
-        ode_fhn_system = ode_solver._ode_system_solvers[20]
+
+        ode_fhn = cellmodels[20]
 
         # Set-up cardiac model
         k = 0.00004
@@ -155,18 +109,17 @@ def setup_ode_parameters(labels, ode_solver):
         param_scale.offset = b
         param_scale.center_x = L / 4
         param_scale.center_y = L / 4
-
-        b_func = Function(V)
+        b_func = dolfin.Function(V)
         b_func.interpolate(param_scale)
 
-        # plot(b_func, interactive=True, title="Spatially varying 'a' param in FHN")
+        # dolfin.plot(b_func, interactive=True, title="Spatially varying 'a' param in FHN")
 
         cell_parameters = {
             "c_1": k * V_amp**2,
             "c_2": k * V_amp,
             "c_3": b / l,
             "a": (V_threshold - V_rest) / V_amp,
-            # "b": b_func,
+            "b": b_func,
             "V_rest": V_rest,
             "V_peak": V_peak,
         }
@@ -175,8 +128,44 @@ def setup_ode_parameters(labels, ode_solver):
         for params in cell_parameters.items():
             ode_fhn.set_parameter(*params)
 
-        b_new = b_func.vector().get_local()[ode_solver._field_params_dofs[20]]
-        ode_fhn_system.field_parameters[:, p_id] = b_new
+    # Define conductivities
+    chi = 12000.0  # cm^{-1}
+    s_il = 300.0 / chi  # mS
+    s_it = s_il / 2  # mS
+    s_el = 200.0 / chi  # mS
+    s_et = s_el / 1.2  # mS
+
+    # Conductivities
+    if harmonic_mean:
+        sl = s_il * s_el / (s_il + s_el)
+        st = s_it * s_et / (s_it + s_et)
+        M_i = dolfin.as_tensor(((dolfin.Constant(sl), 0), (0, dolfin.Constant(st))))
+    else:
+        M_i = dolfin.as_tensor(((dolfin.Constant(s_il), 0), (0, dolfin.Constant(s_it))))
+
+    M_e = dolfin.as_tensor(((dolfin.Constant(s_el), 0), (0, dolfin.Constant(s_et))))
+
+    # Stimulus
+    stim_marker = 1
+    domain_size = domain.coordinates().max()
+    stim_subdomain = StimSubDomain((domain_size / 2.0, 0.0), domain_size / 5.0)
+    stim_domain = dolfin.MeshFunction("size_t", domain, domain.topology().dim(), 0)
+    stim_subdomain.mark(stim_domain, stim_marker)
+    time = dolfin.Constant(0.0)
+    stim = dolfin.Expression(
+        "time > start ? (time <= (duration + start) ? " "amplitude : 0.0) : 0.0",
+        time=time,
+        duration=duration,
+        start=1.0,
+        amplitude=amplitude,
+        degree=2,
+    )
+    stimulus = cbcbeat.Markerwise([stim], [stim_marker], stim_domain)
+
+    # Create and return CardiacModel
+    assert isinstance(domain, dolfin.Mesh)
+    heart = cbcbeat.CardiacModel(domain, time, M_i, M_e, cellmodels, stimulus)
+    return heart
 
 
 def run_goss_ode_solver(
@@ -221,9 +210,6 @@ def run_goss_ode_solver(
     )
     solver = GOSSplittingSolver(heart, ps)
 
-    # Setup the field parameters after creating the ode solver here
-    setup_ode_parameters(labels, solver.ode_solver)
-
     (v, vur) = solver.solution_fields()
 
     # solver.ode_solver.set_initial_conditions(v)
@@ -231,9 +217,9 @@ def run_goss_ode_solver(
     v.vector()[:] = -86.2
 
     # Solve
-    total = Timer("Total solver time")
+    total = dolfin.Timer("Total solver time")
     solutions = solver.solve((0, T), dt)
-    plot(
+    dolfin.plot(
         v,
         interactive=True,
         title="Initial conditions",
@@ -242,7 +228,7 @@ def run_goss_ode_solver(
         range_min=-85.0,
     )
     for (timestep, (v, vur)) in solutions:
-        plot(
+        dolfin.plot(
             v,
             title="run, t=%.1f" % timestep[1],
             interactive=False,
@@ -261,11 +247,10 @@ def run_goss_ode_solver(
     total.stop()
 
     if ps["pde_solver"] == "bidomain":
-        u = project(vur[1], vur.function_space().sub(1).collapse())
+        u = dolfin.project(vur[1], vur.function_space().sub(1).collapse())
     else:
         u = vur
-    norm_u = norm(u)
-    plot(
+    dolfin.plot(
         v,
         title="Final u, t=%.1f (%s)" % (timestep[1], ps["pde_solver"]),
         interactive=True,
@@ -282,17 +267,17 @@ if __name__ == "__main__":
     # cellmodel_strs = ["tentusscher_panfilov_2006_epi_cell"]
 
     # Define mesh
-    domain = UnitSquareMesh(100, 100)
+    domain = dolfin.UnitSquareMesh(100, 100)
     domain.coordinates()[:] *= 10
     membrane_potential = "V"
 
     # Create scalar FunctionSpace
-    V = FunctionSpace(domain, "CG", 1)
-    v = TrialFunction(V)
-    u = TestFunction(V)
-    dz = Measure("dx", domain=domain)  # , subdomain_data=markers)
-    M_i = as_tensor(((1, 0), (0, 1)))
-    assemble(inner(M_i * grad(v), grad(u)) * dz())
+    V = dolfin.FunctionSpace(domain, "CG", 1)
+    v = dolfin.TrialFunction(V)
+    u = dolfin.TestFunction(V)
+    dz = dolfin.Measure("dx", domain=domain)  # , subdomain_data=markers)
+    M_i = dolfin.as_tensor(((1, 0), (0, 1)))
+    dolfin.assemble(dolfin.inner(M_i * dolfin.grad(v), dolfin.grad(u)) * dz())
 
     stim_amplitude = 50.0
     stim_duration = 1.0
@@ -300,10 +285,10 @@ if __name__ == "__main__":
     dt_0 = 0.5  # mS
     dt = dt_0
     # dt = [(0., dt_0), (1.0, dt_0/5), (1.0+stim_duration, dt_0)]
-    T = 400.0 + 1.0e-6  # mS 500.0
+    T = 40.0 + 1.0e-6  # mS 500.0
 
     run_goss_ode_solver(
         cellmodel_strs, domain, dt, T, stim_amplitude, stim_duration, membrane_potential
     )
 
-    list_timings(TimingClear.keep, [TimingType.user])
+    dolfin.list_timings(dolfin.TimingClear.keep, [dolfin.TimingType.user])

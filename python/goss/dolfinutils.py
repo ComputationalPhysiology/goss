@@ -75,11 +75,19 @@ def entity_to_dofs(V):
 
 
 class DOLFINParameterizedODE(ParameterizedODE):
-    def __init__(self, ode: ParameterizedODE) -> None:
-        self._cpp_object = ode._cpp_object
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.field_params: dict[KeyType, d.Function] = {}
         self.changed_scalar_parameters: dict[KeyType, float] = {}
         self.changed_field_parameters: list[KeyType] = []
+
+    @classmethod
+    def from_ode(cls, ode: ParameterizedODE):
+        return cls(ode._cpp_object)
+
+    def num_states(self):
+        # Make compatible with cbcbeat
+        return super().num_states
 
     def set_parameter(self, name, value):
         assert isinstance(name, str), "expected a str as the name argument"
@@ -87,7 +95,6 @@ class DOLFINParameterizedODE(ParameterizedODE):
             value,
             (int, float, d.Function),
         ), "expected a scalar or a Function for the value argument"
-
         if isinstance(value, (float, int)):
             self._cpp_object.set_parameter(name, value)
             self.changed_scalar_parameters[name] = value
@@ -104,9 +111,11 @@ class DOLFINParameterizedODE(ParameterizedODE):
         odes: typing.Union[ParameterizedODE, dict[int, ParameterizedODE]],
     ) -> dict[int, DOLFINParameterizedODE]:
         if isinstance(odes, ParameterizedODE):
-            return {0: DOLFINParameterizedODE(odes)}
+            return {0: DOLFINParameterizedODE.from_ode(odes)}
 
-        return {label: DOLFINParameterizedODE(ode) for label, ode in odes.items()}
+        return {
+            label: DOLFINParameterizedODE.from_ode(ode) for label, ode in odes.items()
+        }
 
 
 def family_and_degree_from_str(space: str) -> typing.Tuple[str, int]:
@@ -321,8 +330,14 @@ class DOLFINODESystemSolver:
 
     @staticmethod
     def default_parameters():
-
         return {"solver": "GRL1", "num_threads": 0, "use_cuda": False}
+
+    @staticmethod
+    def default_parameters_dolfin():
+        p = d.Parameters("DOLFINODESystemSolver")
+        for k, v in DOLFINODESystemSolver.default_parameters().items():
+            p.add(k, v)
+        return p
 
     def __init__(  # noqa: C901
         self,
