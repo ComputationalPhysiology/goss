@@ -47,6 +47,10 @@ class ODESolver(abc.ABC):
     def default_parameters() -> dict[str, Any]:
         return {"ldt": -1.0}
 
+    def update_parameters(self, parameters: dict[str, Any]):
+        for k, v in parameters.items():
+            self.set_parameter(k, v)
+
     @property
     def parameters(self):
         parameters = self.__class__.default_parameters()

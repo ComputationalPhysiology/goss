@@ -35,7 +35,7 @@ except ImportError as e:
 # from goss import goss_solvers
 # from goss.solvers import ImplicitODESolver
 from .ode import ParameterizedODE
-from .solvers import GRL1
+from . import solvers
 from .systemsolver import ODESystemSolver
 
 # import goss.cuda
@@ -104,132 +104,11 @@ class DOLFINParameterizedODE(ParameterizedODE):
             self.changed_field_parameters.append(name)
 
 
-# def _set_parameter(self, name, value):
-#     """
-#     Set the value of a parameter
-
-#     Argument:
-#     name : str
-#       The name of the paramter
-#     value : scalar, Function
-#       The value of the parameter. If the value is a Function the parameter
-#       needs to be a field parameter.
-#     """
-#     from . import _gosscpp
-
-#     assert isinstance(name, str), "expected a str as the name argument"
-#     assert isinstance(
-#         value,
-#         (int, float, d.Function),
-#     ), "expected a scalar or a Function for the value argument"
-
-#     # If the value is a scalar just call the original set_parameter
-#     if isinstance(value, (float, int)):
-#         _gosscpp.ParameterizedODE.set_parameter(self, name, value)
-#         self.changed_scalar_parameters[name] = value
-#     else:
-#         field_param_names = self.get_field_parameter_names()
-#         assert name in field_param_names, (
-#             "'%s' is not a field parameter in this ode" % name
-#         )
-#         self.field_params[name] = value
-#         self.changed_field_parameters.append(name)
-
-
-# def dolfin_jit(
-#     ode,
-#     field_states=None,
-#     field_parameters=None,
-#     monitored=None,
-#     code_params=None,
-#     cppargs=None,
-# ):
-#     """
-#     Generate a goss::ODEParameterized from a gotran ode and JIT
-#     compile it. Add help methods to the jit compiled ODE to set field
-#     parameters from a dolfin Function
-
-#     Arguments:
-#     ----------
-#     ode : gotran.ODE
-#         The gotran ode, either as an ODE or as an ODERepresentation
-#     field_states : list
-#         A list of state names, which should be treated as field states
-#     field_parameters : list
-#         A list of parameter names, which should be treated as field parameters
-#     monitored : list
-#         A list of names of intermediates of the ODE. Code for monitoring
-#         the intermediates will be generated.
-#     code_params : dict
-#         Parameters controling the code generation
-#     cppargs : str
-#         Default C++ argument passed to the C++ compiler
-#     """
-#     from . import _gosscpp
-
-#     # Compile ode
-#     compiled_ode = goss_jit(
-#         ode,
-#         field_states,
-#         field_parameters,
-#         monitored,
-#         code_params,
-#     )
-
-#     compiled_ode.field_params = {}
-#     compiled_ode.changed_scalar_parameters = {}
-#     compiled_ode.changed_field_parameters = []
-#     compiled_ode.set_parameter = types.MethodType(
-#         _set_parameter,
-#         compiled_ode,
-#         _gosscpp.ParameterizedODE,
-#     )
-
-#     # Store gotran ode model
-#     compiled_ode._gotran = ode
-#     compiled_ode._field_parameters = field_parameters
-#     compiled_ode._field_states = field_states
-
-#     return compiled_ode
-
-
-# dolfin_jit.func_doc = goss_jit.__doc__
-
-
-def family_and_degree_from_str(space):
+def family_and_degree_from_str(space: str) -> typing.Tuple[str, int]:
     assert isinstance(space, str), "expected a str as the 'space' argument"
 
-    space = space.split("_")
-    assert all(space) and len(space) == 2, (
-        "Expected a family name (CG, "
-        "DG, P, Quadrature) and a degree separated by '_' as the "
-        "space argument"
-    )
-
-    if space[0] in ["Lagrange", "CG", "P"]:
-        assert space[1] == "1", "expected only P1 spaces"
-        family = "Lagrange"
-        degree = 1
-    elif space[0] == "Quadrature":
-        assert space[1] in [
-            str(d) for d in range(1, 10)
-        ], "expected only Quadrature spaces with degree 1-9."
-        family = "Quadrature"
-        degree = int(space[1])
-    elif space[0] in ["DG", "Discontinuous Lagrange"]:
-        assert space[1] in [str(d) for d in range(10)], (
-            "expected only " "discontinuous spaces with degree 0-9."
-        )
-        family = "Discontinuous Lagrange"
-        degree = int(space[1])
-    else:
-        assert False, (
-            "Expected a family name (CG, "
-            "DG, P, Quadrature) and a degree separated by '_' as the "
-            "space argument"
-        )
-
-    return family, degree
+    family, degree = space.split("_")
+    return family, int(degree)
 
 
 class GossDofs(typing.NamedTuple):
@@ -380,7 +259,7 @@ def setup_dofs(
     )
 
 
-class DOLFINODESystemSolver(object):
+class DOLFINODESystemSolver:
     """
     DOLFINODESystemSolver is an adapter class for goss.ODESystemSolver
     making interfacing DOLFIN easier
@@ -432,6 +311,9 @@ class DOLFINODESystemSolver(object):
 
         self.parameters = self.default_parameters()
         self.parameters.update(params)
+
+        solver: solvers.ODESolver = eval(self.parameters["solver"], solvers.__dict__)()
+        solver.update_parameters(self.parameters.get("solver_parameters", {}))
 
         top_dim = mesh.topology().dim()
 
@@ -514,7 +396,6 @@ class DOLFINODESystemSolver(object):
         # for param, value in self.parameters["solver_params"].items():
         #     if param in solver.parameters:
         #         solver.parameters[param] = value
-        solver = GRL1()
 
         # Instantiate the ODESystemSolvers
         self._ode_system_solvers = {
