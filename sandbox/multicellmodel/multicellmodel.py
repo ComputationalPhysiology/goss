@@ -49,7 +49,6 @@ def setup_cardiac_model(
         )
         for cellmodel in cellmodel_strs
     ]
-    # cellmodels_cpp = [cellmodel._cpp_object for cellmodel in cellmodels]
 
     if len(cellmodels) > 1:
         # Create subdomains for applying the different ODEs
@@ -238,11 +237,9 @@ def run_goss_ode_solver(
         )
         if timestep[0] == 130.0:
             for label, ode in solver.ode_solver._odes.items():
-                system_solver = solver.ode_solver._ode_system_solvers[label]
-                for local_id, param in enumerate(ode.field_parameter_names):
-                    system_solver.field_parameters = solver.ode_solver._param_values[
-                        label
-                    ][local_id :: ode.num_field_parameters]
+                for param, func in ode.field_params.items():
+                    func.vector()[:] = ode.get_parameter(param)
+                    ode.set_parameter(param, func)
         continue
     total.stop()
 
