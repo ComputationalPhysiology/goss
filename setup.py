@@ -40,6 +40,7 @@ setup(
             "twine",
             "wheel",
         ],
+        "docs": ["Sphinx", "myst_parser", "sphinx_book_theme"],
     },
     entry_points={"console_scripts": ["goss=goss.cli:app"]},
     cmake_args=[

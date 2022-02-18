@@ -2,10 +2,19 @@
 
 `goss` is a C++ library for solver ordinary differential equations.
 
-The general idea is that you define your ODE in a [`gotran ode file`](https://github.com/ComputationalPhysiology/gotran) and hand hand the ode over to `goss`.
+The general idea is that you define your ODE in a [`gotran ode file`](https://github.com/ComputationalPhysiology/gotran) and hand the ode over to `goss`.
+
+## Documentation
+
+Documentation is hosed at https://computationalphysiology.github.io/goss
 
 ## Install
-To work with goss from python, you only need to install the python package. Clone the repo, cd into it at execute
+To work with goss from python, you only need to install the python package.
+```
+python -m pip install pygoss
+```
+
+Alternatively you can clone the repo, cd into it at execute
 ```
 python -m pip install .
 ```
@@ -14,9 +23,6 @@ or use
 python -m pip install -e .
 ```
 for an editable install.
-
-TODO: Add goss to pypi
-
 
 ## Testing
 

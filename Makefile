@@ -1,3 +1,5 @@
+.PHONY: clean clean-test clean-pyc clean-build docs help
+.DEFAULT_GOAL := help
 
 
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
@@ -31,3 +33,13 @@ install: clean
 
 install-no-deps: clean
 	python -m pip install -e . --no-deps
+
+
+docs: ## generate Sphinx HTML documentation, including API docs
+	rm -f docs/source/simcardems.rst´
+	rm -f docs/source/modules.rst
+	sphinx-apidoc -o docs/source python/goss
+	for file in CONTRIBUTING.md; do \
+			cp $$file docs/source/. ;\
+	done
+	cd docs && make html

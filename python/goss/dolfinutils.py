@@ -24,7 +24,7 @@ import numpy as np
 import typing
 
 try:
-    import dolfin as d
+    import dolfin
 except ImportError as e:
     raise ImportError("dolfin is not present") from e
 
@@ -44,12 +44,12 @@ KeyType = typing.Union[str, int]
 
 
 def entity_to_dofs(V):
-    assert isinstance(V, d.FunctionSpace)
+    assert isinstance(V, dolfin.FunctionSpace)
     mesh = V.mesh()
     dim = mesh.topology().dim()
     dm = V.dofmap()
     if V.ufl_element().family() == "Lagrange":
-        return d.vertex_to_dof_map(V)
+        return dolfin.vertex_to_dof_map(V)
 
     # FIXME: np.uintp?
     # Create an array
@@ -62,7 +62,7 @@ def entity_to_dofs(V):
         num_fields = 1
         dms = [dm]
 
-    for cell in d.cells(mesh):
+    for cell in dolfin.cells(mesh):
         index = cell.index()
         for field_ind, dm_l in enumerate(dms):
             entity_to_dof[
@@ -77,7 +77,7 @@ def entity_to_dofs(V):
 class DOLFINParameterizedODE(ParameterizedODE):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.field_params: dict[KeyType, d.Function] = {}
+        self.field_params: dict[KeyType, dolfin.Function] = {}
         self.changed_scalar_parameters: dict[KeyType, float] = {}
         self.changed_field_parameters: list[KeyType] = []
 
@@ -93,7 +93,7 @@ class DOLFINParameterizedODE(ParameterizedODE):
         assert isinstance(name, str), "expected a str as the name argument"
         assert isinstance(
             value,
-            (int, float, d.Function),
+            (int, float, dolfin.Function),
         ), "expected a scalar or a Function for the value argument"
         if isinstance(value, (float, int)):
             self._cpp_object.set_parameter(name, value)
@@ -144,9 +144,9 @@ def first_value(d: dict):
 
 
 def setup_dofs(
-    V: d.FunctionSpace,
+    V: dolfin.FunctionSpace,
     field_names: list[str],
-    domains: typing.Optional[d.cpp.mesh.MeshFunctionSizet] = None,
+    domains: typing.Optional[dolfin.cpp.mesh.MeshFunctionSizet] = None,
     distinct_domains: typing.Optional[list[int]] = None,
 ):
 
@@ -284,7 +284,7 @@ def check_domains(domains, odes, mesh, space) -> list[int]:
     top_dim = mesh.topology().dim()
     family, degree = family_and_degree_from_str(space)
 
-    assert isinstance(domains, d.cpp.mesh.MeshFunctionSizet), (
+    assert isinstance(domains, dolfin.cpp.mesh.MeshFunctionSizet), (
         "expected a "
         "MeshFunction as the domains argument when more than "
         "1 ODE is given"
@@ -299,7 +299,7 @@ def check_domains(domains, odes, mesh, space) -> list[int]:
 
     # Check given domains
     distinct_domains = list(sorted(set(domains.array())))
-    assert d.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == d.MPI.max(
+    assert dolfin.MPI.max(mesh.mpi_comm(), len(distinct_domains)) == dolfin.MPI.max(
         mesh.mpi_comm(),
         len(odes),
     ), (
@@ -334,7 +334,7 @@ class DOLFINODESystemSolver:
 
     @staticmethod
     def default_parameters_dolfin():
-        p = d.Parameters("DOLFINODESystemSolver")
+        p = dolfin.Parameters("DOLFINODESystemSolver")
         for k, v in DOLFINODESystemSolver.default_parameters().items():
             p.add(k, v)
         return p
@@ -366,7 +366,7 @@ class DOLFINODESystemSolver:
         """
         # FIXME: This function is way to long
 
-        assert isinstance(mesh, d.Mesh), (
+        assert isinstance(mesh, dolfin.Mesh), (
             "expected a dolfin Mesh " "or domain for the mesh argument"
         )
         assert isinstance(odes, (dict, ParameterizedODE)), (
@@ -401,9 +401,9 @@ class DOLFINODESystemSolver:
         distinct_domains = list(odes.keys())
 
         if num_field_states > 1:
-            V = d.VectorFunctionSpace(mesh, family, degree, dim=num_field_states)
+            V = dolfin.VectorFunctionSpace(mesh, family, degree, dim=num_field_states)
         else:
-            V = d.FunctionSpace(mesh, family, degree)
+            V = dolfin.FunctionSpace(mesh, family, degree)
 
         dofs = setup_dofs(
             V=V,
@@ -567,7 +567,7 @@ class DOLFINODESystemSolver:
         """
         Copy values in stored field states to v
         """
-        assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
+        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
         # assert v in self._state_space, "expected v to be in the state space"
 
@@ -601,7 +601,7 @@ class DOLFINODESystemSolver:
         """
         Copy values in v to stored field states
         """
-        assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
+        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
         # assert v in self._state_space, "expected v to be in the state space"
 
@@ -629,22 +629,23 @@ class DOLFINODESystemSolver:
             # Transfer values to Solver
             ode_system_solver.field_states = self._dofs.goss_values[label]
 
-    def step(self, interval, v):
-        """
-        Solve on the given time step (t0, t1).
-
+    def step(self, interval: typing.Tuple[float, float], v: dolfin.Function) -> None:
+        """Solve on the given time step (t0, t1).
         End users are recommended to use solve instead.
 
-        Arguments:
-        interval : tuple
-          The time interval (t0, t1) for the step
+        Parameters
+        ----------
+        interval : typing.Tuple[float, float]
+            The time interval (t0, t1) for the step
+        v : dolfin.Function
+            The function to store the solution
         """
 
-        assert isinstance(v, d.Function), "expected a Function as the 'v' argument"
+        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
         # FIXME: Add proper check!
         # assert v in self._state_space, "expected v to be in the state space"
 
-        timer = d.Timer("ODE step")  # noqa: F841
+        timer = dolfin.Timer("ODE step")  # noqa: F841
         (t0, t1) = interval
         dt = t1 - t0
 

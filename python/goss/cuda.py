@@ -18,7 +18,7 @@
 __all__ = ["CUDAODESystemSolver", "ODECUDAHandler"]
 
 from gotran import CUDACodeGenerator
-from gotran.common import Timer
+from modelparameters.utils import Timer
 
 import hashlib
 import os
