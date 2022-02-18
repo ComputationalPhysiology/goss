@@ -35,7 +35,6 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="goss.scripts package" href="goss.scripts.html" />
     <link rel="prev" title="goss" href="modules.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -96,22 +95,10 @@
    </i>
   </label>
   <ul class="current">
-   <li class="toctree-l2 current active has-children">
+   <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      goss package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-    <label for="toctree-checkbox-2">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="goss.scripts.html">
-       goss.scripts package
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -203,11 +190,6 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
   </a>
@@ -270,17 +252,6 @@
                 
   <div class="section" id="goss-package">
 <h1>goss package<a class="headerlink" href="#goss-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="goss.scripts.html">goss.scripts package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="goss.scripts.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -294,8 +265,13 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="goss.cli.run">
+<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename:</span> <span class="pre">pathlib.Path</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver:</span> <span class="pre">goss.solvers.GOSSSolvers</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_y:</span> <span class="pre">List[str]</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_x:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="goss.cli.solvers">
-<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">solvers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#solvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.solvers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">solvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_solvers:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#solvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.solvers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -329,23 +305,45 @@
 <div class="section" id="module-goss.compilemodule">
 <span id="goss-compilemodule-module"></span><h2>goss.compilemodule module<a class="headerlink" href="#module-goss.compilemodule" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="goss.compilemodule.jit">
-<span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.jit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.compilemodule.cppyy_jit">
+<span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">cppyy_jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gotran.ODE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">typing.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ctypes.c_void_p</span></span></span><a class="reference internal" href="_modules/goss/compilemodule.html#cppyy_jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.cppyy_jit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a goss::ODEParameterized from a gotran ode and JIT compile it</p>
-<dl class="simple">
-<dt>ode<span class="classifier">gotran.ODE</span></dt><dd><p>The gotran ode, either as an ODE or as an ODERepresentation</p>
-</dd>
-<dt>field_states<span class="classifier">list</span></dt><dd><p>A list of state names, which should be treated as field states</p>
-</dd>
-<dt>field_parameters<span class="classifier">list</span></dt><dd><p>A list of parameter names, which should be treated as field parameters</p>
-</dd>
-<dt>monitored<span class="classifier">list</span></dt><dd><p>A list of names of intermediates of the ODE. Code for monitoring
-the intermediates will be generated.</p>
-</dd>
-<dt>code_params<span class="classifier">dict</span></dt><dd><p>Parameters controling the code generation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ode</strong> (<em>gotran.ODE</em>) – The gotran ode, either as an ODE or as an ODERepresentation</p></li>
+<li><p><strong>field_states</strong> (<em>list</em>) – A list of state names, which should be treated as field states</p></li>
+<li><p><strong>field_parameters</strong> (<em>list</em>) – A list of parameter names, which should be treated as field parameters</p></li>
+<li><p><strong>monitored</strong> (<em>list</em>) – A list of names of intermediates of the ODE. Code for monitoring
+the intermediates will be generated.</p></li>
+<li><p><strong>code_params</strong> (<em>dict</em>) – Parameters controling the code generation</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="goss.compilemodule.jit">
+<span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gotran.ODE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">typing.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a goss::ODEParameterized from a gotran ode and JIT compile it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ode</strong> (<em>gotran.ODE</em>) – The gotran ode, either as an ODE or as an ODERepresentation</p></li>
+<li><p><strong>field_states</strong> (<em>list</em>) – A list of state names, which should be treated as field states</p></li>
+<li><p><strong>field_parameters</strong> (<em>list</em>) – A list of parameter names, which should be treated as field parameters</p></li>
+<li><p><strong>monitored</strong> (<em>list</em>) – A list of names of intermediates of the ODE. Code for monitoring
+the intermediates will be generated.</p></li>
+<li><p><strong>code_params</strong> (<em>dict</em>) – Parameters controling the code generation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="goss.compilemodule.make_ode">
+<span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">make_ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">python_object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#make_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.make_ode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-goss.cuda">
@@ -719,6 +717,11 @@ Differential-algebraic system of equations</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">monitored_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#goss.ode.ParameterizedODE.monitored_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.ode.ParameterizedODE.monitored_values">
+<span class="sig-name descname"><span class="pre">monitored_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/goss/ode.html#ParameterizedODE.monitored_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.ode.ParameterizedODE.monitored_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.ode.ParameterizedODE.num_field_parameters">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_field_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#goss.ode.ParameterizedODE.num_field_parameters" title="Permalink to this definition">¶</a></dt>
@@ -856,6 +859,116 @@ Differential-algebraic system of equations</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSExplicitSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSExplicitSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.ExplicitEuler">
+<span class="sig-name descname"><span class="pre">ExplicitEuler</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ExplicitEuler'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.ExplicitEuler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.GRL1">
+<span class="sig-name descname"><span class="pre">GRL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.GRL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.RL1">
+<span class="sig-name descname"><span class="pre">RL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.RL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSIAdaptiveSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSIAdaptiveSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSIAdaptiveSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSIAdaptiveSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSIAdaptiveSolvers.ESDIRK23a">
+<span class="sig-name descname"><span class="pre">ESDIRK23a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ESDIRK23a'</span></em><a class="headerlink" href="#goss.solvers.GOSSIAdaptiveSolvers.ESDIRK23a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSImplicitSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSImplicitSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSImplicitSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSImplicitSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSImplicitSolvers.ESDIRK23a">
+<span class="sig-name descname"><span class="pre">ESDIRK23a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ESDIRK23a'</span></em><a class="headerlink" href="#goss.solvers.GOSSImplicitSolvers.ESDIRK23a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSImplicitSolvers.ThetaSolver">
+<span class="sig-name descname"><span class="pre">ThetaSolver</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ThetaSolver'</span></em><a class="headerlink" href="#goss.solvers.GOSSImplicitSolvers.ThetaSolver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSNonAdaptiveSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSNonAdaptiveSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSNonAdaptiveSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSNonAdaptiveSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSNonAdaptiveSolvers.ExplicitEuler">
+<span class="sig-name descname"><span class="pre">ExplicitEuler</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ExplicitEuler'</span></em><a class="headerlink" href="#goss.solvers.GOSSNonAdaptiveSolvers.ExplicitEuler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSNonAdaptiveSolvers.GRL1">
+<span class="sig-name descname"><span class="pre">GRL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSNonAdaptiveSolvers.GRL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSNonAdaptiveSolvers.RL1">
+<span class="sig-name descname"><span class="pre">RL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSNonAdaptiveSolvers.RL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSNonAdaptiveSolvers.ThetaSolver">
+<span class="sig-name descname"><span class="pre">ThetaSolver</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ThetaSolver'</span></em><a class="headerlink" href="#goss.solvers.GOSSNonAdaptiveSolvers.ThetaSolver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.ESDIRK23a">
+<span class="sig-name descname"><span class="pre">ESDIRK23a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ESDIRK23a'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.ESDIRK23a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.ExplicitEuler">
+<span class="sig-name descname"><span class="pre">ExplicitEuler</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ExplicitEuler'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.ExplicitEuler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.GRL1">
+<span class="sig-name descname"><span class="pre">GRL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.GRL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.RL1">
+<span class="sig-name descname"><span class="pre">RL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.RL1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.ThetaSolver">
+<span class="sig-name descname"><span class="pre">ThetaSolver</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ThetaSolver'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.ThetaSolver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="goss.solvers.GRL1">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GRL1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GRL1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GRL1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#goss.solvers.ODESolver" title="goss.solvers.ODESolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.ODESolver</span></code></a></p>
@@ -958,17 +1071,17 @@ has been computed</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="goss.solvers.Solution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">Solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#goss.solvers.Solution" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">Solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#Solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.Solution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goss.solvers.Solution.t">
-<span class="sig-name descname"><span class="pre">t</span></span><a class="headerlink" href="#goss.solvers.Solution.t" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">t</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#goss.solvers.Solution.t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goss.solvers.Solution.y">
-<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#goss.solvers.Solution.y" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#goss.solvers.Solution.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
@@ -1295,6 +1408,11 @@ field parameters to reset System variables</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">monitored_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#goss.ParameterizedODE.monitored_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.ParameterizedODE.monitored_values">
+<span class="sig-name descname"><span class="pre">monitored_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/goss/ode.html#ParameterizedODE.monitored_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.ParameterizedODE.monitored_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.ParameterizedODE.num_field_parameters">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_field_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#goss.ParameterizedODE.num_field_parameters" title="Permalink to this definition">¶</a></dt>
@@ -1339,19 +1457,18 @@ field parameters to reset System variables</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="goss.jit">
-<span class="sig-prename descclassname"><span class="pre">goss.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.jit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">goss.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gotran.ODE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">typing.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.jit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a goss::ODEParameterized from a gotran ode and JIT compile it</p>
-<dl class="simple">
-<dt>ode<span class="classifier">gotran.ODE</span></dt><dd><p>The gotran ode, either as an ODE or as an ODERepresentation</p>
-</dd>
-<dt>field_states<span class="classifier">list</span></dt><dd><p>A list of state names, which should be treated as field states</p>
-</dd>
-<dt>field_parameters<span class="classifier">list</span></dt><dd><p>A list of parameter names, which should be treated as field parameters</p>
-</dd>
-<dt>monitored<span class="classifier">list</span></dt><dd><p>A list of names of intermediates of the ODE. Code for monitoring
-the intermediates will be generated.</p>
-</dd>
-<dt>code_params<span class="classifier">dict</span></dt><dd><p>Parameters controling the code generation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ode</strong> (<em>gotran.ODE</em>) – The gotran ode, either as an ODE or as an ODERepresentation</p></li>
+<li><p><strong>field_states</strong> (<em>list</em>) – A list of state names, which should be treated as field states</p></li>
+<li><p><strong>field_parameters</strong> (<em>list</em>) – A list of parameter names, which should be treated as field parameters</p></li>
+<li><p><strong>monitored</strong> (<em>list</em>) – A list of names of intermediates of the ODE. Code for monitoring
+the intermediates will be generated.</p></li>
+<li><p><strong>code_params</strong> (<em>dict</em>) – Parameters controling the code generation</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1371,13 +1488,6 @@ the intermediates will be generated.</p>
             <p class="prev-next-subtitle">previous</p>
             <p class="prev-next-title">goss</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="goss.scripts.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">goss.scripts package</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
         

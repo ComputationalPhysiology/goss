@@ -1,14 +1,6 @@
 goss package
 ============
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   goss.scripts
-
 Submodules
 ----------
 

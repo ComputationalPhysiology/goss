@@ -94,22 +94,10 @@
    </i>
   </label>
   <ul>
-   <li class="toctree-l2 has-children">
+   <li class="toctree-l2">
     <a class="reference internal" href="goss.html">
      goss package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-    <label for="toctree-checkbox-2">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="goss.scripts.html">
-       goss.scripts package
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -248,6 +236,8 @@
         <li><a href="goss.html#goss.solvers.ODESolver.copy">(goss.solvers.ODESolver method)</a>
 </li>
       </ul></li>
+      <li><a href="goss.html#goss.compilemodule.cppyy_jit">cppyy_jit() (in module goss.compilemodule)</a>
+</li>
       <li><a href="goss.html#goss.cuda.CUDAODESystemSolver">CUDAODESystemSolver (class in goss.cuda)</a>
 </li>
   </ul></td>
@@ -299,7 +289,15 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.solvers.ESDIRK23a">ESDIRK23a (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSIAdaptiveSolvers.ESDIRK23a">(goss.solvers.GOSSIAdaptiveSolvers attribute)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.GOSSImplicitSolvers.ESDIRK23a">(goss.solvers.GOSSImplicitSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.ESDIRK23a">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
       <li><a href="goss.html#goss.ODE.eval">eval() (goss.ODE method)</a>
 
       <ul>
@@ -321,7 +319,15 @@
 </li>
       </ul></li>
       <li><a href="goss.html#goss.solvers.ExplicitEuler">ExplicitEuler (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.ExplicitEuler">(goss.solvers.GOSSExplicitSolvers attribute)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.ExplicitEuler">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.ExplicitEuler">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -447,8 +453,6 @@
         <li><a href="goss.html#module-goss">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     goss.cli
 
@@ -463,6 +467,8 @@
         <li><a href="goss.html#module-goss.codegeneration">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     goss.compilemodule
 
@@ -507,10 +513,28 @@
       </ul></li>
       <li><a href="goss.html#goss.codegeneration.GossCodeGenerator">GossCodeGenerator (class in goss.codegeneration)</a>
 </li>
+      <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers">GOSSExplicitSolvers (class in goss.solvers)</a>
+</li>
+      <li><a href="goss.html#goss.solvers.GOSSIAdaptiveSolvers">GOSSIAdaptiveSolvers (class in goss.solvers)</a>
+</li>
+      <li><a href="goss.html#goss.solvers.GOSSImplicitSolvers">GOSSImplicitSolvers (class in goss.solvers)</a>
+</li>
+      <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers">GOSSNonAdaptiveSolvers (class in goss.solvers)</a>
+</li>
+      <li><a href="goss.html#goss.solvers.GOSSSolvers">GOSSSolvers (class in goss.solvers)</a>
+</li>
       <li><a href="goss.html#goss.cli.gotran2goss">gotran2goss() (in module goss.cli)</a>
 </li>
       <li><a href="goss.html#goss.solvers.GRL1">GRL1 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.GRL1">(goss.solvers.GOSSExplicitSolvers attribute)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.GRL1">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.GRL1">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -585,6 +609,8 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.compilemodule.make_ode">make_ode() (in module goss.compilemodule)</a>
+</li>
       <li>
     module
 
@@ -614,6 +640,12 @@
 
       <ul>
         <li><a href="goss.html#goss.ParameterizedODE.monitored_names">(goss.ParameterizedODE property)</a>
+</li>
+      </ul></li>
+      <li><a href="goss.html#goss.ode.ParameterizedODE.monitored_values">monitored_values() (goss.ode.ParameterizedODE method)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.ParameterizedODE.monitored_values">(goss.ParameterizedODE method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -768,13 +800,23 @@
         <li><a href="goss.html#goss.dolfinutils.DOLFINODESystemSolver.restore_states">(goss.dolfinutils.DOLFINODESystemSolver method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.ode.LinearizedEval.rhs">rhs (goss.ode.LinearizedEval attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.solvers.RL1">RL1 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.RL1">(goss.solvers.GOSSExplicitSolvers attribute)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.RL1">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.RL1">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
       <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.rtol">rtol (goss.solvers.AdaptiveImplicitSolver property)</a>
+</li>
+      <li><a href="goss.html#goss.cli.run">run() (in module goss.cli)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -871,7 +913,15 @@
       <li><a href="goss.html#goss.solvers.Solution.t">t (goss.solvers.Solution attribute)</a>
 </li>
       <li><a href="goss.html#goss.solvers.ThetaSolver">ThetaSolver (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSImplicitSolvers.ThetaSolver">(goss.solvers.GOSSImplicitSolvers attribute)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.ThetaSolver">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.ThetaSolver">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.DOLFINODESystemSolver.to_field_states">to_field_states() (goss.DOLFINODESystemSolver method)</a>
