@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install boost
+        run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev libc6-dev  cmake ninja-build
+
       - name: Upgrade pip
         run: |
           # install pip=>20.1 to use "pip cache dir"
