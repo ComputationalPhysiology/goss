@@ -8,3 +8,15 @@ requires = [
 ]
 
 build-backend = "setuptools.build_meta"
+
+
+[tool.cibuildwheel]
+build = ["cp{37,38,39}-manylinux_x86_64", "cp{37,38,39}-macosx_x86_64"]
+
+test-command = "python -c 'import goss'"
+
+[tool.cibuildwheel.linux]
+before-build = "yum -y update && yum install -y boost-devel glibc-devel ninja-build cmake"
+
+[tool.cibuildwheel.macos]
+before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja boost libomp"
