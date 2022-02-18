@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import typing as _t
-from importlib.metadata import metadata
+
+try:
+    from importlib.metadata import metadata
+except ImportError:
+    from importlib_metadata import metadata  # type:ignore
 
 from . import cli
 from . import codegeneration
