@@ -7,7 +7,7 @@ setup(
     name="pygoss",
     python_requires=">=3.7.0",
     version="0.1.0",
-    description="Basix Python interface",
+    description="Python interface to goss - General ODE System Solver",
     url="https://github.com/ComputationalPhysiology/goss",
     author="Henrik Finsberg, Johan Hake, Cécile Daversin-Catty",
     author_email="henriknf@simula.no",
