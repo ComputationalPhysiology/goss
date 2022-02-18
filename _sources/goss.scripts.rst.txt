@@ -1,0 +1,10 @@
+goss.scripts package
+====================
+
+Module contents
+---------------
+
+.. automodule:: goss.scripts
+   :members:
+   :undoc-members:
+   :show-inheritance:
