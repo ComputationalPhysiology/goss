@@ -17,7 +17,7 @@ test-command = "python -m pytest -v {project}/tests/"
 test-requires = ["pytest", "pytest-cov"]
 
 [tool.cibuildwheel.linux]
-before-build = "yum -y update && yum install -y boost-devel libc6-dev ninja-build g++ cmake ninja-build"
+before-build = "yum -y update && yum install -y boost-devel glibc-devel ninja-build g++ cmake ninja-build"
 
 [tool.cibuildwheel.macos]
 before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja boost libomp"
