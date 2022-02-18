@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-import goss
+import goss.solvers
 import typer
 from goss.codegeneration import GossCodeGenerator
 from gotran.model.loadmodel import load_ode
@@ -23,10 +23,18 @@ def _list_solvers():
     table.add_column("Explicit/Implicit", style="magenta")
     table.add_column("Adaptive/Nonadaptive", style="green")
 
-    for solver in goss.goss_solvers:
-        exp_impl = "Explicit" if solver in goss.goss_explicit_solvers else "Implicit"
-        adapt = "Adaptive" if solver in goss.goss_adaptive_solvers else "Nonadaptive"
-        table.add_row(solver.__name__, exp_impl, adapt)
+    for solver in goss.solvers.GOSSSolvers._member_names_:
+        exp_impl = (
+            "Explicit"
+            if solver in goss.solvers.GOSSExplicitSolvers._member_names_
+            else "Implicit"
+        )
+        adapt = (
+            "Adaptive"
+            if solver in goss.solvers.GOSSIAdaptiveSolvers._member_names_
+            else "Nonadaptive"
+        )
+        table.add_row(solver, exp_impl, adapt)
 
     console = Console()
     console.print(table)
@@ -100,15 +108,56 @@ def gotran2goss(
         out = filename.with_suffix(".h")
 
     with open(out, "w") as f:
-        f.write("#ifndef {}_H_IS_INCLUDED\n".format(ode.name.upper()))
-        f.write("#define {}_H_IS_INCLUDED\n".format(ode.name.upper()))
-        f.write("#include <memory>\n")
-        f.write("#include <stdexcept>\n")
-        f.write("#include <cmath>\n\n")
-
-        f.write('#include "goss/ParameterizedODE.h"\n\n')
-        f.write(cgen.class_code())
-        f.write("\n#endif\n")
+        for line in [
+            f"#ifndef {ode.name.upper()}_H_IS_INCLUDED\n",
+            f"#define {ode.name.upper()}_H_IS_INCLUDED\n",
+            "#include <memory>\n",
+            "#include <stdexcept>\n",
+            "#include <cmath>\n\n",
+            '#include "goss/ParameterizedODE.h"\n\n',
+            cgen.class_code(),
+            "\n#endif\n",
+        ]:
+            f.write(line)
 
     if list_timings:
         utils.list_timings()
+
+
+@app.command("run", help="Solve an ODE")
+def run(
+    filename: Path = typer.Argument(
+        ...,
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        help="Specify output file name",
+    ),
+    T: float = typer.Option(1000.0, "-T", help="End time"),
+    solver: goss.solvers.GOSSSolvers = typer.Option(
+        "ExplicitEuler",
+        help="Which solver to use",
+    ),
+    dt: float = typer.Option(0.01, "-dt", help="Time step"),
+):
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        typer.echo("Please install matplotlib - pip install matplotlib")
+        typer.Exit()
+
+    gotran_ode = load_ode(filename)
+    ode = goss.ODE(gotran_ode)
+    cls = goss.solvers.solver_mapper[solver.name]
+    ode_solver = cls(ode)
+    y, t = ode_solver.solve(0, T, dt=dt)
+
+    V_index = gotran_ode.state_symbols.index("V")
+
+    fig, ax = plt.subplots()
+    ax.plot(t, y[:, V_index])
+    ax.set_title("V")
+    plt.show()

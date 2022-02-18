@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import typing as _t
-
 try:
     from importlib.metadata import metadata
 except ImportError:
@@ -14,25 +12,6 @@ from .compilemodule import jit
 from .ode import ODE
 from .ode import ParameterizedODE
 from .systemsolver import ODESystemSolver
-
-goss_explicit_solvers: list[_t.Type[solvers.ODESolver]] = [
-    solvers.ExplicitEuler,
-    solvers.RL1,
-    solvers.GRL1,
-]
-goss_implicit_solvers: list[_t.Type[solvers.ODESolver]] = [
-    solvers.ThetaSolver,
-    solvers.ESDIRK23a,
-]
-
-goss_adaptive_solvers = [solvers.ESDIRK23a]
-goss_non_adaptive_solvers = [
-    solvers.ExplicitEuler,
-    solvers.RL1,
-    solvers.GRL1,
-    solvers.ThetaSolver,
-]
-goss_solvers = goss_explicit_solvers + goss_implicit_solvers
 
 
 def has_openmp() -> bool:
@@ -51,9 +30,7 @@ __all__ = [
     "codegeneration",
     "jit",
     "ODE",
-    "goss_solvers",
-    "goss_implicit_solvers",
-    "goss_explicit_solvers",
+    "solvers",
     "ODESystemSolver",
     "ParameterizedODE",
     "cli",

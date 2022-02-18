@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 import abc
-from collections import namedtuple
+from enum import Enum
 from typing import Any
+from typing import NamedTuple
 from typing import Optional
 
 import numpy as np
 
 from .ode import ODE
 
-Solution = namedtuple("Solution", ["y", "t"])
+
+class Solution(NamedTuple):
+    y: np.ndarray
+    t: np.ndarray
 
 
 class ODESolver(abc.ABC):
@@ -230,3 +234,42 @@ class ESDIRK23a(AdaptiveImplicitSolver):
     def ndtsr(self):
         """Number of rejected timesteps"""
         return self._cpp_object.ndtsr
+
+
+class GOSSSolvers(Enum):
+    ExplicitEuler = "ExplicitEuler"
+    RL1 = "RL1"
+    GRL1 = "GRL1"
+    ThetaSolver = "ThetaSolver"
+    ESDIRK23a = "ESDIRK23a"
+
+
+class GOSSImplicitSolvers(Enum):
+    ThetaSolver = "ThetaSolver"
+    ESDIRK23a = "ESDIRK23a"
+
+
+class GOSSExplicitSolvers(Enum):
+    ExplicitEuler = "ExplicitEuler"
+    RL1 = "RL1"
+    GRL1 = "GRL1"
+
+
+class GOSSNonAdaptiveSolvers(Enum):
+    ExplicitEuler = "ExplicitEuler"
+    RL1 = "RL1"
+    GRL1 = "GRL1"
+    ThetaSolver = "ThetaSolver"
+
+
+class GOSSIAdaptiveSolvers(Enum):
+    ESDIRK23a = "ESDIRK23a"
+
+
+solver_mapper = {
+    "ExplicitEuler": ExplicitEuler,
+    "RL1": RL1,
+    "GRL1": GRL1,
+    "ThetaSolver": ThetaSolver,
+    "ESDIRK23a": ESDIRK23a,
+}
