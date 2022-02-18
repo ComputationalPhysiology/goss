@@ -8,11 +8,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import sys
+from pathlib import Path
+
+sys.path.insert(0, Path(__file__).parent.parent.parent.joinpath("python").as_posix())
 # -- Project information -----------------------------------------------------
-import goss
+import goss  # noqa: E402
 
 project = "goss"
 copyright = "2022, Simula Research Laboratory"
