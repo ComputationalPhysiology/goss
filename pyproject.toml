@@ -13,8 +13,7 @@ build-backend = "setuptools.build_meta"
 [tool.cibuildwheel]
 build = ["cp{37,38,39}-manylinux_x86_64", "cp{37,38,39}-macosx_x86_64"]
 
-test-command = "python -m pytest -v {project}/tests/"
-test-requires = ["pytest", "pytest-cov"]
+test-command = "python -c 'import goss'"
 
 [tool.cibuildwheel.linux]
 before-build = "yum -y update && yum install -y boost-devel glibc-devel ninja-build cmake"
