@@ -218,23 +218,11 @@ def run_goss_ode_solver(
     # Solve
     total = dolfin.Timer("Total solver time")
     solutions = solver.solve((0, T), dt)
-    dolfin.plot(
-        v,
-        interactive=True,
-        title="Initial conditions",
-        scale=0.0,
-        range_max=40.0,
-        range_min=-85.0,
-    )
+
+    vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "v.xdmf")
     for (timestep, (v, vur)) in solutions:
-        dolfin.plot(
-            v,
-            title="run, t=%.1f" % timestep[1],
-            interactive=False,
-            scale=0.0,
-            range_max=40.0,
-            range_min=-85.0,
-        )
+        vfile.write(v, timestep[0])
+
         if timestep[0] == 130.0:
             for label, ode in solver.ode_solver._odes.items():
                 for param, func in ode.field_params.items():
@@ -247,15 +235,6 @@ def run_goss_ode_solver(
         u = dolfin.project(vur[1], vur.function_space().sub(1).collapse())
     else:
         u = vur
-    dolfin.plot(
-        v,
-        title="Final u, t=%.1f (%s)" % (timestep[1], ps["pde_solver"]),
-        interactive=True,
-        scale=0.0,
-        range_max=40.0,
-        range_min=-85.0,
-    )
-
 
 if __name__ == "__main__":
 

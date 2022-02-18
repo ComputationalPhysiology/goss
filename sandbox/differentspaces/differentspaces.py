@@ -96,7 +96,6 @@ def setup_model(cellmodel_strs, domain, space):
             u_plot.assign(dolfin.project(u[0], Vs))
         else:
             u_plot.assign(dolfin.project(u, Vs))
-
     elif solver.num_field_states > 1:
         u_plot = u.split(True)[0]
     else:
@@ -106,6 +105,7 @@ def setup_model(cellmodel_strs, domain, space):
     dt=.1
     tstop=300
 
+    ufile = dolfin.XDMFFile(dolfin.MPI.comm_world, "u.xdmf")
     while t < tstop:
         solver.step((t,t+dt), u)
         if (t%10.)<dt:
@@ -119,11 +119,13 @@ def setup_model(cellmodel_strs, domain, space):
             elif solver.num_field_states > 1:
                 assign(u_plot, u.sub(0))
 
-            dolfin.plot(u_plot, scale=0., range_max=max_value, range_min=0.)
+            # Export to file
+            u_plot.rename("u", "u")
+            ufile.write(u_plot, t)
 
         t+=dt
 
-    dolfin.plot(u_plot, scale=0., range_max=max_value, range_min=0., interactive=True)
+    # dolfin.plot(u_plot, scale=0., range_max=max_value, range_min=0., interactive=True)
 
 
 if __name__ == "__main__":
