@@ -4,12 +4,12 @@ import sysconfig
 from skbuild import setup
 
 setup(
-    name="goss",
+    name="pygoss",
     python_requires=">=3.7.0",
     version="0.1.0",
     description="Basix Python interface",
     url="https://github.com/ComputationalPhysiology/goss",
-    author="Henrik Finsberg, Johan Hake",
+    author="Henrik Finsberg, Johan Hake, Cécile Daversin-Catty",
     author_email="henriknf@simula.no",
     maintainer_email="henriknf@simula.no",
     license="GNU General Public License v3 (GPLv3)",

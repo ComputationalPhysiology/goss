@@ -8,3 +8,16 @@ requires = [
 ]
 
 build-backend = "setuptools.build_meta"
+
+
+[tool.cibuildwheel]
+build = ["cp{37,38,39}-manylinux_x86_64", "cp{37,38,39}-macosx_x86_64"]
+
+test-command = "python -m pytest -v {project}/tests/"
+test-requires = ["pytest", "pytest-cov"]
+
+[tool.cibuildwheel.linux]
+before-build = "yum -y update && yum install -y libboost-all-dev libc6-dev ninja-build g++ cmake ninja-build"
+
+[tool.cibuildwheel.macos]
+before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja boost libomp"
