@@ -347,6 +347,25 @@ void init_ODE(py::module &m)
 
                      return self.eval_monitored(states_ptr, t, monitored_ptr);
                  })
+            .def("monitored_values",
+                 [](goss::ParameterizedODE &self, const py::array_t<double> states,
+                    const py::array_t<double> t, py::array_t<double> monitored,
+                    py::array_t<double> m) {
+                     py::buffer_info states_info = states.request();
+                     auto states_ptr = static_cast<double *>(states_info.ptr);
+
+                     py::buffer_info t_info = t.request();
+                     auto t_ptr = static_cast<double *>(t_info.ptr);
+
+                     py::buffer_info monitored_info = monitored.request();
+                     auto monitored_ptr = static_cast<double *>(monitored_info.ptr);
+
+                     py::buffer_info m_info = m.request();
+                     auto m_ptr = static_cast<double *>(m_info.ptr);
+
+                     return self.monitored_values(states_ptr, t_ptr, monitored_ptr, m_ptr,
+                                                  t_info.shape[0]);
+                 })
             .def("set_field_parameters",
                  [](goss::ParameterizedODE &self, const py::array_t<double> field_params) {
                      py::buffer_info field_params_info = field_params.request();

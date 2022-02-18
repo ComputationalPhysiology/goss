@@ -18,108 +18,144 @@
 #ifndef PARAMETERIZED_ODE_H_IS_INCLUDED
 #define PARAMETERIZED_ODE_H_IS_INCLUDED
 
-#include <vector>
-#include <string>
 #include <map>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
-#include "types.h"
-#include "ODE.h"
 #include "DoubleVector.h"
+#include "ODE.h"
+#include "types.h"
 
-namespace goss {
+namespace goss
+{
 
-  // Class which provides a more verbose interface for users to controll an ODE
-  class ParameterizedODE : public ODE
-  {
+// Class which provides a more verbose interface for users to controll an ODE
+class ParameterizedODE : public ODE
+{
   public:
-
     // Constructor
     ParameterizedODE(uint num_states_, uint num_parameters_, uint num_field_states_,
-		     uint num_field_parameters_, uint num_monitored_) :
-      ODE(num_states_),
-      _state_names(num_states_, ""),
-      _field_state_names(num_field_states_, ""),
-      _parameter_names(num_parameters_, ""),
-      _field_parameter_names(num_field_parameters_, ""),
-      _field_state_indices(num_field_states_, 0),
-      _monitored_names(num_monitored_, ""),
-      _param_to_value()
+                     uint num_field_parameters_, uint num_monitored_)
+        : ODE(num_states_), _state_names(num_states_, ""),
+          _field_state_names(num_field_states_, ""), _parameter_names(num_parameters_, ""),
+          _field_parameter_names(num_field_parameters_, ""),
+          _field_state_indices(num_field_states_, 0), _monitored_names(num_monitored_, ""),
+          _param_to_value()
     {
-      // Do nothing
+        // Do nothing
     }
 
     // Copy constructor
-    ParameterizedODE(const ParameterizedODE& ode) :
-    ODE(ode),
-    _state_names(ode._state_names),
-    _field_state_names(ode._field_state_names),
-    _parameter_names(ode._parameter_names),
-    _field_parameter_names(ode._field_parameter_names),
-    _field_state_indices(ode._field_state_indices),
-    _monitored_names(ode._monitored_names),
-    _param_to_value(ode._param_to_value)
+    ParameterizedODE(const ParameterizedODE &ode)
+        : ODE(ode), _state_names(ode._state_names), _field_state_names(ode._field_state_names),
+          _parameter_names(ode._parameter_names),
+          _field_parameter_names(ode._field_parameter_names),
+          _field_state_indices(ode._field_state_indices), _monitored_names(ode._monitored_names),
+          _param_to_value(ode._param_to_value)
     {
-      // Do nothing
+        // Do nothing
     }
 
     virtual ~ParameterizedODE()
     {
-      // Do nothing
+        // Do nothing
     }
 
     // Return the number of field states
-    inline uint num_field_states() const { return _field_state_names.size(); }
+    inline uint num_field_states() const
+    {
+        return _field_state_names.size();
+    }
 
     // The number of parameters
-    inline uint num_parameters() const { return _parameter_names.size(); }
+    inline uint num_parameters() const
+    {
+        return _parameter_names.size();
+    }
 
     // The number of field parameters
-    inline uint num_field_parameters() const { return _field_parameter_names.size(); }
+    inline uint num_field_parameters() const
+    {
+        return _field_parameter_names.size();
+    }
 
     // The number of field parameters
-    inline uint num_monitored() const { return _monitored_names.size(); }
+    inline uint num_monitored() const
+    {
+        return _monitored_names.size();
+    }
 
     // Evaluate the monitored
-    virtual void eval_monitored(const double* states, double t, double* monitored) const = 0;
+    virtual void eval_monitored(const double *states, double t, double *monitored) const = 0;
+
+    // Evaluate monitored values for many time steps
+    virtual void monitored_values(const double *states, const double *t, double *monitored,
+                                  double *m, const ulong num_timesteps) const
+    {
+        ulong i, j;
+        double ti;
+        for (i = 1; i <= num_timesteps; i++) {
+            ti = t[i];
+            eval_monitored(states + i * num_states(), ti, m);
+            for (j = 0; j < num_monitored(); j++) {
+                monitored[i * num_monitored() + j] = m[j];
+            }
+        }
+    }
 
     // Set all field parameters
-    virtual void set_field_parameters(const double* field_params) = 0;
+    virtual void set_field_parameters(const double *field_params) = 0;
 
     // Set a parameter
     void set_parameter(std::string name, double value)
-    { *_find_parameter(name) = value;}
+    {
+        *_find_parameter(name) = value;
+    }
 
     // Get a parameter value
     double get_parameter(std::string name) const
-    { return *_find_parameter(name);}
+    {
+        return *_find_parameter(name);
+    }
 
     // Get all state names
-    const std::vector<std::string>& get_state_names() const
-    { return _state_names; }
+    const std::vector<std::string> &get_state_names() const
+    {
+        return _state_names;
+    }
 
     // Get field state names
-    const std::vector<std::string>& get_field_state_names() const
-    { return _field_state_names; }
+    const std::vector<std::string> &get_field_state_names() const
+    {
+        return _field_state_names;
+    }
 
     // Get all parameter names
-    const std::vector<std::string>& get_parameter_names() const
-    { return _parameter_names; }
+    const std::vector<std::string> &get_parameter_names() const
+    {
+        return _parameter_names;
+    }
 
     // Get field parameter names
-    const std::vector<std::string>& get_field_parameter_names() const
-    { return _field_parameter_names; }
+    const std::vector<std::string> &get_field_parameter_names() const
+    {
+        return _field_parameter_names;
+    }
 
     // Get field state indices
-    const std::vector<uint>& get_field_state_indices() const
-    { return _field_state_indices; }
+    const std::vector<uint> &get_field_state_indices() const
+    {
+        return _field_state_indices;
+    }
 
     // Get monitored names
-    const std::vector<std::string>& get_monitored_names() const
-    { return _monitored_names; }
+    const std::vector<std::string> &get_monitored_names() const
+    {
+        return _monitored_names;
+    }
 
   protected:
-
     // These vectors are initialized in this class, but need to be
     // filled in derived classes.
 
@@ -142,25 +178,22 @@ namespace goss {
     std::vector<std::string> _monitored_names;
 
     // A map between parameter name and its value
-    std::map<std::string, double*> _param_to_value;
+    std::map<std::string, double *> _param_to_value;
 
   private:
-
     // Find a parameter value
-    inline double* _find_parameter(std::string name) const
+    inline double *_find_parameter(std::string name) const
     {
-      // Search parameter map
-      std::map<std::string, double*>::const_iterator it = \
-	_param_to_value.find(name);
-      if (it == _param_to_value.end())
-	throw std::runtime_error("\"" + name + "\" is not a parameter in  "
+        // Search parameter map
+        std::map<std::string, double *>::const_iterator it = _param_to_value.find(name);
+        if (it == _param_to_value.end())
+            throw std::runtime_error("\"" + name + "\" is not a parameter in  "
 				 "this ODE.");
 
-      // Return value pointer
-      return it->second;
+        // Return value pointer
+        return it->second;
     }
-
-  };
-}
+};
+} // namespace goss
 
 #endif

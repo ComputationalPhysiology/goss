@@ -34,6 +34,12 @@ class ODE:
             else:
                 raise ValueError(f"Unknown argument of type {type(args[0])}")
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self._cpp_object})"
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__} with {self.num_states} states"
+
     def copy(self):
         return self.__class__(self._cpp_object)
 
@@ -153,13 +159,18 @@ class ParameterizedODE(ODE):
         return self._cpp_object.num_monitored()
 
     def eval_monitored(self, states: np.ndarray, time: float) -> np.ndarray:
+        assert len(states) == self.num_states
         monitored = np.zeros(self.num_monitored)
         self._cpp_object.eval_monitored(states, time, monitored)
         return monitored
 
-    # def set_field_parameters(self, field_params: np.ndarray) -> None:
-    #     assert field_params.shape == (self.num_field_parameters,)
-    #     self._cpp_object.set_field_parameters(field_params)
+    def monitored_values(self, states: np.ndarray, time: np.ndarray) -> np.ndarray:
+        num_time_steps = len(time)
+        assert states.shape == (num_time_steps, self.num_states)
+        monitored = np.zeros((num_time_steps, self.num_monitored))
+        m = np.zeros(self.num_monitored)
+        self._cpp_object.monitored_values(states, time, monitored, m)
+        return monitored
 
     def set_parameter(self, name: str, value: float) -> None:
         self._cpp_object.set_parameter(name, value)

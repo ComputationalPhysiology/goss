@@ -142,6 +142,14 @@ def run(
         help="Which solver to use",
     ),
     dt: float = typer.Option(0.01, "-dt", help="Time step"),
+    plot_y: List[str] = typer.Option(
+        None,
+        help="States or monitored to plot on the y axis.",
+    ),
+    plot_x: str = typer.Option(
+        "time",
+        help="Values used for the x axis. Can be time and any valid plot_y variable.",
+    ),
 ):
     try:
         import matplotlib.pyplot as plt
@@ -150,14 +158,47 @@ def run(
         typer.Exit()
 
     gotran_ode = load_ode(filename)
-    ode = goss.ODE(gotran_ode)
+
+    monitored_names = [
+        expr.name for expr in gotran_ode.intermediates + gotran_ode.state_expressions
+    ]
+    monitored = [name for name in plot_y if name in monitored_names]
+    if plot_x in monitored_names:
+        monitored.append(plot_x)
+
+    if len(plot_y) == 0:
+        typer.echo("Warning: ploy-y not specificed - assume you want to plot 'V'")
+        plot_y = ["V"]  # Just assume you want to plot the membrane potential
+
+    ode = goss.ParameterizedODE(gotran_ode, monitored=monitored)
+
     cls = goss.solvers.solver_mapper[solver.name]
     ode_solver = cls(ode)
     y, t = ode_solver.solve(0, T, dt=dt)
 
-    V_index = gotran_ode.state_symbols.index("V")
+    states = {}
+    for name in plot_y:
+        if name in gotran_ode.state_symbols:
+            states[name] = gotran_ode.state_symbols.index(name)
 
-    fig, ax = plt.subplots()
-    ax.plot(t, y[:, V_index])
-    ax.set_title("V")
+    if len(monitored) > 0:
+        m = ode.monitored_values(y, t)
+
+    x = t
+    if plot_x in gotran_ode.state_symbols:
+        x = y[:, gotran_ode.state_symbols.index(plot_x)]
+    if plot_x in monitored:
+        x = m[:, monitored.index(plot_x)]
+
+    for name in plot_y:
+        fig, ax = plt.subplots()
+        if name in gotran_ode.state_symbols:
+            index = gotran_ode.state_symbols.index(name)
+            ax.plot(x, y[:, index])
+        elif name in monitored:
+            index = monitored.index(name)
+            ax.plot(x, m[:, index])
+
+        ax.set_ylabel(name)
+        ax.set_xlabel(plot_x)
     plt.show()
