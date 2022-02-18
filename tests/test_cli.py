@@ -1,11 +1,12 @@
 from pathlib import Path
+from unittest import mock
 
 import goss
 import pytest
 from typer.testing import CliRunner
 
 here = Path(__file__).absolute().parent
-odefile = here.joinpath("tentusscher_2004_mcell.ode")
+odefile = here.joinpath("fitzhughnagumo.ode")
 runner = CliRunner()
 
 
@@ -35,3 +36,34 @@ def test_gotran2goss_no_outout_and_list_timings():
     assert output.is_file()
     assert "num  : total time : mean time" in result.stdout
     output.unlink()
+
+
+def test_gossrun():
+    with mock.patch("goss.cli.plt") as m:
+        fig = mock.Mock()
+        ax = mock.Mock()
+        m.subplots.return_value = (fig, ax)
+        result = runner.invoke(
+            goss.cli.app,
+            [
+                "run",
+                odefile.as_posix(),
+                "--plot-y",
+                "V",
+                "--plot-y",
+                "I",
+                "--plot-x",
+                "s",
+            ],
+        )
+    assert result.exit_code == 0
+    assert ax.plot.call_count == 2
+
+
+def test_goss_list_solvers():
+    result = runner.invoke(
+        goss.cli.app,
+        ["solvers", "--list"],
+    )
+    assert result.exit_code == 0
+    assert "ExplicitEuler" in result.output

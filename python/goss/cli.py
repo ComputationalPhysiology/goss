@@ -10,6 +10,13 @@ from goss.codegeneration import GossCodeGenerator
 from gotran.model.loadmodel import load_ode
 from modelparameters import utils
 
+try:
+    import matplotlib.pyplot as plt
+
+    has_mpl = True
+except ImportError:
+    has_mpl = False
+
 app = typer.Typer(no_args_is_help=True, help=__doc__)
 
 
@@ -151,10 +158,9 @@ def run(
         help="Values used for the x axis. Can be time and any valid plot_y variable.",
     ),
 ):
-    try:
-        import matplotlib.pyplot as plt
-    except ImportError:
-        typer.echo("Please install matplotlib - pip install matplotlib")
+    if not has_mpl:
+        typer.echo("Matplotlib not installed - please install matplotlib")
+        typer.echo("python -m pip install matplotlib")
         typer.Exit()
 
     gotran_ode = load_ode(filename)
