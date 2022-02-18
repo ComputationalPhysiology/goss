@@ -14,7 +14,7 @@ jobs:
       - name: Upgrade pip
         run: sudo python3 -m pip install pip --upgrade
       - name: Install python dependencies
-        run: sudo python3 -m pip install ".[test,cbcbeat]"
+        run: sudo python3 -m pip install -e ".[test,cbcbeat]"
       - name: Run tests
         run: python3 -m pytest
       - name: Coverage report
