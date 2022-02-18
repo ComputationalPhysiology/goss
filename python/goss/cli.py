@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
+import goss
 import typer
 from goss.codegeneration import GossCodeGenerator
 from gotran.model.loadmodel import load_ode
@@ -12,9 +13,36 @@ from modelparameters import utils
 app = typer.Typer(no_args_is_help=True, help=__doc__)
 
 
-@app.command("solvers", help="List available solvers")
-def solvers():
-    typer.echo("TBW")
+def _list_solvers():
+    from rich.console import Console
+    from rich.table import Table
+
+    table = Table(title="Goss solvers")
+
+    table.add_column("Name", justify="right", style="cyan", no_wrap=True)
+    table.add_column("Explicit/Implicit", style="magenta")
+    table.add_column("Adaptive/Nonadaptive", style="green")
+
+    for solver in goss.goss_solvers:
+        exp_impl = "Explicit" if solver in goss.goss_explicit_solvers else "Implicit"
+        adapt = "Adaptive" if solver in goss.goss_adaptive_solvers else "Nonadaptive"
+        table.add_row(solver.__name__, exp_impl, adapt)
+
+    console = Console()
+    console.print(table)
+
+
+@app.command("solvers", help="List available solvers and info about them")
+def solvers(
+    list_solvers: bool = typer.Option(
+        False,
+        "--list",
+        "-l",
+        help="List all available solvers",
+    ),
+):
+    if list_solvers:
+        _list_solvers()
 
 
 @app.command("gotran2goss", help="Convert .ode file to goss file")
