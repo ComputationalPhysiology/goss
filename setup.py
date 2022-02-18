@@ -6,7 +6,7 @@ from skbuild import setup
 setup(
     name="pygoss",
     python_requires=">=3.7.0",
-    version="0.1.0",
+    version="0.1.1",
     description="Python interface to goss - General ODE System Solver",
     url="https://github.com/ComputationalPhysiology/goss",
     author="Henrik Finsberg, Johan Hake, Cécile Daversin-Catty",
