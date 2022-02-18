@@ -1,0 +1,19 @@
+name: CI-fenics
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: finsberg/fenics
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install boost
+        run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev pkg-config libc6-dev ninja-build g++ cmake ninja-build
+      - name: Upgrade pip
+        run: sudo python3 -m pip install pip --upgrade
+      - name: Install python dependencies
+        run: sudo python3 -m pip install ".[test,cbcbeat]"
+      - name: Run tests
+        run: python3 -m pytest -m fenics
