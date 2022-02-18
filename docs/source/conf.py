@@ -12,13 +12,16 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
+import goss
 
 project = "goss"
 copyright = "2022, Simula Research Laboratory"
 author = "Simula Research Laboratory"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+
+
+release = goss.__version__
 
 
 # -- General configuration ---------------------------------------------------
