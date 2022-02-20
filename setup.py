@@ -24,14 +24,14 @@ setup(
         "numpy",
         "modelparameters",
         "gotran",
-        "typer",
+        "rich-click",
         "cppyy",
-        "rich",
         "importlib-metadata;python_version<'3.8'",
     ],
     extras_require={
         "test": ["pytest", "pytest-cov"],
         "cbcbeat": ["cbcbeat"],
+        "plot": ["matplotlib"],
         "dev": [
             "Sphinx",
             "black",

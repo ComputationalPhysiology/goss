@@ -3,7 +3,7 @@ from unittest import mock
 
 import goss
 import pytest
-from typer.testing import CliRunner
+from click.testing import CliRunner
 
 here = Path(__file__).absolute().parent
 odefile = here.joinpath("fitzhughnagumo.ode")
@@ -26,15 +26,43 @@ def test_gotran2goss(output_file):
     assert output_file.is_file()
 
 
-def test_gotran2goss_no_outout_and_list_timings():
+def test_gotran2goss_fields_and_list_timings():
     result = runner.invoke(
         goss.cli.app,
-        ["gotran2goss", "--list-timings", odefile.as_posix()],
+        [
+            "gotran2goss",
+            "--list-timings",
+            "-fp",
+            "a",
+            "-fp",
+            "b",
+            "-fs",
+            "V",
+            "-m",
+            "I",
+            odefile.as_posix(),
+        ],
     )
     assert result.exit_code == 0
     output = odefile.with_suffix(".h")
     assert output.is_file()
     assert "num  : total time : mean time" in result.stdout
+    output.unlink()
+
+
+def test_gotran2goss_code_params():
+    result = runner.invoke(
+        goss.cli.app,
+        [
+            "gotran2goss",
+            "-cp",
+            "state_repr=named,generate_jacobian=True",
+            odefile.as_posix(),
+        ],
+    )
+    assert result.exit_code == 0
+    output = odefile.with_suffix(".h")
+    assert output.is_file()
     output.unlink()
 
 
@@ -63,7 +91,16 @@ def test_gossrun():
 def test_goss_list_solvers():
     result = runner.invoke(
         goss.cli.app,
-        ["solvers", "--list"],
+        ["list-solvers"],
     )
     assert result.exit_code == 0
     assert "ExplicitEuler" in result.output
+
+
+def test_goss_list_code_params():
+    result = runner.invoke(
+        goss.cli.app,
+        ["code-params"],
+    )
+    assert result.exit_code == 0
+    assert "GossCodeGeneratorParameters" in result.output

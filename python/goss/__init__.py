@@ -1,13 +1,13 @@
+# flake8: noqa
+# type:ignore
 from __future__ import annotations
-
-try:
-    from importlib.metadata import metadata
-except ImportError:
-    from importlib_metadata import metadata  # type:ignore
 
 from . import cli
 from . import codegeneration
 from . import solvers
+from .cli import __author__
+from .cli import __license__
+from .cli import __version__
 from .compilemodule import jit
 from .ode import ODE
 from .ode import ParameterizedODE
@@ -20,12 +20,6 @@ def has_openmp() -> bool:
     return _gosscpp.has_openmp()
 
 
-meta = metadata("pygoss")
-__version__ = meta["Version"]
-__author__ = meta["Author"]
-__license__ = meta["License"]
-
-
 __all__ = [
     "codegeneration",
     "jit",
@@ -34,6 +28,7 @@ __all__ = [
     "ODESystemSolver",
     "ParameterizedODE",
     "cli",
+    "__version__",
 ]
 
 # If dolfin is present import it

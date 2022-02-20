@@ -1,45 +1,28 @@
-# Copyright (C) 2012 Johan Hake
-#
-# This file is part of GOSS.
-#
-# GOSS is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# GOSS is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with GOSS. If not, see <http://www.gnu.org/licenses/>.
+from __future__ import annotations
 
-__all__ = ["GossCodeGenerator"]
-
-# Model parameter imports
-from modelparameters.parameterdict import ParameterDict
-from modelparameters.parameters import Param
 import hashlib
+from enum import Enum
+from typing import Any
+
+import gotran
+from gotran.codegeneration.algorithmcomponents import factorized_jacobian_expressions
+from gotran.codegeneration.algorithmcomponents import forward_backward_subst_expressions
+from gotran.codegeneration.algorithmcomponents import jacobian_expressions
+from gotran.codegeneration.algorithmcomponents import linearized_derivatives
+from gotran.codegeneration.algorithmcomponents import monitored_expressions
+from gotran.codegeneration.algorithmcomponents import rhs_expressions
+from gotran.codegeneration.codegenerators import CppCodeGenerator
+from gotran.common.options import parameters
+from gotran.model.expressions import Expression
+from gotran.model.ode import ODE
+from modelparameters.logger import error
+from modelparameters.utils import check_arg
+from modelparameters.utils import check_kwarg
+from pydantic import BaseModel
+from pydantic import Field
 
 # Gotran imports
-import gotran
-from gotran.codegeneration.codegenerators import CppCodeGenerator
 
-from gotran.codegeneration.algorithmcomponents import (
-    rhs_expressions,
-    monitored_expressions,
-    linearized_derivatives,
-    jacobian_expressions,
-    factorized_jacobian_expressions,
-    forward_backward_subst_expressions,
-)
-
-from modelparameters.utils import check_arg, check_kwarg
-from gotran.model.ode import ODE
-from gotran.model.expressions import Expression
-from gotran.common.options import parameters
-from modelparameters.logger import error
 
 _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
 #define {MODELNAME}_H_IS_INCLUDED
@@ -168,6 +151,71 @@ _class_form = dict(
 )
 
 
+class StateRepr(Enum):
+    named = "named"
+    array = "array"
+
+
+class BodyRepr(Enum):
+    named = "named"
+    array = "array"
+    reused_array = "reused_array"
+
+
+class OptimizeExprs(Enum):
+    none = "none"
+    numerals = "numerals"
+    numerals_symbols = "numerals_symbols"
+
+
+class GossCodeGeneratorParameters(BaseModel):
+    state_repr: StateRepr = Field(
+        StateRepr.named,
+        description="Representation of the state",
+    )
+    body_repr: BodyRepr = BodyRepr.named
+    use_cse: bool = False
+    generate_forward_backward_subst: bool = False
+    generate_jacobian: bool = False
+    generate_lu_factorization: bool = False
+    optimize_exprs: OptimizeExprs = OptimizeExprs.none
+
+    def update(self, params):
+        # Hack to make this mimic the ParameterDict
+        params = params or {}
+        self.__init__(**params)
+
+    @classmethod
+    def print_defaults(cls):
+        from rich.console import Console
+        from rich.table import Table
+
+        schema = cls.schema(ref_template="{model}")
+
+        table = Table(title=schema["title"])
+        table.add_column("Parameters", justify="right", style="cyan", no_wrap=True)
+        table.add_column("Default value", style="magenta")
+        table.add_column("Type", style="yellow")
+        table.add_column("Description", style="green")
+
+        for k, v in schema["properties"].items():
+
+            t = ""
+            if "type" in v:
+                t = v["type"]
+            if "allOf" in v:
+                # Get member names of enum
+                t = "|".join(eval(v["allOf"][0]["$ref"])._member_names_)
+
+            desc = ""
+            if "description" in v:
+                desc = v["description"]
+
+            table.add_row(k, repr(v["default"]), t, desc)
+        console = Console()
+        console.print(table)
+
+
 class GossCodeGenerator(CppCodeGenerator):
     """
     Class for generating an implementation of a goss ODE
@@ -175,41 +223,16 @@ class GossCodeGenerator(CppCodeGenerator):
 
     @staticmethod
     def default_parameters():
-        default_params = parameters.generation.code.copy()
-        state_repr = dict.__getitem__(default_params.states, "representation")
-        body_repr = dict.__getitem__(default_params.body, "representation")
-        use_cse = dict.__getitem__(default_params.body, "use_cse")
-        optimize_exprs = dict.__getitem__(default_params.body, "optimize_exprs")
-        return ParameterDict(
-            state_repr=state_repr.copy(),
-            body_repr=body_repr.copy(),
-            use_cse=use_cse.copy(),
-            optimize_exprs=optimize_exprs.copy(),
-            generate_jacobian=Param(
-                False,
-                description="Generate analytic jacobian " "when integrating.",
-            ),
-            generate_lu_factorization=Param(
-                False,
-                description="Generate analytic lu"
-                "factorization of jacobian when integrating.",
-            ),
-            generate_forward_backward_subst=Param(
-                False,
-                description="Generate analytic forward"
-                "backward substituion of factorized jacobian when "
-                "integrating.",
-            ),
-        )
+        return GossCodeGeneratorParameters()
 
     def __init__(
         self,
         ode,
-        field_states=None,
-        field_parameters=None,
-        monitored=None,
-        code_params=None,
-        add_signature_to_name=False,
+        field_states: list[str] = None,
+        field_parameters: list[str] = None,
+        monitored: list[str] = None,
+        code_params: dict[str, Any] = None,
+        add_signature_to_name: bool = False,
     ):
         """
         A class for generating a C++ subclass of a goss::ODEParameterized
@@ -240,25 +263,13 @@ class GossCodeGenerator(CppCodeGenerator):
         check_kwarg(monitored, "monitored", (list, tuple), itemtypes=str)
         check_kwarg(code_params, "code_params", dict)
 
-        state_strs = [state.name for state in ode.full_states]
-        for state_str in field_states:
-            if state_str not in state_strs:
-                error("{0} is not a state in the {1} ODE".format(state_str, ode))
+        self.ode = ode
+        self.field_states = field_states
+        self.field_parameters = field_parameters
+        self.monitored = monitored
+        self._validate_input()
 
-        parameter_strs = [param.name for param in ode.parameters]
-        for parameter_str in field_parameters:
-            if parameter_str not in parameter_strs:
-                error(
-                    "{0} is not a parameter in the {1} ODE".format(parameter_str, ode),
-                )
-
-        for expr_str in monitored:
-            obj = ode.present_ode_objects.get(expr_str)
-            if not isinstance(obj, Expression):
-                error("{0} is not an expression in the {1} ODE".format(expr_str, ode))
-
-        params = GossCodeGenerator.default_parameters()
-        params.update(code_params)
+        params = GossCodeGeneratorParameters(**code_params)
 
         # Get a whole set of gotran code parameters and update with goss
         # specific options
@@ -271,14 +282,13 @@ class GossCodeGenerator(CppCodeGenerator):
         generation_params.code.array.flatten = True
 
         generation_params.code.parameters.representation = "named"
-
-        generation_params.code.states.representation = params.state_repr
+        generation_params.code.states.representation = params.state_repr.value
         generation_params.code.states.array_name = "states"
 
         generation_params.code.body.array_name = "body"
-        generation_params.code.body.representation = params.body_repr
+        generation_params.code.body.representation = params.body_repr.value
         generation_params.code.body.use_cse = params.use_cse
-        generation_params.code.body.optimize_exprs = params.optimize_exprs
+        generation_params.code.body.optimize_exprs = params.optimize_exprs.value
         generation_params.functions.jacobian.generate = params.generate_jacobian
         generation_params.functions.lu_factorization.generate = (
             params.generate_lu_factorization
@@ -288,19 +298,14 @@ class GossCodeGenerator(CppCodeGenerator):
         )
 
         # Init base class
-        super(GossCodeGenerator, self).__init__()
+        super().__init__()
 
         # Store attributes
         self.params = generation_params
         self.file_form = _file_form.copy()
         self.class_form = _class_form.copy()
-        name = ode.name
 
-        self.name = (
-            name
-            if name[0].isupper()
-            else name[0].upper() + (name[1:] if len(name) > 1 else "")
-        )
+        self.name = ode.name.capitalize()
 
         if add_signature_to_name:
             signature = hashlib.sha1(
@@ -315,23 +320,37 @@ class GossCodeGenerator(CppCodeGenerator):
             ).hexdigest()
             self.name += "_" + signature
 
-        self.ode = ode
-        self.field_states = field_states
-        self.field_parameters = field_parameters
-        self.monitored = monitored
+        self._initialize_forms()
 
+    def _initialize_forms(self):
         # Fill the forms with content
         self.file_form["MODELNAME"] = self.name.upper()
         self.class_form["ModelName"] = self.name
-        self.class_form["num_states"] = ode.num_full_states
-        self.class_form["num_parameters"] = ode.num_parameters
-        self.class_form["num_field_states"] = len(field_states)
-        self.class_form["num_field_parameters"] = len(field_parameters)
-        self.class_form["num_monitored"] = len(monitored)
+        self.class_form["num_states"] = self.ode.num_full_states
+        self.class_form["num_parameters"] = self.ode.num_parameters
+        self.class_form["num_field_states"] = len(self.field_states)
+        self.class_form["num_field_parameters"] = len(self.field_parameters)
+        self.class_form["num_monitored"] = len(self.monitored)
         self.class_form["monitored_evaluation_code"] = (
-            _no_monitored_snippet.format(ode.name.capitalize()) + "\n"
+            _no_monitored_snippet.format(self.ode.name.capitalize()) + "\n"
         )
         self._code_generated = False
+
+    def _validate_input(self):
+        state_strs = [state.name for state in self.ode.full_states]
+        for state_str in self.field_states:
+            if state_str not in state_strs:
+                error("{state_std} is not a state in the {self.ode} ODE")
+
+        parameter_strs = [param.name for param in self.ode.parameters]
+        for parameter_str in self.field_parameters:
+            if parameter_str not in parameter_strs:
+                error(f"{parameter_str} is not a parameter in the {self.ode} ODE")
+
+        for expr_str in self.monitored:
+            obj = self.ode.present_ode_objects.get(expr_str)
+            if not isinstance(obj, Expression):
+                error(f"{expr_str} is not an expression in the {self.ode} ODE")
 
     def class_code(self):
         """
