@@ -25,6 +25,7 @@ setup(
         "modelparameters",
         "gotran",
         "rich-click",
+        "pydantic",
         "cppyy",
         "importlib-metadata;python_version<'3.8'",
     ],
