@@ -77,13 +77,32 @@ def entity_to_dofs(V):
 class DOLFINParameterizedODE(ParameterizedODE):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.field_params: dict[KeyType, dolfin.Function] = {}
-        self.changed_scalar_parameters: dict[KeyType, float] = {}
-        self.changed_field_parameters: list[KeyType] = []
+        self.field_params: dict[KeyType, dolfin.Function] = kwargs.get(
+            "field_params",
+            {},
+        )
+        self.changed_scalar_parameters: dict[KeyType, float] = kwargs.get(
+            "changed_scalar_parameters",
+            {},
+        )
+        self.changed_field_parameters: list[KeyType] = kwargs.get(
+            "changed_field_parameters",
+            [],
+        )
 
     @classmethod
     def from_ode(cls, ode: ParameterizedODE):
-        return cls(ode._cpp_object)
+        if isinstance(ode, DOLFINParameterizedODE):
+            return ode
+        field_params = getattr(ode, "field_params", {})
+        changed_scalar_parameters = getattr(ode, "changed_scalar_parameters", {})
+        changed_field_parameters = getattr(ode, "changed_field_parameters", [])
+        return cls(
+            ode._cpp_object,
+            field_params=field_params,
+            changed_scalar_parameters=changed_scalar_parameters,
+            changed_field_parameters=changed_field_parameters,
+        )
 
     def num_states(self):
         # Make compatible with cbcbeat
@@ -161,6 +180,7 @@ def setup_dofs(
     if distinct_domains is None:
         distinct_domains = [0]
         if domains is not None:
+            check_domains_dim(domains, family)
             distinct_domains = list(sorted(set(domains.array())))
     # Create dof storage for the dolfin function
 
@@ -280,8 +300,18 @@ def setup_dofs(
     )
 
 
+def check_domains_dim(domains, family):
+    top_dim = top_dim = domains.mesh().topology().dim()
+    expected_dim = 0 if family == "Lagrange" else top_dim
+    assert domains.dim() == expected_dim, (
+        "expected a domain to be a "
+        f"MeshFunction of topological dimension {expected_dim} "
+        f"for space with family {family}, got {domains.dim()}"
+    )
+
+
 def check_domains(domains, odes, mesh, space) -> list[int]:
-    top_dim = mesh.topology().dim()
+
     family, degree = family_and_degree_from_str(space)
 
     assert isinstance(domains, dolfin.cpp.mesh.MeshFunctionSizet), (
@@ -289,14 +319,7 @@ def check_domains(domains, odes, mesh, space) -> list[int]:
         "MeshFunction as the domains argument when more than "
         "1 ODE is given"
     )
-    expected_dim = 0 if family == "Lagrange" else top_dim
-    assert domains.dim() == expected_dim, (
-        "expected a domain to be a "
-        "MeshFunction of topological dimension {} for {} space".format(
-            expected_dim,
-            space,
-        )
-    )
+    check_domains_dim(domains, family)
 
     # Check given domains
     distinct_domains = list(sorted(set(domains.array())))
@@ -449,7 +472,7 @@ class DOLFINODESystemSolver:
             if len(ode.field_params) > 0:
 
                 # function space of parameter Function
-                V_param = ode.field_params.values()[0].function_space()
+                V_param = first_value(ode.field_params).function_space()
 
                 assert (
                     V_param.ufl_element().family() == family
@@ -466,9 +489,9 @@ class DOLFINODESystemSolver:
                 mesh_entity_to_dof_param = entity_to_dofs(V_param)
 
                 # Get dofs local to geometric domain
-                dofs = mesh_entity_to_dof_param[dofs.mesh_entities[label]]
-                dofs = dofs[(0 <= dofs) * (dofs < num_local_param_dofs)]
-                self._field_params_dofs[label] = dofs
+                _dofs = mesh_entity_to_dof_param[dofs.mesh_entities[label]]
+                _dofs = _dofs[(0 <= _dofs) * (_dofs < num_local_param_dofs)]
+                self._field_params_dofs[label] = _dofs
 
             # Init memory for setting field_parameters
             self._param_values[label] = np.zeros(
