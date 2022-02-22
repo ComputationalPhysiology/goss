@@ -14,7 +14,8 @@ namespace goss {
   public:
 
     // Constructor
-    Oscilator() : ParameterizedODE(2, 0, 2, 0, 0)
+    Oscilator() : ParameterizedODE(2, 2, 0, 0, 0),
+      a(1.0), b(1.0)
 
     {
 
@@ -22,20 +23,21 @@ namespace goss {
       _state_names[0] = "x";
       _state_names[1] = "y";
 
-      // Field state names
-      _field_state_names[0] = "x";
-      _field_state_names[1] = "y";
+      // Parameter names
+      _parameter_names[0] = "a";
+      _parameter_names[1] = "b";
 
-      // Field state indices
-      _field_state_indices[0] = 0;
-      _field_state_indices[1] = 1;
+      // Parameter to value map
+      _param_to_value["a"] = &a;
+      _param_to_value["b"] = &b;
 
 
 
     }
 
     // Copy constructor
-    Oscilator(const Oscilator& ode) : ParameterizedODE(ode)
+    Oscilator(const Oscilator& ode) : ParameterizedODE(ode),
+      a(ode.a), b(ode.b)
     {
       // Do nothing
     }
@@ -51,8 +53,8 @@ namespace goss {
       const double y = states[1];
 
       // Expressions for the oscilator component
-      values[0] = -y;
-      values[1] = x;
+      values[0] = -a*y;
+      values[1] = b*x;
     }
 
 
@@ -69,8 +71,8 @@ namespace goss {
       const double y = states[1];
 
       // Expressions for the oscilator component
-      rhs[0] = -y;
-      rhs[1] = x;
+      rhs[0] = -a*y;
+      rhs[1] = b*x;
 
       // Return if only linear
       if (only_linear)
@@ -104,7 +106,7 @@ namespace goss {
           const double y = states[1];
 
           // Expressions for the oscilator component
-          dy_comp[0] = -y;
+          dy_comp[0] = -a*y;
           break;
         }
 
@@ -116,7 +118,7 @@ namespace goss {
           const double x = states[0];
 
           // Expressions for the oscilator component
-          dy_comp[0] = x;
+          dy_comp[0] = b*x;
           break;
         }
 
@@ -167,12 +169,14 @@ namespace goss {
 
   private:
 
+    // Parameters
+    double a, b;
 
   };
 
 }
 
-extern "C" DLL_EXPORT goss::ParameterizedODE * create_ODE()
+extern "C" DLL_EXPORT goss::ParameterizedODE * create_Oscilator()
 {
   return new goss::Oscilator;
 }

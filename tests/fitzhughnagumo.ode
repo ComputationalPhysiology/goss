@@ -21,6 +21,8 @@ parameters(a=0.13,
 # Intermediates
 V_amp = V_peak - V_rest
 V_th = V_rest + a*V_amp
+p_42 = 42.0
+p_V = V
 
 I = (c_1/(V_amp**2)*(V - V_rest)*(V - V_th)*(V_peak - V)
      - c_2/(V_amp)*(V - V_rest)*s)

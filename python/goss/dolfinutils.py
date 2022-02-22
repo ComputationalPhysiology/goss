@@ -290,11 +290,12 @@ def check_domains(domains, odes, mesh, space) -> list[int]:
         "1 ODE is given"
     )
     expected_dim = 0 if family == "Lagrange" else top_dim
-    assert (
-        domains.dim() == expected_dim
-    ), "expected a domain to be a " "MeshFunction of topological dimension {} for {} space".format(
-        expected_dim,
-        space,
+    assert domains.dim() == expected_dim, (
+        "expected a domain to be a "
+        "MeshFunction of topological dimension {} for {} space".format(
+            expected_dim,
+            space,
+        )
     )
 
     # Check given domains
