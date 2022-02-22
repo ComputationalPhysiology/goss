@@ -52,6 +52,13 @@ CodeParams = CodeParamsType()
 @click.group()
 @click.version_option(__version__, prog_name="goss")
 def app():
+    """
+    goss - General ODE System Solver
+
+    goss is a library for solving ODEs using the
+    gotran ode format. It is written in C++ but
+    contains python bindings.
+    """
     pass
 
 

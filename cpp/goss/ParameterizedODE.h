@@ -95,7 +95,7 @@ class ParameterizedODE : public ODE
     {
         ulong i, j;
         double ti;
-        for (i = 1; i <= num_timesteps; i++) {
+        for (i = 0; i < num_timesteps; i++) {
             ti = t[i];
             eval_monitored(states + i * num_states(), ti, m);
             for (j = 0; j < num_monitored(); j++) {

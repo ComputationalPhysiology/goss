@@ -80,6 +80,21 @@ def test_is_dae(oscilator):
     assert oscilator.is_dae is False
 
 
+def test_monitored_values(fitzhughnagumo_ode):
+    ode = goss.ParameterizedODE(fitzhughnagumo_ode, monitored=["p_42", "p_V"])
+    ic = ode.get_ic()
+    num_time_steps = 3
+    states = np.zeros((num_time_steps, ode.num_states))
+    for i in range(num_time_steps):
+        states[i, :] = ic
+    time = np.arange(num_time_steps)
+    m = ode.monitored_values(states, time)
+
+    assert m.shape == (num_time_steps, 2)
+    assert np.allclose(m[:, 0], 42)
+    assert np.allclose(m[:, 1], ic[0])
+
+
 @pytest.mark.parametrize("only_linear", [True, False])
 def test_linearized_rhs_only_linear_True(oscilator, only_linear):
 
