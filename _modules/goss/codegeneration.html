@@ -175,48 +175,31 @@
               <div>
                 
   <h1>Source code for goss.codegeneration</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2012 Johan Hake</span>
-<span class="c1">#</span>
-<span class="c1"># This file is part of GOSS.</span>
-<span class="c1">#</span>
-<span class="c1"># GOSS is free software: you can redistribute it and/or modify</span>
-<span class="c1"># it under the terms of the GNU Lesser General Public License as published by</span>
-<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c1"># (at your option) any later version.</span>
-<span class="c1">#</span>
-<span class="c1"># GOSS is distributed in the hope that it will be useful,</span>
-<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span>
-<span class="c1"># GNU Lesser General Public License for more details.</span>
-<span class="c1">#</span>
-<span class="c1"># You should have received a copy of the GNU Lesser General Public License</span>
-<span class="c1"># along with GOSS. If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GossCodeGenerator&quot;</span><span class="p">]</span>
-
-<span class="c1"># Model parameter imports</span>
-<span class="kn">from</span> <span class="nn">modelparameters.parameterdict</span> <span class="kn">import</span> <span class="n">ParameterDict</span>
-<span class="kn">from</span> <span class="nn">modelparameters.parameters</span> <span class="kn">import</span> <span class="n">Param</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">gotran</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">factorized_jacobian_expressions</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">forward_backward_subst_expressions</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">jacobian_expressions</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">linearized_derivatives</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">monitored_expressions</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="n">rhs_expressions</span>
+<span class="kn">from</span> <span class="nn">gotran.codegeneration.codegenerators</span> <span class="kn">import</span> <span class="n">CppCodeGenerator</span>
+<span class="kn">from</span> <span class="nn">gotran.common.options</span> <span class="kn">import</span> <span class="n">parameters</span>
+<span class="kn">from</span> <span class="nn">gotran.model.expressions</span> <span class="kn">import</span> <span class="n">Expression</span>
+<span class="kn">from</span> <span class="nn">gotran.model.ode</span> <span class="kn">import</span> <span class="n">ODE</span>
+<span class="kn">from</span> <span class="nn">modelparameters.logger</span> <span class="kn">import</span> <span class="n">error</span>
+<span class="kn">from</span> <span class="nn">modelparameters.utils</span> <span class="kn">import</span> <span class="n">check_arg</span>
+<span class="kn">from</span> <span class="nn">modelparameters.utils</span> <span class="kn">import</span> <span class="n">check_kwarg</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
 
 <span class="c1"># Gotran imports</span>
-<span class="kn">import</span> <span class="nn">gotran</span>
-<span class="kn">from</span> <span class="nn">gotran.codegeneration.codegenerators</span> <span class="kn">import</span> <span class="n">CppCodeGenerator</span>
 
-<span class="kn">from</span> <span class="nn">gotran.codegeneration.algorithmcomponents</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">rhs_expressions</span><span class="p">,</span>
-    <span class="n">monitored_expressions</span><span class="p">,</span>
-    <span class="n">linearized_derivatives</span><span class="p">,</span>
-    <span class="n">jacobian_expressions</span><span class="p">,</span>
-    <span class="n">factorized_jacobian_expressions</span><span class="p">,</span>
-    <span class="n">forward_backward_subst_expressions</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">modelparameters.utils</span> <span class="kn">import</span> <span class="n">check_arg</span><span class="p">,</span> <span class="n">check_kwarg</span>
-<span class="kn">from</span> <span class="nn">gotran.model.ode</span> <span class="kn">import</span> <span class="n">ODE</span>
-<span class="kn">from</span> <span class="nn">gotran.model.expressions</span> <span class="kn">import</span> <span class="n">Expression</span>
-<span class="kn">from</span> <span class="nn">gotran.common.options</span> <span class="kn">import</span> <span class="n">parameters</span>
-<span class="kn">from</span> <span class="nn">modelparameters.logger</span> <span class="kn">import</span> <span class="n">error</span>
 
 <span class="n">_file_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;#ifndef </span><span class="si">{MODELNAME}</span><span class="s2">_H_IS_INCLUDED</span>
 <span class="s2">#define </span><span class="si">{MODELNAME}</span><span class="s2">_H_IS_INCLUDED</span>
@@ -345,6 +328,81 @@
 <span class="p">)</span>
 
 
+<div class="viewcode-block" id="StateRepr"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.StateRepr">[docs]</a><span class="k">class</span> <span class="nc">StateRepr</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">named</span> <span class="o">=</span> <span class="s2">&quot;named&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="s2">&quot;array&quot;</span></div>
+
+
+<div class="viewcode-block" id="BodyRepr"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.BodyRepr">[docs]</a><span class="k">class</span> <span class="nc">BodyRepr</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">named</span> <span class="o">=</span> <span class="s2">&quot;named&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="s2">&quot;array&quot;</span>
+    <span class="n">reused_array</span> <span class="o">=</span> <span class="s2">&quot;reused_array&quot;</span></div>
+
+
+<div class="viewcode-block" id="OptimizeExprs"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.OptimizeExprs">[docs]</a><span class="k">class</span> <span class="nc">OptimizeExprs</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">none</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+    <span class="n">numerals</span> <span class="o">=</span> <span class="s2">&quot;numerals&quot;</span>
+    <span class="n">numerals_symbols</span> <span class="o">=</span> <span class="s2">&quot;numerals_symbols&quot;</span></div>
+
+
+<div class="viewcode-block" id="GossCodeGeneratorParameters"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGeneratorParameters">[docs]</a><span class="k">class</span> <span class="nc">GossCodeGeneratorParameters</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">state_repr</span><span class="p">:</span> <span class="n">StateRepr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">StateRepr</span><span class="o">.</span><span class="n">named</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Representation of the state&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">StateRepr</span><span class="o">.</span><span class="n">_member_names_</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">body_repr</span><span class="p">:</span> <span class="n">BodyRepr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">BodyRepr</span><span class="o">.</span><span class="n">named</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Representation of the body&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BodyRepr</span><span class="o">.</span><span class="n">_member_names_</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">use_cse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use sympy cse to optimize common sub expressions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">generate_forward_backward_subst</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate forward backward substitions for a factorized jacobian&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">generate_jacobian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate Jacobian matrix&quot;</span><span class="p">)</span>
+    <span class="n">generate_lu_factorization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Geneate Lu factorization&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">optimize_exprs</span><span class="p">:</span> <span class="n">OptimizeExprs</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">OptimizeExprs</span><span class="o">.</span><span class="n">none</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optimize expressions&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OptimizeExprs</span><span class="o">.</span><span class="n">_member_names_</span><span class="p">),</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="GossCodeGeneratorParameters.update"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGeneratorParameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="c1"># Hack to make this mimic the ParameterDict</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GossCodeGeneratorParameters.print_defaults"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGeneratorParameters.print_defaults">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">print_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
+        <span class="n">schema</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">ref_template</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">schema</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Parameters&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Default value&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]),</span> <span class="n">t</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="GossCodeGenerator"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGenerator">[docs]</a><span class="k">class</span> <span class="nc">GossCodeGenerator</span><span class="p">(</span><span class="n">CppCodeGenerator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for generating an implementation of a goss ODE</span>
@@ -352,41 +410,16 @@
 
 <div class="viewcode-block" id="GossCodeGenerator.default_parameters"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGenerator.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">():</span>
-        <span class="n">default_params</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">generation</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">state_repr</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">default_params</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="s2">&quot;representation&quot;</span><span class="p">)</span>
-        <span class="n">body_repr</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">default_params</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;representation&quot;</span><span class="p">)</span>
-        <span class="n">use_cse</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">default_params</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;use_cse&quot;</span><span class="p">)</span>
-        <span class="n">optimize_exprs</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">default_params</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;optimize_exprs&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ParameterDict</span><span class="p">(</span>
-            <span class="n">state_repr</span><span class="o">=</span><span class="n">state_repr</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-            <span class="n">body_repr</span><span class="o">=</span><span class="n">body_repr</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-            <span class="n">use_cse</span><span class="o">=</span><span class="n">use_cse</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-            <span class="n">optimize_exprs</span><span class="o">=</span><span class="n">optimize_exprs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-            <span class="n">generate_jacobian</span><span class="o">=</span><span class="n">Param</span><span class="p">(</span>
-                <span class="kc">False</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate analytic jacobian &quot;</span> <span class="s2">&quot;when integrating.&quot;</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">generate_lu_factorization</span><span class="o">=</span><span class="n">Param</span><span class="p">(</span>
-                <span class="kc">False</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate analytic lu&quot;</span>
-                <span class="s2">&quot;factorization of jacobian when integrating.&quot;</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">generate_forward_backward_subst</span><span class="o">=</span><span class="n">Param</span><span class="p">(</span>
-                <span class="kc">False</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate analytic forward&quot;</span>
-                <span class="s2">&quot;backward substituion of factorized jacobian when &quot;</span>
-                <span class="s2">&quot;integrating.&quot;</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GossCodeGeneratorParameters</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ode</span><span class="p">,</span>
-        <span class="n">field_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">field_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">monitored</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">code_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">add_signature_to_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">field_states</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">field_parameters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">monitored</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">code_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_signature_to_name</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A class for generating a C++ subclass of a goss::ODEParameterized</span>
@@ -417,25 +450,13 @@
         <span class="n">check_kwarg</span><span class="p">(</span><span class="n">monitored</span><span class="p">,</span> <span class="s2">&quot;monitored&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span> <span class="n">itemtypes</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">check_kwarg</span><span class="p">(</span><span class="n">code_params</span><span class="p">,</span> <span class="s2">&quot;code_params&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
 
-        <span class="n">state_strs</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">full_states</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">state_str</span> <span class="ow">in</span> <span class="n">field_states</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">state_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_strs</span><span class="p">:</span>
-                <span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a state in the </span><span class="si">{1}</span><span class="s2"> ODE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state_str</span><span class="p">,</span> <span class="n">ode</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode</span> <span class="o">=</span> <span class="n">ode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_states</span> <span class="o">=</span> <span class="n">field_states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_parameters</span> <span class="o">=</span> <span class="n">field_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">monitored</span> <span class="o">=</span> <span class="n">monitored</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">()</span>
 
-        <span class="n">parameter_strs</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">parameters</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">parameter_str</span> <span class="ow">in</span> <span class="n">field_parameters</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">parameter_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_strs</span><span class="p">:</span>
-                <span class="n">error</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a parameter in the </span><span class="si">{1}</span><span class="s2"> ODE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter_str</span><span class="p">,</span> <span class="n">ode</span><span class="p">),</span>
-                <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">expr_str</span> <span class="ow">in</span> <span class="n">monitored</span><span class="p">:</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">present_ode_objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">expr_str</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Expression</span><span class="p">):</span>
-                <span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an expression in the </span><span class="si">{1}</span><span class="s2"> ODE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expr_str</span><span class="p">,</span> <span class="n">ode</span><span class="p">))</span>
-
-        <span class="n">params</span> <span class="o">=</span> <span class="n">GossCodeGenerator</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">code_params</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">GossCodeGeneratorParameters</span><span class="p">(</span><span class="o">**</span><span class="n">code_params</span><span class="p">)</span>
 
         <span class="c1"># Get a whole set of gotran code parameters and update with goss</span>
         <span class="c1"># specific options</span>
@@ -448,14 +469,13 @@
         <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">flatten</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="s2">&quot;named&quot;</span>
-
-        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">state_repr</span>
+        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">state_repr</span><span class="o">.</span><span class="n">value</span>
         <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">array_name</span> <span class="o">=</span> <span class="s2">&quot;states&quot;</span>
 
         <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">array_name</span> <span class="o">=</span> <span class="s2">&quot;body&quot;</span>
-        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">body_repr</span>
+        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">body_repr</span><span class="o">.</span><span class="n">value</span>
         <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">use_cse</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">use_cse</span>
-        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">optimize_exprs</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">optimize_exprs</span>
+        <span class="n">generation_params</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">optimize_exprs</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">optimize_exprs</span><span class="o">.</span><span class="n">value</span>
         <span class="n">generation_params</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">jacobian</span><span class="o">.</span><span class="n">generate</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">generate_jacobian</span>
         <span class="n">generation_params</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">lu_factorization</span><span class="o">.</span><span class="n">generate</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">params</span><span class="o">.</span><span class="n">generate_lu_factorization</span>
@@ -465,19 +485,14 @@
         <span class="p">)</span>
 
         <span class="c1"># Init base class</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GossCodeGenerator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># Store attributes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">generation_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_form</span> <span class="o">=</span> <span class="n">_file_form</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span> <span class="o">=</span> <span class="n">_class_form</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">name</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">name</span>
-            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span>
-            <span class="k">else</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">add_signature_to_name</span><span class="p">:</span>
             <span class="n">signature</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span>
@@ -492,23 +507,37 @@
             <span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">signature</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ode</span> <span class="o">=</span> <span class="n">ode</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">field_states</span> <span class="o">=</span> <span class="n">field_states</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">field_parameters</span> <span class="o">=</span> <span class="n">field_parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitored</span> <span class="o">=</span> <span class="n">monitored</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_forms</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">_initialize_forms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Fill the forms with content</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_form</span><span class="p">[</span><span class="s2">&quot;MODELNAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;ModelName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_full_states</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_field_states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_states</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_field_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_parameters</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_monitored&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">monitored</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">num_full_states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">num_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_field_states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_states</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_field_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;num_monitored&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">monitored</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;monitored_evaluation_code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">_no_monitored_snippet</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">_no_monitored_snippet</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_code_generated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_validate_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state_strs</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">full_states</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">state_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_states</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">state_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_strs</span><span class="p">:</span>
+                <span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{state_std}</span><span class="s2"> is not a state in the </span><span class="si">{self.ode}</span><span class="s2"> ODE&quot;</span><span class="p">)</span>
+
+        <span class="n">parameter_strs</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">parameters</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">parameter_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parameter_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_strs</span><span class="p">:</span>
+                <span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parameter_str</span><span class="si">}</span><span class="s2"> is not a parameter in the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="si">}</span><span class="s2"> ODE&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">expr_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitored</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">present_ode_objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">expr_str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Expression</span><span class="p">):</span>
+                <span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expr_str</span><span class="si">}</span><span class="s2"> is not an expression in the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="si">}</span><span class="s2"> ODE&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GossCodeGenerator.class_code"><a class="viewcode-back" href="../../goss.html#goss.codegeneration.GossCodeGenerator.class_code">[docs]</a>    <span class="k">def</span> <span class="nf">class_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

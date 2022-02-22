@@ -257,29 +257,53 @@
 </div>
 <div class="section" id="module-goss.cli">
 <span id="goss-cli-module"></span><h2>goss.cli module<a class="headerlink" href="#module-goss.cli" title="Permalink to this headline">¶</a></h2>
-<p>GOSS - General ODE solver</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="goss.cli.gotran2goss">
-<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">gotran2goss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename:</span> <span class="pre">pathlib.Path</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters:</span> <span class="pre">Optional[List[str]]</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states:</span> <span class="pre">Optional[List[str]]</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored:</span> <span class="pre">Optional[List[str]]</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_timings:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#gotran2goss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.gotran2goss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a c header file from a gotran model</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.cli.CodeParamsType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">CodeParamsType</span></span><a class="reference internal" href="_modules/goss/cli.html#CodeParamsType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.CodeParamsType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">click.types.ParamType</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.cli.CodeParamsType.convert">
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#CodeParamsType.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.CodeParamsType.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the value.  This is not invoked for values that are
+<cite>None</cite> (the missing value).</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="goss.cli.run">
-<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename:</span> <span class="pre">pathlib.Path</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver:</span> <span class="pre">goss.solvers.GOSSSolvers</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_y:</span> <span class="pre">List[str]</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_x:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.cli.CodeParamsType.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'code-params'</span></em><a class="headerlink" href="#goss.cli.CodeParamsType.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>the descriptive name of this type</p>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="goss.cli.solvers">
-<span class="sig-prename descclassname"><span class="pre">goss.cli.</span></span><span class="sig-name descname"><span class="pre">solvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_solvers:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/cli.html#solvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.cli.solvers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-goss.codegeneration">
 <span id="goss-codegeneration-module"></span><h2>goss.codegeneration module<a class="headerlink" href="#module-goss.codegeneration" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="goss.codegeneration.BodyRepr">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">BodyRepr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#BodyRepr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.BodyRepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.BodyRepr.array">
+<span class="sig-name descname"><span class="pre">array</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'array'</span></em><a class="headerlink" href="#goss.codegeneration.BodyRepr.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.BodyRepr.named">
+<span class="sig-name descname"><span class="pre">named</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'named'</span></em><a class="headerlink" href="#goss.codegeneration.BodyRepr.named" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.BodyRepr.reused_array">
+<span class="sig-name descname"><span class="pre">reused_array</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'reused_array'</span></em><a class="headerlink" href="#goss.codegeneration.BodyRepr.reused_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="goss.codegeneration.GossCodeGenerator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">GossCodeGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_signature_to_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">GossCodeGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_signature_to_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gotran.codegeneration.codegenerators.CppCodeGenerator</span></code></p>
 <p>Class for generating an implementation of a goss ODE</p>
 <dl class="py method">
@@ -298,6 +322,96 @@
 <span class="sig-name descname"><span class="pre">file_code</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGenerator.file_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGenerator.file_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate the goss file code</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">GossCodeGeneratorParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goss.codegeneration.StateRepr" title="goss.codegeneration.StateRepr"><span class="pre">goss.codegeneration.StateRepr</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">StateRepr.named</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goss.codegeneration.BodyRepr" title="goss.codegeneration.BodyRepr"><span class="pre">goss.codegeneration.BodyRepr</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">BodyRepr.named</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_forward_backward_subst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_jacobian</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_lu_factorization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_exprs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goss.codegeneration.OptimizeExprs" title="goss.codegeneration.OptimizeExprs"><span class="pre">goss.codegeneration.OptimizeExprs</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">OptimizeExprs.none</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGeneratorParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.body_repr">
+<span class="sig-name descname"><span class="pre">body_repr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#goss.codegeneration.BodyRepr" title="goss.codegeneration.BodyRepr"><span class="pre">goss.codegeneration.BodyRepr</span></a></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.body_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.generate_forward_backward_subst">
+<span class="sig-name descname"><span class="pre">generate_forward_backward_subst</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.generate_forward_backward_subst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.generate_jacobian">
+<span class="sig-name descname"><span class="pre">generate_jacobian</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.generate_jacobian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.generate_lu_factorization">
+<span class="sig-name descname"><span class="pre">generate_lu_factorization</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.generate_lu_factorization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.optimize_exprs">
+<span class="sig-name descname"><span class="pre">optimize_exprs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#goss.codegeneration.OptimizeExprs" title="goss.codegeneration.OptimizeExprs"><span class="pre">goss.codegeneration.OptimizeExprs</span></a></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.optimize_exprs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.print_defaults">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_defaults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGeneratorParameters.print_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.print_defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.state_repr">
+<span class="sig-name descname"><span class="pre">state_repr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#goss.codegeneration.StateRepr" title="goss.codegeneration.StateRepr"><span class="pre">goss.codegeneration.StateRepr</span></a></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.state_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#GossCodeGeneratorParameters.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.GossCodeGeneratorParameters.use_cse">
+<span class="sig-name descname"><span class="pre">use_cse</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#goss.codegeneration.GossCodeGeneratorParameters.use_cse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.codegeneration.OptimizeExprs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">OptimizeExprs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#OptimizeExprs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.OptimizeExprs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.OptimizeExprs.none">
+<span class="sig-name descname"><span class="pre">none</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#goss.codegeneration.OptimizeExprs.none" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.OptimizeExprs.numerals">
+<span class="sig-name descname"><span class="pre">numerals</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'numerals'</span></em><a class="headerlink" href="#goss.codegeneration.OptimizeExprs.numerals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.OptimizeExprs.numerals_symbols">
+<span class="sig-name descname"><span class="pre">numerals_symbols</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'numerals_symbols'</span></em><a class="headerlink" href="#goss.codegeneration.OptimizeExprs.numerals_symbols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.codegeneration.StateRepr">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.codegeneration.</span></span><span class="sig-name descname"><span class="pre">StateRepr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/codegeneration.html#StateRepr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.codegeneration.StateRepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.StateRepr.array">
+<span class="sig-name descname"><span class="pre">array</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'array'</span></em><a class="headerlink" href="#goss.codegeneration.StateRepr.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.codegeneration.StateRepr.named">
+<span class="sig-name descname"><span class="pre">named</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'named'</span></em><a class="headerlink" href="#goss.codegeneration.StateRepr.named" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

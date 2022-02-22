@@ -467,11 +467,12 @@
         <span class="s2">&quot;1 ODE is given&quot;</span>
     <span class="p">)</span>
     <span class="n">expected_dim</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;Lagrange&quot;</span> <span class="k">else</span> <span class="n">top_dim</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">domains</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected_dim</span>
-    <span class="p">),</span> <span class="s2">&quot;expected a domain to be a &quot;</span> <span class="s2">&quot;MeshFunction of topological dimension </span><span class="si">{}</span><span class="s2"> for </span><span class="si">{}</span><span class="s2"> space&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">expected_dim</span><span class="p">,</span>
-        <span class="n">space</span><span class="p">,</span>
+    <span class="k">assert</span> <span class="n">domains</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected_dim</span><span class="p">,</span> <span class="p">(</span>
+        <span class="s2">&quot;expected a domain to be a &quot;</span>
+        <span class="s2">&quot;MeshFunction of topological dimension </span><span class="si">{}</span><span class="s2"> for </span><span class="si">{}</span><span class="s2"> space&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">expected_dim</span><span class="p">,</span>
+            <span class="n">space</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="p">)</span>
 
     <span class="c1"># Check given domains</span>
