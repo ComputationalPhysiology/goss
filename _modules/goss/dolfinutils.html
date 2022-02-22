@@ -254,13 +254,32 @@
 <span class="k">class</span> <span class="nc">DOLFINParameterizedODE</span><span class="p">(</span><span class="n">ParameterizedODE</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">field_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KeyType</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">changed_scalar_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KeyType</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">changed_field_parameters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KeyType</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;field_params&quot;</span><span class="p">,</span>
+            <span class="p">{},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_scalar_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KeyType</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;changed_scalar_parameters&quot;</span><span class="p">,</span>
+            <span class="p">{},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_field_parameters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyType</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;changed_field_parameters&quot;</span><span class="p">,</span>
+            <span class="p">[],</span>
+        <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_ode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ode</span><span class="p">:</span> <span class="n">ParameterizedODE</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">DOLFINParameterizedODE</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ode</span>
+        <span class="n">field_params</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="s2">&quot;field_params&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">changed_scalar_parameters</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="s2">&quot;changed_scalar_parameters&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">changed_field_parameters</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="s2">&quot;changed_field_parameters&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">ode</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span>
+            <span class="n">field_params</span><span class="o">=</span><span class="n">field_params</span><span class="p">,</span>
+            <span class="n">changed_scalar_parameters</span><span class="o">=</span><span class="n">changed_scalar_parameters</span><span class="p">,</span>
+            <span class="n">changed_field_parameters</span><span class="o">=</span><span class="n">changed_field_parameters</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">num_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Make compatible with cbcbeat</span>
@@ -338,6 +357,7 @@
     <span class="k">if</span> <span class="n">distinct_domains</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">distinct_domains</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">domains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_domains_dim</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">family</span><span class="p">)</span>
             <span class="n">distinct_domains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">domains</span><span class="o">.</span><span class="n">array</span><span class="p">())))</span>
     <span class="c1"># Create dof storage for the dolfin function</span>
 
@@ -457,8 +477,18 @@
     <span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">check_domains_dim</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">family</span><span class="p">):</span>
+    <span class="n">top_dim</span> <span class="o">=</span> <span class="n">top_dim</span> <span class="o">=</span> <span class="n">domains</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span>
+    <span class="n">expected_dim</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;Lagrange&quot;</span> <span class="k">else</span> <span class="n">top_dim</span>
+    <span class="k">assert</span> <span class="n">domains</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected_dim</span><span class="p">,</span> <span class="p">(</span>
+        <span class="s2">&quot;expected a domain to be a &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;MeshFunction of topological dimension </span><span class="si">{</span><span class="n">expected_dim</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;for space with family </span><span class="si">{</span><span class="n">family</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">domains</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">check_domains</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">odes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="n">top_dim</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span>
+
     <span class="n">family</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">family_and_degree_from_str</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">MeshFunctionSizet</span><span class="p">),</span> <span class="p">(</span>
@@ -466,14 +496,7 @@
         <span class="s2">&quot;MeshFunction as the domains argument when more than &quot;</span>
         <span class="s2">&quot;1 ODE is given&quot;</span>
     <span class="p">)</span>
-    <span class="n">expected_dim</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;Lagrange&quot;</span> <span class="k">else</span> <span class="n">top_dim</span>
-    <span class="k">assert</span> <span class="n">domains</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected_dim</span><span class="p">,</span> <span class="p">(</span>
-        <span class="s2">&quot;expected a domain to be a &quot;</span>
-        <span class="s2">&quot;MeshFunction of topological dimension </span><span class="si">{}</span><span class="s2"> for </span><span class="si">{}</span><span class="s2"> space&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">expected_dim</span><span class="p">,</span>
-            <span class="n">space</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">check_domains_dim</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">family</span><span class="p">)</span>
 
     <span class="c1"># Check given domains</span>
     <span class="n">distinct_domains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">domains</span><span class="o">.</span><span class="n">array</span><span class="p">())))</span>
@@ -626,7 +649,7 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 
                 <span class="c1"># function space of parameter Function</span>
-                <span class="n">V_param</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+                <span class="n">V_param</span> <span class="o">=</span> <span class="n">first_value</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="p">)</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
 
                 <span class="k">assert</span> <span class="p">(</span>
                     <span class="n">V_param</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">family</span><span class="p">()</span> <span class="o">==</span> <span class="n">family</span>
@@ -643,9 +666,9 @@
                 <span class="n">mesh_entity_to_dof_param</span> <span class="o">=</span> <span class="n">entity_to_dofs</span><span class="p">(</span><span class="n">V_param</span><span class="p">)</span>
 
                 <span class="c1"># Get dofs local to geometric domain</span>
-                <span class="n">dofs</span> <span class="o">=</span> <span class="n">mesh_entity_to_dof_param</span><span class="p">[</span><span class="n">dofs</span><span class="o">.</span><span class="n">mesh_entities</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span>
-                <span class="n">dofs</span> <span class="o">=</span> <span class="n">dofs</span><span class="p">[(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">dofs</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dofs</span> <span class="o">&lt;</span> <span class="n">num_local_param_dofs</span><span class="p">)]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_field_params_dofs</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">dofs</span>
+                <span class="n">_dofs</span> <span class="o">=</span> <span class="n">mesh_entity_to_dof_param</span><span class="p">[</span><span class="n">dofs</span><span class="o">.</span><span class="n">mesh_entities</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span>
+                <span class="n">_dofs</span> <span class="o">=</span> <span class="n">_dofs</span><span class="p">[(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">_dofs</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">_dofs</span> <span class="o">&lt;</span> <span class="n">num_local_param_dofs</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_field_params_dofs</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">_dofs</span>
 
             <span class="c1"># Init memory for setting field_parameters</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_param_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
