@@ -172,13 +172,31 @@ class GossCodeGeneratorParameters(BaseModel):
     state_repr: StateRepr = Field(
         StateRepr.named,
         description="Representation of the state",
+        type="|".join(StateRepr._member_names_),
     )
-    body_repr: BodyRepr = BodyRepr.named
-    use_cse: bool = False
-    generate_forward_backward_subst: bool = False
-    generate_jacobian: bool = False
-    generate_lu_factorization: bool = False
-    optimize_exprs: OptimizeExprs = OptimizeExprs.none
+    body_repr: BodyRepr = Field(
+        BodyRepr.named,
+        description="Representation of the body",
+        type="|".join(BodyRepr._member_names_),
+    )
+    use_cse: bool = Field(
+        False,
+        description="Use sympy cse to optimize common sub expressions",
+    )
+    generate_forward_backward_subst: bool = Field(
+        False,
+        description="Generate forward backward substitions for a factorized jacobian",
+    )
+    generate_jacobian: bool = Field(False, description="Generate Jacobian matrix")
+    generate_lu_factorization: bool = Field(
+        False,
+        description="Geneate Lu factorization",
+    )
+    optimize_exprs: OptimizeExprs = Field(
+        OptimizeExprs.none,
+        description="Optimize expressions",
+        type="|".join(OptimizeExprs._member_names_),
+    )
 
     def update(self, params):
         # Hack to make this mimic the ParameterDict
@@ -200,16 +218,8 @@ class GossCodeGeneratorParameters(BaseModel):
 
         for k, v in schema["properties"].items():
 
-            t = ""
-            if "type" in v:
-                t = v["type"]
-            if "allOf" in v:
-                # Get member names of enum
-                t = "|".join(eval(v["allOf"][0]["$ref"])._member_names_)
-
-            desc = ""
-            if "description" in v:
-                desc = v["description"]
+            t = v.get("type", "")
+            desc = v.get("description", "")
 
             table.add_row(k, repr(v["default"]), t, desc)
         console = Console()
