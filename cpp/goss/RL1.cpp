@@ -20,67 +20,61 @@
 #include <cassert>
 #include <cstdlib>
 
-#include "log.h"
-#include "Timer.h"
 #include "RL1.h"
+#include "Timer.h"
+#include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 RL1::RL1() : ODESolver()
 {
-  parameters.rename("RL1");
+    parameters.rename("RL1");
 }
 //-----------------------------------------------------------------------------
 RL1::RL1(std::shared_ptr<ODE> ode) : ODESolver()
 {
-  parameters.rename("RL1");
-  attach(ode);
+    parameters.rename("RL1");
+    attach(ode);
 }
 //-----------------------------------------------------------------------------
-RL1::RL1(const RL1& solver) : ODESolver(solver)
+RL1::RL1(const RL1 &solver) : ODESolver(solver)
 {
 }
 //-----------------------------------------------------------------------------
 RL1::~RL1()
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
 void RL1::attach(std::shared_ptr<ODE> ode)
 {
-  // Attach ode using base class
-  ODESolver::attach(ode);
+    // Attach ode using base class
+    ODESolver::attach(ode);
 
-  if (_ode->is_dae())
-    goss_error("RL1.cpp",
-	       "attach ode",
-	       "cannot integrate a DAE ode with Rush Larsen method.");
-
+    if (_ode->is_dae())
+        goss_error("RL1.cpp", "attach ode", "cannot integrate a DAE ode with Rush Larsen method.");
 }
 //-----------------------------------------------------------------------------
-void RL1::forward(double* y, double t, double dt)
+void RL1::forward(double *y, double t, double dt)
 {
 
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const double ldt_0 = parameters["ldt"];
-  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
-  const double ldt = dt/nsteps;
+    // Calculate number of steps and size of timestep based on _ldt
+    const double ldt_0 = _ldt;
+    const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
+    const double ldt = dt / nsteps;
 
-  // Local time
-  double lt = t;
+    // Local time
+    double lt = t;
 
-  for (ulong step = 0; step < nsteps; ++step)
-  {
+    for (ulong step = 0; step < nsteps; ++step) {
 
-    // One step
-    _one_step(y, y, y, lt, ldt);
+        // One step
+        _one_step(y, y, y, lt, ldt);
 
-    // Increase time
-    lt += ldt;
-
-  }
-
+        // Increase time
+        lt += ldt;
+    }
 }
 //-----------------------------------------------------------------------------

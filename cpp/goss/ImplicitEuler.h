@@ -20,28 +20,30 @@
 #ifndef ImplicitEuler_h_IS_INCLUDED
 #define ImplicitEuler_h_IS_INCLUDED
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "ImplicitODESolver.h"
 
 namespace goss
 {
 
-  // Implicit Euler
-  class ImplicitEuler : public ImplicitODESolver
-  {
+// Implicit Euler
+class ImplicitEuler : public ImplicitODESolver
+{
   public:
-
     // Default parameters
     static Parameters default_parameters()
     {
-      Parameters p = ImplicitODESolver::default_parameters();
-      p.rename("ImplicitEuler");
-      p.add("num_refinements_without_always_recomputing_jacobian", 2);
-      p.add("min_dt", 0.0001);
-      return p;
+        Parameters p = ImplicitODESolver::default_parameters();
+        p.rename("ImplicitEuler");
+        p.add("num_refinements_without_always_recomputing_jacobian", 2);
+        p.add("min_dt", 0.0001);
+        return p;
     }
+
+    int num_refinements_without_always_recomputing_jacobian = 2;
+    double min_dt = 0.0001;
 
     // Default constructor
     ImplicitEuler();
@@ -50,14 +52,16 @@ namespace goss
     ImplicitEuler(std::shared_ptr<ODE> ode);
 
     // Copy constructor
-    ImplicitEuler(const ImplicitEuler& solver);
+    ImplicitEuler(const ImplicitEuler &solver);
 
     // Return a copy of itself
     std::shared_ptr<ODESolver> copy() const
-    { return std::make_shared<ImplicitEuler>(*this); }
+    {
+        return std::make_shared<ImplicitEuler>(*this);
+    }
 
     // Destructor
-    ~ImplicitEuler ();
+    ~ImplicitEuler();
 
     // Attach ODE
     void attach(std::shared_ptr<ODE> ode);
@@ -66,14 +70,12 @@ namespace goss
     void reset();
 
     // Step solver an interval of time forward
-    void forward(double* y, double t, double interval);
+    void forward(double *y, double t, double interval);
 
   protected:
-
     std::vector<double> _z1;
     bool _justrefined;
+};
 
-  };
-
-}
+} // namespace goss
 #endif

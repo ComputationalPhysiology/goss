@@ -106,7 +106,7 @@ class AdaptiveImplicitSolver : public ImplicitODESolver
         _iord = iord;
     }
 
-    // Set iord
+    // Get iord
     int get_iord()
     {
         return _iord;

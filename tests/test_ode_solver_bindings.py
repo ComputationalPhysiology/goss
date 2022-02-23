@@ -64,9 +64,6 @@ def test_parameters(Solver):
     solver = cls()
     parameters = solver.parameters
 
-    # All solvers should have this paramameter
-    assert np.isclose(parameters["ldt"], -1.0)
-
     for name, default_value in cls.default_parameters().items():
 
         if isinstance(default_value, bool):
@@ -83,13 +80,13 @@ def test_parameters(Solver):
 
 
 def test_set_invalid_parameter_type():
-    solver = goss.solvers.ExplicitEuler()
+    solver = goss.solvers.ThetaSolver()
     with pytest.raises(TypeError):
-        solver.set_parameter("ldt", "hello")
+        solver.set_parameter("theta", "hello")
 
 
 def test_set_invalid_parameter_name():
-    solver = goss.solvers.ExplicitEuler()
+    solver = goss.solvers.ThetaSolver()
     with pytest.raises(KeyError):
         solver.set_parameter("invalid_parmeter", 42.0)
 
@@ -98,11 +95,14 @@ def test_set_invalid_parameter_name():
 def test_solve_oscilator(Solver, oscilator):
     cls = goss.solvers.solver_mapper[Solver.name]
     solver = cls(oscilator)
-    u, time = solver.solve(0, 10.0, dt=0.001)
+    solver.internal_time_step = 0.0001
+    dt = 0.1
+    t = np.arange(0, 10.0 + dt, dt)
+    u = solver.solve(t)
 
     # FIXME: Don't know why we need such a high tolerance here
-    assert np.isclose(u[:, 0], np.cos(time), rtol=0.14).all()
-    assert np.isclose(u[:, 1], np.sin(time), rtol=0.02).all()
+    assert np.isclose(u[:, 0], np.cos(t), rtol=0.14).all()
+    assert np.isclose(u[:, 1], np.sin(t), rtol=0.02).all()
 
 
 @pytest.mark.parametrize("Solver", goss.solvers.GOSSImplicitSolvers)

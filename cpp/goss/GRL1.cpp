@@ -63,7 +63,7 @@ void GRL1::forward(double *y, double t, double dt)
 {
 
     // Calculate number of steps and size of timestep based on _ldt
-    const double ldt_0 = parameters["ldt"];
+    const double ldt_0 = _ldt;
     const double _delta = delta;
     const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
     const double ldt = dt / nsteps;

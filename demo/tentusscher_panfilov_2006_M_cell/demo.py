@@ -1,5 +1,6 @@
 import goss
 import matplotlib.pyplot as plt
+import numpy as np
 from gotran import load_ode
 
 gotran_ode = load_ode("tentusscher_panfilov_2006_M_cell.ode")
@@ -11,8 +12,10 @@ ode = goss.ODE(gotran_ode)
 # solver = goss.solvers.GRL1(ode)
 solver = goss.solvers.ESDIRK23a(ode)
 
-
-y, t = solver.solve(0, 1000, dt=1.0)
+dt = 1.0
+T = 1000
+t = np.arange(0, 1000 + dt, dt)
+y = solver.solve(t)
 
 V_index = gotran_ode.state_symbols.index("V")
 Cai_index = gotran_ode.state_symbols.index("Ca_i")

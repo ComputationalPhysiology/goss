@@ -57,7 +57,7 @@ void ThetaSolver::forward(double *y, double t, double dt)
     bool step_ok;
 
     const double t_end = t + dt;
-    const double ldt_0 = ldt;
+    const double ldt_0 = _ldt;
 
     double ldt = ldt_0 > 0 ? ldt_0 : dt;
     int num_refinements = 0;

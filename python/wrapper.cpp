@@ -8,19 +8,21 @@
 #include <vector>
 
 namespace py = pybind11;
-
 void init_ODESolvers(py::module &m)
 {
     py::class_<goss::ODESolver, std::shared_ptr<goss::ODESolver>> solver_ODESolver(m, "ODESolver");
 
     solver_ODESolver.def("num_states", &goss::ODESolver::num_states)
             .def("is_adaptive", &goss::ODESolver::is_adaptive)
-            .def_readwrite("ldt", &goss::ODESolver::ldt)
             .def("reset", &goss::ODESolver::reset)
             .def("get_internal_time_step", &goss::ODESolver::get_internal_time_step)
+            .def("set_internal_time_step",
+                 [](goss::ODESolver &self, double time_step) {
+                     self.set_internal_time_step(time_step);
+                 })
             .def("solve",
                  [](goss::ODESolver &self, py::array_t<double> y, py::array_t<double> y0,
-                    py::array_t<double> t, const unsigned long num_timesteps, const int skip_n) {
+                    py::array_t<double> t, const unsigned long num_timesteps) {
                      py::buffer_info y_info = y.request();
                      auto y_ptr = static_cast<double *>(y_info.ptr);
 
@@ -30,7 +32,7 @@ void init_ODESolvers(py::module &m)
                      py::buffer_info t_info = t.request();
                      auto t_ptr = static_cast<double *>(t_info.ptr);
 
-                     self.solve(y_ptr, y0_ptr, t_ptr, num_timesteps, skip_n);
+                     self.solve(y_ptr, y0_ptr, t_ptr, num_timesteps);
                  })
             .def("get_ode",
                  [](goss::ODESolver &self) {
@@ -38,6 +40,8 @@ void init_ODESolvers(py::module &m)
                  })
             .def("attach",
                  [](goss::ODESolver &self, std::shared_ptr<goss::ODE> ode) { self.attach(ode); });
+
+    // Explicit Solvers
 
     py::class_<goss::ExplicitEuler, goss::ODESolver, std::shared_ptr<goss::ExplicitEuler>>
             solver_ExplicitEuler(m, "ExplicitEuler");
@@ -76,6 +80,25 @@ void init_ODESolvers(py::module &m)
 
                      self.forward(y_ptr, t, interval);
                  });
+
+    // Adaptive Explicit Solvers
+
+    py::class_<goss::AdaptiveExplicitSolver, goss::ODESolver,
+               std::shared_ptr<goss::AdaptiveExplicitSolver>>
+            solver_AdaptiveExplicitSolver(m, "AdaptiveExplicitSolver");
+    solver_AdaptiveExplicitSolver.def("get_atol", &goss::AdaptiveExplicitSolver::get_atol)
+            .def("get_rtol", &goss::AdaptiveExplicitSolver::get_rtol)
+            .def("get_iord", &goss::AdaptiveExplicitSolver::get_iord)
+            .def("get_current_time", &goss::AdaptiveExplicitSolver::get_current_time)
+            .def("get_current_time_step", &goss::AdaptiveExplicitSolver::get_current_time_step)
+            .def("get_num_accepted", &goss::AdaptiveExplicitSolver::get_num_accepted)
+            .def("get_num_rejected", &goss::AdaptiveExplicitSolver::get_num_rejected)
+            .def("set_single_step_mode", [](goss::AdaptiveExplicitSolver &self,
+                                            bool mode) { self.set_single_step_mode(mode); })
+            .def("set_tol", [](goss::AdaptiveExplicitSolver &self, double atol,
+                               double rtol = 1.0e-8) { self.set_tol(atol, rtol); })
+            .def("set_iord",
+                 [](goss::AdaptiveExplicitSolver &self, int iord) { self.set_iord(iord); });
 
     // Implicit solvers
 

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 from typing import Optional
 
+import numpy as np
 import rich_click as click
 from gotran.model.loadmodel import load_ode
 from modelparameters import utils
@@ -269,7 +270,8 @@ def run(
 
     cls = solvers.solver_mapper[solver]
     ode_solver = cls(ode)
-    y, t = ode_solver.solve(0, end_time, dt=dt)
+    t = np.arange(0, end_time + dt, dt)
+    y = ode_solver.solve(t)
 
     states = {}
     for name in plot_y:

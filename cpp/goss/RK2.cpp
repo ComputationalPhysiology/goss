@@ -20,77 +20,74 @@
 #include <cassert>
 #include <cmath>
 
-#include "log.h"
 #include "RK2.h"
+#include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 RK2::RK2() : ODESolver(), k1(0), tmp(0)
 {
-  parameters.rename("RK2");
+    parameters.rename("RK2");
 }
 //-----------------------------------------------------------------------------
 RK2::RK2(std::shared_ptr<ODE> ode) : ODESolver(), k1(0), tmp(0)
 {
-  parameters.rename("RK2");
-  attach(ode);
+    parameters.rename("RK2");
+    attach(ode);
 }
 //-----------------------------------------------------------------------------
-RK2::RK2(const RK2& solver) : ODESolver(solver), k1(solver.num_states()),
-			      tmp(solver.num_states())
+RK2::RK2(const RK2 &solver) : ODESolver(solver), k1(solver.num_states()), tmp(solver.num_states())
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
-RK2::~RK2 ()
+RK2::~RK2()
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
 void RK2::attach(std::shared_ptr<ODE> ode)
 {
 
-  ODESolver::attach(ode);
+    ODESolver::attach(ode);
 
-  if (ode->is_dae())
-    goss_error("RK2.cpp",
-	       "attaching ode",
-	       "cannot integrate a DAE ode with an explicit solver.");
+    if (ode->is_dae())
+        goss_error("RK2.cpp", "attaching ode",
+                   "cannot integrate a DAE ode with an explicit solver.");
 
-  k1.resize(num_states());
-  tmp.resize(num_states());
+    k1.resize(num_states());
+    tmp.resize(num_states());
 }
 //-----------------------------------------------------------------------------
-void RK2::forward(double* y, double t, double dt)
+void RK2::forward(double *y, double t, double dt)
 {
 
-  assert(_ode);
+    assert(_ode);
 
-  // Calculate number of steps and size of timestep based on ldt
-  const double ldt_0 = parameters["ldt"];
-  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
-  const double ldt = dt/nsteps;
+    // Calculate number of steps and size of timestep based on ldt
+    const double ldt_0 = _ldt;
+    const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
+    const double ldt = dt / nsteps;
 
-  // Local time
-  double lt = t;
-  for (ulong j = 0; j < nsteps; ++j)
-  {
-    // Initial eval
-    _ode->eval(y, lt, &k1[0]);
+    // Local time
+    double lt = t;
+    for (ulong j = 0; j < nsteps; ++j) {
+        // Initial eval
+        _ode->eval(y, lt, &k1[0]);
 
-    // Explicit Euler step to find the midpoint solution
-    axpy(&tmp[0], y, 0.5*ldt, &k1[0]);
+        // Explicit Euler step to find the midpoint solution
+        axpy(&tmp[0], y, 0.5 * ldt, &k1[0]);
 
-    // Evaluate derivative at midpoint
-    _ode->eval(&tmp[0], lt+0.5*ldt, &k1[0]);
+        // Evaluate derivative at midpoint
+        _ode->eval(&tmp[0], lt + 0.5 * ldt, &k1[0]);
 
-    // Use midpoint derivative for explicit Euler step
-    for (uint i = 0; i < num_states(); ++i)
-      y[i] += ldt*k1[i];
+        // Use midpoint derivative for explicit Euler step
+        for (uint i = 0; i < num_states(); ++i)
+            y[i] += ldt * k1[i];
 
-    // Update local time
-    lt += ldt;
-  }
+        // Update local time
+        lt += ldt;
+    }
 }
 //-----------------------------------------------------------------------------

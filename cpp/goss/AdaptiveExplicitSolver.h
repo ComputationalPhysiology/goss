@@ -26,20 +26,19 @@
 namespace goss
 {
 
-  // Base class for Adaptive and Expicit solvers
-  class AdaptiveExplicitSolver : public ODESolver
-  {
+// Base class for Adaptive and Expicit solvers
+class AdaptiveExplicitSolver : public ODESolver
+{
 
   public:
-
     // Default Constructor
     AdaptiveExplicitSolver();
 
     // Copy constructor
-    AdaptiveExplicitSolver(const AdaptiveExplicitSolver& solver);
+    AdaptiveExplicitSolver(const AdaptiveExplicitSolver &solver);
 
     // Destructor
-    virtual ~AdaptiveExplicitSolver (){};
+    virtual ~AdaptiveExplicitSolver(){};
 
     // Initialize Solver
     virtual void reset();
@@ -51,40 +50,70 @@ namespace goss
     double get_current_time_step();
 
     // Return number of accepted solutions
-    long get_num_accepted(){ return num_accepted; }
+    long get_num_accepted()
+    {
+        return num_accepted;
+    }
 
     // Return number of rejected solutions
-    long get_num_rejected(){ return num_rejected; }
+    long get_num_rejected()
+    {
+        return num_rejected;
+    }
 
     // Set single step mode
-    void set_single_step_mode(bool mode) { single_step_mode = mode; }
+    void set_single_step_mode(bool mode)
+    {
+        single_step_mode = mode;
+    }
 
     // Set tolerance
-    void set_tol(double atol, double rtol=1.0e-8)
-    { _atol = atol; _rtol = rtol; }
+    void set_tol(double atol, double rtol = 1.0e-8)
+    {
+        _atol = atol;
+        _rtol = rtol;
+    }
+
+    // Get the absolute tolerance
+    double get_atol()
+    {
+        return _atol;
+    }
+
+    // Get the relative tolerance
+    double get_rtol()
+    {
+        return _rtol;
+    }
 
     // Set iord
-    void set_iord(int iord){ _iord = iord; }
+    void set_iord(int iord)
+    {
+        _iord = iord;
+    }
+
+    // Get iord
+    int get_iord()
+    {
+        return _iord;
+    }
 
     // FIXME: Should this be protected?
     // Compute an initial time step guess
-    double dtinit(double t, double* y0, double* y1, double* f0, double* f1, double iord);
+    double dtinit(double t, double *y0, double *y1, double *f0, double *f1, double iord);
 
     // FIXME: Should this be protected?
     // Compute new timestep
-    void new_time_step(double* y, double* yn, double* e, double t_end);
+    void new_time_step(double *y, double *yn, double *e, double t_end);
 
     // Return true if the Solver is adaptive
-    bool is_adaptive() const { return true; }
+    bool is_adaptive() const
+    {
+        return true;
+    }
 
-    // Return the internal time step
-    inline double get_internal_time_step() const { return _ldt; }
-
-    // Set the internal time step
-    inline void set_internal_time_step(double ldt) {_ldt = ldt;}
 
   protected:
-
     // Log of 1) the numer of steps, 2) the number of rejected steps
     ulong num_accepted, num_rejected;
     double _t, _ldt, _dt, _dt_prev;
@@ -100,6 +129,6 @@ namespace goss
     std::vector<double> dt_v;
     std::vector<bool> accept_v;
     bool single_step_mode;
-  };
-}
+};
+} // namespace goss
 #endif

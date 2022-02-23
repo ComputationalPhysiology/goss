@@ -45,8 +45,6 @@ class ODESolver
         return params;
     }
 
-    double ldt = -1.0;
-
     // Default Constructor
     ODESolver() : parameters(), _ode(static_cast<ODE *>(0))
     {
@@ -86,8 +84,7 @@ class ODESolver
     virtual void forward(double *y, double t, double interval) = 0;
 
     // Solve for a multiple time steps
-    virtual void solve(double *y, double *y0, double *t, const ulong num_timesteps,
-                       const int skip_n = 1)
+    virtual void solve(double *y, double *y0, const double *t, const ulong num_timesteps)
     {
 
         assert(_ode);
@@ -95,17 +92,13 @@ class ODESolver
         double t_next, t_current;
         double dt;
         t_current = t[0];
-        ulong save_it = 1;
         ulong j, it;
-        for (it = 1; it <= num_timesteps; it++) {
+        for (it = 1; it < num_timesteps; it++) {
             t_next = t[it];
             dt = t_next - t_current;
             forward(y0, t_current, dt);
-            if (skip_n && (it % skip_n) == 0) {
-                for (j = 0; j < _num_states; j++) {
-                    y[save_it * _num_states + j] = y0[j];
-                }
-                save_it++;
+            for (j = 0; j < _num_states; j++) {
+                y[it * _num_states + j] = y0[j];
             }
             t_current = t_next;
         }
@@ -130,14 +123,15 @@ class ODESolver
     }
 
     // Return the internal time step
-    inline virtual double get_internal_time_step() const
+    inline double get_internal_time_step() const
     {
-        return -1.;
+        return _ldt;
     }
 
     // Set the internal time step
-    inline virtual void set_internal_time_step(double)
+    inline void set_internal_time_step(double ldt)
     {
+        _ldt = ldt;
     }
 
     // Return true if the Solver is adaptive
@@ -150,6 +144,7 @@ class ODESolver
     Parameters parameters;
 
   protected:
+    double _ldt = -1.0;
     // Access to scratch space in ODE
     inline std::vector<double> &_f1() const
     {

@@ -3,17 +3,11 @@ from __future__ import annotations
 import abc
 from enum import Enum
 from typing import Any
-from typing import NamedTuple
 from typing import Optional
 
 import numpy as np
 
 from .ode import ODE
-
-
-class Solution(NamedTuple):
-    y: np.ndarray
-    t: np.ndarray
 
 
 class ODESolver(abc.ABC):
@@ -49,11 +43,19 @@ class ODESolver(abc.ABC):
 
     @staticmethod
     def default_parameters() -> dict[str, Any]:
-        return {"ldt": -1.0}
+        return {}
 
     def update_parameters(self, parameters: dict[str, Any]):
         for k, v in parameters.items():
             self.set_parameter(k, v)
+
+    @property
+    def internal_time_step(self) -> float:
+        return self._cpp_object.get_internal_time_step()
+
+    @internal_time_step.setter
+    def internal_time_step(self, time_step: float) -> None:
+        self._cpp_object.set_internal_time_step(time_step)
 
     @property
     def parameters(self):
@@ -75,10 +77,6 @@ class ODESolver(abc.ABC):
             )
         setattr(self._cpp_object, name, value)
 
-    def get_internal_time_step(self) -> float:
-        # Don'r really know what this is?
-        return self._cpp_object.get_internal_time_step()
-
     def get_ode(self) -> ODE:
         return ODE(self._cpp_object.get_ode())
 
@@ -91,22 +89,18 @@ class ODESolver(abc.ABC):
 
     def solve(
         self,
-        start: float,
-        end: float,
-        dt: float,
+        t: np.ndarray,
         y0: Optional[np.ndarray] = None,
-        skip_n: int = 1,
-    ) -> Solution:
+    ) -> np.ndarray:
         if y0 is None:
             # Use the initial conditions from the ODE
             y0 = self.get_ode().get_ic()
-        interval = end - start
-        num_steps = int(np.ceil(interval / dt))
-        y = np.zeros((num_steps + 1, self.num_states))
-        t = np.arange(start, end + dt, dt)
+        num_steps = t.size
+        y = np.zeros((num_steps, self.num_states))
+
         y[0, :] = y0
-        self._cpp_object.solve(y, y0, t, num_steps, skip_n)
-        return Solution(y, t)
+        self._cpp_object.solve(y, y0, t, num_steps)
+        return y
 
     @property
     def num_states(self):
