@@ -22,7 +22,7 @@
 #define __TIMING_H
 
 #include <string>
-#include <goss/Table.h>
+#include "Table.h"
 
 namespace goss
 {
