@@ -115,6 +115,10 @@ class RL1(ODESolver):
     pass
 
 
+class RL2(ODESolver):
+    pass
+
+
 class RK2(ODESolver):
     pass
 
@@ -163,6 +167,12 @@ class ImplicitODESolver(ODESolver, abc.ABC):
         alpha: float,
     ) -> None:
         self._cpp_object.compute_factorized_jacobian(y, t, alpha)
+
+
+class BasicImplicitEuler(ImplicitODESolver):
+    """FIXME: This is not working as expected"""
+
+    pass
 
 
 class ImplicitEuler(ImplicitODESolver):
@@ -283,8 +293,10 @@ class GOSSSolvers(Enum):
     RK2 = "RK2"
     RK4 = "RK4"
     RL1 = "RL1"
+    RL2 = "RL2"
     GRL1 = "GRL1"
     GRL2 = "GRL2"
+    # BasicImplicitEuler = "BasicImplicitEuler"
     ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
     ESDIRK23a = "ESDIRK23a"
@@ -292,6 +304,7 @@ class GOSSSolvers(Enum):
 
 
 class GOSSImplicitSolvers(Enum):
+    # BasicImplicitEuler = "BasicImplicitEuler"
     ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
     ESDIRK23a = "ESDIRK23a"
@@ -309,9 +322,12 @@ class GOSSExplicitSolvers(Enum):
 
 class GOSSNonAdaptiveSolvers(Enum):
     ExplicitEuler = "ExplicitEuler"
+    RK2 = "RK2"
+    RK4 = "RK4"
     RL1 = "RL1"
     GRL1 = "GRL1"
     GRL2 = "GRL2"
+    # BasicImplicitEuler = "BasicImplicitEuler"
     ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
 
@@ -323,13 +339,15 @@ class GOSSIAdaptiveSolvers(Enum):
 
 solver_mapper = {
     "ExplicitEuler": ExplicitEuler,
+    "RK2": RK2,
+    "RK4": RK4,
     "RL1": RL1,
+    "RL2": RL2,
     "GRL1": GRL1,
     "GRL2": GRL2,
+    # "BasicImplicitEuler": BasicImplicitEuler,
     "ImplicitEuler": ImplicitEuler,
     "ThetaSolver": ThetaSolver,
     "ESDIRK23a": ESDIRK23a,
-    "RK2": RK2,
-    "RK4": RK4,
     # "ESDIRK4O32": ESDIRK4O32,
 }

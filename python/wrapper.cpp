@@ -68,6 +68,9 @@ void init_ODESolvers(py::module &m)
                      self.forward(y_ptr, t, interval);
                  });
 
+    py::class_<goss::RL2, goss::RL1, std::shared_ptr<goss::RL2>> solver_RL2(m, "RL2");
+    solver_RL2.def(py::init<>()).def(py::init<std::shared_ptr<goss::ODE>>());
+
     py::class_<goss::GRL1, goss::ODESolver, std::shared_ptr<goss::GRL1>> solver_GRL1(m, "GRL1");
     solver_GRL1.def(py::init<>())
             .def(py::init<std::shared_ptr<goss::ODE>>())
@@ -149,6 +152,20 @@ void init_ODESolvers(py::module &m)
 
                      self.compute_factorized_jacobian(y_ptr, t, dt, alpha);
                  });
+
+    py::class_<goss::BasicImplicitEuler, goss::ImplicitODESolver,
+               std::shared_ptr<goss::BasicImplicitEuler>>
+            solver_BasicImplicitEuler(m, "BasicImplicitEuler");
+    solver_BasicImplicitEuler.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::BasicImplicitEuler::copy)
+            .def("forward", [](goss::BasicImplicitEuler &self, const py::array_t<double> y,
+                               double t, double interval) {
+                py::buffer_info y_info = y.request();
+                auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                self.forward(y_ptr, t, interval);
+            });
 
     py::class_<goss::ImplicitEuler, goss::ImplicitODESolver, std::shared_ptr<goss::ImplicitEuler>>
             solver_ImplicitEuler(m, "ImplicitEuler");
