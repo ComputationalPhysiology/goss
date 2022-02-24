@@ -44,7 +44,7 @@ def main():
         run_timings=False,
         recompute=True,
         selected_methods=selected_methods,
-        selected_states=[0],
+        selected_states=[0, 1, 2],
         internal_time_step=0.001,
         number=1,
         repeat=2,

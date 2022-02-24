@@ -157,6 +157,7 @@ def test_AdaptiveImplicitSolver_methods(oscilator):
 def test_Adaptive_methods(Solver):
     cls = goss.solvers.solver_mapper[Solver.name]
     solver = cls()
+    solver.reset()
     assert solver.nfevals == 0
     assert solver.ndtsa == 0
     assert solver.ndtsr == 0

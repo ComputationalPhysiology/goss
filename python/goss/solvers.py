@@ -37,6 +37,9 @@ class ODESolver(abc.ABC):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}()"
 
+    def reset(self) -> None:
+        self._cpp_object.reset()
+
     @property
     def is_adaptive(self) -> bool:
         return self._cpp_object.is_adaptive()
