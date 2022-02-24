@@ -197,7 +197,6 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
- | <a href="#Y"><strong>Y</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -221,10 +220,12 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="goss.html#goss.codegeneration.GossCodeGeneratorParameters.body_repr">body_repr (goss.codegeneration.GossCodeGeneratorParameters attribute)</a>
+      <li><a href="goss.html#goss.solvers.BasicImplicitEuler">BasicImplicitEuler (class in goss.solvers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.codegeneration.GossCodeGeneratorParameters.body_repr">body_repr (goss.codegeneration.GossCodeGeneratorParameters attribute)</a>
+</li>
       <li><a href="goss.html#goss.codegeneration.BodyRepr">BodyRepr (class in goss.codegeneration)</a>
 </li>
   </ul></td>
@@ -284,6 +285,8 @@
 </li>
         <li><a href="goss.html#goss.solvers.GRL1.default_parameters">(goss.solvers.GRL1 static method)</a>
 </li>
+        <li><a href="goss.html#goss.solvers.ImplicitEuler.default_parameters">(goss.solvers.ImplicitEuler static method)</a>
+</li>
         <li><a href="goss.html#goss.solvers.ImplicitODESolver.default_parameters">(goss.solvers.ImplicitODESolver static method)</a>
 </li>
         <li><a href="goss.html#goss.solvers.ODESolver.default_parameters">(goss.solvers.ODESolver static method)</a>
@@ -311,6 +314,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.solvers.ESDIRK">ESDIRK (class in goss.solvers)</a>
+</li>
       <li><a href="goss.html#goss.solvers.ESDIRK23a">ESDIRK23a (class in goss.solvers)</a>
 
       <ul>
@@ -321,20 +326,22 @@
         <li><a href="goss.html#goss.solvers.GOSSSolvers.ESDIRK23a">(goss.solvers.GOSSSolvers attribute)</a>
 </li>
       </ul></li>
+      <li><a href="goss.html#goss.solvers.ESDIRK4O32">ESDIRK4O32 (class in goss.solvers)</a>
+</li>
       <li><a href="goss.html#goss.ODE.eval">eval() (goss.ODE method)</a>
 
       <ul>
         <li><a href="goss.html#goss.ode.ODE.eval">(goss.ode.ODE method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.ODE.eval_component">eval_component() (goss.ODE method)</a>
 
       <ul>
         <li><a href="goss.html#goss.ode.ODE.eval_component">(goss.ode.ODE method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.ode.ParameterizedODE.eval_monitored">eval_monitored() (goss.ode.ParameterizedODE method)</a>
 
       <ul>
@@ -461,8 +468,6 @@
         <li><a href="goss.html#goss.ode.ODE.get_ic">(goss.ode.ODE method)</a>
 </li>
       </ul></li>
-      <li><a href="goss.html#goss.solvers.ODESolver.get_internal_time_step">get_internal_time_step() (goss.solvers.ODESolver method)</a>
-</li>
       <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.get_num_accepted">get_num_accepted() (goss.solvers.AdaptiveImplicitSolver method)</a>
 </li>
       <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.get_num_rejected">get_num_rejected() (goss.solvers.AdaptiveImplicitSolver method)</a>
@@ -489,8 +494,6 @@
         <li><a href="goss.html#module-goss.cli">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     goss.codegeneration
 
@@ -505,6 +508,8 @@
         <li><a href="goss.html#module-goss.compilemodule">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     goss.cuda
 
@@ -564,6 +569,16 @@
         <li><a href="goss.html#goss.solvers.GOSSSolvers.GRL1">(goss.solvers.GOSSSolvers attribute)</a>
 </li>
       </ul></li>
+      <li><a href="goss.html#goss.solvers.GRL2">GRL2 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.GRL2">(goss.solvers.GOSSExplicitSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.GRL2">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.GRL2">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -578,14 +593,26 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.solvers.ImplicitEuler">ImplicitEuler (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSImplicitSolvers.ImplicitEuler">(goss.solvers.GOSSImplicitSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.ImplicitEuler">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.ImplicitEuler">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
       <li><a href="goss.html#goss.solvers.ImplicitODESolver">ImplicitODESolver (class in goss.solvers)</a>
 </li>
       <li><a href="goss.html#goss.cuda.ODECUDAHandler.init_cuda">init_cuda() (goss.cuda.ODECUDAHandler method)</a>
 </li>
-      <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.iord">iord (goss.solvers.AdaptiveImplicitSolver property)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.solvers.ODESolver.internal_time_step">internal_time_step (goss.solvers.ODESolver property)</a>
+</li>
+      <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.iord">iord (goss.solvers.AdaptiveImplicitSolver property)</a>
+</li>
       <li><a href="goss.html#goss.solvers.ODESolver.is_adaptive">is_adaptive (goss.solvers.ODESolver property)</a>
 </li>
       <li><a href="goss.html#goss.ODE.is_dae">is_dae (goss.ODE property)</a>
@@ -691,12 +718,24 @@
         <li><a href="goss.html#goss.codegeneration.StateRepr.named">(goss.codegeneration.StateRepr attribute)</a>
 </li>
       </ul></li>
-      <li><a href="goss.html#goss.solvers.ESDIRK23a.ndtsa">ndtsa (goss.solvers.ESDIRK23a property)</a>
+      <li><a href="goss.html#goss.solvers.ESDIRK.ndtsa">ndtsa (goss.solvers.ESDIRK property)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.ESDIRK23a.ndtsa">(goss.solvers.ESDIRK23a property)</a>
 </li>
-      <li><a href="goss.html#goss.solvers.ESDIRK23a.ndtsr">ndtsr (goss.solvers.ESDIRK23a property)</a>
+      </ul></li>
+      <li><a href="goss.html#goss.solvers.ESDIRK.ndtsr">ndtsr (goss.solvers.ESDIRK property)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.ESDIRK23a.ndtsr">(goss.solvers.ESDIRK23a property)</a>
 </li>
-      <li><a href="goss.html#goss.solvers.ESDIRK23a.nfevals">nfevals (goss.solvers.ESDIRK23a property)</a>
+      </ul></li>
+      <li><a href="goss.html#goss.solvers.ESDIRK.nfevals">nfevals (goss.solvers.ESDIRK property)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.ESDIRK23a.nfevals">(goss.solvers.ESDIRK23a property)</a>
 </li>
+      </ul></li>
       <li><a href="goss.html#goss.codegeneration.OptimizeExprs.none">none (goss.codegeneration.OptimizeExprs attribute)</a>
 </li>
       <li><a href="goss.html#goss.DOLFINODESystemSolver.num_distinct_domains">num_distinct_domains (goss.DOLFINODESystemSolver property)</a>
@@ -851,10 +890,30 @@
       </ul></li>
       <li><a href="goss.html#goss.codegeneration.BodyRepr.reused_array">reused_array (goss.codegeneration.BodyRepr attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.ode.LinearizedEval.rhs">rhs (goss.ode.LinearizedEval attribute)</a>
 </li>
+      <li><a href="goss.html#goss.solvers.RK2">RK2 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.RK2">(goss.solvers.GOSSExplicitSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.RK2">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.RK2">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="goss.html#goss.solvers.RK4">RK4 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSExplicitSolvers.RK4">(goss.solvers.GOSSExplicitSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.RK4">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
+</li>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.RK4">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
       <li><a href="goss.html#goss.solvers.RL1">RL1 (class in goss.solvers)</a>
 
       <ul>
@@ -863,6 +922,12 @@
         <li><a href="goss.html#goss.solvers.GOSSNonAdaptiveSolvers.RL1">(goss.solvers.GOSSNonAdaptiveSolvers attribute)</a>
 </li>
         <li><a href="goss.html#goss.solvers.GOSSSolvers.RL1">(goss.solvers.GOSSSolvers attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="goss.html#goss.solvers.RL2">RL2 (class in goss.solvers)</a>
+
+      <ul>
+        <li><a href="goss.html#goss.solvers.GOSSSolvers.RL2">(goss.solvers.GOSSSolvers attribute)</a>
 </li>
       </ul></li>
       <li><a href="goss.html#goss.solvers.AdaptiveImplicitSolver.rtol">rtol (goss.solvers.AdaptiveImplicitSolver property)</a>
@@ -917,8 +982,6 @@
 </li>
       <li><a href="goss.html#goss.cuda.CUDAODESystemSolver.simulate">simulate() (goss.cuda.CUDAODESystemSolver method)</a>
 </li>
-      <li><a href="goss.html#goss.solvers.Solution">Solution (class in goss.solvers)</a>
-</li>
       <li><a href="goss.html#goss.solvers.ODESolver.solve">solve() (goss.solvers.ODESolver method)</a>
 </li>
       <li><a href="goss.html#goss.ODESystemSolver.solver">solver (goss.ODESystemSolver property)</a>
@@ -961,8 +1024,6 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="goss.html#goss.solvers.Solution.t">t (goss.solvers.Solution attribute)</a>
-</li>
       <li><a href="goss.html#goss.solvers.ThetaSolver">ThetaSolver (class in goss.solvers)</a>
 
       <ul>
@@ -1000,14 +1061,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="goss.html#goss.codegeneration.GossCodeGeneratorParameters.use_cse">use_cse (goss.codegeneration.GossCodeGeneratorParameters attribute)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="Y">Y</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="goss.html#goss.solvers.Solution.y">y (goss.solvers.Solution attribute)</a>
 </li>
   </ul></td>
 </tr></table>

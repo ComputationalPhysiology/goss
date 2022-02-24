@@ -181,6 +181,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">rich_click</span> <span class="k">as</span> <span class="nn">click</span>
 <span class="kn">from</span> <span class="nn">gotran.model.loadmodel</span> <span class="kn">import</span> <span class="n">load_ode</span>
 <span class="kn">from</span> <span class="nn">modelparameters</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -446,7 +447,8 @@
 
     <span class="bp">cls</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">solver_mapper</span><span class="p">[</span><span class="n">solver</span><span class="p">]</span>
     <span class="n">ode_solver</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">ode_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">+</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ode_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
     <span class="n">states</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">plot_y</span><span class="p">:</span>
