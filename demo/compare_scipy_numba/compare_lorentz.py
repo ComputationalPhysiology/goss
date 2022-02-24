@@ -15,6 +15,7 @@ def main():
         args=(10.0, 28.0, 8 / 3),
         run_plot=True,
         run_timings=False,
+        recompute=True,
     )
 
 

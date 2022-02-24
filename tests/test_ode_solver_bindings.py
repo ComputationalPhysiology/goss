@@ -51,11 +51,11 @@ def test_forward(Solver, oscilator):
     cls = goss.solvers.solver_mapper[Solver.name]
     y = oscilator.get_ic()
     t = 0
-    interval = 2.0
+    interval = 0.1
     solver = cls(oscilator)
     y_next = y.copy()
     solver.forward(y_next, t, interval)
-    assert np.allclose(y_next, [1, 2])
+    assert np.allclose(y_next, [1, 0.1], rtol=0.01)
 
 
 @pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)

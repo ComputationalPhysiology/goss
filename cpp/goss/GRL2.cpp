@@ -18,75 +18,70 @@
 // Modified by Johan Hake 2012
 
 #include <cassert>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 
-#include "log.h"
-#include "Timer.h"
 #include "GRL2.h"
+#include "Timer.h"
+#include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 GRL2::GRL2() : GRL1(), _y2(0)
 {
-  parameters.rename("GRL2");
+    parameters.rename("GRL2");
 }
 //-----------------------------------------------------------------------------
 GRL2::GRL2(std::shared_ptr<ODE> ode) : GRL1(), _y2(0)
 {
-  parameters.rename("GRL2");
-  attach(ode);
+    parameters.rename("GRL2");
+    attach(ode);
 }
 //-----------------------------------------------------------------------------
-GRL2::GRL2(const GRL2& solver) : GRL1(solver), _y2(solver._y2)
+GRL2::GRL2(const GRL2 &solver) : GRL1(solver), _y2(solver._y2)
 {
 }
 //-----------------------------------------------------------------------------
 GRL2::~GRL2()
 {
-  // Do nothing
+    // Do nothing
 }
 //-----------------------------------------------------------------------------
 void GRL2::attach(std::shared_ptr<ODE> ode)
 {
-  // Attach ode using base class
-  ODESolver::attach(ode);
+    // Attach ode using base class
+    ODESolver::attach(ode);
 
-  if (ode->is_dae())
-    goss_error("GRL2.cpp",
-	       "attaching ode",
-	       "cannot integrate a DAE ode with an explicit solver.");
+    if (ode->is_dae())
+        goss_error("GRL2.cpp", "attaching ode",
+                   "cannot integrate a DAE ode with an explicit solver.");
 
-  // Initalize memory
-  _y2.resize(num_states(), 0.0);
-
+    // Initalize memory
+    _y2.resize(num_states(), 0.0);
 }
 //-----------------------------------------------------------------------------
-void GRL2::forward(double* y, double t, double dt)
+void GRL2::forward(double *y, double t, double dt)
 {
+    // Calculate number of steps and size of timestep based on _ldt
+    const double ldt_0 = _ldt;
+    const double delta = delta;
+    const ulong nsteps = ldt_0 > 0 ? std::ceil(dt / ldt_0 - 1.0E-12) : 1;
+    const double ldt = dt / nsteps;
 
-  // Calculate number of steps and size of timestep based on _ldt
-  const double ldt_0 = parameters["ldt"];
-  const double delta = parameters["delta"];
-  const ulong nsteps = ldt_0 > 0 ? std::ceil(dt/ldt_0 - 1.0E-12) : 1;
-  const double ldt = dt/nsteps;
+    // Local time
+    double lt = t;
 
-  // Local time
-  double lt = t;
+    for (ulong step = 0; step < nsteps; ++step) {
 
-  for (ulong step = 0; step < nsteps; ++step)
-  {
+        // First step
+        _one_step(_y2.data(), y, y, lt, ldt * 0.5, delta);
 
-    // First step
-    _one_step(_y2.data(), y, y, lt, ldt*0.5, delta);
+        // Second step
+        _one_step(y, _y2.data(), y, lt, ldt, delta);
 
-    // Second step
-    _one_step(y, _y2.data(), y, lt, ldt, delta);
-
-    // Increase time
-    lt += ldt;
-  }
-
+        // Increase time
+        lt += ldt;
+    }
 }
 //-----------------------------------------------------------------------------

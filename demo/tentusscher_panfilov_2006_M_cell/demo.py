@@ -10,7 +10,10 @@ ode = goss.ODE(gotran_ode)
 # solver = goss.solvers.ExplicitEuler(ode)
 # solver = goss.solvers.RL1(ode)
 # solver = goss.solvers.GRL1(ode)
+# solver = goss.solvers.ImplicitEuler(ode)
+# solver = goss.solvers.ThetaSolver(ode)
 solver = goss.solvers.ESDIRK23a(ode)
+# solver = goss.solvers.ESDIRK4O32(ode)
 
 dt = 1.0
 T = 1000

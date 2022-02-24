@@ -115,12 +115,24 @@ class RL1(ODESolver):
     pass
 
 
+class RK2(ODESolver):
+    pass
+
+
+class RK4(ODESolver):
+    pass
+
+
 class GRL1(ODESolver):
     @staticmethod
     def default_parameters() -> dict[str, Any]:
         names = ODESolver.default_parameters()
         names.update({"delta": 1e-8})
         return names
+
+
+class GRL2(GRL1):
+    pass
 
 
 class ImplicitODESolver(ODESolver, abc.ABC):
@@ -151,6 +163,19 @@ class ImplicitODESolver(ODESolver, abc.ABC):
         alpha: float,
     ) -> None:
         self._cpp_object.compute_factorized_jacobian(y, t, alpha)
+
+
+class ImplicitEuler(ImplicitODESolver):
+    @staticmethod
+    def default_parameters() -> dict[str, Any]:
+        names = ImplicitODESolver.default_parameters()
+        names.update(
+            {
+                "num_refinements_without_always_recomputing_jacobian": 2,
+                "min_dt": 0.0001,
+            },
+        )
+        return names
 
 
 class ThetaSolver(ImplicitODESolver):
@@ -202,7 +227,30 @@ class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
         return self._cpp_object.get_iord()
 
 
-class ESDIRK23a(AdaptiveImplicitSolver):
+class ESDIRK(AdaptiveImplicitSolver):
+    @property
+    def nfevals(self):
+        """Number of right hand side evaluations"""
+        return self._cpp_object.nfevals
+
+    @property
+    def ndtsa(self):
+        """Number of accepted timesteps"""
+        return self._cpp_object.ndtsa
+
+    @property
+    def ndtsr(self):
+        """Number of rejected timesteps"""
+        return self._cpp_object.ndtsr
+
+
+class ESDIRK4O32(ESDIRK):
+    """FIXME: This is not working as expected"""
+
+    pass
+
+
+class ESDIRK23a(ESDIRK):
     @staticmethod
     def default_parameters() -> dict[str, Any]:
         names = AdaptiveImplicitSolver.default_parameters()
@@ -232,38 +280,56 @@ class ESDIRK23a(AdaptiveImplicitSolver):
 
 class GOSSSolvers(Enum):
     ExplicitEuler = "ExplicitEuler"
+    RK2 = "RK2"
+    RK4 = "RK4"
     RL1 = "RL1"
     GRL1 = "GRL1"
+    GRL2 = "GRL2"
+    ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
     ESDIRK23a = "ESDIRK23a"
+    # ESDIRK4O32 = "ESDIRK4O32"
 
 
 class GOSSImplicitSolvers(Enum):
+    ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
     ESDIRK23a = "ESDIRK23a"
+    # ESDIRK4O32 = "ESDIRK4O32"
 
 
 class GOSSExplicitSolvers(Enum):
     ExplicitEuler = "ExplicitEuler"
+    RK2 = "RK2"
+    RK4 = "RK4"
     RL1 = "RL1"
     GRL1 = "GRL1"
+    GRL2 = "GRL2"
 
 
 class GOSSNonAdaptiveSolvers(Enum):
     ExplicitEuler = "ExplicitEuler"
     RL1 = "RL1"
     GRL1 = "GRL1"
+    GRL2 = "GRL2"
+    ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
 
 
 class GOSSIAdaptiveSolvers(Enum):
     ESDIRK23a = "ESDIRK23a"
+    # ESDIRK4O32 = "ESDIRK4O32"
 
 
 solver_mapper = {
     "ExplicitEuler": ExplicitEuler,
     "RL1": RL1,
     "GRL1": GRL1,
+    "GRL2": GRL2,
+    "ImplicitEuler": ImplicitEuler,
     "ThetaSolver": ThetaSolver,
     "ESDIRK23a": ESDIRK23a,
+    "RK2": RK2,
+    "RK4": RK4,
+    # "ESDIRK4O32": ESDIRK4O32,
 }

@@ -8,7 +8,15 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
-def main(rhs, odefile, t, args, run_plot=True, run_timings=True):  # noqa: C901
+def main(  # noqa: C901
+    rhs,
+    odefile,
+    t,
+    args,
+    run_plot=True,
+    run_timings=True,
+    recompute=False,
+):
     numba_rhs = numba.jit(rhs, nopython=True)
 
     ode = goss.ParameterizedODE(odefile)
@@ -25,6 +33,14 @@ def main(rhs, odefile, t, args, run_plot=True, run_timings=True):  # noqa: C901
 
     goss_GRL1 = goss.solvers.GRL1(ode)
     goss_GRL1.internal_time_step = 0.001
+
+    goss_GRL2 = goss.solvers.GRL2(ode)
+    goss_GRL2.internal_time_step = 0.001
+
+    goss_ImplicitEuler = goss.solvers.ImplicitEuler(ode)
+    goss_ThetaSolver = goss.solvers.ThetaSolver(ode)
+
+    goss_ESDIRK23a = goss.solvers.ESDIRK23a(ode)
 
     def _solve_scipy(f, method):
         return solve_ivp(
@@ -59,13 +75,25 @@ def main(rhs, odefile, t, args, run_plot=True, run_timings=True):  # noqa: C901
     def solve_goss_GRL1():
         return goss_GRL1.solve(t)
 
+    def solve_goss_GRL2():
+        return goss_GRL2.solve(t)
+
+    def solve_goss_ImplicitEuler():
+        return goss_ImplicitEuler.solve(t)
+
+    def solve_goss_ThetaSolver():
+        return goss_ThetaSolver.solve(t)
+
+    def solve_goss_ESDIRK23a():
+        return goss_ESDIRK23a.solve(t)
+
     def time_methods():
         number = 1
         repeat = 2
 
         time_outfile = Path(f"timings_{name}_{number}_{repeat}.npy")
 
-        if not time_outfile.is_file():
+        if recompute or not time_outfile.is_file():
             print("Time methods")
             timings = {}
 
@@ -100,16 +128,20 @@ def main(rhs, odefile, t, args, run_plot=True, run_timings=True):  # noqa: C901
 
         solutions_outfile = Path(f"solutions_{name}.npy")
 
-        if not solutions_outfile.is_file():
+        if recompute or not solutions_outfile.is_file():
             data = {}
             for label, solver in [
                 ("goss (ExplicitEuler)", solve_goss_ExplicitEuler),
                 ("goss (RL1)", solve_goss_RL1),
                 ("goss (GRL1)", solve_goss_GRL1),
-                ("scipy (RK45)", solve_scipy_RK45),
-                ("scipy+numba (RK45)", solve_scipy_numba_RK45),
-                ("scipy (RK23)", solve_scipy_RK23),
-                ("scipy+numba (RK23)", solve_scipy_numba_RK23),
+                ("goss (GRL2)", solve_goss_GRL2),
+                ("goss (ImplicitEuler)", solve_goss_ImplicitEuler),
+                ("goss (ThetaSolver)", solve_goss_ThetaSolver),
+                ("goss (ESDIRK23a)", solve_goss_ESDIRK23a),
+                # ("scipy (RK45)", solve_scipy_RK45),
+                # ("scipy+numba (RK45)", solve_scipy_numba_RK45),
+                # ("scipy (RK23)", solve_scipy_RK23),
+                # ("scipy+numba (RK23)", solve_scipy_numba_RK23),
             ]:
                 print(f"Solve {label}")
                 y = solver()
@@ -132,7 +164,7 @@ def main(rhs, odefile, t, args, run_plot=True, run_timings=True):  # noqa: C901
             labels.append(label)
 
         ax[0].set_ylabel("$x$")
-        ax[1].set_ylabel("$z$")
+        ax[1].set_ylabel("$y$")
         ax[2].set_ylabel("$z$")
         ax[2].set_xlabel("$t$")
 

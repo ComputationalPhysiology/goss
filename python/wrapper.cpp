@@ -81,6 +81,33 @@ void init_ODESolvers(py::module &m)
                      self.forward(y_ptr, t, interval);
                  });
 
+    py::class_<goss::GRL2, goss::GRL1, std::shared_ptr<goss::GRL2>> solver_GRL2(m, "GRL2");
+    solver_GRL2.def(py::init<>()).def(py::init<std::shared_ptr<goss::ODE>>());
+
+    py::class_<goss::RK2, goss::ODESolver, std::shared_ptr<goss::RK2>> solver_RK2(m, "RK2");
+    solver_RK2.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::RK2::copy)
+            .def("forward",
+                 [](goss::RK2 &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 });
+
+    py::class_<goss::RK4, goss::ODESolver, std::shared_ptr<goss::RK4>> solver_RK4(m, "RK4");
+    solver_RK4.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::RK4::copy)
+            .def("forward",
+                 [](goss::RK4 &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 });
+
     // Adaptive Explicit Solvers
 
     py::class_<goss::AdaptiveExplicitSolver, goss::ODESolver,
@@ -122,6 +149,23 @@ void init_ODESolvers(py::module &m)
 
                      self.compute_factorized_jacobian(y_ptr, t, dt, alpha);
                  });
+
+    py::class_<goss::ImplicitEuler, goss::ImplicitODESolver, std::shared_ptr<goss::ImplicitEuler>>
+            solver_ImplicitEuler(m, "ImplicitEuler");
+    solver_ImplicitEuler.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::ImplicitEuler::copy)
+            .def_readwrite(
+                    "num_refinements_without_always_recomputing_jacobian",
+                    &goss::ImplicitEuler::num_refinements_without_always_recomputing_jacobian)
+            .def_readwrite("min_dt", &goss::ImplicitEuler::min_dt)
+            .def("forward", [](goss::ImplicitEuler &self, const py::array_t<double> y, double t,
+                               double interval) {
+                py::buffer_info y_info = y.request();
+                auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                self.forward(y_ptr, t, interval);
+            });
 
     py::class_<goss::ThetaSolver, goss::ImplicitODESolver, std::shared_ptr<goss::ThetaSolver>>
             solver_ThetaSolver(m, "ThetaSolver");
@@ -184,6 +228,22 @@ void init_ODESolvers(py::module &m)
 
                      self.compute_ode_jacobian(y_ptr, t);
                  });
+
+    py::class_<goss::ESDIRK4O32, goss::AdaptiveImplicitSolver, std::shared_ptr<goss::ESDIRK4O32>>
+            solver_ESDIRK4O32(m, "ESDIRK4O32");
+    solver_ESDIRK4O32.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::ESDIRK4O32::copy)
+            .def_readonly("nfevals", &goss::ESDIRK4O32::nfevals)
+            .def_readonly("ndtsa", &goss::ESDIRK4O32::ndtsa)
+            .def_readonly("ndtsr", &goss::ESDIRK4O32::ndtsr)
+            .def("forward", [](goss::ESDIRK4O32 &self, const py::array_t<double> y, double t,
+                               double interval) {
+                py::buffer_info y_info = y.request();
+                auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                self.forward(y_ptr, t, interval);
+            });
 }
 
 void init_ODE(py::module &m)

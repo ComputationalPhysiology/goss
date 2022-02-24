@@ -142,7 +142,7 @@ void ESDIRK4O32::reset()
   nfevals = 0;
   ndtsa = 0;
   ndtsr = 0;
-  _ldt = parameters["ldt"];
+  _ldt = -1;
 
   // Reset bases
   AdaptiveImplicitSolver::reset();
