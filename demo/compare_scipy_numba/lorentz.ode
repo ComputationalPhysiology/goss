@@ -1,0 +1,13 @@
+parameters("Lorentz",
+sigma=10.0,
+rho=28.0,
+beta=8/3)
+
+states("Lorentz",
+x=1.0,
+y=0.0,
+z=0.0)
+
+dx_dt = sigma * (y - x)
+dy_dt = x * (rho - z) - y
+dz_dt = x * y - beta * z
