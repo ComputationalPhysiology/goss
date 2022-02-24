@@ -228,7 +228,7 @@ def main(  # noqa: C901
             for idx, state_idx in enumerate(selected_states):
                 (l,) = ax[idx].plot(t, y[:, state_idx])
                 if i == 0:
-                    ax[idx].set_ylabel(ode.parameter_names[state_idx])
+                    ax[idx].set_ylabel(ode.state_names[state_idx])
             lines.append(l)
             labels.append(label)
 
