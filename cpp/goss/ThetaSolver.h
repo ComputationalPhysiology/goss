@@ -32,16 +32,6 @@ class ThetaSolver : public ImplicitODESolver
 {
   public:
     // Default parameters
-    static Parameters default_parameters()
-    {
-        Parameters p = ImplicitODESolver::default_parameters();
-        p.rename("ThetaSolver");
-        p.add("num_refinements_without_always_recomputing_jacobian", 2);
-        p.add("min_dt", 0.0001);
-        p.add("theta", 0.5, 0., 1.);
-        return p;
-    }
-
     int num_refinements_without_always_recomputing_jacobian = 2;
     double min_dt = 0.0001;
     double theta = 0.5;

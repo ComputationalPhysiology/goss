@@ -33,15 +33,6 @@ class ImplicitEuler : public ImplicitODESolver
 {
   public:
     // Default parameters
-    static Parameters default_parameters()
-    {
-        Parameters p = ImplicitODESolver::default_parameters();
-        p.rename("ImplicitEuler");
-        p.add("num_refinements_without_always_recomputing_jacobian", 2);
-        p.add("min_dt", 0.0001);
-        return p;
-    }
-
     int num_refinements_without_always_recomputing_jacobian = 2;
     double min_dt = 0.0001;
 

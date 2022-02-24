@@ -34,7 +34,6 @@ ESDIRK23a::ESDIRK23a()
       tol(1.0e-5), loc_error(1e9), prev_dt(0.1), eta(1.0), etamin(1.0e-10), kappa(1.0e-1),
       totalits(0), z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), j_fac(0)
 {
-    parameters = ESDIRK23a::default_parameters();
     _iord = 3;
     first_step = true;
 }
@@ -49,7 +48,6 @@ ESDIRK23a::ESDIRK23a(std::shared_ptr<ODE> ode)
       tol(1.0e-5), loc_error(1e9), prev_dt(0.1), eta(1.0), etamin(1.0e-10), kappa(1.0e-1),
       totalits(0), z1(0), z2(0), z3(0), z4(0), yn(0), yh(0), j_fac(0)
 {
-    parameters = ESDIRK23a::default_parameters();
     attach(ode);
     _iord = 3;
     first_step = true;

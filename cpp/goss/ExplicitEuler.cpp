@@ -29,12 +29,10 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler() : ODESolver(), _dFdt(0)
 {
-    parameters.rename("ExplicitEuler");
 }
 //-----------------------------------------------------------------------------
 ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) : ODESolver(), _dFdt(0)
 {
-    parameters.rename("ExplicitEuler");
     attach(ode);
 }
 //-----------------------------------------------------------------------------

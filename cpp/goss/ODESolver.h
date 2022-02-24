@@ -24,7 +24,6 @@
 #include <memory>
 
 #include "ODE.h"
-#include "Parameters.h"
 #include "log.h"
 #include "types.h"
 
@@ -37,22 +36,13 @@ class ODESolver
 {
 
   public:
-    // Default parameters
-    static Parameters default_parameters()
-    {
-        Parameters params("ode_solver");
-        params.add("ldt", -1.0);
-        return params;
-    }
-
     // Default Constructor
-    ODESolver() : parameters(), _ode(static_cast<ODE *>(0))
+    ODESolver() : _ode(static_cast<ODE *>(0))
     {
-        parameters = default_parameters();
     }
 
     // Copy constructor (Uses default copy constructor of ODE)
-    ODESolver(const ODESolver &solver) : parameters(solver.parameters), _ode(static_cast<ODE *>(0))
+    ODESolver(const ODESolver &solver) : _ode(static_cast<ODE *>(0))
     {
         if (solver._ode)
             _ode = solver._ode->copy();
@@ -140,8 +130,6 @@ class ODESolver
         return false;
     }
 
-    // Solver parameters
-    Parameters parameters;
 
   protected:
     double _ldt = -1.0;

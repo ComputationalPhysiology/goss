@@ -10,13 +10,11 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ThetaSolver::ThetaSolver() : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
 {
-    parameters = default_parameters();
 }
 //-----------------------------------------------------------------------------
 ThetaSolver::ThetaSolver(std::shared_ptr<ODE> ode)
     : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
 {
-    parameters = default_parameters();
     attach(ode);
 }
 //-----------------------------------------------------------------------------

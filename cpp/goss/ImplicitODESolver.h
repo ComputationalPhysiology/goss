@@ -21,7 +21,6 @@
 #define ImplicitODESolver_h_IS_INCLUDED
 
 #include "ODESolver.h"
-#include "Parameters.h"
 #include <memory>
 #include <vector>
 
@@ -34,20 +33,6 @@ class ImplicitODESolver : public ODESolver
 
   public:
     // Default parameters
-    static Parameters default_parameters()
-    {
-        Parameters p = ODESolver::default_parameters();
-        p.rename("implicit_ode_solver");
-        p.add("eta_0", 1.0);
-        p.add("kappa", 0.1);
-        p.add("relative_tolerance", 1.e-12);
-        p.add("max_iterations", 30, 0, 1000);
-        p.add("max_relative_previous_residual", 0.01);
-        p.add("always_recompute_jacobian", false);
-
-        return p;
-    }
-
     double eta_0 = 1.0;
     double kappa = 0.1;
     double relative_tolerance = 1.e-12;

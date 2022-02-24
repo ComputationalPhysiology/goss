@@ -36,13 +36,6 @@ class GRL1 : public ODESolver
 {
   public:
     // Default parameters
-    static Parameters default_parameters()
-    {
-        Parameters p = ODESolver::default_parameters();
-        p.rename("GRL1");
-        p.add("delta", 1e-8, 1e-12, 1e-8);
-        return p;
-    }
     double delta = 1e-8;
 
     // Default Constructor

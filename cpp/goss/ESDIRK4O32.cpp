@@ -49,7 +49,6 @@ ESDIRK4O32::ESDIRK4O32()
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
-  parameters.rename("ESDIRK4O32");
   _iord = 3;
 }
 //-----------------------------------------------------------------------------
@@ -77,7 +76,6 @@ ESDIRK4O32::ESDIRK4O32(std::shared_ptr<ODE> ode)
     c4(1.0),
     z1(0), z2(0), z3(0), z4(0), yn(0), yh(0)
 {
-  parameters.rename("ESDIRK4O32");
   _iord = 3;
   attach(ode);
 }
@@ -158,8 +156,6 @@ void ESDIRK4O32::forward(double* y, double t, double interval)
 
   double* ret_ptr = y;
   double* swap, *yn0;
-
-  bool always_recompute_jacobian = parameters["always_recompute_jacobian"];
 
   // Use the raw pointer enabling pointer swap
   yn0 = &yn[0];

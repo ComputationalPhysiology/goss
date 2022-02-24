@@ -11,15 +11,12 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), _z1(0), _justrefined(false)
 {
-
-    parameters = ImplicitEuler::default_parameters();
 }
 //-----------------------------------------------------------------------------
 ImplicitEuler::ImplicitEuler(std::shared_ptr<ODE> ode)
     : ImplicitODESolver(), _z1(0), _justrefined(false)
 {
     attach(ode);
-    parameters = ImplicitEuler::default_parameters();
 }
 //-----------------------------------------------------------------------------
 ImplicitEuler::ImplicitEuler(const ImplicitEuler &solver)

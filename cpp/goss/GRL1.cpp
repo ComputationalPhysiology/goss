@@ -30,12 +30,10 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 GRL1::GRL1() : ODESolver()
 {
-    parameters = GRL1::default_parameters();
 }
 //-----------------------------------------------------------------------------
 GRL1::GRL1(std::shared_ptr<ODE> ode) : ODESolver()
 {
-    parameters = GRL1::default_parameters();
     attach(ode);
 }
 //-----------------------------------------------------------------------------

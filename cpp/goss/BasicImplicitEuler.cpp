@@ -12,12 +12,10 @@ using namespace goss;
 //-----------------------------------------------------------------------------
 BasicImplicitEuler::BasicImplicitEuler() : ImplicitODESolver()
 {
-    parameters.rename("BasicImplicitEuler");
 }
 //-----------------------------------------------------------------------------
 BasicImplicitEuler::BasicImplicitEuler(std::shared_ptr<ODE> ode) : ImplicitODESolver()
 {
-    parameters.rename("BasicImplicitEuler");
     attach(ode);
 }
 //-----------------------------------------------------------------------------

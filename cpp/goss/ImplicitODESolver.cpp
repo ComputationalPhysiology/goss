@@ -30,7 +30,6 @@ ImplicitODESolver::ImplicitODESolver()
     : ODESolver(), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0), _eta(1.), _stages(0),
       _rejects(0), _jac_comp(0), _recompute_jacobian(true), _newton_iterations(0)
 {
-    parameters = default_parameters();
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver &solver)
@@ -87,7 +86,7 @@ void ImplicitODESolver::reset()
     _recompute_jacobian = true;
 
     // Reset eta
-    _eta = eta_0; //parameters["eta_0"];
+    _eta = eta_0;
 }
 //-----------------------------------------------------------------------------
 void ImplicitODESolver::compute_factorized_jacobian(double *y, double t, double dt, double alpha)
@@ -123,19 +122,6 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
     double previous_residual = 1.0;
     double initial_residual = 1.0;
     double residual;
-
-    // Parameters
-    // const int max_iterations = parameters["max_iterations"];
-    // const double rtol = parameters["relative_tolerance"];
-
-    // The safety factor for the stopping criterion of the newton iteration
-    // const double kappa = parameters["kappa"];
-
-    // If the relative previous residual is larger than this value we recompute jacobian
-    // const double max_relative_previous_residual = parameters["max_relative_previous_residual"];
-
-    //const bool report = parameters["report"];
-    //const bool verbose_report = parameters["verbose_report"];
 
     do {
 
