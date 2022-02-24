@@ -12,13 +12,15 @@ solver = goss.solvers.ThetaSolver(oscilator)
 
 
 u0 = oscilator.get_ic()
-u, time = solver.solve(0, 10.0, dt=0.01, y0=u0)
-u_exact = np.array([np.cos(time), np.sin(time)])
+dt = 0.01
+t = np.arange(0, 10 + dt, dt)
+u = solver.solve(t, y0=u0)
+u_exact = np.array([np.cos(t), np.sin(t)])
 
 fig, ax = plt.subplots()
-ax.plot(time, u[:, 0], label="u1 (computed)")
-ax.plot(time, u[:, 1], label="u2 (computed)")
-ax.plot(time, u_exact[0, :], label="u1 (exact)", linestyle="--")
-ax.plot(time, u_exact[1, :], label="u2 (exact)", linestyle="--")
+ax.plot(t, u[:, 0], label="u1 (computed)")
+ax.plot(t, u[:, 1], label="u2 (computed)")
+ax.plot(t, u_exact[0, :], label="u1 (exact)", linestyle="--")
+ax.plot(t, u_exact[1, :], label="u2 (exact)", linestyle="--")
 ax.legend()
 plt.show()

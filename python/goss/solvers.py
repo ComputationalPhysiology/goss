@@ -60,7 +60,10 @@ class ODESolver(abc.ABC):
     @property
     def parameters(self):
         parameters = self.__class__.default_parameters()
-        return {name: getattr(self._cpp_object, name) for name in parameters}
+        return {name: self.get_parameter(name) for name in parameters}
+
+    def get_parameter(self, name: str) -> Any:
+        return getattr(self._cpp_object, name)
 
     def set_parameter(self, name: str, value: Any):
         parameters = self.__class__.default_parameters()
@@ -164,9 +167,10 @@ class ImplicitODESolver(ODESolver, abc.ABC):
         self,
         y: np.ndarray,
         t: float,
+        dt: float,
         alpha: float,
     ) -> None:
-        self._cpp_object.compute_factorized_jacobian(y, t, alpha)
+        return self._cpp_object.compute_factorized_jacobian(y, t, dt, alpha)
 
 
 class BasicImplicitEuler(ImplicitODESolver):

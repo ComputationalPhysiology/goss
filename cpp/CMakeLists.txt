@@ -54,9 +54,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/goss/Logger.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/ODE.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/ODESolver.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/ODESystemSolver.h
-${CMAKE_CURRENT_SOURCE_DIR}/goss/Parameter.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/ParameterizedODE.h
-${CMAKE_CURRENT_SOURCE_DIR}/goss/Parameters.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/Progress.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/RK2.h
 ${CMAKE_CURRENT_SOURCE_DIR}/goss/RK4.h
@@ -89,8 +87,6 @@ target_sources(goss PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/Logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/ODE.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/ODESystemSolver.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/goss/Parameter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/goss/Parameters.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/Progress.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/RK2.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/RK4.cpp

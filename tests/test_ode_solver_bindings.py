@@ -59,7 +59,7 @@ def test_forward(Solver, oscilator):
 
 
 @pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
-def test_parameters(Solver):
+def test_set_parameter(Solver):
     cls = goss.solvers.solver_mapper[Solver.name]
     solver = cls()
     parameters = solver.parameters
@@ -77,6 +77,31 @@ def test_parameters(Solver):
         solver.set_parameter(name, new_value)
         new_parameters = solver.parameters
         assert np.isclose(new_parameters[name], new_value), name
+
+
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
+def test_update_parameters(Solver):
+    cls = goss.solvers.solver_mapper[Solver.name]
+    solver = cls()
+    parameters = solver.parameters
+
+    new_parameters = {}
+    for name, default_value in cls.default_parameters().items():
+
+        if isinstance(default_value, bool):
+            # Use a different value
+            new_value = not parameters[name]
+        elif isinstance(default_value, int):
+            new_value = 42
+        elif isinstance(default_value, float):
+            new_value = 42.0
+
+        new_parameters[name] = new_value
+
+    solver.update_parameters(new_parameters)
+    for name, new_value in new_parameters.items():
+        value = solver.get_parameter(name)
+        assert np.isclose(value, new_value), name
 
 
 def test_set_invalid_parameter_type():
@@ -118,9 +143,44 @@ def test_AdaptiveImplicitSolver_methods(oscilator):
     # Just make sure notthing is failing when calling these methods
     solver.get_num_accepted()
     solver.get_num_rejected()
+    assert np.isclose(solver.get_current_time(), 0.0)
+    assert np.isclose(solver.get_current_time_step(), 0.0)
     solver.set_single_step_mode(True)
     solver.set_tol(atol=1e-5, rtol=1e-4)
     assert np.isclose(solver.atol, 1e-5)
     assert np.isclose(solver.rtol, 1e-4)
     solver.set_iord(42)
     assert solver.iord == 42
+
+
+def test_ESDIRK_methods(oscilator):
+    solver = goss.solvers.ESDIRK23a(oscilator)
+    assert solver.nfevals == 0
+    assert solver.ndtsa == 0
+    assert solver.ndtsr == 0
+
+
+def test_repr_str():
+    solver = goss.solvers.ESDIRK23a()
+    assert str(solver) == "ESDIRK23a"
+    assert repr(solver) == "ESDIRK23a()"
+
+
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
+def test_internal_time_step(Solver):
+    cls = goss.solvers.solver_mapper[Solver.name]
+    solver = cls()
+    value = 0.42
+    solver.internal_time_step = value
+    assert np.isclose(solver.internal_time_step, value)
+
+
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSImplicitSolvers)
+def test_ImplicitODESolver_compute_factorized_jacobian(Solver, fitzhughnagumo_ode):
+    ode = goss.ParameterizedODE(fitzhughnagumo_ode)
+    cls = goss.solvers.solver_mapper[Solver.name]
+
+    solver = cls(ode)
+    assert solver.num_jac_comp() == 0
+    solver.compute_factorized_jacobian(y=ode.get_ic(), t=0.0, dt=0.1, alpha=0.5)
+    assert solver.num_jac_comp() == 1

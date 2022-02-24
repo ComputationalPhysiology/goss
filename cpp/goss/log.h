@@ -43,9 +43,6 @@ namespace goss
   /// Print message
   void info(std::string msg, ...);
 
-  /// Print parameter (using output of str() method)
-  void info(const Parameters& parameters, bool verbose);
-
   /// Print message to stream
   void info_stream(std::ostream& out, std::string msg);
 
