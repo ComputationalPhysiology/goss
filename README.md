@@ -3,7 +3,7 @@
 [![CI-python](https://github.com/ComputationalPhysiology/goss/actions/workflows/python.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/python.yml)
 [![github pages](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml)
 [![PyPI version](https://badge.fury.io/py/pygoss.svg)](https://badge.fury.io/py/pygoss)
-[![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/master/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
+[![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/main/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
 
 # GOSS - General ODE solver
 
