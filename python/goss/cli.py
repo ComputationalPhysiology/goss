@@ -83,7 +83,7 @@ def list_solvers():
         )
         adapt = (
             "Adaptive"
-            if solver in solvers.GOSSIAdaptiveSolvers._member_names_
+            if solver in solvers.GOSSAdaptiveSolvers._member_names_
             else "Nonadaptive"
         )
         table.add_row(solver, exp_impl, adapt)

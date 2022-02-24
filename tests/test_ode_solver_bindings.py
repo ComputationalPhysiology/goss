@@ -29,7 +29,7 @@ def test_is_adaptive_False(Solver):
     assert solver.is_adaptive is False
 
 
-@pytest.mark.parametrize("Solver", goss.solvers.GOSSIAdaptiveSolvers)
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSAdaptiveSolvers)
 def test_is_adaptive_True(Solver):
     cls = goss.solvers.solver_mapper[Solver.name]
     solver = cls()
@@ -153,8 +153,10 @@ def test_AdaptiveImplicitSolver_methods(oscilator):
     assert solver.iord == 42
 
 
-def test_ESDIRK_methods(oscilator):
-    solver = goss.solvers.ESDIRK23a(oscilator)
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSAdaptiveSolvers)
+def test_Adaptive_methods(Solver):
+    cls = goss.solvers.solver_mapper[Solver.name]
+    solver = cls()
     assert solver.nfevals == 0
     assert solver.ndtsa == 0
     assert solver.ndtsr == 0

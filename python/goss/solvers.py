@@ -206,7 +206,7 @@ class ThetaSolver(ImplicitODESolver):
         return names
 
 
-class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
+class AdaptiveSolver(ODESolver, abc.ABC):
     def get_current_time(self) -> float:
         return self._cpp_object.get_current_time()
 
@@ -239,6 +239,31 @@ class AdaptiveImplicitSolver(ImplicitODESolver, abc.ABC):
     @property
     def iord(self) -> int:
         return self._cpp_object.get_iord()
+
+
+class AdaptiveExplicitSolver(AdaptiveSolver, abc.ABC):
+    pass
+
+
+class RKF32(AdaptiveExplicitSolver):
+    @property
+    def nfevals(self):
+        """Number of right hand side evaluations"""
+        return self._cpp_object.nfevals
+
+    @property
+    def ndtsa(self):
+        """Number of accepted timesteps"""
+        return self._cpp_object.ndtsa
+
+    @property
+    def ndtsr(self):
+        """Number of rejected timesteps"""
+        return self._cpp_object.ndtsr
+
+
+class AdaptiveImplicitSolver(ImplicitODESolver, AdaptiveSolver, abc.ABC):
+    pass
 
 
 class ESDIRK(AdaptiveImplicitSolver):
@@ -303,6 +328,7 @@ class GOSSSolvers(Enum):
     # BasicImplicitEuler = "BasicImplicitEuler"
     ImplicitEuler = "ImplicitEuler"
     ThetaSolver = "ThetaSolver"
+    RKF32 = "RKF32"
     ESDIRK23a = "ESDIRK23a"
     # ESDIRK4O32 = "ESDIRK4O32"
 
@@ -322,6 +348,7 @@ class GOSSExplicitSolvers(Enum):
     RL1 = "RL1"
     GRL1 = "GRL1"
     GRL2 = "GRL2"
+    RKF32 = "RKF32"
 
 
 class GOSSNonAdaptiveSolvers(Enum):
@@ -336,7 +363,8 @@ class GOSSNonAdaptiveSolvers(Enum):
     ThetaSolver = "ThetaSolver"
 
 
-class GOSSIAdaptiveSolvers(Enum):
+class GOSSAdaptiveSolvers(Enum):
+    RKF32 = "RKF32"
     ESDIRK23a = "ESDIRK23a"
     # ESDIRK4O32 = "ESDIRK4O32"
 
@@ -352,6 +380,7 @@ solver_mapper = {
     # "BasicImplicitEuler": BasicImplicitEuler,
     "ImplicitEuler": ImplicitEuler,
     "ThetaSolver": ThetaSolver,
+    "RKF32": RKF32,
     "ESDIRK23a": ESDIRK23a,
     # "ESDIRK4O32": ESDIRK4O32,
 }

@@ -130,6 +130,24 @@ void init_ODESolvers(py::module &m)
             .def("set_iord",
                  [](goss::AdaptiveExplicitSolver &self, int iord) { self.set_iord(iord); });
 
+
+    py::class_<goss::RKF32, goss::AdaptiveExplicitSolver, std::shared_ptr<goss::RKF32>>
+            solver_RKF32(m, "RKF32");
+    solver_RKF32.def(py::init<>())
+            .def(py::init<std::shared_ptr<goss::ODE>>())
+            .def("copy", &goss::RKF32::copy)
+            .def_readonly("nfevals", &goss::RKF32::nfevals)
+            .def_readonly("ndtsa", &goss::RKF32::ndtsa)
+            .def_readonly("ndtsr", &goss::RKF32::ndtsr)
+            .def("forward",
+                 [](goss::RKF32 &self, const py::array_t<double> y, double t, double interval) {
+                     py::buffer_info y_info = y.request();
+                     auto y_ptr = static_cast<double *>(y_info.ptr);
+
+                     self.forward(y_ptr, t, interval);
+                 });
+
+
     // Implicit solvers
 
     py::class_<goss::ImplicitODESolver, goss::ODESolver, std::shared_ptr<goss::ImplicitODESolver>>
