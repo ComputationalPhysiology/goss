@@ -8,6 +8,22 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
+def default_internal_time_steps():
+    return {
+        "goss (ExplicitEuler)": -1,
+        "goss (RK2)": -1,
+        "goss (RK4)": -1,
+        "goss (RL1)": -1,
+        "goss (RL2)": -1,
+        "goss (GRL1)": -1,
+        "goss (GRL2)": -1,
+        "goss (ImplicitEuler)": -1,
+        "goss (ThetaSolver)": -1,
+        "goss (RKF32)": -1,
+        "goss (ESDIRK23a)": -1,
+    }
+
+
 def main(  # noqa: C901
     rhs,
     odefile,
@@ -18,11 +34,14 @@ def main(  # noqa: C901
     run_plot=True,
     run_timings=True,
     recompute=False,
-    internal_time_step=-1,
+    internal_time_step=None,
     number=10,
     repeat=10,
 ):
     numba_rhs = numba.jit(rhs, nopython=True)
+    internal_time_steps = default_internal_time_steps()
+    if internal_time_step is not None:
+        internal_time_steps.update(internal_time_step)
 
     ode = goss.ParameterizedODE(odefile)
     name = Path(odefile).stem
@@ -33,33 +52,37 @@ def main(  # noqa: C901
     tspan = [t[0], t[-1]]
 
     goss_ExplicitEuler = goss.solvers.ExplicitEuler(ode)
-    goss_ExplicitEuler.internal_time_step = internal_time_step
+    goss_ExplicitEuler.internal_time_step = internal_time_steps["goss (ExplicitEuler)"]
 
     goss_RK2 = goss.solvers.RK2(ode)
-    goss_RK2.internal_time_step = internal_time_step
+    goss_RK2.internal_time_step = internal_time_steps["goss (RK2)"]
 
     goss_RK4 = goss.solvers.RK4(ode)
-    goss_RK4.internal_time_step = internal_time_step
+    goss_RK4.internal_time_step = internal_time_steps["goss (RK4)"]
 
     goss_RL1 = goss.solvers.RL1(ode)
-    goss_RL1.internal_time_step = internal_time_step
+    goss_RL1.internal_time_step = internal_time_steps["goss (RL1)"]
 
-    goss_RL2 = goss.solvers.RL1(ode)
-    goss_RL2.internal_time_step = internal_time_step
+    goss_RL2 = goss.solvers.RL2(ode)
+    goss_RL2.internal_time_step = internal_time_steps["goss (RL2)"]
 
     goss_GRL1 = goss.solvers.GRL1(ode)
-    goss_GRL1.internal_time_step = internal_time_step
+    goss_GRL1.internal_time_step = internal_time_steps["goss (GRL1)"]
 
     goss_GRL2 = goss.solvers.GRL2(ode)
-    goss_GRL2.internal_time_step = internal_time_step
+    goss_GRL2.internal_time_step = internal_time_steps["goss (GRL2)"]
 
     goss_ImplicitEuler = goss.solvers.ImplicitEuler(ode)
-    goss_ImplicitEuler.internal_time_step = internal_time_step
+    goss_ImplicitEuler.internal_time_step = internal_time_steps["goss (ImplicitEuler)"]
+
     goss_ThetaSolver = goss.solvers.ThetaSolver(ode)
-    goss_ThetaSolver.internal_time_step = internal_time_step
+    goss_ThetaSolver.internal_time_step = internal_time_steps["goss (ThetaSolver)"]
 
     goss_RKF32 = goss.solvers.RKF32(ode)
+    goss_RKF32.internal_time_step = internal_time_steps["goss (RKF32)"]
+
     goss_ESDIRK23a = goss.solvers.ESDIRK23a(ode)
+    goss_ESDIRK23a.internal_time_step = internal_time_steps["goss (ESDIRK23a)"]
 
     def _solve_scipy(f, method):
         return solve_ivp(

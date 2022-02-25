@@ -33,6 +33,19 @@ selected_methods = [
     "scipy+numba (LSODA)",
 ]
 
+internal_time_steps = benchmark.default_internal_time_steps()
+internal_time_steps["goss (ExplicitEuler)"] = 0.001
+internal_time_steps["goss (RK2)"] = 0.01
+internal_time_steps["goss (RK4)"] = 0.01
+internal_time_steps["goss (RL1)"] = 0.001
+internal_time_steps["goss (RL2)"] = 0.01
+internal_time_steps["goss (GRL1)"] = 0.001
+internal_time_steps["goss (GRL2)"] = 0.01
+internal_time_steps["goss (ImplicitEuler)"] = 0.001
+# internal_time_steps["goss (ThetaSolver)"] = 0.001
+# internal_time_steps["goss (RKF32)"] = 0.001
+# internal_time_steps["goss (ESDIRK23a)"] = 0.0001
+
 
 def main():
     benchmark.main(
@@ -48,7 +61,7 @@ def main():
             0,
             1,
         ],
-        internal_time_step=0.001,
+        internal_time_step=internal_time_steps,
         number=1,
         repeat=2,
     )
