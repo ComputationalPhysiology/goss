@@ -882,57 +882,69 @@ Differential-algebraic system of equations</p>
 <div class="section" id="module-goss.solvers">
 <span id="goss-solvers-module"></span><h2>goss.solvers module<a class="headerlink" href="#module-goss.solvers" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveExplicitSolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">AdaptiveExplicitSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveExplicitSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveExplicitSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#goss.solvers.AdaptiveSolver" title="goss.solvers.AdaptiveSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.AdaptiveSolver</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">AdaptiveImplicitSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#goss.solvers.ImplicitODESolver" title="goss.solvers.ImplicitODESolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.ImplicitODESolver</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#goss.solvers.ImplicitODESolver" title="goss.solvers.ImplicitODESolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.ImplicitODESolver</span></code></a>, <a class="reference internal" href="#goss.solvers.AdaptiveSolver" title="goss.solvers.AdaptiveSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.AdaptiveSolver</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">AdaptiveSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#goss.solvers.ODESolver" title="goss.solvers.ODESolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.ODESolver</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py property">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.atol">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atol</span></span><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.atol" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.atol">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atol</span></span><a class="headerlink" href="#goss.solvers.AdaptiveSolver.atol" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.get_current_time">
-<span class="sig-name descname"><span class="pre">get_current_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.get_current_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.get_current_time" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.get_current_time">
+<span class="sig-name descname"><span class="pre">get_current_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.get_current_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.get_current_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.get_current_time_step">
-<span class="sig-name descname"><span class="pre">get_current_time_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.get_current_time_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.get_current_time_step" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.get_current_time_step">
+<span class="sig-name descname"><span class="pre">get_current_time_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.get_current_time_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.get_current_time_step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.get_num_accepted">
-<span class="sig-name descname"><span class="pre">get_num_accepted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.get_num_accepted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.get_num_accepted" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.get_num_accepted">
+<span class="sig-name descname"><span class="pre">get_num_accepted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.get_num_accepted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.get_num_accepted" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.get_num_rejected">
-<span class="sig-name descname"><span class="pre">get_num_rejected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.get_num_rejected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.get_num_rejected" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.get_num_rejected">
+<span class="sig-name descname"><span class="pre">get_num_rejected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.get_num_rejected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.get_num_rejected" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.iord">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iord</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.iord" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.iord">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iord</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#goss.solvers.AdaptiveSolver.iord" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.rtol">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.rtol" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.rtol">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rtol</span></span><a class="headerlink" href="#goss.solvers.AdaptiveSolver.rtol" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.set_iord">
-<span class="sig-name descname"><span class="pre">set_iord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.set_iord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.set_iord" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.set_iord">
+<span class="sig-name descname"><span class="pre">set_iord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.set_iord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.set_iord" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.set_single_step_mode">
-<span class="sig-name descname"><span class="pre">set_single_step_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.set_single_step_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.set_single_step_mode" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.set_single_step_mode">
+<span class="sig-name descname"><span class="pre">set_single_step_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.set_single_step_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.set_single_step_mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goss.solvers.AdaptiveImplicitSolver.set_tol">
-<span class="sig-name descname"><span class="pre">set_tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveImplicitSolver.set_tol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveImplicitSolver.set_tol" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.AdaptiveSolver.set_tol">
+<span class="sig-name descname"><span class="pre">set_tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#AdaptiveSolver.set_tol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.AdaptiveSolver.set_tol" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1011,6 +1023,23 @@ Differential-algebraic system of equations</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.GOSSAdaptiveSolvers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSAdaptiveSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSAdaptiveSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSAdaptiveSolvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSAdaptiveSolvers.ESDIRK23a">
+<span class="sig-name descname"><span class="pre">ESDIRK23a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ESDIRK23a'</span></em><a class="headerlink" href="#goss.solvers.GOSSAdaptiveSolvers.ESDIRK23a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSAdaptiveSolvers.RKF32">
+<span class="sig-name descname"><span class="pre">RKF32</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RKF32'</span></em><a class="headerlink" href="#goss.solvers.GOSSAdaptiveSolvers.RKF32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSExplicitSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSExplicitSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
@@ -1041,20 +1070,13 @@ Differential-algebraic system of equations</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.RL1">
-<span class="sig-name descname"><span class="pre">RL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.RL1" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.RKF32">
+<span class="sig-name descname"><span class="pre">RKF32</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RKF32'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.RKF32" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="goss.solvers.GOSSIAdaptiveSolvers">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">GOSSIAdaptiveSolvers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#GOSSIAdaptiveSolvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GOSSIAdaptiveSolvers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="goss.solvers.GOSSIAdaptiveSolvers.ESDIRK23a">
-<span class="sig-name descname"><span class="pre">ESDIRK23a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ESDIRK23a'</span></em><a class="headerlink" href="#goss.solvers.GOSSIAdaptiveSolvers.ESDIRK23a" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="goss.solvers.GOSSExplicitSolvers.RL1">
+<span class="sig-name descname"><span class="pre">RL1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RL1'</span></em><a class="headerlink" href="#goss.solvers.GOSSExplicitSolvers.RL1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1166,6 +1188,11 @@ Differential-algebraic system of equations</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.RK4">
 <span class="sig-name descname"><span class="pre">RK4</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RK4'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.RK4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goss.solvers.GOSSSolvers.RKF32">
+<span class="sig-name descname"><span class="pre">RKF32</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RKF32'</span></em><a class="headerlink" href="#goss.solvers.GOSSSolvers.RKF32" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1286,6 +1313,11 @@ has been computed</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="goss.solvers.ODESolver.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.set_parameter">
 <span class="sig-name descname"><span class="pre">set_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.set_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.set_parameter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1312,6 +1344,30 @@ has been computed</p>
 <dt class="sig sig-object py" id="goss.solvers.RK4">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">RK4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#RK4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.RK4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#goss.solvers.ODESolver" title="goss.solvers.ODESolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.ODESolver</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goss.solvers.RKF32">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">RKF32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#RKF32"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.RKF32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#goss.solvers.AdaptiveExplicitSolver" title="goss.solvers.AdaptiveExplicitSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">goss.solvers.AdaptiveExplicitSolver</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="goss.solvers.RKF32.ndtsa">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndtsa</span></span><a class="headerlink" href="#goss.solvers.RKF32.ndtsa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of accepted timesteps</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goss.solvers.RKF32.ndtsr">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndtsr</span></span><a class="headerlink" href="#goss.solvers.RKF32.ndtsr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of rejected timesteps</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goss.solvers.RKF32.nfevals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nfevals</span></span><a class="headerlink" href="#goss.solvers.RKF32.nfevals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of right hand side evaluations</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">

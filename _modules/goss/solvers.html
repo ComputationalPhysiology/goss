@@ -214,6 +214,9 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()&quot;</span>
 
+<div class="viewcode-block" id="ODESolver.reset"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_adaptive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">is_adaptive</span><span class="p">()</span>
@@ -383,26 +386,26 @@
         <span class="k">return</span> <span class="n">names</span></div></div>
 
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveImplicitSolver</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="AdaptiveImplicitSolver.get_current_time"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.get_current_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveSolver</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="AdaptiveSolver.get_current_time"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.get_current_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_current_time</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.get_current_time_step"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.get_current_time_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.get_current_time_step"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.get_current_time_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_current_time_step</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.get_num_accepted"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.get_num_accepted">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.get_num_accepted"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.get_num_accepted">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_num_accepted</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.get_num_rejected"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.get_num_rejected">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_rejected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.get_num_rejected"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.get_num_rejected">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_rejected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_num_rejected</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.set_single_step_mode"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.set_single_step_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_single_step_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.set_single_step_mode"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.set_single_step_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_single_step_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_single_step_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.set_tol"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.set_tol">[docs]</a>    <span class="k">def</span> <span class="nf">set_tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.set_tol"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.set_tol">[docs]</a>    <span class="k">def</span> <span class="nf">set_tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_tol</span><span class="p">(</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AdaptiveImplicitSolver.set_iord"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver.set_iord">[docs]</a>    <span class="k">def</span> <span class="nf">set_iord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iord</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveSolver.set_iord"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveSolver.set_iord">[docs]</a>    <span class="k">def</span> <span class="nf">set_iord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iord</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_iord</span><span class="p">(</span><span class="n">iord</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -416,6 +419,31 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">iord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_iord</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AdaptiveExplicitSolver"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveExplicitSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveExplicitSolver</span><span class="p">(</span><span class="n">AdaptiveSolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RKF32"><a class="viewcode-back" href="../../goss.html#goss.solvers.RKF32">[docs]</a><span class="k">class</span> <span class="nc">RKF32</span><span class="p">(</span><span class="n">AdaptiveExplicitSolver</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nfevals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of right hand side evaluations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">nfevals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of accepted timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsa</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of rejected timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsr</span></div>
+
+
+<div class="viewcode-block" id="AdaptiveImplicitSolver"><a class="viewcode-back" href="../../goss.html#goss.solvers.AdaptiveImplicitSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveImplicitSolver</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">,</span> <span class="n">AdaptiveSolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="ESDIRK"><a class="viewcode-back" href="../../goss.html#goss.solvers.ESDIRK">[docs]</a><span class="k">class</span> <span class="nc">ESDIRK</span><span class="p">(</span><span class="n">AdaptiveImplicitSolver</span><span class="p">):</span>
@@ -480,6 +508,7 @@
     <span class="c1"># BasicImplicitEuler = &quot;BasicImplicitEuler&quot;</span>
     <span class="n">ImplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ImplicitEuler&quot;</span>
     <span class="n">ThetaSolver</span> <span class="o">=</span> <span class="s2">&quot;ThetaSolver&quot;</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span>
     <span class="n">ESDIRK23a</span> <span class="o">=</span> <span class="s2">&quot;ESDIRK23a&quot;</span></div>
     <span class="c1"># ESDIRK4O32 = &quot;ESDIRK4O32&quot;</span>
 
@@ -498,7 +527,8 @@
     <span class="n">RK4</span> <span class="o">=</span> <span class="s2">&quot;RK4&quot;</span>
     <span class="n">RL1</span> <span class="o">=</span> <span class="s2">&quot;RL1&quot;</span>
     <span class="n">GRL1</span> <span class="o">=</span> <span class="s2">&quot;GRL1&quot;</span>
-    <span class="n">GRL2</span> <span class="o">=</span> <span class="s2">&quot;GRL2&quot;</span></div>
+    <span class="n">GRL2</span> <span class="o">=</span> <span class="s2">&quot;GRL2&quot;</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span></div>
 
 
 <div class="viewcode-block" id="GOSSNonAdaptiveSolvers"><a class="viewcode-back" href="../../goss.html#goss.solvers.GOSSNonAdaptiveSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSNonAdaptiveSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -513,7 +543,8 @@
     <span class="n">ThetaSolver</span> <span class="o">=</span> <span class="s2">&quot;ThetaSolver&quot;</span></div>
 
 
-<div class="viewcode-block" id="GOSSIAdaptiveSolvers"><a class="viewcode-back" href="../../goss.html#goss.solvers.GOSSIAdaptiveSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSIAdaptiveSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="GOSSAdaptiveSolvers"><a class="viewcode-back" href="../../goss.html#goss.solvers.GOSSAdaptiveSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSAdaptiveSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span>
     <span class="n">ESDIRK23a</span> <span class="o">=</span> <span class="s2">&quot;ESDIRK23a&quot;</span></div>
     <span class="c1"># ESDIRK4O32 = &quot;ESDIRK4O32&quot;</span>
 
@@ -529,6 +560,7 @@
     <span class="c1"># &quot;BasicImplicitEuler&quot;: BasicImplicitEuler,</span>
     <span class="s2">&quot;ImplicitEuler&quot;</span><span class="p">:</span> <span class="n">ImplicitEuler</span><span class="p">,</span>
     <span class="s2">&quot;ThetaSolver&quot;</span><span class="p">:</span> <span class="n">ThetaSolver</span><span class="p">,</span>
+    <span class="s2">&quot;RKF32&quot;</span><span class="p">:</span> <span class="n">RKF32</span><span class="p">,</span>
     <span class="s2">&quot;ESDIRK23a&quot;</span><span class="p">:</span> <span class="n">ESDIRK23a</span><span class="p">,</span>
     <span class="c1"># &quot;ESDIRK4O32&quot;: ESDIRK4O32,</span>
 <span class="p">}</span>
