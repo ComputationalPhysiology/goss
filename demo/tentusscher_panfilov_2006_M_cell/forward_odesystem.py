@@ -10,7 +10,7 @@ from gotran import load_ode
 field_states = ["V", "Ca_i"]
 field_parameters = ["g_CaL", "g_Kr"]
 ode = goss.ParameterizedODE(
-    load_ode("tentusscher_panfilov_2006_M_cell.oder"),
+    load_ode("tentusscher_panfilov_2006_M_cell.ode"),
     field_states=field_states,
     field_parameters=field_parameters,
 )

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from gotran import load_ode
 
-oscilator = goss.ODE(load_ode("oscilator"))
+oscilator = goss.ParameterizedODE(load_ode("oscilator"))
 
 
 # solver = goss.solvers.ExplicitEuler(oscilator)
