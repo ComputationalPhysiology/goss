@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest import mock
 
 import goss
+import gotran
 import pytest
 from click.testing import CliRunner
 
@@ -48,6 +49,22 @@ def test_gotran2goss_fields_and_list_timings():
     assert output.is_file()
     assert "num  : total time : mean time" in result.stdout
     output.unlink()
+
+
+def test_gotran2goss_and_loadfile(output_file):
+    result = runner.invoke(
+        goss.cli.app,
+        [
+            "gotran2goss",
+            "--output",
+            output_file.as_posix(),
+            odefile.as_posix(),
+        ],
+    )
+    assert result.exit_code == 0
+    gotran_ode = gotran.load_ode(odefile)
+    ode = goss.ParameterizedODE(output_file, name=gotran_ode.name.capitalize())
+    assert ode.num_states == gotran_ode.num_states
 
 
 def test_gotran2goss_code_params():
