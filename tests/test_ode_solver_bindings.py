@@ -4,9 +4,17 @@ import pytest
 
 
 @pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
-def test_ExplicitEuler_constructor_ode(Solver, oscilator):
+def test_solver_constructor_ode(Solver, oscilator):
     cls = goss.solvers.solver_mapper[Solver.name]
     solver = cls(oscilator)
+    assert solver.num_states == oscilator.num_states
+
+
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
+def test_solver_constructor_ode_attach(Solver, oscilator):
+    cls = goss.solvers.solver_mapper[Solver.name]
+    solver = cls()
+    solver.attach(oscilator)
     assert solver.num_states == oscilator.num_states
 
 

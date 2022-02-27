@@ -11,6 +11,34 @@ from .ode import ODE
 
 
 class ODESolver(abc.ABC):
+    """Base class for ODESolver.
+
+    Your can instantiate an ODE solver in many different ways,
+    but the general theme is that an ode solver need an ode-model
+    that is typically coming from a gotran ode-file.
+
+    The default way to instantiate a solver is to provide the
+    ode as the first argument
+
+    .. code:: python
+
+        solver = ExplicitEuler(ode)
+
+    where `ode` is of type `goss.ode.ODE`.
+    Another way is to create an empty ODESolver
+
+    .. code:: python
+
+        solver = ExplicitEuler()
+
+    but then you need to attach an ode later in order to use it
+
+    .. code:: python
+
+        solver.attach(ode)
+
+    """
+
     def __init__(self, *args, **kwargs):
         from . import _gosscpp
 
@@ -40,20 +68,33 @@ class ODESolver(abc.ABC):
     def reset(self) -> None:
         self._cpp_object.reset()
 
+    def attach(self, ode: ODE) -> None:
+        self._cpp_object.attach(ode._cpp_object)
+
     @property
     def is_adaptive(self) -> bool:
+        """Flag to indicate whether the solver is adaptive for not"""
         return self._cpp_object.is_adaptive()
 
     @staticmethod
     def default_parameters() -> dict[str, Any]:
+        """Dictionary with the default parameters"""
         return {}
 
     def update_parameters(self, parameters: dict[str, Any]):
+        """Update the parameters given a dictionary
+
+        Parameters
+        ----------
+        parameters : dict[str, Any]
+            The new parameters
+        """
         for k, v in parameters.items():
             self.set_parameter(k, v)
 
     @property
     def internal_time_step(self) -> float:
+        """Time step used internally by the solver"""
         return self._cpp_object.get_internal_time_step()
 
     @internal_time_step.setter
@@ -61,14 +102,43 @@ class ODESolver(abc.ABC):
         self._cpp_object.set_internal_time_step(time_step)
 
     @property
-    def parameters(self):
+    def parameters(self) -> dict[str, Any]:
+        """Dictionaty with the current parameters"""
         parameters = self.__class__.default_parameters()
         return {name: self.get_parameter(name) for name in parameters}
 
     def get_parameter(self, name: str) -> Any:
+        """Get the current value of a parameter
+
+        Parameters
+        ----------
+        name : str
+            The name of the paramrter of interest
+
+        Returns
+        -------
+        Any
+            The value of the parameter
+        """
         return getattr(self._cpp_object, name)
 
     def set_parameter(self, name: str, value: Any):
+        """Set the value of a parameter
+
+        Parameters
+        ----------
+        name : str
+            Name of the parameter you want to set
+        value : Any
+            The new value of the parameter
+
+        Raises
+        ------
+        KeyError
+            If the name is not a valid parameter
+        TypeError
+            If the type of the new value does not match the original value
+        """
         parameters = self.__class__.default_parameters()
         if name not in parameters:
             raise KeyError(
@@ -84,13 +154,27 @@ class ODESolver(abc.ABC):
         setattr(self._cpp_object, name, value)
 
     def get_ode(self) -> ODE:
+        """Get the ODE from the cpp object"""
         return ODE(self._cpp_object.get_ode())
 
     def copy(self):
+        """Make a copy of the solver"""
         return self.__class__(self._cpp_object.copy())
 
     def forward(self, y: np.ndarray, t: float, interval: float):
-        # FIXME: Consider making this pure
+        """Do one forward iteration
+
+        Parameters
+        ----------
+        y : np.ndarray
+            Array with the current state values. Note that
+            this array will be mutatated and contain the updated
+            states after call to this function.
+        t : float
+            Time point
+        interval : float
+            Interval to step
+        """
         self._cpp_object.forward(y, t, interval)
 
     def solve(
@@ -98,6 +182,21 @@ class ODESolver(abc.ABC):
         t: np.ndarray,
         y0: Optional[np.ndarray] = None,
     ) -> np.ndarray:
+        """Solve the ode for a given number of time steps
+
+        Parameters
+        ----------
+        t : np.ndarray
+            The time steps
+        y0 : Optional[np.ndarray], optional
+            Initial conditions. If not provided (default), then
+            the default initial conditions will be used.
+
+        Returns
+        -------
+        np.ndarray
+            The states at each time point.
+        """
         if y0 is None:
             # Use the initial conditions from the ODE
             y0 = self.get_ode().get_ic()
@@ -110,6 +209,7 @@ class ODESolver(abc.ABC):
 
     @property
     def num_states(self):
+        """Number of states in the ODE"""
         return self._cpp_object.num_states()
 
 

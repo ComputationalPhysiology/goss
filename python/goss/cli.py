@@ -187,17 +187,8 @@ def gotran2goss(
         out = Path(filename).with_suffix(".h")
 
     with open(out, "w") as f:
-        for line in [
-            f"#ifndef {ode.name.upper()}_H_IS_INCLUDED\n",
-            f"#define {ode.name.upper()}_H_IS_INCLUDED\n",
-            "#include <memory>\n",
-            "#include <stdexcept>\n",
-            "#include <cmath>\n\n",
-            '#include "goss/ParameterizedODE.h"\n\n',
-            cgen.class_code(),
-            "\n#endif\n",
-        ]:
-            f.write(line)
+        f.write(cgen.file_code())
+
     print(f"Output saved to {out}")
 
     if list_timings:

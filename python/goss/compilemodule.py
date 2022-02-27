@@ -57,6 +57,10 @@ def cppyy_jit(
 
     # Init state code
     cpp_code = cgen.file_code()
+    return code_to_submodule(cpp_code, cgen.name)
+
+
+def code_to_submodule(code: str, name):
 
     import cppyy
 
@@ -64,10 +68,10 @@ def cppyy_jit(
     cppyy.add_library_path(here.joinpath("lib").as_posix())
     cppyy.load_library("goss")
 
-    cppyy.cppdef(cpp_code)
+    cppyy.cppdef(code)
 
-    _cppyygbl = __import__("cppyy.gbl", fromlist=[f"create_{cgen.name}"])
-    submodule = getattr(_cppyygbl, f"create_{cgen.name}")()
+    _cppyygbl = __import__("cppyy.gbl", fromlist=[f"create_{name}"])
+    submodule = getattr(_cppyygbl, f"create_{name}")()
 
     import cppyy.ll
 

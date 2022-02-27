@@ -36,10 +36,16 @@ install-no-deps: clean
 
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/source/simcardems.rst´
+	rm -f docs/source/goss.rst´
 	rm -f docs/source/modules.rst
 	sphinx-apidoc -o docs/source python/goss
 	for file in CONTRIBUTING.md; do \
 			cp $$file docs/source/. ;\
 	done
+	jupytext demo/oscilator_v1.py -o docs/source/oscilator_v1.md
+	jupytext demo/oscilator_v2.py -o docs/source/oscilator_v2.md
+	jupytext demo/oscilator_v3.py -o docs/source/oscilator_v3.md
 	cd docs && make html
+
+show:
+	open docs/build/html/index.html

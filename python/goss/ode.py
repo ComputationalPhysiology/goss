@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import NamedTuple
 from typing import Optional
 
 import gotran
 import numpy as np
 
-from .compilemodule import jit
+from . import compilemodule
 
 
 class LinearizedEval(NamedTuple):
@@ -15,14 +16,33 @@ class LinearizedEval(NamedTuple):
     linear: Optional[np.ndarray] = None
 
 
+def load_file(path: Path, **kwargs):
+
+    if not path.is_file():
+        raise FileNotFoundError(f"File {path} does not exist")
+
+    if path.suffix == ".ode":
+        return compilemodule.jit(gotran.load_ode(path), **kwargs)
+    elif path.suffix in [".h", ".hpp"]:
+        name = kwargs.get("name", "")
+        if name == "":
+            raise ValueError("Missing name of cpp module")
+        with open(path, "r") as f:
+            code = f.read()
+        return compilemodule.make_ode(compilemodule.code_to_submodule(code, name))
+
+    raise RuntimeError(f"Invalid extension {path.suffix}")
+
+
 class ODE:
     def __init__(self, *args, **kwargs):
 
         if isinstance(args[0], gotran.ODE):
-            self._cpp_object = jit(args[0], **kwargs)
+            self._cpp_object = compilemodule.jit(args[0], **kwargs)
         elif isinstance(args[0], (os.PathLike, str)):
             # Assume this is a gotran ode file
-            self._cpp_object = jit(gotran.load_ode(args[0]), **kwargs)
+            path = Path(args[0])
+            self._cpp_object = load_file(path, **kwargs)
 
         else:
             # Need to import this module here in order to
