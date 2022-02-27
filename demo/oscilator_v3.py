@@ -4,6 +4,7 @@
 #
 # As before we first need to import the necessary libraries
 #
+
 import goss
 import matplotlib.pyplot as plt
 import numpy as np

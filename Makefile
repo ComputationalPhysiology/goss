@@ -45,6 +45,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	jupytext demo/oscilator_v1.py -o docs/source/oscilator_v1.md
 	jupytext demo/oscilator_v2.py -o docs/source/oscilator_v2.md
 	jupytext demo/oscilator_v3.py -o docs/source/oscilator_v3.md
+	jupytext demo/lorentz.py -o docs/source/lorentz.md
 	cd docs && make html
 
 show:

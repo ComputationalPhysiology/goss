@@ -5,6 +5,7 @@
 # All ODE-solvers implements this method and the difference between the different solvers lies in how this method is implemented.
 #
 # First we need to make the necessary imports
+
 import goss
 import matplotlib.pyplot as plt
 import numpy as np
