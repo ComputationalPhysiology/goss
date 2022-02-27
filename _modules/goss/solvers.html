@@ -82,14 +82,26 @@
    Contributing
   </a>
  </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../demo.html">
+   Demo
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="../../modules.html">
    goss
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -188,6 +200,34 @@
 
 
 <div class="viewcode-block" id="ODESolver"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver">[docs]</a><span class="k">class</span> <span class="nc">ODESolver</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for ODESolver.</span>
+
+<span class="sd">    Your can instantiate an ODE solver in many different ways,</span>
+<span class="sd">    but the general theme is that an ode solver need an ode-model</span>
+<span class="sd">    that is typically coming from a gotran ode-file.</span>
+
+<span class="sd">    The default way to instantiate a solver is to provide the</span>
+<span class="sd">    ode as the first argument</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver = ExplicitEuler(ode)</span>
+
+<span class="sd">    where `ode` is of type `goss.ode.ODE`.</span>
+<span class="sd">    Another way is to create an empty ODESolver</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver = ExplicitEuler()</span>
+
+<span class="sd">    but then you need to attach an ode later in order to use it</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver.attach(ode)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_gosscpp</span>
 
@@ -217,20 +257,33 @@
 <div class="viewcode-block" id="ODESolver.reset"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="ODESolver.attach"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ode</span><span class="p">:</span> <span class="n">ODE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_adaptive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Flag to indicate whether the solver is adaptive for not&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">is_adaptive</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ODESolver.default_parameters"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary with the default parameters&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="ODESolver.update_parameters"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.update_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">update_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Update the parameters given a dictionary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters : dict[str, Any]</span>
+<span class="sd">            The new parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">internal_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Time step used internally by the solver&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_internal_time_step</span><span class="p">()</span>
 
     <span class="nd">@internal_time_step</span><span class="o">.</span><span class="n">setter</span>
@@ -238,14 +291,43 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_internal_time_step</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Dictionaty with the current parameters&quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">}</span>
 
 <div class="viewcode-block" id="ODESolver.get_parameter"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.get_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the current value of a parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the paramrter of interest</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            The value of the parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ODESolver.set_parameter"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.set_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the value of a parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the parameter you want to set</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            The new value of the parameter</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        KeyError</span>
+<span class="sd">            If the name is not a valid parameter</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the type of the new value does not match the original value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
@@ -261,13 +343,27 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ODESolver.get_ode"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.get_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ODE</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the ODE from the cpp object&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ODE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_ode</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="ODESolver.copy"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of the solver&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="ODESolver.forward"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="c1"># FIXME: Consider making this pure</span>
+        <span class="sd">&quot;&quot;&quot;Do one forward iteration</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : np.ndarray</span>
+<span class="sd">            Array with the current state values. Note that</span>
+<span class="sd">            this array will be mutatated and contain the updated</span>
+<span class="sd">            states after call to this function.</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Time point</span>
+<span class="sd">        interval : float</span>
+<span class="sd">            Interval to step</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ODESolver.solve"><a class="viewcode-back" href="../../goss.html#goss.solvers.ODESolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
@@ -275,6 +371,21 @@
         <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">y0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Solve the ode for a given number of time steps</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : np.ndarray</span>
+<span class="sd">            The time steps</span>
+<span class="sd">        y0 : Optional[np.ndarray], optional</span>
+<span class="sd">            Initial conditions. If not provided (default), then</span>
+<span class="sd">            the default initial conditions will be used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            The states at each time point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">y0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Use the initial conditions from the ODE</span>
             <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode</span><span class="p">()</span><span class="o">.</span><span class="n">get_ic</span><span class="p">()</span>
@@ -287,6 +398,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of states in the ODE&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">num_states</span><span class="p">()</span></div>
 
 

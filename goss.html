@@ -83,14 +83,26 @@
    Contributing
   </a>
  </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="demo.html">
+   Demo
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
 </ul>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
    goss
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -418,6 +430,11 @@
 </div>
 <div class="section" id="module-goss.compilemodule">
 <span id="goss-compilemodule-module"></span><h2>goss.compilemodule module<a class="headerlink" href="#module-goss.compilemodule" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="goss.compilemodule.code_to_submodule">
+<span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">code_to_submodule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/compilemodule.html#code_to_submodule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.code_to_submodule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="goss.compilemodule.cppyy_jit">
 <span class="sig-prename descclassname"><span class="pre">goss.compilemodule.</span></span><span class="sig-name descname"><span class="pre">cppyy_jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gotran.ODE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">typing.Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ctypes.c_void_p</span></span></span><a class="reference internal" href="_modules/goss/compilemodule.html#cppyy_jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.compilemodule.cppyy_jit" title="Permalink to this definition">¶</a></dt>
@@ -878,6 +895,11 @@ Differential-algebraic system of equations</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="goss.ode.load_file">
+<span class="sig-prename descclassname"><span class="pre">goss.ode.</span></span><span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/ode.html#load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.ode.load_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-goss.solvers">
 <span id="goss-solvers-module"></span><h2>goss.solvers module<a class="headerlink" href="#module-goss.solvers" title="Permalink to this headline">¶</a></h2>
@@ -987,7 +1009,8 @@ Differential-algebraic system of equations</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ESDIRK23a.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ESDIRK23a.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ESDIRK23a.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.solvers.ESDIRK23a.ndtsa">
@@ -1229,7 +1252,8 @@ Differential-algebraic system of equations</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.GRL1.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#GRL1.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.GRL1.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1246,7 +1270,8 @@ Differential-algebraic system of equations</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ImplicitEuler.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ImplicitEuler.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ImplicitEuler.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1262,7 +1287,8 @@ Differential-algebraic system of equations</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ImplicitODESolver.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ImplicitODESolver.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ImplicitODESolver.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ImplicitODESolver.num_jac_comp">
@@ -1277,50 +1303,104 @@ has been computed</p>
 <dt class="sig sig-object py" id="goss.solvers.ODESolver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goss.solvers.</span></span><span class="sig-name descname"><span class="pre">ODESolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class for ODESolver.</p>
+<p>Your can instantiate an ODE solver in many different ways,
+but the general theme is that an ode solver need an ode-model
+that is typically coming from a gotran ode-file.</p>
+<p>The default way to instantiate a solver is to provide the
+ode as the first argument</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">ExplicitEuler</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <cite>ode</cite> is of type <cite>goss.ode.ODE</cite>.
+Another way is to create an empty ODESolver</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">ExplicitEuler</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>but then you need to attach an ode later in order to use it</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.solvers.ODESolver.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goss.ode.ODE" title="goss.ode.ODE"><span class="pre">goss.ode.ODE</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.attach" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Make a copy of the solver</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Do one forward iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Array with the current state values. Note that
+this array will be mutatated and contain the updated
+states after call to this function.</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – Time point</p></li>
+<li><p><strong>interval</strong> (<em>float</em>) – Interval to step</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.get_ode">
 <span class="sig-name descname"><span class="pre">get_ode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#goss.ode.ODE" title="goss.ode.ODE"><span class="pre">goss.ode.ODE</span></a></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.get_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.get_ode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the ODE from the cpp object</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.get_parameter">
 <span class="sig-name descname"><span class="pre">get_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.get_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.get_parameter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the current value of a parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the paramrter of interest</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value of the parameter</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.internal_time_step">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">internal_time_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#goss.solvers.ODESolver.internal_time_step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Time step used internally by the solver</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.is_adaptive">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_adaptive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#goss.solvers.ODESolver.is_adaptive" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Flag to indicate whether the solver is adaptive for not</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.num_states">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_states</span></span><a class="headerlink" href="#goss.solvers.ODESolver.num_states" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Number of states in the ODE</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.parameters">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#goss.solvers.ODESolver.parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#goss.solvers.ODESolver.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionaty with the current parameters</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.reset">
@@ -1330,17 +1410,54 @@ has been computed</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.set_parameter">
 <span class="sig-name descname"><span class="pre">set_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.set_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.set_parameter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Set the value of a parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the parameter you want to set</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The new value of the parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – If the name is not a valid parameter</p></li>
+<li><p><strong>TypeError</strong> – If the type of the new value does not match the original value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.solve">
 <span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.solve" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solve the ode for a given number of time steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>np.ndarray</em>) – The time steps</p></li>
+<li><p><strong>y0</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em><em>, </em><em>optional</em>) – Initial conditions. If not provided (default), then
+the default initial conditions will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The states at each time point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ODESolver.update_parameters">
 <span class="sig-name descname"><span class="pre">update_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/solvers.html#ODESolver.update_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ODESolver.update_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Update the parameters given a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameters</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The new parameters</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1399,7 +1516,8 @@ has been computed</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.solvers.ThetaSolver.default_parameters">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/goss/solvers.html#ThetaSolver.default_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.solvers.ThetaSolver.default_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Dictionary with the default parameters</p>
+</dd></dl>
 
 </dd></dl>
 

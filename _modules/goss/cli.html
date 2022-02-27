@@ -82,14 +82,26 @@
    Contributing
   </a>
  </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../demo.html">
+   Demo
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="../../modules.html">
    goss
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -364,17 +376,8 @@
         <span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.h&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s2">&quot;#ifndef </span><span class="si">{</span><span class="n">ode</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">_H_IS_INCLUDED</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;#define </span><span class="si">{</span><span class="n">ode</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">_H_IS_INCLUDED</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;#include &lt;memory&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;#include &lt;stdexcept&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;#include &lt;cmath&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s1">&#39;#include &quot;goss/ParameterizedODE.h&quot;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">cgen</span><span class="o">.</span><span class="n">class_code</span><span class="p">(),</span>
-            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">#endif</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">]:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cgen</span><span class="o">.</span><span class="n">file_code</span><span class="p">())</span>
+
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output saved to </span><span class="si">{</span><span class="n">out</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">list_timings</span><span class="p">:</span>
