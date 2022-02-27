@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>&lt;no title&gt; &#8212; goss 0.1.4 documentation</title>
+    <title>Oscilator - Using generated code &#8212; goss 0.1.4 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -35,8 +35,8 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="goss" href="modules.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="oscilator_v2.html" />
+    <link rel="next" title="Lorentz Attractor" href="lorentz.html" />
+    <link rel="prev" title="Oscilator - Using the solve method" href="oscilator_v2.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -73,7 +73,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="install.html">
    Installation
@@ -84,16 +84,36 @@
    Contributing
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="demo.html">
    Demo
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v1.html">
+     Oscilator - Using the forward method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v2.html">
+     Oscilator - Using the solve method
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Oscilator - Using generated code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="lorentz.html">
+     Lorentz Attractor
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -197,14 +217,6 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> goss
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
-</ul>
-
-            </nav>
         </div>
     </div>
 </div>
@@ -213,13 +225,11 @@
         
               <div>
                 
-  <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># # Oscilator - Using generated code</span>
-<span class="c1">#</span>
-<span class="c1"># It might be beneficial to generate the C++ code first using the `gotran2goss` script in the CLI, and then use that code as input to the model. One advantage of this is that you can edit the C++ code directly before passing it to `goss`. This might be desirable if you want to implement logic into the model that is difficult to describe using `gotran` or if you want to bring in some third party library</span>
-<span class="c1">#</span>
-<span class="c1"># As before we first need to import the necessary libraries</span>
-<span class="c1">#</span>
-<span class="kn">import</span> <span class="nn">goss</span>
+  <div class="tex2jax_ignore mathjax_ignore section" id="oscilator-using-generated-code">
+<h1>Oscilator - Using generated code<a class="headerlink" href="#oscilator-using-generated-code" title="Permalink to this headline">¶</a></h1>
+<p>It might be beneficial to generate the C++ code first using the <code class="docutils literal notranslate"><span class="pre">gotran2goss</span></code> script in the CLI, and then use that code as input to the model. One advantage of this is that you can edit the C++ code directly before passing it to <code class="docutils literal notranslate"><span class="pre">goss</span></code>. This might be desirable if you want to implement logic into the model that is difficult to describe using <code class="docutils literal notranslate"><span class="pre">gotran</span></code> or if you want to bring in some third party library</p>
+<p>As before we first need to import the necessary libraries</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">goss</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
@@ -267,6 +277,7 @@
 <img alt="_images/oscilator.png" src="_images/oscilator.png" />
 <p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Computed and exact solution of the oscilator ODE.</span><a class="headerlink" href="#oscilator-v3" title="Permalink to this image">¶</a></p>
 </div>
+</div>
 
 
               </div>
@@ -278,13 +289,13 @@
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">&lt;no title&gt;</p>
+            <p class="prev-next-title">Oscilator - Using the solve method</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="modules.html" title="next page">
+    <a class='right-next' id="next-link" href="lorentz.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">goss</p>
+        <p class="prev-next-title">Lorentz Attractor</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

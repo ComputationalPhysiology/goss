@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Oscilator - Using the solve method &#8212; goss 0.1.4 documentation</title>
+    <title>Lorentz Attractor &#8212; goss 0.1.4 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Oscilator - Using generated code" href="oscilator_v3.html" />
-    <link rel="prev" title="Oscilator - Using the forward method" href="oscilator_v1.html" />
+    <link rel="next" title="goss" href="modules.html" />
+    <link rel="prev" title="Oscilator - Using generated code" href="oscilator_v3.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -101,8 +101,8 @@
      Oscilator - Using the forward method
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v2.html">
      Oscilator - Using the solve method
     </a>
    </li>
@@ -111,8 +111,8 @@
      Oscilator - Using generated code
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="lorentz.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Lorentz Attractor
     </a>
    </li>
@@ -178,7 +178,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/oscilator_v2.md.txt"><button type="button"
+        <a class="dropdown-buttons" href="_sources/lorentz.md.txt"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -198,7 +198,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2Foscilator_v2.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2Florentz.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -227,67 +227,82 @@
         
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="oscilator-using-the-solve-method">
-<span id="using-solve-method"></span><h1>Oscilator - Using the solve method<a class="headerlink" href="#oscilator-using-the-solve-method" title="Permalink to this headline">¶</a></h1>
-<p>In this demo we will solve a simple oscilator ODE by calling the solve method on the ODE-solver.
-This a wrapper around the <a class="reference internal" href="oscilator_v1.html#using-forward-method"><span class="std std-ref">forward method</span></a> that will solve the ODE for multiple timesteps.</p>
-<p>First we need to make the necessary imports</p>
+  <!-- #region -->
+<div class="tex2jax_ignore mathjax_ignore section" id="lorentz-attractor">
+<h1>Lorentz Attractor<a class="headerlink" href="#lorentz-attractor" title="Permalink to this headline">¶</a></h1>
+<p>In this demo we solve the Lorentz attractor</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{dx}{dt} &amp;= \sigma (y - x) \\
+\frac{dy}{dt} &amp;= x (\rho  - z) - y \\
+\frac{dz}{dt} &amp;= x y - \beta z\end{split}\]</div>
+<p>with the parameters <span class="math notranslate nohighlight">\(\sigma=10.0, \rho=28.0\)</span> and <span class="math notranslate nohighlight">\(beta=8/3\)</span> and the initial conditions
+<span class="math notranslate nohighlight">\(x = 0.0, y = 1.0\)</span>, and <span class="math notranslate nohighlight">\(z = 1.05\)</span>.</p>
+<p>We assume that the we have file called <code class="docutils literal notranslate"><span class="pre">lorentz.ode</span></code> with the following content</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># lorentz.ode</span>
+<span class="n">parameters</span><span class="p">(</span>
+<span class="n">sigma</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span>
+<span class="n">rho</span><span class="o">=</span><span class="mf">21.0</span><span class="p">,</span>
+<span class="n">beta</span><span class="o">=</span><span class="mf">2.4</span>
+<span class="p">)</span>
+
+<span class="n">states</span><span class="p">(</span>
+<span class="n">x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="n">y</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="n">z</span><span class="o">=</span><span class="mf">3.05</span>
+<span class="p">)</span>
+
+<span class="n">dx_dt</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">dy_dt</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span>
+<span class="n">dz_dt</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span>
+</pre></div>
+</div>
+<p>And we note that the parameters and initial states are not the same as stated about, so we need to somehow provide the correct parameters and initial states.</p>
+<p>First let’s do the usual imports</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">goss</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">gotran</span> <span class="kn">import</span> <span class="n">load_ode</span>
 </pre></div>
 </div>
-<p>The first we need to do is to write the ODE-file. This ODE has the form</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\frac{dx}{dt} &amp;= -y \\
-\frac{dy}{dt} &amp;= x\end{split}\]</div>
-<p>with the initial conditions <span class="math notranslate nohighlight">\(x = 1.0\)</span> and <span class="math notranslate nohighlight">\(y = 0.0\)</span>. We can writes this in a gotran ode file as follows</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># oscilator.ode</span>
-<span class="n">states</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
-
-<span class="n">dx_dt</span> <span class="o">=</span> <span class="o">-</span><span class="n">y</span>
-<span class="n">dy_dt</span> <span class="o">=</span> <span class="n">x</span>
+<p>And load the ode using gotran</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lorentz</span> <span class="o">=</span> <span class="n">load_ode</span><span class="p">(</span><span class="s2">&quot;lorentz.ode&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note that the <code class="docutils literal notranslate"><span class="pre">df_dt</span></code> syntax, where <code class="docutils literal notranslate"><span class="pre">f</span></code> is a state is a special syntax in gotran that indicates the derivative.</p>
-<p>Next we load the ODE file using gotran and supply this to the <code class="docutils literal notranslate"><span class="pre">goss.ODE</span></code> class constructor.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">oscilator</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">ParameterizedODE</span><span class="p">(</span><span class="n">load_ode</span><span class="p">(</span><span class="s2">&quot;oscilator.ode&quot;</span><span class="p">))</span>
+<p>Next we jit-compile the ODE into <code class="docutils literal notranslate"><span class="pre">goss</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">ParameterizedODE</span><span class="p">(</span><span class="n">lorentz</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This will create the C++ code and jit compile it using <a class="reference external" href="https://cppyy.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">cppyy</span></code></a>.
-Next we need to pick a solver (you can use the cli <code class="docutils literal notranslate"><span class="pre">goss</span> <span class="pre">list-solvers</span></code> to see all options). Here we pick the first order Rush-Larsen scheme.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">RL1</span><span class="p">(</span><span class="n">oscilator</span><span class="p">)</span>
+<p>We can update the parameters using the <code class="docutils literal notranslate"><span class="pre">set_parameter</span></code> method</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+<span class="n">ode</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;rho&quot;</span><span class="p">,</span> <span class="mf">28.0</span><span class="p">)</span>
+<span class="n">ode</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="mi">8</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now we select the time steps we want to use and</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<p>We can now instantiate the solver and select the time steps</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">RKF32</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10001</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We also get the initail conditions from the ODE</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u0</span> <span class="o">=</span> <span class="n">oscilator</span><span class="o">.</span><span class="n">get_ic</span><span class="p">()</span>
+<p>We can also provide the correct inital states to the solver</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">])</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">ic</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>And we provide the time steps and the initial conditions to the <code class="docutils literal notranslate"><span class="pre">solve</span></code> method. Note that we didn’t really need to specify the inital conditions
-here because if these are not provided then the default initial conditions wlll be used.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">u0</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Finally we plot the computed solutions agains the exact solution</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u_exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)])</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;u1 (computed)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;u2 (computed)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u_exact</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;u1 (exact)&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u_exact</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;u2 (exact)&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<p>Finally we plot the solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Lorenz Attractor&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="figure align-default" id="oscilator-v2">
-<img alt="_images/oscilator.png" src="_images/oscilator.png" />
-<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Computed and exact solution of the oscilator ODE.</span><a class="headerlink" href="#oscilator-v2" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="lorentz">
+<img alt="_images/lorentz.png" src="_images/lorentz.png" />
+<p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">Computed solution of the lorentz attractor</span><a class="headerlink" href="#lorentz" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 
@@ -297,17 +312,17 @@ here because if these are not provided then the default initial conditions wlll 
         
             <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="oscilator_v1.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="oscilator_v3.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Oscilator - Using the forward method</p>
+            <p class="prev-next-title">Oscilator - Using generated code</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="oscilator_v3.html" title="next page">
+    <a class='right-next' id="next-link" href="modules.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Oscilator - Using generated code</p>
+        <p class="prev-next-title">goss</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -1,11 +1,12 @@
+(using-solve-method)=
+# Oscilator - Using the solve method
+
+In this demo we will solve a simple oscilator ODE by calling the solve method on the ODE-solver.
+This a wrapper around the [forward method](using-forward-method) that will solve the ODE for multiple timesteps.
+
+First we need to make the necessary imports
+
 ```python
-# (using-solve-method)=
-# # Oscilator - Using the solve method
-#
-# In this demo we will solve a simple oscilator ODE by calling the solve method on the ODE-solver.
-# This a wrapper around the [forward method](using-forward-method) that will solve the ODE for multiple timesteps.
-#
-# First we need to make the necessary imports
 import goss
 import matplotlib.pyplot as plt
 import numpy as np

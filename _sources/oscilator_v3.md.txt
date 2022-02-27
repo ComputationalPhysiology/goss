@@ -1,10 +1,11 @@
+# Oscilator - Using generated code
+
+It might be beneficial to generate the C++ code first using the `gotran2goss` script in the CLI, and then use that code as input to the model. One advantage of this is that you can edit the C++ code directly before passing it to `goss`. This might be desirable if you want to implement logic into the model that is difficult to describe using `gotran` or if you want to bring in some third party library
+
+As before we first need to import the necessary libraries
+
+
 ```python
-# # Oscilator - Using generated code
-#
-# It might be beneficial to generate the C++ code first using the `gotran2goss` script in the CLI, and then use that code as input to the model. One advantage of this is that you can edit the C++ code directly before passing it to `goss`. This might be desirable if you want to implement logic into the model that is difficult to describe using `gotran` or if you want to bring in some third party library
-#
-# As before we first need to import the necessary libraries
-#
 import goss
 import matplotlib.pyplot as plt
 import numpy as np
