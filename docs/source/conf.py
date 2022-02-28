@@ -32,9 +32,11 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
     "sphinx.ext.githubpages",
+    "sphinxcontrib.bibtex",
     "myst_parser",
 ]
 
+bibtex_bibfiles = ["refs.bib"]
 
 html_theme_options = {
     "toc_title": "goss",

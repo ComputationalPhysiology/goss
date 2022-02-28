@@ -13,3 +13,4 @@ Content
    oscilator_v2
    oscilator_v3
    lorentz
+   tentusscher
