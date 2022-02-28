@@ -78,6 +78,26 @@ void ODESystemSolver::forward(double t, double interval)
     }
 }
 //-----------------------------------------------------------------------------
+void ODESystemSolver::solve(double *field_states, double *t, const ulong num_timesteps,
+                            bool tangled_storage)
+{
+
+    double t_next, t_current;
+    double dt;
+    uint num_field_states = _ode->num_field_states();
+
+    t_current = t[0];
+    ulong i, j, it;
+    for (it = 1; it < num_timesteps; it++) {
+        t_next = t[it];
+        dt = t_next - t_current;
+        forward(t_current, dt);
+        get_field_states(field_states + it * _num_nodes * num_field_states, tangled_storage);
+
+        t_current = t_next;
+    }
+}
+//-----------------------------------------------------------------------------
 void ODESystemSolver::get_field_state_components(double *component_field_states,
                                                  uint num_components, const uint *components,
                                                  bool tangled_storage) const

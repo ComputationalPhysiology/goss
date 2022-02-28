@@ -3,6 +3,7 @@ docs/source/oscilator_v2.md
 docs/source/oscilator_v3.md
 docs/source/lorentz.md
 docs/source/tentusscher.md
+docs/source/tentusscher_field_parameters.md
 python/goss/include/
 python/goss/lib/
 docs/make.bat

@@ -14,3 +14,4 @@ Content
    oscilator_v3
    lorentz
    tentusscher
+   tentusscher_field_parameters

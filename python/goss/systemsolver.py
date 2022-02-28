@@ -106,4 +106,30 @@ class ODESystemSolver:
         self._cpp_object.set_field_states(field_states, self._tangled_storage)
 
     def forward(self, t: float, interval: float) -> None:
-        self._cpp_object.forward(t, interval)
+        self._cpp_object.forward(t, float(interval))
+
+    def solve(
+        self,
+        t: np.ndarray,
+    ) -> np.ndarray:
+        """Solve the ode for a given number of time steps
+
+        Parameters
+        ----------
+        t : np.ndarray
+            The time steps
+        y0 : Optional[np.ndarray], optional
+            Initial conditions. If not provided (default), then
+            the default initial conditions will be used.
+
+        Returns
+        -------
+        np.ndarray
+            The states at each time point.
+        """
+        num_steps = t.size
+        f0 = self.field_states
+        field_states = np.zeros((num_steps, self.num_nodes, self.ode.num_field_states))
+        field_states[0, :, :] = f0
+        self._cpp_object.solve(field_states, t, num_steps, self._tangled_storage)
+        return field_states

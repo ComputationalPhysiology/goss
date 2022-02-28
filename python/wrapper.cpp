@@ -519,6 +519,18 @@ void init_ODESystemSolver(py::module &m)
             .def("reset_default", &goss::ODESystemSolver::reset_default)
             .def("ode", &goss::ODESystemSolver::ode)
             .def("solver", &goss::ODESystemSolver::solver)
+            .def("solve",
+                 [](goss::ODESystemSolver &self, py::array_t<double> field_states,
+                    py::array_t<double> t, const unsigned long num_timesteps,
+                    bool tangled_storage) {
+                     py::buffer_info field_states_info = field_states.request();
+                     auto field_states_ptr = static_cast<double *>(field_states_info.ptr);
+
+                     py::buffer_info t_info = t.request();
+                     auto t_ptr = static_cast<double *>(t_info.ptr);
+
+                     self.solve(field_states_ptr, t_ptr, num_timesteps, tangled_storage);
+                 })
             .def("forward", [](goss::ODESystemSolver &self, double t,
                                double interval) { self.forward(t, interval); })
             .def("get_field_states",

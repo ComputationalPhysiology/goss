@@ -49,6 +49,10 @@ class ODESystemSolver
     // Step all nodes an interval of time forward
     void forward(double t, double interval);
 
+    // Step all nodes an multiple time steps
+    void solve(double *field_states, double *t, const ulong num_timesteps,
+               bool tangled_storage = true);
+
     // Return components of system field state values
     void get_field_state_components(double *component_field_states, uint num_components,
                                     const uint *components, bool tangled_storage = true) const;
