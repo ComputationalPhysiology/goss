@@ -100,3 +100,28 @@ def test_field_parameters(tentusscher_2004_fields: goss.ParameterizedODE):
     system_solver.field_parameters = field_parameters
     zero_parameters = system_solver.field_parameters
     assert (zero_parameters == 0).all()
+
+
+@pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
+def test_solve_system_oscilator(Solver, oscilator_ode):
+    cls = goss.solvers.solver_mapper[Solver.name]
+    solver = cls()
+
+    ode = goss.ParameterizedODE(
+        oscilator_ode,
+        field_states=["x", "y"],
+        field_parameters=["a", "b"],
+    )
+
+    num_nodes = 4
+    system_solver = goss.ODESystemSolver(num_nodes, solver, ode)
+
+    solver.internal_time_step = 0.0001
+    dt = 0.1
+    t = np.arange(0, 10.0 + dt, dt)
+    field_states = system_solver.solve(t)
+
+    # FIXME: Don't know why we need such a high tolerance here
+    for i in range(num_nodes):
+        assert np.isclose(field_states[:, i, 0], np.cos(t), rtol=0.14).all()
+        assert np.isclose(field_states[:, i, 1], np.sin(t), rtol=0.02).all()
