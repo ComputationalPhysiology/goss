@@ -5,12 +5,19 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    matrix:
+        container:
+          [
+            finsberg/fenics-py310,
+            finsberg/fenics-py39,
+            finsberg/fenics-py38,
+            finsberg/fenics-py37
+          ]
+
     container:
-      image: finsberg/fenics
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v2
-      - name: Install boost
-        run: apt-get update && apt-get install -yq ninja-build
       - name: Upgrade pip
         run: python -m pip install pip --upgrade
       - name: Install python dependencies
