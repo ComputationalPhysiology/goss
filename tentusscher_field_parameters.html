@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Field parameters - version 1 &#8212; goss 0.1.4 documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="goss" href="modules.html" />
+    <link rel="prev" title="Tentusscher model" href="tentusscher.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">goss 0.1.4 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CONTRIBUTING.html">
+   Contributing
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="demo.html">
+   Demo
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v1.html">
+     Oscilator - Using the forward method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v2.html">
+     Oscilator - Using the solve method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="oscilator_v3.html">
+     Oscilator - Using generated code
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="lorentz.html">
+     Lorentz Attractor
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="tentusscher.html">
+     Tentusscher model
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Field parameters - version 1
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="modules.html">
+   goss
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="goss.html">
+     goss package
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  <a href="https://www.simula.no/research/projects/department-computational-physiology">Computational Physiology at Simula</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/tentusscher_field_parameters.md.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/ComputationalPhysiology/goss"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2Ftentusscher_field_parameters.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> goss
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="field-parameters-version-1">
+<span id="tentusscher-field-parameters"></span><h1>Field parameters - version 1<a class="headerlink" href="#field-parameters-version-1" title="Permalink to this headline">¶</a></h1>
+<p>In this demo we will solve the Tentusscher mode <span id="id1">[<a class="reference internal" href="#id4">TTP06</a>]</span> for a number of different parameters in the model.
+More specifically, we would like to simulate a drug that blocks one or two channels in the cells.
+We will block the CaL- and the Kr-channel with 0%, 20% and 40% and we would like to do this both with CaL alone, Kr alone and a combined block.
+In other words, we would like to run 9 different simulations where the only differrence is the value of these parameters.</p>
+<p>First we need to make the necessary imports</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">goss</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gotran</span> <span class="kn">import</span> <span class="n">load_ode</span>
+</pre></div>
+</div>
+<p>We select the field parameters to be <code class="docutils literal notranslate"><span class="pre">g_CaL</span></code> and <code class="docutils literal notranslate"><span class="pre">g_Kr</span></code> which are the conductances of the channels
+Scaling these parameters will simulate the effect of a drug targeting these channels</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">field_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;g_CaL&quot;</span><span class="p">,</span> <span class="s2">&quot;g_Kr&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We would also like to keep track of the membrane potential (V) and the intracellular calcium concentrations for each of the parameter sets,
+and we therefore specify these states as fields states</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">field_state_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;Ca_i&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We supply these additional arguments to the <code class="docutils literal notranslate"><span class="pre">ParameterizedODE</span></code> class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">ParameterizedODE</span><span class="p">(</span>
+    <span class="n">load_ode</span><span class="p">(</span><span class="s2">&quot;tentusscher_panfilov_2006_M_cell.ode&quot;</span><span class="p">),</span>
+    <span class="n">field_states</span><span class="o">=</span><span class="n">field_state_names</span><span class="p">,</span>
+    <span class="n">field_parameters</span><span class="o">=</span><span class="n">field_parameters</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>We use the first order generalized rush larsen scheme and set an internal step size of 0.01</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">GRL1</span><span class="p">()</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">internal_time_step</span> <span class="o">=</span> <span class="mf">0.01</span>
+</pre></div>
+</div>
+<p>We will run 9 different parameter sets so we set the number of nodes to 9 and instantiate the <code class="docutils literal notranslate"><span class="pre">ODESystemSolver</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">ODESystemSolver</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">ode</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, let us pick three block factors (1 representing baseline)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">block_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>and update the field parameters</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">field_parameters</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">field_parameters</span>
+<span class="c1"># Block only CaL</span>
+<span class="n">field_parameters</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">block_factors</span>
+<span class="c1"># Block only Kr</span>
+<span class="n">field_parameters</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">block_factors</span>
+<span class="c1"># Block both</span>
+<span class="n">field_parameters</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">block_factors</span>
+<span class="n">field_parameters</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">block_factors</span>
+</pre></div>
+</div>
+<p>Note that the field parameters array has dimension number of nodes <span class="math notranslate nohighlight">\(\times\)</span> number of field parameters.
+In the first three nodes we update only <code class="docutils literal notranslate"><span class="pre">g_CaL</span></code> which has index 0, while for the nodes 3 to 6 we update <code class="docutils literal notranslate"><span class="pre">g_Kr</span></code> which has index 1.
+Finnally we need tp update the field parameters on the system solver</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">system</span><span class="o">.</span><span class="n">field_parameters</span> <span class="o">=</span> <span class="n">field_parameters</span>
+</pre></div>
+</div>
+<p>Let us fist run the forward model for 50 000 ms</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">50_000</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">system</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And the run it for 1000 ms where we keep track of the field states</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tstop</span> <span class="o">=</span> <span class="mf">1000.0</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">time_stamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="n">tstop</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="n">field_states</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">time_stamps</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elapsed time: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally let us plot the resulting field states for each parameter set</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">linestyle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">]):</span>
+        <span class="p">(</span><span class="n">l</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">time_stamps</span><span class="p">,</span>
+            <span class="n">field_states</span><span class="p">[:,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">time_stamps</span><span class="p">,</span>
+            <span class="n">field_states</span><span class="p">[:,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">block_factors</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;CaL block&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Kr block&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;CaL + Kr block&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Cai&quot;</span><span class="p">)</span>
+<span class="n">lgd</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Blockage (%)&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;center right&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+    <span class="s2">&quot;tentusscher_field_parameters.png&quot;</span><span class="p">,</span>
+    <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lgd</span><span class="p">,),</span>
+    <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure align-default" id="id2">
+<img alt="_images/tentusscher_field_parameters.png" src="_images/tentusscher_field_parameters.png" />
+<p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">Computed solution of the membrane potential (V) and the intracallular calcium
+concentraction in the Tentusscher model for different blockage of CaL and Kr</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="id3"><dl class="citation">
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id1">TTP06</a></span></dt>
+<dd><p>Kirsten HWJ Ten Tusscher and Alexander V Panfilov. Alternans and spiral breakup in a human ventricular tissue model. <em>American Journal of Physiology-Heart and Circulatory Physiology</em>, 291(3):H1088–H1100, 2006.</p>
+</dd>
+</dl>
+</p>
+</div>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="tentusscher.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Tentusscher model</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="modules.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">goss</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Simula Research Laboratory<br/>
+        
+            &copy; Copyright 2022, Simula Research Laboratory.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
