@@ -5,15 +5,15 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    matrix:
-      container:
-        [
-          finsberg/fenics-py310,
-          finsberg/fenics-py39,
-          finsberg/fenics-py38,
-          finsberg/fenics-py37
-        ]
-
+    strategy:
+      matrix:
+        container:
+          [
+            finsberg/fenics-py310,
+            finsberg/fenics-py39,
+            finsberg/fenics-py38,
+            finsberg/fenics-py37
+          ]
     container:
       image: ${{ matrix.container }}
     steps:

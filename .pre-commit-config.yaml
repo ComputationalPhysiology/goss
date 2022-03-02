@@ -36,4 +36,4 @@ repos:
     rev: v0.931
     hooks:
       - id: mypy
-        exclude: ^(sandbox/|setup.py)
+        exclude: ^(sandbox/|setup.py|demo)
