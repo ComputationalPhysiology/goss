@@ -656,8 +656,7 @@ class DOLFINODESystemSolver:
                     # Get each field for each distinct domain
                     values[dof_maps] = self._dofs.goss_values[label][goss_indices]
 
-            elif self._float_type == np.float32:
-
+            else:
                 values[:] = self._dofs.goss_values[label]
 
         # Put solution back into DOLFIN Function
@@ -685,8 +684,7 @@ class DOLFINODESystemSolver:
                     self._dofs.goss_values[label][goss_indices] = values[dof_maps]
 
             # If single precision we need to copy
-            elif self._float_type == np.float32:
-
+            else:
                 self._dofs.goss_values[label][:] = values
 
             # Transfer values to Solver
