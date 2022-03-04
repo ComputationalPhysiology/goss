@@ -1,6 +1,5 @@
 [![CI-cpp](https://github.com/ComputationalPhysiology/goss/actions/workflows/cpp.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/cpp.yml)
 [![CI-fenics](https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml)
-[![CI-python](https://github.com/ComputationalPhysiology/goss/actions/workflows/python.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/python.yml)
 [![github pages](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml)
 [![PyPI version](https://badge.fury.io/py/pygoss.svg)](https://badge.fury.io/py/pygoss)
 [![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/main/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
@@ -15,16 +14,18 @@ First define the ode in a gotran ODE file
 
 ```
 # lorentz.ode
-parameters("Lorentz",
+parameters(
 sigma=10.0,
 rho=28.0,
-beta=8/3)
+beta=8/3
+)
 
 # The values of the states represent the initial conditions
-states("Lorentz",
+states(
 x=0.0,
 y=1.0,
-z=1.05)
+z=1.05
+)
 
 dx_dt = sigma * (y - x)
 dy_dt = x * (rho - z) - y
