@@ -2,19 +2,19 @@
 
 
 ## Installing dependencies
-First, you need to install `cmake` and `boost`, i.e
+First, you need to install `boost`, i.e
 
 (Debian)
 ```
-apt-get install libboost-all-dev cmake
+apt-get install libboost-all-dev
 ```
 (Fedora)
 ```
-yum install boost-devel cmake
+yum install boost-devel
 ```
 Mac OSX
 ```
-brew install boost cmake
+brew install boost
 ```
 
 ## Installing goss
