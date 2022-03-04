@@ -1,5 +1,5 @@
 # (tentusscher-field-parameters)=
-# # Field parameters - version 1
+# # Field parameters
 #
 # In this demo we will solve the Tentusscher mode {cite}`ten2006alternans` for a number of different parameters in the model.
 # More specifically, we would like to simulate a drug that blocks one or two channels in the cells.
