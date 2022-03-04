@@ -233,7 +233,6 @@ bool ESDIRK23a::compute_stage_val(std::vector<double> &z, double *y, const std::
         if (_newton_iterations >= 1) {
             theta = norm(dz.data()) / norm(prev_dz.data());
             if (!(theta <= 1)) {
-                std::cout << "Solver diverges, reducing time step" << std::endl;
                 num_rejected++;
                 conv_ok = false;
                 break;
