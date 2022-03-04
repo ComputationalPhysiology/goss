@@ -74,7 +74,25 @@ There is also a command line interface that can be used to list the available so
 Documentation is hosed at https://computationalphysiology.github.io/goss
 
 ## Install
-To work with goss from python, you only need to install the python package.
+
+### Installing dependencies
+First, you need to install `cmake` and `boost`, i.e
+
+(Debian)
+```
+apt-get install libboost-all-dev cmake
+```
+(Fedora)
+```
+yum install boost-devel cmake
+```
+Mac OSX
+```
+brew install boost cmake
+```
+
+### Installing goss
+Next you can install the python package.
 ```
 python -m pip install pygoss
 ```
