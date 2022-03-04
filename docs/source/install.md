@@ -1,5 +1,25 @@
 # Installation
 
+
+## Installing dependencies
+First, you need to install `cmake` and `boost`, i.e
+
+(Debian)
+```
+apt-get install libboost-all-dev cmake
+```
+(Fedora)
+```
+yum install boost-devel cmake
+```
+Mac OSX
+```
+brew install boost cmake
+```
+
+## Installing goss
+
+Next you can install the python package.
 ```
 python -m pip install pygoss
 ```
