@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: clean clean-test clean-pyc clean-build docs help build-cpp
 .DEFAULT_GOAL := help
 
 
@@ -52,3 +52,17 @@ docs: ## generate Sphinx HTML documentation, including API docs
 
 show:
 	open docs/build/html/index.html
+
+delete-build-cpp:
+	rm -rf build-cpp
+
+build-cpp-test: delete-build-cpp
+	cmake -B build-cpp -S cpp -DBUILD_TESTS=ON
+	cmake --build build-cpp
+
+build-cpp: delete-build-cpp
+	cmake -B build-cpp -S cpp -DBUILD_TESTS=OFF
+	cmake --build build-cpp
+
+test-cpp: build-cpp-test
+	cd build-cpp && ctest - V && cd ..

@@ -8,7 +8,7 @@
 include(FetchContent)
 FetchContent_Declare(gtest
   QUIET
-  URL https://github.com/google/googletest/archive/release-1.10.0.tar.gz
+  URL https://github.com/google/googletest/archive/release-1.11.0.tar.gz
 )
 # configure build of googletest
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -23,13 +23,13 @@ add_executable(testodesystem odesystem.cpp)
 
 target_link_libraries(testode
     gtest_main
-    goss Boost::program_options Boost::system Boost::thread
+    goss Boost::system Boost::thread
 
 )
 
 target_link_libraries(testodesystem
     gtest_main
-    goss Boost::program_options Boost::system Boost::thread
+    goss Boost::system Boost::thread
 
 )
 

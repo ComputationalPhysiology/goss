@@ -18,6 +18,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if (APPLE)
+  set(CMAKE_MACOSX_RPATH ON)
+endif (APPLE)
+
 
 # Options
 option(BUILD_SHARED_LIBS "Build Goss with shared libraries." ON)
@@ -25,7 +29,7 @@ add_feature_info(BUILD_SHARED_LIBS BUILD_SHARED_LIBS "Build Goss with shared lib
 option(BUILD_TESTS "Build the test suite." OFF)
 
 find_package(OpenMP REQUIRED)
-find_package(Boost COMPONENTS system thread program_options REQUIRED)
+find_package(Boost COMPONENTS system thread REQUIRED)
 
 
 feature_summary(WHAT ALL)
@@ -104,7 +108,6 @@ set_target_properties(goss PROPERTIES PRIVATE_HEADER "${HEADERS_goss}")
 target_include_directories(goss PUBLIC $<INSTALL_INTERFACE:include> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}>")
 
 target_link_libraries(goss PUBLIC OpenMP::OpenMP_CXX)
-target_link_libraries(goss PUBLIC Boost::program_options)
 target_link_libraries(goss PUBLIC Boost::system Boost::thread)
 
 # Set compiler flags

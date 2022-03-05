@@ -127,13 +127,13 @@ typedef testing::Types<ImplicitEuler> ImplicitODESolvers;
 //typedef testing::Types<RL, GRL1, GRL2> RLODESolvers;
 //typedef testing::Types<Winslow> ParameterizedODEs;
 
-TYPED_TEST_CASE(ODETester, ODEs);
-TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
-TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
-TYPED_TEST_CASE(OpenMPTester, ImplicitODESolvers);
+TYPED_TEST_SUITE(ODETester, ODEs);
+TYPED_TEST_SUITE(ExplicitTester, ExplicitODESolvers);
+TYPED_TEST_SUITE(ImplicitTester, ImplicitODESolvers);
+TYPED_TEST_SUITE(OpenMPTester, ImplicitODESolvers);
 
-//TYPED_TEST_CASE(RLTester, RLODESolvers);
-//TYPED_TEST_CASE(ParameterizedODETester, ParameterizedODEs);
+//TYPED_TEST_SUITE(RLTester, RLODESolvers);
+//TYPED_TEST_SUITE(ParameterizedODETester, ParameterizedODEs);
 
 // Run all included
 TYPED_TEST(ODETester, IntegrationTest)

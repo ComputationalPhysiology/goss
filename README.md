@@ -6,7 +6,7 @@
 
 # GOSS - General ODE solver
 
-`goss` is a C++ library for solver ordinary differential equations.
+`goss` is a C++ library for solving ordinary differential equations.
 
 The general idea is that you define your ODE in a [`gotran ode file`](https://github.com/ComputationalPhysiology/gotran) and hand the ode over to `goss`.
 

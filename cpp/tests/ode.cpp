@@ -147,12 +147,12 @@ typedef testing::Types<Winslow, WinslowNoIntermediates, WinslowCSE,
 		       WinslowCSEArray, Panfilov, PanfilovNoIntermediates,
 		       PanfilovCSE, PanfilovCSEArray> ParameterizedODEs;
 
-TYPED_TEST_CASE(ODETester, ODEs);
-TYPED_TEST_CASE(DAETester, DAEs);
-TYPED_TEST_CASE(ExplicitTester, ExplicitODESolvers);
-TYPED_TEST_CASE(ImplicitTester, ImplicitODESolvers);
-TYPED_TEST_CASE(RLTester, RLODESolvers);
-TYPED_TEST_CASE(ParameterizedODETester, ParameterizedODEs);
+TYPED_TEST_SUITE(ODETester, ODEs);
+TYPED_TEST_SUITE(DAETester, DAEs);
+TYPED_TEST_SUITE(ExplicitTester, ExplicitODESolvers);
+TYPED_TEST_SUITE(ImplicitTester, ImplicitODESolvers);
+TYPED_TEST_SUITE(RLTester, RLODESolvers);
+TYPED_TEST_SUITE(ParameterizedODETester, ParameterizedODEs);
 
 // Run all included
 TYPED_TEST(ODETester, IntegrationTest)
