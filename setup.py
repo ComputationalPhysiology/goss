@@ -18,7 +18,7 @@ setup(
     author="Henrik Finsberg, Johan Hake, Cécile Daversin-Catty",
     author_email="henriknf@simula.no",
     maintainer_email="henriknf@simula.no",
-    license="GNU General Public License v3 (GPLv3)",
+    license="LGPLv3+",
     keywords=["ODE", "solver", "system", "equations", "cuda"],
     install_requires=[
         "numpy",

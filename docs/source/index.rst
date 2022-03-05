@@ -28,7 +28,7 @@ The source code can be found on `GitHub <https://github.com/ComputationalPhysiol
 
 License
 -------
-``goss`` is licensed under the GNU GPL, version 3 or (at your option) any later version.
+``goss`` is licensed under the GNU LGPL, version 3 or (at your option) any later version.
 ``goss`` is Copyright (2011-2022) by the authors and Simula Research Laboratory.
 
 Authors
@@ -37,6 +37,7 @@ Authors
 
 - Henrik Finsberg (henriknf@simula.no)
 - Cécile Daversin-Catty (cecile@simula.no)
+- Johan Hake
 
 
 API documentation
