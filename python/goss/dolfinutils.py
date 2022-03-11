@@ -90,8 +90,8 @@ class DOLFINParameterizedODE(ParameterizedODE):
             [],
         )
         self._initial_conditions = self.default_initial_conditions()
-        init_coditions = kwargs.get("init_conditions", {})
-        self.set_initial_conditions(**init_coditions)
+        init_conditions = kwargs.get("init_conditions", {})
+        self.set_initial_conditions(**init_conditions)
 
     def default_initial_conditions(self) -> dict[str, float]:
         return dict(zip(self.state_names, self.get_ic()))
