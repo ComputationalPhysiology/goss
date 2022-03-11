@@ -43,8 +43,8 @@ ps["enable_adjoint"] = False
 ps["apply_stimulus_current_to_pde"] = True
 ps["ode_solver"]["solver"] = "RL1"
 ps["ode_solver"]["num_threads"] = 0
-harmonic_mean = False
 
+harmonic_mean = bool(ps["pde_solver"] == "monodomain")
 
 domain = dolfin.UnitSquareMesh(100, 100)
 domain.coordinates()[:] *= 10
