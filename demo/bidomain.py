@@ -122,6 +122,20 @@ s_il = 300.0 / chi  # mS
 s_it = s_il / 2  # mS
 s_el = 200.0 / chi  # mS
 s_et = s_el / 1.2  # mS
+
+# and the conductivity tensors
+#
+# ```{math}
+# M_i = \begin{pmatrix}
+# s_{il} & 0 \\
+# 0 & s_{it}
+# \end{pmatrix}, \;\;
+# M_e = \begin{pmatrix}
+# s_{el} & 0 \\
+# 0 & s_{et}
+# \end{pmatrix}
+# ```
+
 M_i = dolfin.as_tensor(((dolfin.Constant(s_il), 0), (0, dolfin.Constant(s_it))))
 M_e = dolfin.as_tensor(((dolfin.Constant(s_el), 0), (0, dolfin.Constant(s_et))))
 
