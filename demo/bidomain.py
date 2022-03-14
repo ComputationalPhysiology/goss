@@ -163,6 +163,16 @@ for ((t0, t1), fields) in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt))
     vfile.write(v, t0)
 
 
+#
+# ```{figure} _static/bidomain.png
+# ---
+# name: bidomain_fig
+# ---
+# Membrane potential
+# ```
+#
+
+
 # ## Reference
 #
 # ```{bibliography}
