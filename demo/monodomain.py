@@ -1,3 +1,15 @@
+# (monodomain)=
+# # Monodomain model
+#
+# In this demo we solve the Monodomain model
+# ```{math}
+# \frac{\lambda}{1 + \lambda} \nabla \cdot \left( M_i \nabla v \right) = \chi C_m \frac{\partial v}{\partial t} + \chi I_{ion} \; x \in \Omega
+# ```
+# on a square domain, $\Omega = [0, 10] \times [0, 10]$.
+#
+# First we need to make the necessary imports
+
+
 import dolfin
 import cbcbeat
 import math

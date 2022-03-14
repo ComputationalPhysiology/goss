@@ -1,3 +1,14 @@
+# (multicellmodel)=
+# # Multi-cell model
+#
+# In this demo we solve the Monodomain model
+# ```{math}
+# \frac{\lambda}{1 + \lambda} \nabla \cdot \left( M_i \nabla v \right) = \chi \left( C_m \frac{\partial v}{\partial t} + I_{ion} \right) \; x \in \Omega
+# ```
+# on a square domain, $\Omega = [0, 10]\times[0, 10]$. For more information about the Monodomain model see {ref}`monodomain`
+#
+# First we need to make the necessary imports
+
 """
 This test tests the splitting solver for the bidomain equations with a
 FitzHughNagumo and ten-Tusscher model.

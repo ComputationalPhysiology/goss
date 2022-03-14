@@ -15,3 +15,6 @@ Content
    lorentz
    tentusscher
    tentusscher_field_parameters
+   bidomain
+   monodomain
+   multicellmodel
