@@ -192,7 +192,7 @@ v = dolfin.Function(V)
 total = dolfin.Timer("Total solver time")
 solutions = solver.solve((0, T), dt)
 
-vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "v.xdmf")
+vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "multicellmodel.xdmf")
 vfile.write(v, 0.0)
 for (i, ((t0, t1), fields)) in enumerate(solutions):
     if (i % 20 == 0) and dolfin.MPI.rank(dolfin.MPI.comm_world) == 0:

@@ -102,7 +102,7 @@ v = dolfin.Function(V)
 # Solve
 solutions = solver.solve((0, T), dt)
 
-vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "v.xdmf")
+vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "bidomain.xdmf")
 for ((t0, t1), fields) in tqdm.tqdm(solutions, total=int(T / dt)):
     v.assign(vs_)
     vfile.write(v, t0)
