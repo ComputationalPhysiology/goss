@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>goss.dolfinutils &#8212; goss 0.1.5 documentation</title>
+    <title>goss.dolfinutils &#8212; goss 0.2.0 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -63,7 +63,7 @@
       <img src="../../_static/logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">goss 0.1.5 documentation</h1>
+      <h1 class="site-logo" id="site-title">goss 0.2.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -120,6 +120,21 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../tentusscher_field_parameters.html">
      Field parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../bidomain.html">
+     Bidomain model
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../monodomain.html">
+     Monodomain model
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../multicellmodel.html">
+     Multi-cell model
     </a>
    </li>
   </ul>
@@ -318,6 +333,12 @@
             <span class="s2">&quot;changed_field_parameters&quot;</span><span class="p">,</span>
             <span class="p">[],</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_initial_conditions</span><span class="p">()</span>
+        <span class="n">init_conditions</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_conditions&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_initial_conditions</span><span class="p">(</span><span class="o">**</span><span class="n">init_conditions</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">default_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ic</span><span class="p">()))</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_ode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ode</span><span class="p">:</span> <span class="n">ParameterizedODE</span><span class="p">):</span>
@@ -364,6 +385,33 @@
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">label</span><span class="p">:</span> <span class="n">DOLFINParameterizedODE</span><span class="o">.</span><span class="n">from_ode</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode</span> <span class="ow">in</span> <span class="n">odes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">set_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">init</span><span class="p">):</span>
+        <span class="s2">&quot;Update initial_conditions in model&quot;</span>
+        <span class="k">for</span> <span class="n">init_name</span><span class="p">,</span> <span class="n">init_value</span> <span class="ow">in</span> <span class="n">init</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">init_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{init_name}</span><span class="s2">&#39; is not a parameter in </span><span class="si">{self}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">init_value</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span>
+                <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">GenericFunction</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{init_name}</span><span class="s2">&#39; is not a scalar or a GenericFunction&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">init_value</span><span class="p">,</span> <span class="s2">&quot;_cpp_object&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                    <span class="n">init_value</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span>
+                    <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">GenericFunction</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="ow">and</span> <span class="n">init_value</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">value_size</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;expected the value_size of &#39;</span><span class="si">{init_name}</span><span class="s2">&#39; to be 1&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">[</span><span class="n">init_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_value</span>
+
+    <span class="k">def</span> <span class="nf">initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Return initial conditions for v and s as an Expression.&quot;</span>
+        <span class="k">return</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_names</span><span class="p">),</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="family_and_degree_from_str"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.family_and_degree_from_str">[docs]</a><span class="k">def</span> <span class="nf">family_and_degree_from_str</span><span class="p">(</span><span class="n">space</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -642,11 +690,12 @@
         <span class="n">distinct_domains</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">odes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">distinct_domains</span> <span class="o">=</span> <span class="n">check_domains</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">odes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># FIXME: Do we really need to check this?</span>
-            <span class="k">assert</span> <span class="n">domains</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
-                <span class="s2">&quot;domains only expected when more than 1 &quot;</span> <span class="s2">&quot;ODE is given&quot;</span>
-            <span class="p">)</span>
+        <span class="c1"># else:</span>
+
+        <span class="c1"># FIXME: Do we really need to check this?</span>
+        <span class="c1"># assert domains is None, (</span>
+        <span class="c1">#     &quot;domains only expected when more than 1 &quot; &quot;ODE is given&quot;</span>
+        <span class="c1"># )</span>
 
         <span class="n">ode</span> <span class="o">=</span> <span class="n">first_value</span><span class="p">(</span><span class="n">odes</span><span class="p">)</span>
         <span class="n">num_field_states</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_field_states</span>
@@ -673,6 +722,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_type</span> <span class="o">=</span> <span class="n">float_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state_space</span> <span class="o">=</span> <span class="n">V</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saved_states</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Current and previous solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs_</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
         <span class="c1"># Instantiate the ODESystemSolvers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span> <span class="o">=</span> <span class="p">{</span>
@@ -768,6 +821,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_distinct_domains</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_domains</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distinct_domains</span> <span class="o">=</span> <span class="n">distinct_domains</span>
         <span class="c1"># self._nested_dofs = nested_dofs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_field_states</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs_</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DOLFINODESystemSolver.solution_fields"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.solution_fields">[docs]</a>    <span class="k">def</span> <span class="nf">solution_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return tuple of previous and current solution objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vs_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DOLFINODESystemSolver.update_parameters"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.update_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">update_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -789,7 +850,7 @@
                         <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_param_values</span><span class="p">[</span><span class="n">label</span><span class="p">][</span>
-                            <span class="n">local_id</span> <span class="p">::</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_field_parameters</span><span class="p">()</span>
+                            <span class="n">local_id</span> <span class="p">::</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_field_parameters</span>
                         <span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span><span class="o">.</span><span class="n">get_local</span><span class="p">())</span>
 
             <span class="c1"># Update system solver</span>
@@ -816,14 +877,10 @@
     <span class="k">def</span> <span class="nf">num_distinct_domains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_distinct_domains</span>
 
-<div class="viewcode-block" id="DOLFINODESystemSolver.from_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.from_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">from_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="DOLFINODESystemSolver.from_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.from_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">from_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy values in stored field states to v</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">),</span> <span class="s2">&quot;expected a Function as the &#39;v&#39; argument&quot;</span>
-        <span class="c1"># FIXME: Add proper check!</span>
-        <span class="c1"># assert v in self._state_space, &quot;expected v to be in the state space&quot;</span>
-
         <span class="c1"># Get values from dolfin</span>
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dolfin_values</span>
 
@@ -843,24 +900,20 @@
                     <span class="c1"># Get each field for each distinct domain</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">dof_maps</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">goss_indices</span><span class="p">]</span>
 
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_float_type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">values</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
         <span class="c1"># Put solution back into DOLFIN Function</span>
-        <span class="n">v</span><span class="o">.</span><span class="n">vector</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="s2">&quot;dolfin&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">vector</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="s2">&quot;dolfin&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span></div>
 
-<div class="viewcode-block" id="DOLFINODESystemSolver.to_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.to_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">to_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="DOLFINODESystemSolver.to_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.to_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">to_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy values in v to stored field states</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">),</span> <span class="s2">&quot;expected a Function as the &#39;v&#39; argument&quot;</span>
-        <span class="c1"># FIXME: Add proper check!</span>
-        <span class="c1"># assert v in self._state_space, &quot;expected v to be in the state space&quot;</span>
 
         <span class="c1"># Get values from dolfin</span>
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dolfin_values</span>
-        <span class="n">values</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">vector</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="s2">&quot;dolfin&quot;</span><span class="p">]]</span>
+        <span class="n">values</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">vector</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="s2">&quot;dolfin&quot;</span><span class="p">]]</span>
 
         <span class="c1"># Update solver with new field_state values</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -875,14 +928,13 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">goss_indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">dof_maps</span><span class="p">]</span>
 
             <span class="c1"># If single precision we need to copy</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_float_type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-
+            <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">values</span>
 
             <span class="c1"># Transfer values to Solver</span>
             <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">field_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DOLFINODESystemSolver.step"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">v</span><span class="p">:</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="DOLFINODESystemSolver.step"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Solve on the given time step (t0, t1).</span>
 <span class="sd">        End users are recommended to use solve instead.</span>
 
@@ -894,16 +946,15 @@
 <span class="sd">            The function to store the solution</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">),</span> <span class="s2">&quot;expected a Function as the &#39;v&#39; argument&quot;</span>
-        <span class="c1"># FIXME: Add proper check!</span>
-        <span class="c1"># assert v in self._state_space, &quot;expected v to be in the state space&quot;</span>
-
         <span class="n">timer</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;ODE step&quot;</span><span class="p">)</span>  <span class="c1"># noqa: F841</span>
         <span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span> <span class="o">=</span> <span class="n">interval</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
 
+        <span class="c1"># Set-up current variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vs_</span><span class="p">)</span>  <span class="c1"># Start with good guess</span>
+
         <span class="c1"># Update local field states</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">to_field_states</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_field_states</span><span class="p">()</span>
 
         <span class="c1"># Update any changed field_parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_parameters</span><span class="p">()</span>
@@ -913,7 +964,7 @@
             <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
 
         <span class="c1"># Copy solution from local field states</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_field_states</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_field_states</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DOLFINODESystemSolver.save_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.save_states">[docs]</a>    <span class="k">def</span> <span class="nf">save_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

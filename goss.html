@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>goss package &#8212; goss 0.1.5 documentation</title>
+    <title>goss package &#8212; goss 0.2.0 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -64,7 +64,7 @@
       <img src="_static/logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">goss 0.1.5 documentation</h1>
+      <h1 class="site-logo" id="site-title">goss 0.2.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -121,6 +121,21 @@
    <li class="toctree-l2">
     <a class="reference internal" href="tentusscher_field_parameters.html">
      Field parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="bidomain.html">
+     Bidomain model
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="monodomain.html">
+     Monodomain model
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="multicellmodel.html">
+     Multi-cell model
     </a>
    </li>
   </ul>
@@ -778,7 +793,7 @@ making interfacing DOLFIN easier</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.dolfinutils.DOLFINODESystemSolver.from_field_states">
-<span class="sig-name descname"><span class="pre">from_field_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.from_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.from_field_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">from_field_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.from_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.from_field_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy values in stored field states to v</p>
 </dd></dl>
 
@@ -804,6 +819,12 @@ making interfacing DOLFIN easier</p>
 <dd><p>Save the present state</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.dolfinutils.DOLFINODESystemSolver.solution_fields">
+<span class="sig-name descname"><span class="pre">solution_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.solution_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.solution_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return tuple of previous and current solution objects.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.dolfinutils.DOLFINODESystemSolver.state_space">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_space</span></span><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.state_space" title="Permalink to this definition">¶</a></dt>
@@ -811,7 +832,7 @@ making interfacing DOLFIN easier</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.dolfinutils.DOLFINODESystemSolver.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dolfin.function.function.Function</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.step" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve on the given time step (t0, t1).
 End users are recommended to use solve instead.</p>
 <dl class="field-list simple">
@@ -826,7 +847,7 @@ End users are recommended to use solve instead.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.dolfinutils.DOLFINODESystemSolver.to_field_states">
-<span class="sig-name descname"><span class="pre">to_field_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.to_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.to_field_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_field_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.to_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.dolfinutils.DOLFINODESystemSolver.to_field_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy values in v to stored field states</p>
 </dd></dl>
 
@@ -1750,7 +1771,7 @@ making interfacing DOLFIN easier</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.DOLFINODESystemSolver.from_field_states">
-<span class="sig-name descname"><span class="pre">from_field_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.from_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.from_field_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">from_field_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.from_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.from_field_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy values in stored field states to v</p>
 </dd></dl>
 
@@ -1776,6 +1797,12 @@ making interfacing DOLFIN easier</p>
 <dd><p>Save the present state</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="goss.DOLFINODESystemSolver.solution_fields">
+<span class="sig-name descname"><span class="pre">solution_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.solution_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.solution_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return tuple of previous and current solution objects.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="goss.DOLFINODESystemSolver.state_space">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_space</span></span><a class="headerlink" href="#goss.DOLFINODESystemSolver.state_space" title="Permalink to this definition">¶</a></dt>
@@ -1783,7 +1810,7 @@ making interfacing DOLFIN easier</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.DOLFINODESystemSolver.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dolfin.function.function.Function</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.step" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve on the given time step (t0, t1).
 End users are recommended to use solve instead.</p>
 <dl class="field-list simple">
@@ -1798,7 +1825,7 @@ End users are recommended to use solve instead.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goss.DOLFINODESystemSolver.to_field_states">
-<span class="sig-name descname"><span class="pre">to_field_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.to_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.to_field_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_field_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/goss/dolfinutils.html#DOLFINODESystemSolver.to_field_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goss.DOLFINODESystemSolver.to_field_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy values in v to stored field states</p>
 </dd></dl>
 
