@@ -89,6 +89,12 @@ class DOLFINParameterizedODE(ParameterizedODE):
             "changed_field_parameters",
             [],
         )
+        self._initial_conditions = self.default_initial_conditions()
+        init_conditions = kwargs.get("init_conditions", {})
+        self.set_initial_conditions(**init_conditions)
+
+    def default_initial_conditions(self) -> dict[str, float]:
+        return dict(zip(self.state_names, self.get_ic()))
 
     @classmethod
     def from_ode(cls, ode: ParameterizedODE):
@@ -135,6 +141,33 @@ class DOLFINParameterizedODE(ParameterizedODE):
         return {
             label: DOLFINParameterizedODE.from_ode(ode) for label, ode in odes.items()
         }
+
+    def set_initial_conditions(self, **init):
+        "Update initial_conditions in model"
+        for init_name, init_value in init.items():
+            if init_name not in self._initial_conditions:
+                raise RuntimeError("'{init_name}' is not a parameter in {self}")
+            if not isinstance(init_value, (float, int)) and not isinstance(
+                init_value._cpp_object,
+                dolfin.cpp.GenericFunction,
+            ):
+                raise RuntimeError("'{init_name}' is not a scalar or a GenericFunction")
+            if (
+                hasattr(init_value, "_cpp_object")
+                and isinstance(
+                    init_value._cpp_object,
+                    dolfin.cpp.function.GenericFunction,
+                )
+                and init_value._cpp_object.value_size() != 1
+            ):
+                raise RuntimeError("expected the value_size of '{init_name}' to be 1")
+            self._initial_conditions[init_name] = init_value
+
+    def initial_conditions(self):
+        "Return initial conditions for v and s as an Expression."
+        return dolfin.Expression(
+            list(self.state_names), degree=1, **self._initial_conditions
+        )
 
 
 def family_and_degree_from_str(space: str) -> typing.Tuple[str, int]:
@@ -413,11 +446,12 @@ class DOLFINODESystemSolver:
         distinct_domains = [0]
         if len(odes) > 1:
             distinct_domains = check_domains(domains, odes, mesh, space)
-        else:
-            # FIXME: Do we really need to check this?
-            assert domains is None, (
-                "domains only expected when more than 1 " "ODE is given"
-            )
+        # else:
+
+        # FIXME: Do we really need to check this?
+        # assert domains is None, (
+        #     "domains only expected when more than 1 " "ODE is given"
+        # )
 
         ode = first_value(odes)
         num_field_states = ode.num_field_states
@@ -444,6 +478,10 @@ class DOLFINODESystemSolver:
         self._float_type = float_type
         self._state_space = V
         self._saved_states = {}
+
+        # Current and previous solution
+        self.vs = dolfin.Function(V)
+        self.vs_ = dolfin.Function(V)
 
         # Instantiate the ODESystemSolvers
         self._ode_system_solvers = {
@@ -539,6 +577,14 @@ class DOLFINODESystemSolver:
         self._num_distinct_domains = len(distinct_domains)
         self._distinct_domains = distinct_domains
         # self._nested_dofs = nested_dofs
+        self.from_field_states()
+        self.vs_.assign(self.vs)
+
+    def solution_fields(self):
+        """
+        Return tuple of previous and current solution objects.
+        """
+        return (self.vs_, self.vs)
 
     def update_parameters(self):
         """
@@ -560,7 +606,7 @@ class DOLFINODESystemSolver:
                         )
                     else:
                         self._param_values[label][
-                            local_id :: ode.num_field_parameters()
+                            local_id :: ode.num_field_parameters
                         ] = (ode.field_params[param].vector().get_local())
 
             # Update system solver
@@ -587,14 +633,10 @@ class DOLFINODESystemSolver:
     def num_distinct_domains(self):
         return self._num_distinct_domains
 
-    def from_field_states(self, v):
+    def from_field_states(self):
         """
         Copy values in stored field states to v
         """
-        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
-        # FIXME: Add proper check!
-        # assert v in self._state_space, "expected v to be in the state space"
-
         # Get values from dolfin
         values = self._dofs.dolfin_values
 
@@ -614,24 +656,20 @@ class DOLFINODESystemSolver:
                     # Get each field for each distinct domain
                     values[dof_maps] = self._dofs.goss_values[label][goss_indices]
 
-            elif self._float_type == np.float32:
-
+            else:
                 values[:] = self._dofs.goss_values[label]
 
         # Put solution back into DOLFIN Function
-        v.vector()[self._dofs.dof_maps["dolfin"]] = values
+        self.vs.vector()[self._dofs.dof_maps["dolfin"]] = values
 
-    def to_field_states(self, v):
+    def to_field_states(self):
         """
         Copy values in v to stored field states
         """
-        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
-        # FIXME: Add proper check!
-        # assert v in self._state_space, "expected v to be in the state space"
 
         # Get values from dolfin
         values = self._dofs.dolfin_values
-        values[:] = v.vector()[self._dofs.dof_maps["dolfin"]]
+        values[:] = self.vs.vector()[self._dofs.dof_maps["dolfin"]]
 
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
@@ -646,14 +684,13 @@ class DOLFINODESystemSolver:
                     self._dofs.goss_values[label][goss_indices] = values[dof_maps]
 
             # If single precision we need to copy
-            elif self._float_type == np.float32:
-
+            else:
                 self._dofs.goss_values[label][:] = values
 
             # Transfer values to Solver
             ode_system_solver.field_states = self._dofs.goss_values[label]
 
-    def step(self, interval: typing.Tuple[float, float], v: dolfin.Function) -> None:
+    def step(self, interval: typing.Tuple[float, float]) -> None:
         """Solve on the given time step (t0, t1).
         End users are recommended to use solve instead.
 
@@ -665,16 +702,15 @@ class DOLFINODESystemSolver:
             The function to store the solution
         """
 
-        assert isinstance(v, dolfin.Function), "expected a Function as the 'v' argument"
-        # FIXME: Add proper check!
-        # assert v in self._state_space, "expected v to be in the state space"
-
         timer = dolfin.Timer("ODE step")  # noqa: F841
         (t0, t1) = interval
         dt = t1 - t0
 
+        # Set-up current variables
+        self.vs.assign(self.vs_)  # Start with good guess
+
         # Update local field states
-        self.to_field_states(v)
+        self.to_field_states()
 
         # Update any changed field_parameters
         self.update_parameters()
@@ -684,7 +720,7 @@ class DOLFINODESystemSolver:
             ode_system_solver.forward(t0, dt)
 
         # Copy solution from local field states
-        self.from_field_states(v)
+        self.from_field_states()
 
     def save_states(self):
         """

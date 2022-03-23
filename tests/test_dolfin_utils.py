@@ -124,7 +124,7 @@ def test_DOLFINODESystemSolver_single_ODE(tentusscher_2004_ode):
 
     V_ic = ode.get_ic()[ode.state_names.index("V")]
     Cai_ic = ode.get_ic()[ode.state_names.index("Ca_i")]
-    solution = dolfin.Function(ode_solver.state_space)
+    solution = ode_solver.vs
 
     VS0 = ode_solver.state_space.sub(0)
     VS1 = ode_solver.state_space.sub(1)
@@ -144,13 +144,15 @@ def test_DOLFINODESystemSolver_single_ODE(tentusscher_2004_ode):
     v0_assigner_rev = dolfin.FunctionAssigner(W, VS0)
     v1_assigner_rev = dolfin.FunctionAssigner(W, VS1)
 
+    ode_solver.step((0, 0.1))
+
     v0_assigner_rev.assign(V, solution.sub(0))
     v1_assigner_rev.assign(Cai, solution.sub(1))
 
-    ode_solver.step((0, 0.1), solution)
-
-    # Solution should be fairly close
+    # Solution should be fairly close but not identical
+    assert np.linalg.norm(V.vector().get_local() - V_ic) > 0
     assert np.allclose(V.vector().get_local(), V_ic, rtol=0.001)
+    assert np.linalg.norm(Cai.vector().get_local() - Cai_ic) > 0
     assert np.allclose(Cai.vector().get_local(), Cai_ic, rtol=0.001)
 
 
@@ -169,19 +171,24 @@ def test_DOLFINODESystemSolver_muliple_ODEs(tentusscher_2004_ode, fitzhughnagumo
     left.mark(domains, 1)
 
     # Set up two odes
-    ode0 = goss.ParameterizedODE(
+    ode0 = goss.dolfinutils.DOLFINParameterizedODE(
         fitzhughnagumo_ode,
         field_states=["V"],
         field_parameters=["a"],
     )
 
-    ode1 = goss.ParameterizedODE(
+    ode1 = goss.dolfinutils.DOLFINParameterizedODE(
         tentusscher_2004_ode,
         field_states=["V"],
         field_parameters=["g_Kr", "g_Na", "g_Ks"],
     )
 
     odes = {0: ode0, 1: ode1}
+
+    V_ic = -86.2
+
+    for ode in odes.values():
+        ode.set_initial_conditions(V=V_ic)
 
     ode_solver = dolfinutils.DOLFINODESystemSolver(
         mesh,
@@ -191,14 +198,12 @@ def test_DOLFINODESystemSolver_muliple_ODEs(tentusscher_2004_ode, fitzhughnagumo
         space="P_1",
     )
 
-    V_ic = -85
-    solution = dolfin.Function(ode_solver.state_space)
-    solution.vector()[:] = V_ic  # V in mv
+    ode_solver.step((0, 0.1))
 
-    ode_solver.step((0, 0.1), solution)
+    solution = ode_solver.vs
 
     # All values should be pretty close
-    assert np.allclose(solution.vector().get_local(), V_ic, atol=0.1)
+    assert np.allclose(solution.vector().get_local(), V_ic, atol=2.0)
 
     # But there should be some variation
     assert np.max(np.abs(np.diff(solution.vector().get_local()))) > 1e-4

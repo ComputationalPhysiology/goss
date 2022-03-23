@@ -18,8 +18,12 @@ class LinearizedEval(NamedTuple):
 
 def load_file(path: Path, **kwargs):
 
-    if not path.is_file():
-        raise FileNotFoundError(f"File {path} does not exist")
+    while not path.is_file():
+        if path.suffix == "":
+            # Assume extension is ".ode"
+            path = path.with_suffix(".ode")
+        else:
+            raise FileNotFoundError(f"File {path} does not exist")
 
     if path.suffix == ".ode":
         return compilemodule.jit(gotran.load_ode(path), **kwargs)

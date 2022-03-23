@@ -33,6 +33,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.githubpages",
     "sphinxcontrib.bibtex",
+    "sphinx_math_dollar",
     "myst_parser",
 ]
 
