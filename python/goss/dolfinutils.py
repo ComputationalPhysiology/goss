@@ -577,6 +577,8 @@ class DOLFINODESystemSolver:
         self._num_distinct_domains = len(distinct_domains)
         self._distinct_domains = distinct_domains
         # self._nested_dofs = nested_dofs
+
+        self.initial_conditions_to_field_states()
         self.from_field_states()
         self.vs_.assign(self.vs)
 
@@ -644,7 +646,7 @@ class DOLFINODESystemSolver:
         for label, ode_system_solver in self._ode_system_solvers.items():
 
             # Fetch solution from stored field states
-            self._dofs.goss_values[label] = ode_system_solver.field_states.flatten()
+            self._dofs.goss_values[label] = ode_system_solver.field_states.ravel()
 
             # Iterate over the fields and collect values and put back
             # into dolfin transit array if nested dofs
@@ -661,6 +663,42 @@ class DOLFINODESystemSolver:
 
         # Put solution back into DOLFIN Function
         self.vs.vector()[self._dofs.dof_maps["dolfin"]] = values
+
+    def initial_conditions_to_field_states(self):
+        """
+        Copy values from initial conditions to stored field states
+        """
+
+        # Get values from dolfin
+        # values = self._dofs.dolfin_values
+        # # values[:] = self.vs.vector()[self._dofs.dof_maps["dolfin"]]
+        # family = self.vs.function_space().ufl_element().family()
+        # degree = self.vs.function_space().ufl_element().degree()
+        # mesh = self.vs.function_space().mesh()
+        # V = dolfin.FunctionSpace(mesh, family, degree)
+
+        # Update solver with new field_state values
+        for label, ode_system_solver in self._ode_system_solvers.items():
+
+            ic = ode_system_solver.ode.initial_conditions()
+            values = (
+                dolfin.interpolate(ic, self.vs.function_space()).vector().get_local()
+            )
+
+            # Iterate over the fields and collect values if nested dofs
+            if self._dofs.nested_dofs:
+                for field_name in self._field_names:
+                    goss_indices = self._dofs.goss_indices[label][field_name]
+                    dof_maps = self._dofs.dof_maps[label][field_name]
+
+                    # Get each field for each distinct domain
+                    self._dofs.goss_values[label][goss_indices] = values[dof_maps]
+
+            # If single precision we need to copy
+            else:
+                self._dofs.goss_values[label][:] = values
+
+            ode_system_solver.field_states = self._dofs.goss_values[label]
 
     def to_field_states(self):
         """
