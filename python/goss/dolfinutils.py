@@ -669,14 +669,6 @@ class DOLFINODESystemSolver:
         Copy values from initial conditions to stored field states
         """
 
-        # Get values from dolfin
-        # values = self._dofs.dolfin_values
-        # # values[:] = self.vs.vector()[self._dofs.dof_maps["dolfin"]]
-        # family = self.vs.function_space().ufl_element().family()
-        # degree = self.vs.function_space().ufl_element().degree()
-        # mesh = self.vs.function_space().mesh()
-        # V = dolfin.FunctionSpace(mesh, family, degree)
-
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
 
