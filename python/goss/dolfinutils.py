@@ -149,7 +149,7 @@ class DOLFINParameterizedODE(ParameterizedODE):
                 raise RuntimeError("'{init_name}' is not a parameter in {self}")
             if not isinstance(init_value, (float, int)) and not isinstance(
                 init_value._cpp_object,
-                dolfin.cpp.GenericFunction,
+                dolfin.cpp.function.GenericFunction,
             ):
                 raise RuntimeError("'{init_name}' is not a scalar or a GenericFunction")
             if (
