@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>goss.dolfinutils &#8212; goss 0.1.5 documentation</title>
+    <title>goss.dolfinutils &#8212; goss 0.2.1 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -63,7 +63,7 @@
       <img src="../../_static/logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">goss 0.1.5 documentation</h1>
+      <h1 class="site-logo" id="site-title">goss 0.2.1 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -393,7 +393,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{init_name}</span><span class="s2">&#39; is not a parameter in </span><span class="si">{self}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
                 <span class="n">init_value</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span>
-                <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">GenericFunction</span><span class="p">,</span>
+                <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">GenericFunction</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{init_name}</span><span class="s2">&#39; is not a scalar or a GenericFunction&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -407,11 +407,24 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;expected the value_size of &#39;</span><span class="si">{init_name}</span><span class="s2">&#39; to be 1&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">[</span><span class="n">init_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_value</span>
 
-    <span class="k">def</span> <span class="nf">initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">:</span>
         <span class="s2">&quot;Return initial conditions for v and s as an Expression.&quot;</span>
         <span class="k">return</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span>
             <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_names</span><span class="p">),</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">field_state_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">:</span>
+        <span class="s2">&quot;Return initial conditions for v and s as an Expression.&quot;</span>
+        <span class="n">ic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_state_names</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ic</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Make sure expression has rank 0</span>
+            <span class="k">return</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">field_state_names</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">ic</span><span class="p">)</span>
+        <span class="c1"># Otherwise expression will have rank 1</span>
+        <span class="k">return</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_state_names</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">ic</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="family_and_degree_from_str"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.family_and_degree_from_str">[docs]</a><span class="k">def</span> <span class="nf">family_and_degree_from_str</span><span class="p">(</span><span class="n">space</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -821,6 +834,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_distinct_domains</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_domains</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distinct_domains</span> <span class="o">=</span> <span class="n">distinct_domains</span>
         <span class="c1"># self._nested_dofs = nested_dofs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_conditions_to_field_states</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_field_states</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vs_</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="p">)</span>
 
@@ -888,7 +903,7 @@
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
             <span class="c1"># Fetch solution from stored field states</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">field_states</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">field_states</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
             <span class="c1"># Iterate over the fields and collect values and put back</span>
             <span class="c1"># into dolfin transit array if nested dofs</span>
@@ -905,6 +920,32 @@
 
         <span class="c1"># Put solution back into DOLFIN Function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">vector</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="s2">&quot;dolfin&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span></div>
+
+<div class="viewcode-block" id="DOLFINODESystemSolver.initial_conditions_to_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.initial_conditions_to_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">initial_conditions_to_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy values from initial conditions to stored field states</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="c1"># Update solver with new field_state values</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">ic</span> <span class="o">=</span> <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">field_state_initial_conditions</span><span class="p">()</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">ic</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span><span class="o">.</span><span class="n">get_local</span><span class="p">()</span>
+
+            <span class="c1"># Iterate over the fields and collect values if nested dofs</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">nested_dofs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="p">:</span>
+                    <span class="n">goss_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_indices</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">field_name</span><span class="p">]</span>
+                    <span class="n">dof_maps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">dof_maps</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">field_name</span><span class="p">]</span>
+
+                    <span class="c1"># Get each field for each distinct domain</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">goss_indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">dof_maps</span><span class="p">]</span>
+
+            <span class="c1"># If single precision we need to copy</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">values</span>
+
+            <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">field_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="DOLFINODESystemSolver.to_field_states"><a class="viewcode-back" href="../../goss.html#goss.dolfinutils.DOLFINODESystemSolver.to_field_states">[docs]</a>    <span class="k">def</span> <span class="nf">to_field_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
