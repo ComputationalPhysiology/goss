@@ -163,11 +163,24 @@ class DOLFINParameterizedODE(ParameterizedODE):
                 raise RuntimeError("expected the value_size of '{init_name}' to be 1")
             self._initial_conditions[init_name] = init_value
 
-    def initial_conditions(self):
+    def initial_conditions(self) -> dolfin.Expression:
         "Return initial conditions for v and s as an Expression."
         return dolfin.Expression(
             list(self.state_names), degree=1, **self._initial_conditions
         )
+
+    def field_state_initial_conditions(self) -> dolfin.Expression:
+        "Return initial conditions for v and s as an Expression."
+        ic = {
+            name: value
+            for name, value in self._initial_conditions.items()
+            if name in self.field_state_names
+        }
+        if len(ic) == 1:
+            # Make sure expression has rank 0
+            return dolfin.Expression(*self.field_state_names, degree=1, **ic)
+        # Otherwise expression will have rank 1
+        return dolfin.Expression(self.field_state_names, degree=1, **ic)
 
 
 def family_and_degree_from_str(space: str) -> typing.Tuple[str, int]:
@@ -668,14 +681,12 @@ class DOLFINODESystemSolver:
         """
         Copy values from initial conditions to stored field states
         """
-
+        V = self.vs.function_space()
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
 
-            ic = ode_system_solver.ode.initial_conditions()
-            values = (
-                dolfin.interpolate(ic, self.vs.function_space()).vector().get_local()
-            )
+            ic = ode_system_solver.ode.field_state_initial_conditions()
+            values = dolfin.interpolate(ic, V).vector().get_local()
 
             # Iterate over the fields and collect values if nested dofs
             if self._dofs.nested_dofs:
