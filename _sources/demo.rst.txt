@@ -17,4 +17,5 @@ Content
    tentusscher_field_parameters
    bidomain
    monodomain
+   niederer_benchmark
    multicellmodel
