@@ -20,6 +20,7 @@ Content
 
    install
    CONTRIBUTING
+   presentation
    demo
 
 Source code

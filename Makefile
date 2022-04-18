@@ -69,3 +69,11 @@ build-cpp: delete-build-cpp
 
 test-cpp: build-cpp-test
 	cd build-cpp && ctest - V && cd ..
+
+
+slides:
+	rm -f docs/source/presentation.slides.html
+	jupytext docs/source/presentation.md -o docs/source/presentation.ipynb
+	jupyter nbconvert docs/source/presentation.ipynb --to slides  --SlidesExporter.reveal_scroll=True
+	rm docs/source/presentation.ipynb
+	open docs/source/presentation.slides.html
