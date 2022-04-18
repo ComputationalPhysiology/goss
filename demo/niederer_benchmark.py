@@ -1,6 +1,9 @@
-# (bidomain)=
-# # Bidomain model
+# (niederer_benchmark)=
+# # Niederer Benchmark
 #
+# In this demo we compare the pure `cbcbeat` `SplittingSolver` and the `GOSSplittingSolver` on the [Niederer benchmark problem](https://doi.org/10.1098/rsta.2011.0139). The code here is based in the [original implementation in the `cbcbeat` repo](https://github.com/ComputationalPhysiology/cbcbeat/tree/master/demo/niederer-benchmark)
+#
+# First we import the required packages (including the `GOSSplittingSolver`)
 
 import dolfin
 import cbcbeat
@@ -8,6 +11,8 @@ import goss
 import numpy as np
 import gotran
 from cbcbeat.gossplittingsolver import GOSSplittingSolver
+
+# and define the given initial conditions from the problem descriptions
 
 ic = {
     "V": -85.23,  # mV
@@ -30,6 +35,9 @@ ic = {
     "Na_i": 8.604,  # millimolar
     "K_i": 136.89,  # millimolar
 }
+
+
+# We make a general method for setting up the model
 
 
 def setup_model(dx=0.5):
@@ -108,6 +116,9 @@ def setup_model(dx=0.5):
     return mesh, time, M, stimulus
 
 
+# One method for running the benchmark using goss
+
+
 def run_benchmark_goss(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
     gotran_ode = gotran.load_ode("tentusscher_panfilov_2006_M_cell.ode")
 
@@ -162,6 +173,9 @@ def run_benchmark_goss(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
         vfile.write(v, t1)
 
 
+# and one method for running the benchmark using the original (vanilla)
+
+
 def run_benchmark_vanilla(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
 
     CellModel = cbcbeat.Tentusscher_panfilov_2006_epi_cell
@@ -208,21 +222,54 @@ def run_benchmark_vanilla(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
         vfile.write(v, t1)
 
 
-def main():
+# Now lets run the two benchmarks and list the timings for comparison
 
-    dt = 0.5
-    dx = 0.5
-    T = 100.0
-    mesh, time, M, stimulus = setup_model(dx=dx)
+# +
+dt = 0.5
+dx = 0.1
+T = 100.0
+mesh, time, M, stimulus = setup_model(dx=dx)
 
-    with dolfin.Timer("Goss"):
-        run_benchmark_goss(mesh=mesh, time=time, M=M, stimulus=stimulus, dt=dt, T=T)
+with dolfin.Timer("Goss"):
+    run_benchmark_goss(mesh=mesh, time=time, M=M, stimulus=stimulus, dt=dt, T=T)
 
-    with dolfin.Timer("Vanilla"):
-        run_benchmark_vanilla(mesh=mesh, time=time, M=M, stimulus=stimulus, dt=dt, T=T)
+with dolfin.Timer("Vanilla"):
+    run_benchmark_vanilla(mesh=mesh, time=time, M=M, stimulus=stimulus, dt=dt, T=T)
 
-    dolfin.list_timings(dolfin.TimingClear.keep, [dolfin.TimingType.wall])
+dolfin.list_timings(dolfin.TimingClear.keep, [dolfin.TimingType.wall])
+# -
 
-
-if __name__ == "__main__":
-    main()
+# In my case the output of the timings are
+#
+# ```
+# [MPI_AVG] Summary of timings                 |  reps    wall avg    wall tot
+# ----------------------------------------------------------------------------
+# Apply (PETScMatrix)                          |     2   0.0015301   0.0030603
+# Apply (PETScVector)                          |  2425  7.7884e-06    0.018887
+# Assemble cells                               |   402    0.089612      36.024
+# Assemble rhs                                 |   400    0.090153      36.061
+# Build BoxMesh                                |     1    0.018548    0.018548
+# Build sparsity                               |     2    0.059989     0.11998
+# Compute SCOTCH graph re-ordering             |     6   0.0079531    0.047719
+# Compute connectivity 0-3                     |     1    0.018011    0.018011
+# Compute connectivity 2-3                     |     1    0.020575    0.020575
+# Compute entities dim = 2                     |     1     0.18813     0.18813
+# Delete sparsity                              |     2   2.139e-06   4.278e-06
+# DistributedMeshTools: reorder vertex values  |   402   0.0068479      2.7529
+# Goss                                         |     1      90.596      90.596
+# Init dof vector                              |     9     0.01619     0.14571
+# Init dofmap                                  |     6     0.32169      1.9302
+# Init dofmap from UFC dofmap                  |     6    0.037678     0.22607
+# Init tensor                                  |     2   0.0034466   0.0068933
+# Merge step                                   |   400   0.0014565      0.5826
+# Number distributed mesh entities             |     6  1.7222e-06  1.0333e-05
+# ODE step                                     |   800     0.13433      107.47
+# PDE Step                                     |   400     0.10686      42.742
+# PETSc Krylov solver                          |   400     0.01652      6.6078
+# PointIntegralSolver::apply                   |   400  2.7312e-05    0.010925
+# PointIntegralSolver::step                    |   400     0.14869      59.477
+# SCOTCH: call SCOTCH_graphBuild               |     6  2.4337e-05  0.00014602
+# SCOTCH: call SCOTCH_graphOrder               |     6     0.00578     0.03468
+# Vanilla                                      |     1      103.25      103.25
+# ```
+# and we see that `goss` is about 10% faster than the original "Vanilla" version.

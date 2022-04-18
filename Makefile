@@ -50,6 +50,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	jupytext demo/tentusscher_field_parameters.py -o docs/source/tentusscher_field_parameters.md
 	jupytext demo/bidomain.py -o docs/source/bidomain.md
 	jupytext demo/monodomain.py -o docs/source/monodomain.md
+	jupytext demo/niederer_benchmark.py -o docs/source/niederer_benchmark.md
 	jupytext demo/multicellmodel.py -o docs/source/multicellmodel.md
 	cd docs && make html
 
