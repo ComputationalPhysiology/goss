@@ -191,6 +191,17 @@ u = solver.solve(t, y0=ic)
 
 
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## Comparison with Scipy and Scipy + Numba
+
+![_](_static/timings_lorentz_5_10.png)
+
+---
+<!-- #endregion -->
+
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
 ## Solving the Tentusscher model
 
 1. Model is available at [CellML](https://models.physiomeproject.org/workspace/tentusscher_panfilov_2006)
@@ -226,8 +237,10 @@ goss run --help
 Example
 
 ```
-goss run -T 1000 --solver GRL1 -dt 0.01 --plot-y V tentusscher_panfilov_2006_M_cell.ode
+goss run -T 1000 --solver GRL1 -dt 0.01 --plot-y V --plot-y Ca_i tentusscher_panfilov_2006_M_cell.ode
 ```
+
+![_](_static/tentusscher.png)
 
 ---
 <!-- #endregion -->
@@ -241,6 +254,16 @@ Built on [`click`](https://click.palletsprojects.com), [`rich`](https://github.c
 
 ---
 <!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## Comparison with Scipy and Scipy + Numba
+
+![_](_static/timings_tentusscher_panfilov_2006_M_cell_5_5.png)
+
+---
+<!-- #endregion -->
+
 
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 ## Solving the Tentusscher model for different parameters

@@ -301,6 +301,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-with-scipy-and-scipy-numba">
+   Comparison with Scipy and Scipy + Numba
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solving-the-tentusscher-model">
    Solving the Tentusscher model
   </a>
@@ -316,12 +321,12 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#solving-the-tentusscher-model-for-different-parameters">
-   Solving the Tentusscher model for different parameters
+  <a class="reference internal nav-link" href="#id2">
+   Comparison with Scipy and Scipy + Numba
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
+  <a class="reference internal nav-link" href="#solving-the-tentusscher-model-for-different-parameters">
    Solving the Tentusscher model for different parameters
   </a>
  </li>
@@ -337,6 +342,11 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id5">
+   Solving the Tentusscher model for different parameters
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
    Solving the Tentusscher model for different parameters
   </a>
  </li>
@@ -434,6 +444,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-with-scipy-and-scipy-numba">
+   Comparison with Scipy and Scipy + Numba
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solving-the-tentusscher-model">
    Solving the Tentusscher model
   </a>
@@ -449,12 +464,12 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#solving-the-tentusscher-model-for-different-parameters">
-   Solving the Tentusscher model for different parameters
+  <a class="reference internal nav-link" href="#id2">
+   Comparison with Scipy and Scipy + Numba
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
+  <a class="reference internal nav-link" href="#solving-the-tentusscher-model-for-different-parameters">
    Solving the Tentusscher model for different parameters
   </a>
  </li>
@@ -470,6 +485,11 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id5">
+   Solving the Tentusscher model for different parameters
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id6">
    Solving the Tentusscher model for different parameters
   </a>
  </li>
@@ -651,6 +671,13 @@
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 </div>
+<div class="section" id="comparison-with-scipy-and-scipy-numba">
+<h2>Comparison with Scipy and Scipy + Numba<a class="headerlink" href="#comparison-with-scipy-and-scipy-numba" title="Permalink to this headline">¶</a></h2>
+<p><img alt="_" src="_images/timings_lorentz_5_10.png" /></p>
+<hr class="docutils" />
+<!-- #endregion -->
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+</div>
 <div class="section" id="solving-the-tentusscher-model">
 <h2>Solving the Tentusscher model<a class="headerlink" href="#solving-the-tentusscher-model" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
@@ -685,9 +712,10 @@
 </pre></div>
 </div>
 <p>Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">goss</span> <span class="n">run</span> <span class="o">-</span><span class="n">T</span> <span class="mi">1000</span> <span class="o">--</span><span class="n">solver</span> <span class="n">GRL1</span> <span class="o">-</span><span class="n">dt</span> <span class="mf">0.01</span> <span class="o">--</span><span class="n">plot</span><span class="o">-</span><span class="n">y</span> <span class="n">V</span> <span class="n">tentusscher_panfilov_2006_M_cell</span><span class="o">.</span><span class="n">ode</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">goss</span> <span class="n">run</span> <span class="o">-</span><span class="n">T</span> <span class="mi">1000</span> <span class="o">--</span><span class="n">solver</span> <span class="n">GRL1</span> <span class="o">-</span><span class="n">dt</span> <span class="mf">0.01</span> <span class="o">--</span><span class="n">plot</span><span class="o">-</span><span class="n">y</span> <span class="n">V</span> <span class="o">--</span><span class="n">plot</span><span class="o">-</span><span class="n">y</span> <span class="n">Ca_i</span> <span class="n">tentusscher_panfilov_2006_M_cell</span><span class="o">.</span><span class="n">ode</span>
 </pre></div>
 </div>
+<p><img alt="_" src="_images/tentusscher.png" /></p>
 <hr class="docutils" />
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
@@ -696,6 +724,13 @@
 <h2>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h2>
 <p>Built on <a class="reference external" href="https://click.palletsprojects.com"><code class="docutils literal notranslate"><span class="pre">click</span></code></a>, <a class="reference external" href="https://github.com/Textualize/rich"><code class="docutils literal notranslate"><span class="pre">rich</span></code></a> and <a class="reference external" href="https://pydantic-docs.helpmanual.io"><code class="docutils literal notranslate"><span class="pre">pydantic</span></code></a></p>
 <p><img alt="_" src="_images/cli.gif" /></p>
+<hr class="docutils" />
+<!-- #endregion -->
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+</div>
+<div class="section" id="id2">
+<h2>Comparison with Scipy and Scipy + Numba<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p><img alt="_" src="_images/timings_tentusscher_panfilov_2006_M_cell_5_5.png" /></p>
 <hr class="docutils" />
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
@@ -727,8 +762,8 @@ We will block the CaL- and the Kr-channel with 0%, 20% and 40%</p>
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 </div>
-<div class="section" id="id2">
-<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>We use the first order generalized rush larsen scheme and set an internal step size of 0.01</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">GRL1</span><span class="p">()</span>
 <span class="n">solver</span><span class="o">.</span><span class="n">internal_time_step</span> <span class="o">=</span> <span class="mf">0.01</span>
@@ -745,8 +780,8 @@ We will block the CaL- and the Kr-channel with 0%, 20% and 40%</p>
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 </div>
-<div class="section" id="id3">
-<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>Now, let us pick three block factors (1 representing baseline)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">block_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
 </pre></div>
@@ -768,8 +803,8 @@ We will block the CaL- and the Kr-channel with 0%, 20% and 40%</p>
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 </div>
-<div class="section" id="id4">
-<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>Let us fist run the forward model for 50 000 ms</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">50_000</span>
 <span class="n">system</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -788,8 +823,8 @@ We will block the CaL- and the Kr-channel with 0%, 20% and 40%</p>
 <!-- #endregion -->
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 </div>
-<div class="section" id="id5">
-<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>Solving the Tentusscher model for different parameters<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>Note that calls to <code class="docutils literal notranslate"><span class="pre">system.forward</span></code> and <code class="docutils literal notranslate"><span class="pre">sytem.solve</span></code> runs in parallel using OpenMP</p>
 <p><img alt="_" src="_images/tentusscher_field_parameters.png" /></p>
 <hr class="docutils" />
