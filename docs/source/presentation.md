@@ -62,7 +62,7 @@ Install with
 ```
 python -m pip install pygoss
 ```
-(you don't need to run `CMake` or `make`)
+(you don't need to run `CMake` or `make`, but you need to have `boost` installed)
 
 ---
 <!-- #endregion -->
@@ -246,16 +246,6 @@ goss run -T 1000 --solver GRL1 -dt 0.01 --plot-y V --plot-y Ca_i tentusscher_pan
 <!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
-## Command line interface
-
-Built on [`click`](https://click.palletsprojects.com), [`rich`](https://github.com/Textualize/rich) and [`pydantic`](https://pydantic-docs.helpmanual.io)
-
-![_](_static/cli.gif)
-
----
-<!-- #endregion -->
-
-<!-- #region {"slideshow": {"slide_type": "slide"}} -->
 
 ## Comparison with Scipy and Scipy + Numba
 
@@ -264,6 +254,15 @@ Built on [`click`](https://click.palletsprojects.com), [`rich`](https://github.c
 ---
 <!-- #endregion -->
 
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+## Command line interface
+
+Built on [`click`](https://click.palletsprojects.com), [`rich`](https://github.com/Textualize/rich) and [`pydantic`](https://pydantic-docs.helpmanual.io)
+
+![_](_static/cli.gif)
+
+---
+<!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "slide"}} -->
 ## Solving the Tentusscher model for different parameters
@@ -434,15 +433,131 @@ Our benchmarks shows that the `GOSSplittingSolver` is about 10% faster than the 
 
 - Local development
   - pre-commit hooks
-- Setting up tests
+- Testing
   - python
   - C++
-  - pre-commit.ci
   - Continuos integration
+  - pre-commit.ci
+- Documentation
 - Continuos deployment on new tag
   - Publishing to pypi
   - Publishing docker image
-  - Update documentation
+
+---
+<!-- #endregion -->
+
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+## Pre-commit hooks will run every time you commit
+
+- A good way to make sure you are not committing "bad code"
+  - Code that doesn't follow the coding style
+- If you are working with others then you will force everyone to use the same code style
+  - That way you will not reformat all the code in every commit (for example if one is using tabs and the other is using spaces for indentation)
+
+![_](https://user-images.githubusercontent.com/2010323/164223167-5e9a5205-e86c-4123-bbb4-bea1d202afb0.gif)
+
+
+---
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+## Testing (C++)
+
+- There is a test suite for the C++ code that uses Google test
+- Written by Johan Hake (the original creator of `goss`)
+
+
+---
+<!-- #endregion -->
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+## Testing (Python)
+
+- Python code is tested using `pytest`
+- Test coverage is about 95%
+
+![_](https://user-images.githubusercontent.com/2010323/164225247-2d5b615e-0633-422a-b002-4368292990e9.png)
+
+---
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## All tests run in Continuous Integration (CI) using GitHub Actions
+
+![_](https://user-images.githubusercontent.com/2010323/164224686-2ec7562e-60ff-48f4-be26-dedc030e2706.png)
+
+
+---
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## Pre-commit hooks are also run on every push to the repo
+
+- Using <https://pre-commit.ci>
+
+![_](https://user-images.githubusercontent.com/2010323/164225612-9b8de9ce-e2c6-42ed-bb61-b3809a6a4799.png)
+
+
+---
+<!-- #endregion -->
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## Documentation is hosted on GitHub pages
+
+- Rebuilds documentation at every push to the repo
+- <https://computationalphysiology.github.io/goss>
+
+![_](https://user-images.githubusercontent.com/2010323/164227017-7e321d55-b752-4348-8545-bd54d2eb4efb.png)
+
+---
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## You can also find this presentation in the documentation
+
+![_](https://user-images.githubusercontent.com/2010323/164227291-db4ba801-59bd-4d6d-904a-3a299981ccc4.png)
+
+---
+<!-- #endregion -->
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## When a new tag is pushed, a new version is built and uploaded to pypi
+
+
+![_](https://user-images.githubusercontent.com/2010323/164226114-ce95daf7-b009-4196-b610-0f057a5858db.png)
+
+---
+<!-- #endregion -->
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## We also build a new Docker image when a new tag is pushed
+
+
+![_](https://user-images.githubusercontent.com/2010323/164227885-6f7848d4-2d60-4899-b086-a4933f8c78f0.png)
+
+---
+<!-- #endregion -->
+
+
+<!-- #region {"slideshow": {"slide_type": "slide"}} -->
+
+## Check it out!
+
+We need users!
+
+<https://github.com/ComputationalPhysiology/goss>
 
 ---
 <!-- #endregion -->
