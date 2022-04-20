@@ -13,6 +13,8 @@ docs/source/goss.scripts.rst
 docs/source/modules.rst
 benchmarks/*.png
 benchmarks/*.npy
+*.h5
+*.xdmf
 _skbuild/
 build-cpp/
 sandbox
