@@ -207,20 +207,30 @@ def main(  # noqa: C901
                     continue
                 print(f"Run benchmark for {label}")
                 times = timeit.Timer(solver).repeat(repeat=repeat, number=number)
-                timings[label] = min(times) / number
+                true_times = [t / number for t in times]
+
+                timings[label] = true_times
+
                 np.save(time_outfile, timings)
 
         timings = np.load(time_outfile, allow_pickle=True).item()
         x = np.arange(len(timings))
-        fig, ax = plt.subplots()
-        ax.bar(x, timings.values(), align="center", log=True)
+        fig, ax = plt.subplots(figsize=(18, 10))
+        ax.bar(
+            x,
+            [np.mean(t) for t in timings.values()],
+            align="center",
+            log=True,
+            yerr=[np.std(t) for t in timings.values()],
+        )
         ax.set_xticks(x)
         ax.set_xticklabels(timings.keys(), rotation=30)
         ax.set_ylabel("Time [seconds]")
         ax.set_xlabel("Solver")
+        ax.set_title(f"Mean runtime for {number} number of times and {repeat} repeats")
         ax.grid()
 
-        fig.savefig("timings_lorentz.png")
+        fig.savefig(f"timings_{name}_{number}_{repeat}.png")
         plt.show()
 
     def plot_methods():
