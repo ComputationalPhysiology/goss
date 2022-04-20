@@ -73,8 +73,6 @@ test-cpp: build-cpp-test
 
 
 slides:
-	rm -f docs/source/presentation.slides.html
+	rm -f docs/source/presentation.ipynb
 	jupytext docs/source/presentation.md -o docs/source/presentation.ipynb
-	jupyter nbconvert docs/source/presentation.ipynb --to slides  --SlidesExporter.reveal_scroll=True
-	rm docs/source/presentation.ipynb
-	open docs/source/presentation.slides.html
+	jupyter nbconvert docs/source/presentation.ipynb --to slides  --post serve --SlidesExporter.reveal_scroll=True
