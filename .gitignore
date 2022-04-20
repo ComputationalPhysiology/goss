@@ -11,6 +11,8 @@ docs/source/CONTRIBUTING.md
 docs/source/goss.rst
 docs/source/goss.scripts.rst
 docs/source/modules.rst
+benchmarks/*.png
+benchmarks/*.npy
 _skbuild/
 build-cpp/
 sandbox
