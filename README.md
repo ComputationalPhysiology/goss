@@ -4,7 +4,7 @@
 [![PyPI version](https://badge.fury.io/py/pygoss.svg)](https://badge.fury.io/py/pygoss)
 [![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/main/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
 
-# GOSS - General ODE solver
+# GOSS - General ODE System Solver
 
 `goss` is a C++ library for solving ordinary differential equations.
 
