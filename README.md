@@ -76,24 +76,7 @@ Documentation is hosed at https://computationalphysiology.github.io/goss
 
 ## Install
 
-### Installing dependencies
-First, you need to install `boost`, i.e
-
-(Debian)
-```
-apt-get install libboost-all-dev
-```
-(Fedora)
-```
-yum install boost-devel
-```
-Mac OSX
-```
-brew install boost
-```
-
-### Installing goss
-Next you can install the python package.
+You can install goss with pip
 ```
 python -m pip install pygoss
 ```
@@ -140,6 +123,10 @@ ctest
 The bindings between python and C++ uses [pybind11](https://pybind11.readthedocs.io/en/stable/) and all the bindings are found in the file [python/wrapper.cpp](python/wrapper.cpp).
 
 The python package is built using [scikit-build](https://scikit-build.readthedocs.io/en/latest/index.html) which is a build system especially suited for python code with C++ extensions.
+
+## Known issues
+
+- There is currently an issue on Apple Silicon with exceptions raised from by the jit compiled code which means the [one test](https://github.com/ComputationalPhysiology/goss/blob/bc6eb470151ae17ecc7b58821bedf9e2ce227aa1/tests/test_ode_bindings.py#L51) is not passing. An issue has been filed for this [here](https://github.com/wlav/cppyy/issues/68)
 
 ## Contributing
 
