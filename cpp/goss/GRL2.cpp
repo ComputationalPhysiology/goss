@@ -22,8 +22,8 @@
 #include <cstring>
 
 #include "GRL2.h"
-#include "Timer.h"
-#include "log.h"
+// #include "Timer.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -52,8 +52,8 @@ void GRL2::attach(std::shared_ptr<ODE> ode)
     ODESolver::attach(ode);
 
     if (ode->is_dae())
-        goss_error("GRL2.cpp", "attaching ode",
-                   "cannot integrate a DAE ode with an explicit solver.");
+        // goss_error("GRL2.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
+        printf("cannot integrate a DAE ode with an explicit solver.");
 
     // Initalize memory
     _y2.resize(num_states(), 0.0);
@@ -70,7 +70,8 @@ void GRL2::forward(double *y, double t, double dt)
     // Local time
     double lt = t;
 
-    for (ulong step = 0; step < nsteps; ++step) {
+    for (ulong step = 0; step < nsteps; ++step)
+    {
 
         // First step
         _one_step(_y2.data(), y, y, lt, ldt * 0.5, delta);

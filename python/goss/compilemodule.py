@@ -67,7 +67,6 @@ def code_to_submodule(code: str, name):
     cppyy.add_include_path(here.joinpath("include").as_posix())
     cppyy.add_library_path(here.joinpath("lib").as_posix())
     cppyy.load_library("goss")
-
     cppyy.cppdef(code)
 
     _cppyygbl = __import__("cppyy.gbl", fromlist=[f"create_{name}"])

@@ -21,8 +21,8 @@
 #include <cstdlib>
 
 #include "RL1.h"
-#include "Timer.h"
-#include "log.h"
+// #include "Timer.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -51,12 +51,12 @@ void RL1::attach(std::shared_ptr<ODE> ode)
     ODESolver::attach(ode);
 
     if (_ode->is_dae())
-        goss_error("RL1.cpp", "attach ode", "cannot integrate a DAE ode with Rush Larsen method.");
+        // goss_error("RL1.cpp", "attach ode", "cannot integrate a DAE ode with Rush Larsen method.");
+        printf("cannot integrate a DAE ode with Rush Larsen method.");
 }
 //-----------------------------------------------------------------------------
 void RL1::forward(double *y, double t, double dt)
 {
-
 
     // Calculate number of steps and size of timestep based on _ldt
     const double ldt_0 = _ldt;
@@ -66,7 +66,8 @@ void RL1::forward(double *y, double t, double dt)
     // Local time
     double lt = t;
 
-    for (ulong step = 0; step < nsteps; ++step) {
+    for (ulong step = 0; step < nsteps; ++step)
+    {
 
         // One step
         _one_step(y, y, y, lt, ldt);

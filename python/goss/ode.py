@@ -148,6 +148,7 @@ class ParameterizedODE(ODE):
         """FIXME: Write about all possible ways
         to initialize object
         """
+
         if "num_states" in kwargs and "num_parameters" in kwargs:
             num_states = kwargs.get("num_states")
             num_parameters = kwargs.get("num_parameters")

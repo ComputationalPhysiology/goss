@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include "ExplicitEuler.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -36,8 +36,7 @@ ExplicitEuler::ExplicitEuler(std::shared_ptr<ODE> ode) : ODESolver(), _dFdt(0)
     attach(ode);
 }
 //-----------------------------------------------------------------------------
-ExplicitEuler::ExplicitEuler(const ExplicitEuler &solver)
-    : ODESolver(solver), _dFdt(solver.num_states())
+ExplicitEuler::ExplicitEuler(const ExplicitEuler &solver) : ODESolver(solver), _dFdt(solver.num_states())
 {
     // Do nothing
 }
@@ -53,8 +52,9 @@ void ExplicitEuler::attach(std::shared_ptr<ODE> ode)
     ODESolver::attach(ode);
 
     if (ode->is_dae())
-        goss_error("ExplicitEuler.cpp", "attaching ode",
-                   "cannot integrate a DAE ode with an explicit solver.");
+        // goss_error("ExplicitEuler.cpp", "attaching ode",
+        //            "cannot integrate a DAE ode with an explicit solver.");
+        printf("cannot integrate a DAE ode with an explicit solver.");
 
     // Create memory for derivative evaluation
     _dFdt.resize(num_states());
@@ -71,7 +71,8 @@ void ExplicitEuler::forward(double *y, double t, double dt)
 
     // Local time
     double lt = t;
-    for (ulong step = 0; step < nsteps; ++step) {
+    for (ulong step = 0; step < nsteps; ++step)
+    {
         // Evaluate rhs
         _ode->eval(y, lt, _dFdt.data());
 

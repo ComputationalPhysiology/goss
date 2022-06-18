@@ -22,42 +22,31 @@
 // GOSS interface
 
 // Common
-#include <goss/types.h>
-#include <goss/constants.h>
 #include <goss/DoubleVector.h>
-
-// log
-#include <goss/log.h>
-#include <goss/LogStream.h>
-#include <goss/Progress.h>
-#include <goss/Table.h>
-#include <goss/LogLevel.h>
-
-// Timing
-#include <goss/timing.h>
-#include <goss/Timer.h>
+#include <goss/constants.h>
+#include <goss/types.h>
 
 // ODEs
 #include <goss/ODE.h>
 #include <goss/ParameterizedODE.h>
 
 // ODESolvers
-#include <goss/ODESolver.h>
-#include <goss/ImplicitODESolver.h>
 #include <goss/AdaptiveExplicitSolver.h>
 #include <goss/AdaptiveImplicitSolver.h>
 #include <goss/ExplicitEuler.h>
-#include <goss/RK4.h>
+#include <goss/ImplicitODESolver.h>
+#include <goss/ODESolver.h>
 #include <goss/RK2.h>
+#include <goss/RK4.h>
 //#include <goss/RKF34.h>
-#include <goss/RKF32.h>
 #include <goss/BasicImplicitEuler.h>
 #include <goss/ImplicitEuler.h>
+#include <goss/RKF32.h>
 #include <goss/ThetaSolver.h>
 //#include <goss/ImplicitMidPointSolver.h>
 //#include <goss/SDIRK2O2.h>
-#include <goss/ESDIRK4O32.h>
 #include <goss/ESDIRK23a.h>
+#include <goss/ESDIRK4O32.h>
 #include <goss/GRL1.h>
 #include <goss/GRL2.h>
 #include <goss/RL1.h>

@@ -21,7 +21,7 @@
 #include <cmath>
 
 #include "RK2.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -51,8 +51,8 @@ void RK2::attach(std::shared_ptr<ODE> ode)
     ODESolver::attach(ode);
 
     if (ode->is_dae())
-        goss_error("RK2.cpp", "attaching ode",
-                   "cannot integrate a DAE ode with an explicit solver.");
+        // goss_error("RK2.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
+        printf("cannot integrate a DAE ode with an explicit solver.");
 
     k1.resize(num_states());
     tmp.resize(num_states());
@@ -70,7 +70,8 @@ void RK2::forward(double *y, double t, double dt)
 
     // Local time
     double lt = t;
-    for (ulong j = 0; j < nsteps; ++j) {
+    for (ulong j = 0; j < nsteps; ++j)
+    {
         // Initial eval
         _ode->eval(y, lt, &k1[0]);
 

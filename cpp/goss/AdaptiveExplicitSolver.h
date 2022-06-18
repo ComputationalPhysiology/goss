@@ -112,7 +112,6 @@ class AdaptiveExplicitSolver : public ODESolver
         return true;
     }
 
-
   protected:
     // Log of 1) the numer of steps, 2) the number of rejected steps
     ulong num_accepted, num_rejected;

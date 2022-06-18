@@ -21,7 +21,7 @@
 #include <cmath>
 
 #include "RK4.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -54,8 +54,8 @@ void RK4::attach(std::shared_ptr<ODE> ode)
     ODESolver::attach(ode);
 
     if (ode->is_dae())
-        goss_error("RK4.cpp", "attaching ode",
-                   "cannot integrate a DAE ode with an explicit solver.");
+        // goss_error("RK4.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
+        printf("cannot integrate a DAE ode with an explicit solver.");
 
     k1.resize(num_states());
     k2.resize(num_states());
@@ -76,7 +76,8 @@ void RK4::forward(double *y, double t, double dt)
 
     // Local time
     double lt = t;
-    for (ulong j = 0; j < nsteps; ++j) {
+    for (ulong j = 0; j < nsteps; ++j)
+    {
         // Evaluate rhs and calculate intermediate derivatives
         _ode->eval(y, lt, &k1[0]);
 

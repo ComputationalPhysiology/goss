@@ -20,31 +20,30 @@
 #ifndef DOUBLEVECTOR_H_IS_INCLUDED
 #define DOUBLEVECTOR_H_IS_INCLUDED
 
-#include <boost/scoped_array.hpp>
+#include <memory>
 
 #include "types.h"
 
-namespace goss {
+namespace goss
+{
 
-  // A small wrapper around a double pointer
-  struct DoubleVector
-  {
+// A small wrapper around a double pointer
+struct DoubleVector
+{
 
-    boost::scoped_array<double> data;
+    std::unique_ptr<double[]> data;
     uint n;
+};
 
-  };
+// A small wrapper around a double pointer
+struct DoubleVector2D
+{
 
-  // A small wrapper around a double pointer
-  struct DoubleVector2D
-  {
-
-    boost::scoped_array<double> data;
+    std::unique_ptr<double[]> data;
     uint m;
     uint n;
+};
 
-  };
-
-}
+} // namespace goss
 
 #endif

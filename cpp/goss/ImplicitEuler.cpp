@@ -4,7 +4,7 @@
 
 #include "ImplicitEuler.h"
 #include "constants.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -13,8 +13,7 @@ ImplicitEuler::ImplicitEuler() : ImplicitODESolver(), _z1(0), _justrefined(false
 {
 }
 //-----------------------------------------------------------------------------
-ImplicitEuler::ImplicitEuler(std::shared_ptr<ODE> ode)
-    : ImplicitODESolver(), _z1(0), _justrefined(false)
+ImplicitEuler::ImplicitEuler(std::shared_ptr<ODE> ode) : ImplicitODESolver(), _z1(0), _justrefined(false)
 {
     attach(ode);
 }
@@ -69,7 +68,8 @@ void ImplicitEuler::forward(double *y, double t, double dt)
     // A way to check if we are at t_end.
     const double eps = GOSS_EPS * 1000;
 
-    while (true) {
+    while (true)
+    {
 
         // Use 0.0 as initial guess
         for (i = 0; i < num_states(); ++i)
@@ -80,11 +80,11 @@ void ImplicitEuler::forward(double *y, double t, double dt)
             always_recompute_jacobian = true;
 
         // Solve for increment
-        step_ok = newton_solve(_z1.data(), _prev.data(), y, t + ldt, ldt, 1.0,
-                               always_recompute_jacobian);
+        step_ok = newton_solve(_z1.data(), _prev.data(), y, t + ldt, ldt, 1.0, always_recompute_jacobian);
 
         // Newton step OK
-        if (step_ok) {
+        if (step_ok)
+        {
 
             // Add increment
             for (i = 0; i < num_states(); ++i)
@@ -98,35 +98,47 @@ void ImplicitEuler::forward(double *y, double t, double dt)
 
             // If the solver has refined, we do not allow it to double its
             // timestep for another step
-            if (!_justrefined) {
+            if (!_justrefined)
+            {
                 // double time step
                 const double tmp = 2.0 * ldt;
-                if (ldt_0 > 0. && tmp >= ldt_0) {
+                if (ldt_0 > 0. && tmp >= ldt_0)
+                {
                     ldt = ldt_0;
-                } else {
-                    ldt = tmp;
-                    log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp / 2, ldt);
                 }
-            } else {
+                else
+                {
+                    ldt = tmp;
+                    // log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp / 2, ldt);
+                }
+            }
+            else
+            {
                 _justrefined = false;
             }
 
             // If we are passed t_end
-            if ((t + ldt + GOSS_EPS) > t_end) {
+            if ((t + ldt + GOSS_EPS) > t_end)
+            {
                 ldt = t_end - t;
-                log(DBG, "Changing ldt   | t : %g, to adapt for dt end: %g", t, ldt);
+                // log(DBG, "Changing ldt   | t : %g, to adapt for dt end: %g", t, ldt);
             }
-
-        } else {
+        }
+        else
+        {
             ldt /= 2.0;
-            if (ldt < min_dt) {
-                goss_error("ImplicitEuler.cpp", "Forward ImplicitEuler",
-                           "Newtons solver failed to converge as dt become smaller "
-                           "than \"min_dt\" %e",
-                           min_dt);
+            if (ldt < min_dt)
+            {
+                // goss_error("ImplicitEuler.cpp", "Forward ImplicitEuler",
+                //            "Newtons solver failed to converge as dt become smaller "
+                //            "than \"min_dt\" %e",
+                //            min_dt);
+                printf("Newtons solver failed to converge as dt become smaller "
+                       "than \"min_dt\" %e",
+                       min_dt);
             }
 
-            log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
+            // log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
             _recompute_jacobian = true;
             _justrefined = true;
             num_refinements += 1;
@@ -134,7 +146,6 @@ void ImplicitEuler::forward(double *y, double t, double dt)
     }
 
     // Lower level than DBG!
-    log(5, "ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e\n", _jac_comp,
-        _rejects, t);
+    // log(5, "ImplicitEuler done with comp_jac = %d and rejected = %d at t=%1.2e\n", _jac_comp, _rejects, t);
 }
 //-----------------------------------------------------------------------------
