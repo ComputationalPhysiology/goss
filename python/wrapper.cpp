@@ -4,7 +4,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 namespace py = pybind11;
@@ -563,6 +565,7 @@ PYBIND11_MODULE(_gosscpp, m)
 {
     m.doc() = "This is a Python bindings of C++ goss Library";
     m.def("has_openmp", &has_openmp, "Method for checking if goss compiled with OpenMP support");
+
     init_ODE(m);
     init_ODESolvers(m);
     init_ODESystemSolver(m);

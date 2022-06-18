@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
+#include <stdexcept>
 
 #include "GRL1.h"
 // #include "Timer.h"
@@ -54,7 +55,7 @@ void GRL1::attach(std::shared_ptr<ODE> ode)
 
     if (ode->is_dae())
         // goss_error("GRL1.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
-        printf("cannot integrate a DAE ode with an explicit solver.");
+        throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 }
 //-----------------------------------------------------------------------------
 void GRL1::forward(double *y, double t, double dt)

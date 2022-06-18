@@ -19,6 +19,7 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <stdexcept>
 
 #include "RL1.h"
 // #include "Timer.h"
@@ -52,7 +53,7 @@ void RL1::attach(std::shared_ptr<ODE> ode)
 
     if (_ode->is_dae())
         // goss_error("RL1.cpp", "attach ode", "cannot integrate a DAE ode with Rush Larsen method.");
-        printf("cannot integrate a DAE ode with Rush Larsen method.");
+        throw std::runtime_error("cannot integrate a DAE ode with Rush Larsen method.");
 }
 //-----------------------------------------------------------------------------
 void RL1::forward(double *y, double t, double dt)

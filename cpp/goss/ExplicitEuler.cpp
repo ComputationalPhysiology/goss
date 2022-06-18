@@ -20,6 +20,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <stdexcept>
 
 #include "ExplicitEuler.h"
 // #include "log.h"
@@ -54,7 +55,7 @@ void ExplicitEuler::attach(std::shared_ptr<ODE> ode)
     if (ode->is_dae())
         // goss_error("ExplicitEuler.cpp", "attaching ode",
         //            "cannot integrate a DAE ode with an explicit solver.");
-        printf("cannot integrate a DAE ode with an explicit solver.");
+        throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
     // Create memory for derivative evaluation
     _dFdt.resize(num_states());

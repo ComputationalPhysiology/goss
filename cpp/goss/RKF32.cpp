@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <stdexcept>
 
 #include "RKF32.h"
 // #include "log.h"
@@ -73,7 +74,7 @@ void RKF32::attach(std::shared_ptr<ODE> ode)
 
     if (ode->is_dae())
         // goss_error("RKF32.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
-        printf("cannot integrate a DAE ode with an explicit solver.");
+        throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
     // Initilize RK increments
     ki.resize(num_states());

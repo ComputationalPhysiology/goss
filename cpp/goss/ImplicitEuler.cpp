@@ -1,6 +1,8 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <sstream>
+#include <stdexcept>
 
 #include "ImplicitEuler.h"
 #include "constants.h"
@@ -133,9 +135,9 @@ void ImplicitEuler::forward(double *y, double t, double dt)
                 //            "Newtons solver failed to converge as dt become smaller "
                 //            "than \"min_dt\" %e",
                 //            min_dt);
-                printf("Newtons solver failed to converge as dt become smaller "
-                       "than \"min_dt\" %e",
-                       min_dt);
+                std::stringstream s;
+                s << "Newtons solver failed to converge as dt become smaller than 'min_dt' " << min_dt << std::endl;
+                throw std::runtime_error(s.str());
             }
 
             // log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);

@@ -17,6 +17,7 @@
 //
 // Modified by Johan Hake 2012
 
+#include <stdexcept>
 #include <stdio.h>
 
 // #include "log.h"
@@ -70,7 +71,7 @@ void ESDIRK4O32::attach(std::shared_ptr<ODE> ode)
 
     if (ode->is_dae())
         // goss_error("ESDIRK4o32.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
-        printf("cannot integrate a DAE ode with an explicit solver.");
+        throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
     z1.resize(num_states());
     z2.resize(num_states());

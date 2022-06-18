@@ -19,6 +19,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <stdexcept>
 
 #include "RK4.h"
 // #include "log.h"
@@ -55,7 +56,7 @@ void RK4::attach(std::shared_ptr<ODE> ode)
 
     if (ode->is_dae())
         // goss_error("RK4.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
-        printf("cannot integrate a DAE ode with an explicit solver.");
+        throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
     k1.resize(num_states());
     k2.resize(num_states());
