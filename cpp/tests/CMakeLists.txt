@@ -21,12 +21,19 @@ file(GLOB HEADERS *.h)
 add_executable(testode ode.cpp)
 add_executable(testodesystem odesystem.cpp)
 
+if (TARGET goss)
+  add_library(Goss::goss ALIAS goss)
+else()
+  # Find Goss (C++)
+  find_package(Goss REQUIRED)
+endif()
+
 target_link_libraries(testode
-  gtest_main
+  gtest_main Goss::goss
 )
 
 target_link_libraries(testodesystem
-  gtest_main
+  gtest_main Goss::goss
 )
 
 add_test(NAME testode
