@@ -295,7 +295,6 @@
 <span class="s2">#include &lt;stdexcept&gt;</span>
 <span class="s2">#include &lt;cmath&gt;</span>
 
-<span class="s2">#include &lt;goss/Timer.h&gt;</span>
 <span class="s2">#include &lt;goss/ParameterizedODE.h&gt;</span>
 
 <span class="si">{CLASS_DECLARATION}</span><span class="s2"></span>
@@ -325,8 +324,6 @@
 <span class="s2">    // Evaluate rhs of the ODE</span>
 <span class="s2">    void eval(const double* states, double time, double* values)</span>
 <span class="s2">    {{</span>
-
-<span class="s2">      //Timer timer_(</span><span class="se">\&quot;</span><span class="s2">Evaluation of rhs</span><span class="se">\&quot;</span><span class="s2">);</span>
 <span class="si">{eval_code}</span><span class="s2"></span>
 <span class="s2">    }}</span>
 
@@ -346,8 +343,6 @@
 <span class="s2">    // Evaluate the monitored intermediates</span>
 <span class="s2">    void eval_monitored(const double* states, double time, double* monitored) const</span>
 <span class="s2">    {{</span>
-
-<span class="s2">      //Timer timer_(</span><span class="se">\&quot;</span><span class="s2">Evaluation of monitored.</span><span class="se">\&quot;</span><span class="s2">);</span>
 <span class="si">{monitored_evaluation_code}</span><span class="s2"></span>
 <span class="s2">    }}</span>
 

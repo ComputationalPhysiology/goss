@@ -321,7 +321,6 @@
     <span class="n">cppyy</span><span class="o">.</span><span class="n">add_include_path</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
     <span class="n">cppyy</span><span class="o">.</span><span class="n">add_library_path</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;lib&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
     <span class="n">cppyy</span><span class="o">.</span><span class="n">load_library</span><span class="p">(</span><span class="s2">&quot;goss&quot;</span><span class="p">)</span>
-
     <span class="n">cppyy</span><span class="o">.</span><span class="n">cppdef</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
     <span class="n">_cppyygbl</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="s2">&quot;cppyy.gbl&quot;</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;create_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
