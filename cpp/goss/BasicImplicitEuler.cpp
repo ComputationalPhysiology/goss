@@ -4,8 +4,6 @@
 
 #include "BasicImplicitEuler.h"
 #include "constants.h"
-#include "log.h"
-
 
 using namespace goss;
 
@@ -98,7 +96,8 @@ void BasicImplicitEuler::forward(double *y, double t, double dt)
     _prev[i] = 0.0;
   */
 
-    for (ulong step = 0; step < nsteps; ++step) {
+    for (ulong step = 0; step < nsteps; ++step)
+    {
 
         double relative_residual = 1.0;
         double initial_residual = 1.0;
@@ -112,7 +111,8 @@ void BasicImplicitEuler::forward(double *y, double t, double dt)
             _prev[i] = y[i];
 
         // Start iterations
-        while (!newton_converged && _newton_iterations < max_iterations) {
+        while (!newton_converged && _newton_iterations < max_iterations)
+        {
 
             // Evaluate ODE using computed solution
             _ode->eval(y, lt + ldt, _f1.data());
@@ -131,7 +131,8 @@ void BasicImplicitEuler::forward(double *y, double t, double dt)
             // Relative residual
             relative_residual = residual / initial_residual;
 
-            if (relative_residual < rtol) {
+            if (relative_residual < rtol)
+            {
                 newton_converged = true;
                 break;
             }
@@ -153,28 +154,29 @@ void BasicImplicitEuler::forward(double *y, double t, double dt)
             ++_newton_iterations;
 
             // Output iteration number and residual
-            log(DBG,
-                "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "
-                " r (rel) = %.3e (tol = %.3e)",
-                _newton_iterations, residual, relative_residual, rtol);
+            // log(DBG,
+            //     "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "
+            //     " r (rel) = %.3e (tol = %.3e)",
+            //     _newton_iterations, residual, relative_residual, rtol);
         }
 
         if (!newton_converged)
-            error("Newton solver did not converge. Maximal newton iterations exceded.");
+            // error("Newton solver did not converge. Maximal newton iterations exceded.");
+            printf("Newton solver did not converge. Maximal newton iterations exceded.");
         else
             // Output iteration number and residual
-            log(DBG,
-                "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "
-                " r (rel) = %.3e (tol = %.3e)",
-                _newton_iterations, residual, relative_residual, rtol);
+            // log(DBG,
+            //     "BasicImplicitEuler newton iteration %d: r (abs) = %.3e "
+            //     " r (rel) = %.3e (tol = %.3e)",
+            //     _newton_iterations, residual, relative_residual, rtol);
 
-        // Increase local time
-        lt += dt;
+            // Increase local time
+            lt += dt;
     }
 
 #ifdef DEBUG
     // Lower level than DEBUG!
-    log(5, "BasicImplicitEuler done with comp_jac = %d at t=%1.2e\n", _jac_comp, t);
+    // log(5, "BasicImplicitEuler done with comp_jac = %d at t=%1.2e\n", _jac_comp, t);
 #endif
 }
 //-----------------------------------------------------------------------------

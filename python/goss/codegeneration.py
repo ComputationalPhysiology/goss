@@ -41,7 +41,6 @@ _file_template = """#ifndef {MODELNAME}_H_IS_INCLUDED
 #include <stdexcept>
 #include <cmath>
 
-#include <goss/Timer.h>
 #include <goss/ParameterizedODE.h>
 
 {CLASS_DECLARATION}
@@ -71,8 +70,6 @@ _class_template = """namespace goss {{
     // Evaluate rhs of the ODE
     void eval(const double* states, double time, double* values)
     {{
-
-      //Timer timer_(\"Evaluation of rhs\");
 {eval_code}
     }}
 
@@ -92,8 +89,6 @@ _class_template = """namespace goss {{
     // Evaluate the monitored intermediates
     void eval_monitored(const double* states, double time, double* monitored) const
     {{
-
-      //Timer timer_(\"Evaluation of monitored.\");
 {monitored_evaluation_code}
     }}
 

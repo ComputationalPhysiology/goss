@@ -20,11 +20,12 @@
 #ifndef ODESolver_h_IS_INCLUDED
 #define ODESolver_h_IS_INCLUDED
 
+#include <cassert>
 #include <iostream>
 #include <memory>
 
 #include "ODE.h"
-#include "log.h"
+// #include "log.h"
 #include "types.h"
 
 //#include <fenv.h>
@@ -60,7 +61,7 @@ class ODESolver
     // Attach ODE and reset solver
     virtual void attach(std::shared_ptr<ODE> ode)
     {
-        //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
+        // feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
         _ode = ode;
         reset();
     }
@@ -83,11 +84,13 @@ class ODESolver
         double dt;
         t_current = t[0];
         ulong j, it;
-        for (it = 1; it < num_timesteps; it++) {
+        for (it = 1; it < num_timesteps; it++)
+        {
             t_next = t[it];
             dt = t_next - t_current;
             forward(y0, t_current, dt);
-            for (j = 0; j < _num_states; j++) {
+            for (j = 0; j < _num_states; j++)
+            {
                 y[it * _num_states + j] = y0[j];
             }
             t_current = t_next;
@@ -129,7 +132,6 @@ class ODESolver
     {
         return false;
     }
-
 
   protected:
     double _ldt = -1.0;

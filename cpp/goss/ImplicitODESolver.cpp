@@ -21,21 +21,21 @@
 
 #include "ImplicitODESolver.h"
 #include "constants.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver()
-    : ODESolver(), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0), _eta(1.), _stages(0),
-      _rejects(0), _jac_comp(0), _recompute_jacobian(true), _newton_iterations(0)
+    : ODESolver(), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0), _eta(1.), _stages(0), _rejects(0), _jac_comp(0),
+      _recompute_jacobian(true), _newton_iterations(0)
 {
 }
 //-----------------------------------------------------------------------------
 ImplicitODESolver::ImplicitODESolver(const ImplicitODESolver &solver)
-    : ODESolver(solver), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0), _eta(solver._eta),
-      _stages(solver._stages), _rejects(solver._rejects), _jac_comp(solver._jac_comp),
-      _recompute_jacobian(solver._recompute_jacobian), _newton_iterations(solver._newton_iterations)
+    : ODESolver(solver), _jac(0), _f1(0), _yz(0), _b(0), _dz(0), _prev(0), _eta(solver._eta), _stages(solver._stages),
+      _rejects(solver._rejects), _jac_comp(solver._jac_comp), _recompute_jacobian(solver._recompute_jacobian),
+      _newton_iterations(solver._newton_iterations)
 {
 
     // Initialize memory
@@ -111,8 +111,8 @@ void ImplicitODESolver::mult(double scale, double *mat)
             mat[i * num_states() + j] *= scale;
 }
 //-----------------------------------------------------------------------------
-bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double t, double dt,
-                                     double alpha, bool always_recompute_jacobian)
+bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double t, double dt, double alpha,
+                                     bool always_recompute_jacobian)
 {
     uint i;
     bool step_ok = true;
@@ -123,7 +123,8 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
     double initial_residual = 1.0;
     double residual;
 
-    do {
+    do
+    {
 
         // Compute local newton solution
         for (i = 0; i < num_states(); ++i)
@@ -146,7 +147,8 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
             break;
 
         // Recompute jacobian if nessecary
-        if (_recompute_jacobian || always_recompute_jacobian) {
+        if (_recompute_jacobian || always_recompute_jacobian)
+        {
             compute_factorized_jacobian(_yz.data(), t, dt, alpha);
             _recompute_jacobian = false;
         }
@@ -155,7 +157,8 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
         _ode->forward_backward_subst(_jac.data(), _b.data(), _dz.data());
 
         // _Newton_Iterations == 0
-        if (_newton_iterations == 0) {
+        if (_newton_iterations == 0)
+        {
 
             initial_residual = residual;
 
@@ -168,7 +171,8 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
         }
 
         // 2nd time around
-        else {
+        else
+        {
 
             // How fast are we converging?
             relative_previous_residual = residual / previous_residual;
@@ -177,27 +181,28 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
             _recompute_jacobian = relative_previous_residual >= max_relative_previous_residual;
 
             // If we diverge
-            if (relative_previous_residual >= 1) {
-                log(DBG,
-                    "Diverges       | t : %g, it : %2d, relative_previous_residual: %f, "
-                    "relativ_residual: %g. Reducing time step and recompute jacobian.",
-                    t, _newton_iterations, relative_previous_residual, relative_residual);
+            if (relative_previous_residual >= 1)
+            {
+                // log(DBG,
+                //     "Diverges       | t : %g, it : %2d, relative_previous_residual: %f, "
+                //     "relativ_residual: %g. Reducing time step and recompute jacobian.",
+                //     t, _newton_iterations, relative_previous_residual, relative_residual);
                 step_ok = false;
                 _rejects++;
                 _recompute_jacobian = true;
                 break;
             }
 
-            const double scaled_relative_previous_residual = std::max(
-                    std::pow(relative_previous_residual, max_iterations - _newton_iterations),
-                    GOSS_EPS);
+            const double scaled_relative_previous_residual =
+                std::max(std::pow(relative_previous_residual, max_iterations - _newton_iterations), GOSS_EPS);
             // We converge too slow
-            if (residual > (kappa * relative_tolerance * (1 - relative_previous_residual)
-                            / scaled_relative_previous_residual)) {
-                log(DBG,
-                    "To slow        | t : %g, it: %2d, relative_previous_residual: "
-                    "%f, relative_residual: %g. Recomputing Jacobian.",
-                    t, _newton_iterations, relative_previous_residual, relative_residual);
+            if (residual >
+                (kappa * relative_tolerance * (1 - relative_previous_residual) / scaled_relative_previous_residual))
+            {
+                // log(DBG,
+                //     "To slow        | t : %g, it: %2d, relative_previous_residual: "
+                //     "%f, relative_residual: %g. Recomputing Jacobian.",
+                //     t, _newton_iterations, relative_previous_residual, relative_residual);
                 _recompute_jacobian = true;
             }
 
@@ -205,11 +210,12 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
         }
 
         // No convergence
-        if (_newton_iterations > max_iterations) {
-            log(DBG,
-                "Max iterations | t : %g, it: %2d, relative_previous_residual: "
-                "%f, relative_residual: %g. Recomputing Jacobian.",
-                t, _newton_iterations, relative_previous_residual, relative_residual);
+        if (_newton_iterations > max_iterations)
+        {
+            // log(DBG,
+            //     "Max iterations | t : %g, it: %2d, relative_previous_residual: "
+            //     "%f, relative_residual: %g. Recomputing Jacobian.",
+            //     t, _newton_iterations, relative_previous_residual, relative_residual);
             _recompute_jacobian = true;
             _rejects++;
             step_ok = false;
@@ -225,15 +231,15 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
         previous_residual = residual;
         _newton_iterations++;
 
-        log(5,
-            "Monitor        | t : %g, it : %2d, relative_previous_residual: %f, "
-            "relativ_residual: %g.",
-            t, _newton_iterations, relative_previous_residual, relative_residual);
+        // log(5,
+        //     "Monitor        | t : %g, it : %2d, relative_previous_residual: %f, "
+        //     "relativ_residual: %g.",
+        //     t, _newton_iterations, relative_previous_residual, relative_residual);
         // eta*residul is the iteration error and an estimation of the
         // local discretization error.
     } while (_eta * relative_residual >= kappa * relative_tolerance);
 
-    //goss_debug1("Newton converged in %d iterations.", _newton_iterations);
+    // goss_debug1("Newton converged in %d iterations.", _newton_iterations);
 
     return step_ok;
 }

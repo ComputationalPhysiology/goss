@@ -1,9 +1,11 @@
 #include <cmath>
+#include <sstream>
+#include <stdexcept>
 #include <stdio.h>
 
 #include "ThetaSolver.h"
 #include "constants.h"
-#include "log.h"
+// #include "log.h"
 
 using namespace goss;
 
@@ -12,15 +14,13 @@ ThetaSolver::ThetaSolver() : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(
 {
 }
 //-----------------------------------------------------------------------------
-ThetaSolver::ThetaSolver(std::shared_ptr<ODE> ode)
-    : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
+ThetaSolver::ThetaSolver(std::shared_ptr<ODE> ode) : ImplicitODESolver(), _z1(0), _ft1(0), _justrefined(false)
 {
     attach(ode);
 }
 //-----------------------------------------------------------------------------
 ThetaSolver::ThetaSolver(const ThetaSolver &solver)
-    : ImplicitODESolver(solver), _z1(solver.num_states()), _ft1(solver.num_states()),
-      _justrefined(solver._justrefined)
+    : ImplicitODESolver(solver), _z1(solver.num_states()), _ft1(solver.num_states()), _justrefined(solver._justrefined)
 {
     // Do nothing
 }
@@ -60,21 +60,22 @@ void ThetaSolver::forward(double *y, double t, double dt)
     double ldt = ldt_0 > 0 ? ldt_0 : dt;
     int num_refinements = 0;
 
-
     // A way to check if we are at t_end.
     const double eps = GOSS_EPS * 1000;
 
     for (i = 0; i < _ode->num_states(); ++i)
         _prev[i] = 0.0;
 
-    while (true) {
+    while (true)
+    {
 
         // Use 0.0 z1:
         for (i = 0; i < _ode->num_states(); ++i)
             _z1[i] = 0.0;
 
         // Explicit eval
-        if (std::abs(theta - 1.0) > GOSS_EPS) {
+        if (std::abs(theta - 1.0) > GOSS_EPS)
+        {
             _ode->eval(y, t, &_ft1[0]);
             for (i = 0; i < _ode->num_states(); ++i)
                 _prev[i] = (1 - theta) * _ft1[i];
@@ -85,11 +86,11 @@ void ThetaSolver::forward(double *y, double t, double dt)
             always_recompute_jacobian = true;
 
         // Solve for increment
-        step_ok = newton_solve(&_z1[0], &_prev[0], y, t + theta * ldt, ldt, theta,
-                               always_recompute_jacobian);
+        step_ok = newton_solve(&_z1[0], &_prev[0], y, t + theta * ldt, ldt, theta, always_recompute_jacobian);
 
         // Newton step OK
-        if (step_ok) {
+        if (step_ok)
+        {
 
             // Add increment
             for (i = 0; i < _ode->num_states(); ++i)
@@ -102,44 +103,54 @@ void ThetaSolver::forward(double *y, double t, double dt)
 
             // If the solver has refined, we do not allow it to double its
             // timestep for anoter step
-            if (!_justrefined) {
+            if (!_justrefined)
+            {
 
                 // double time step
                 const double tmp = 2.0 * ldt;
-                if (ldt_0 > 0. && tmp >= ldt_0) {
+                if (ldt_0 > 0. && tmp >= ldt_0)
+                {
                     ldt = ldt_0;
-                } else {
-                    ldt = tmp;
-                    log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp / 2, ldt);
                 }
-
-            } else {
+                else
+                {
+                    ldt = tmp;
+                    // log(DBG, "Changing dt    | t : %g, from %g to %g", t, tmp / 2, ldt);
+                }
+            }
+            else
+            {
                 _justrefined = false;
             }
 
             // If we are passed t_end
-            if ((t + ldt + GOSS_EPS) > t_end) {
+            if ((t + ldt + GOSS_EPS) > t_end)
+            {
                 ldt = t_end - t;
-                log(DBG, "Changing ldt   | t : %g, to adapt for dt end: %g", t, ldt);
+                // log(DBG, "Changing ldt   | t : %g, to adapt for dt end: %g", t, ldt);
             }
-
-        } else {
+        }
+        else
+        {
             ldt /= 2.0;
-            if (ldt < min_dt) {
-                goss_error("ThetaSolver.cpp", "Forward ThetaSolver",
-                           "Newtons solver failed to converge as dt become smaller "
-                           "than \"min_dt\" %e",
-                           min_dt);
+            if (ldt < min_dt)
+            {
+                // goss_error("ThetaSolver.cpp", "Forward ThetaSolver",
+                //            "Newtons solver failed to converge as dt become smaller "
+                //            "than \"min_dt\" %e",
+                //            min_dt);
+                std::stringstream s;
+                s << "Newtons solver failed to converge as dt become smaller than 'min_dt' " << min_dt << std::endl;
+                throw std::runtime_error(s.str());
             }
-            log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
+            // log(DBG, "Reducing dt    | t : %g, new: %g", t, ldt);
             _justrefined = true;
             num_refinements += 1;
         }
     }
 #ifdef DEBUG
     // Lower level than DEBUG!
-    log(5, "ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e\n", _jac_comp,
-        _rejects, t);
+    // log(5, "ThetaSolver done with comp_jac = %d and rejected = %d at t=%1.2e\n", _jac_comp, _rejects, t);
 #endif
 }
 //-----------------------------------------------------------------------------
