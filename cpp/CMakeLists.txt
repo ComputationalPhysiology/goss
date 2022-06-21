@@ -27,7 +27,7 @@ option(BUILD_SHARED_LIBS "Build Goss with shared libraries." ON)
 add_feature_info(BUILD_SHARED_LIBS BUILD_SHARED_LIBS "Build Goss with shared libraries.")
 option(BUILD_TESTS "Build the test suite." OFF)
 
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
 
 feature_summary(WHAT ALL)
 
@@ -85,7 +85,9 @@ target_sources(goss PRIVATE
 set_target_properties(goss PROPERTIES PRIVATE_HEADER "${HEADERS_goss}")
 target_include_directories(goss PUBLIC $<INSTALL_INTERFACE:include> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}>")
 
-target_link_libraries(goss PUBLIC OpenMP::OpenMP_CXX)
+if (OpenMP_FOUND)
+  target_link_libraries(goss PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 # Set compiler flags
 list(APPEND GOSS_DEVELOPER_FLAGS -O2;-g;-pipe)
