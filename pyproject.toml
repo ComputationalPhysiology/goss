@@ -19,7 +19,7 @@ arch-macos = ["x86_64", "arm64"]
 test-command = "python -c 'import goss'"
 
 [tool.cibuildwheel.linux]
-before-build = "yum -y update && yum install -y glibc-devel ninja-build cmake"
+before-build = "yum -y update && yum install -y glibc-devel ninja-build cmake libomp-dev"
 
 [tool.cibuildwheel.macos]
 before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja libomp"
