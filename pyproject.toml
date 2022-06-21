@@ -16,7 +16,7 @@ skip= ["pp*", "cp27-*", "cp36-*"]
 test-command = "python -c 'import goss'"
 
 [tool.cibuildwheel.linux]
-before-build = "yum -y update && yum install -y glibc-devel ninja-build cmake libomp-dev"
+before-build = "yum -y update && yum install -y glibc-devel ninja-build cmake"
 
 [tool.cibuildwheel.macos]
 before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja libomp"
