@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18.2)
 
 project(goss_pybind11 VERSION "0.1.0"  LANGUAGES CXX)
 
@@ -18,7 +18,8 @@ else()
   find_package(Goss REQUIRED)
 endif()
 
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+# find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+# find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 if(SKBUILD)
   # Scikit-Build does not add your site-packages to the search path

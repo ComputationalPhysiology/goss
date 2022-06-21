@@ -3,15 +3,18 @@ requires = [
     "setuptools>=42",
     "wheel",
     "pybind11>=2.6.4",
-    "cmake>=3.16",
+    "cmake>=3.18.2",
     "scikit-build>=0.12"
 ]
 
 build-backend = "setuptools.build_meta"
 
-
 [tool.cibuildwheel]
-build = ["cp{37,38,39,310}-manylinux_x86_64", "cp{37,38,39,310}-macosx_x86_64"]
+skip= ["pp*", "cp27-*", "cp36-*"]
+arch-windows = ["auto"]
+arch-linux = ["auto"]
+arch-macos = ["x86_64", "arm64"]
+
 
 test-command = "python -c 'import goss'"
 
