@@ -11,8 +11,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 skip= ["pp*", "cp27-*", "cp36-*"]
-arch-linux = ["x86_64"]
-arch-macos = ["x86_64", "arm64"]
 
 
 test-command = "python -c 'import goss'"
