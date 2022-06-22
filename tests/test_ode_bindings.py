@@ -1,10 +1,9 @@
+import platform
 from pathlib import Path
 
 import goss
 import numpy as np
 import pytest
-
-# import scipy.linalg
 
 
 here = Path(__file__).parent.absolute()
@@ -48,6 +47,10 @@ def test_ode_eval_index(oscilator):
     assert np.isclose(oscilator.eval_component(1, np.array([0.1, 0.2]), 0), 0.1)
 
 
+@pytest.mark.skipif(
+    platform.processor() == "arm",
+    reason="https://github.com/wlav/cppyy/issues/68",
+)
 def test_ode_eval_index_out_of_bounds_raises_RuntimeError(oscilator):
     with pytest.raises(RuntimeError):
         oscilator.eval_component(3, np.array([0.1, 0.2]), 0)
