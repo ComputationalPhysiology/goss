@@ -10,7 +10,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
-skip = ["pp*", "cp36-*", "*-musllinux-x86_64"]
+skip = ["pp*", "cp36-*", "*-musllinux*"]
 
 
 test-command = "python -c 'import goss'"
