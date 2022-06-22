@@ -276,7 +276,7 @@ void init_ODE(py::module &m)
         {
             PYBIND11_OVERLOAD_PURE_NAME(void, goss::ODE, "eval", eval, states, time, values);
         }
-        double eval(uint idx, const double *states, double time) override
+        double eval(goss::uint idx, const double *states, double time) override
         {
             PYBIND11_OVERLOAD_NAME(double, goss::ODE, "eval", eval, idx, states, time);
         }
@@ -375,7 +375,7 @@ void init_ODE(py::module &m)
 
                  self.eval(states_ptr, time, values_ptr);
              })
-        .def("eval", [](goss::ODE &self, uint id, const py::array_t<double> states, double time) {
+        .def("eval", [](goss::ODE &self, goss::uint id, const py::array_t<double> states, double time) {
             py::buffer_info states_info = states.request();
             auto states_ptr = static_cast<double *>(states_info.ptr);
 
