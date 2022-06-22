@@ -24,11 +24,8 @@ namespace goss
 {
 
 // Unsigned integers
-#ifdef _WIN32
-typedef int uint;
-#else
 typedef unsigned int uint;
-#endif
+
 // Unsigned long
 typedef unsigned long ulong;
 
