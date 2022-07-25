@@ -9,7 +9,7 @@ repos:
       - id: debug-statements
 
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.8.1
+    rev: v3.8.2
     hooks:
       - id: reorder-python-imports
         exclude: ^sandbox/|^demo/
@@ -33,7 +33,7 @@ repos:
         exclude: ^sandbox/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.961
+    rev: v0.971
     hooks:
       - id: mypy
         exclude: ^(sandbox/|setup.py|demo)
