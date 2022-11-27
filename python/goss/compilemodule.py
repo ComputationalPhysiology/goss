@@ -19,10 +19,10 @@ here = Path(__file__).parent.absolute()
 
 def cppyy_jit(
     ode: gotran.ODE,
-    field_states: list[str] = None,
-    field_parameters: list[str] = None,
-    monitored: list[str] = None,
-    code_params: dict[str, typing.Any] = None,
+    field_states: typing.Optional[list[str]] = None,
+    field_parameters: typing.Optional[list[str]] = None,
+    monitored: typing.Optional[list[str]] = None,
+    code_params: typing.Optional[dict[str, typing.Any]] = None,
 ) -> ctypes.c_void_p:
     """
     Generate a goss::ODEParameterized from a gotran ode and JIT compile it
@@ -85,10 +85,10 @@ def make_ode(python_object):
 
 def jit(
     ode: gotran.ODE,
-    field_states: list[str] = None,
-    field_parameters: list[str] = None,
-    monitored: list[str] = None,
-    code_params: dict[str, typing.Any] = None,
+    field_states: typing.Optional[list[str]] = None,
+    field_parameters: typing.Optional[list[str]] = None,
+    monitored: typing.Optional[list[str]] = None,
+    code_params: typing.Optional[dict[str, typing.Any]] = None,
 ):
     """
     Generate a goss::ODEParameterized from a gotran ode and JIT compile it

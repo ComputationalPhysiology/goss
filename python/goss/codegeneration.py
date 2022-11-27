@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import typing
 from enum import Enum
 from typing import Any
 
@@ -233,10 +234,10 @@ class GossCodeGenerator(CppCodeGenerator):
     def __init__(
         self,
         ode,
-        field_states: list[str] = None,
-        field_parameters: list[str] = None,
-        monitored: list[str] = None,
-        code_params: dict[str, Any] = None,
+        field_states: typing.Optional[list[str]] = None,
+        field_parameters: typing.Optional[list[str]] = None,
+        monitored: typing.Optional[list[str]] = None,
+        code_params: typing.Optional[dict[str, Any]] = None,
         add_signature_to_name: bool = False,
     ):
         """
