@@ -18,7 +18,6 @@ def test_parameterized_ode_field_states(
     field_state_indices,
     oscilator_ode,
 ):
-
     ode = goss.ParameterizedODE(oscilator_ode, field_states=field_states)
     assert ode.num_field_states == len(field_states)
     assert ode.field_state_names == field_states
@@ -36,7 +35,6 @@ def test_parameterized_ode_field_states(
 
 @pytest.mark.parametrize("field_parameters", [[], ["a"], ["b"], ["a", "b"]])
 def test_parameterized_ode_field_parameters(field_parameters, oscilator_ode):
-
     ode = goss.ParameterizedODE(oscilator_ode, field_parameters=field_parameters)
     assert ode.num_field_parameters == len(field_parameters)
     assert ode.field_parameter_names == field_parameters

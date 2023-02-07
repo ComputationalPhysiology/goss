@@ -101,7 +101,6 @@ def test_DOLFINParameterizedODE(tentusscher_2004_ode, V):
 @require_dolfin
 @pytest.mark.fenics
 def test_DOLFINODESystemSolver_single_ODE(tentusscher_2004_ode):
-
     params = dolfinutils.DOLFINODESystemSolver.default_parameters()
     mesh = dolfin.UnitCubeMesh(3, 3, 3)
     ode = dolfinutils.DOLFINParameterizedODE(
@@ -159,7 +158,6 @@ def test_DOLFINODESystemSolver_single_ODE(tentusscher_2004_ode):
 @require_dolfin
 @pytest.mark.fenics
 def test_DOLFINODESystemSolver_muliple_ODEs(tentusscher_2004_ode, fitzhughnagumo_ode):
-
     params = dolfinutils.DOLFINODESystemSolver.default_parameters()
     mesh = dolfin.UnitCubeMesh(3, 3, 3)
 

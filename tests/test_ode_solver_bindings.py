@@ -73,7 +73,6 @@ def test_set_parameter(Solver):
     parameters = solver.parameters
 
     for name, default_value in cls.default_parameters().items():
-
         if isinstance(default_value, bool):
             # Use a different value
             new_value = not parameters[name]
@@ -95,7 +94,6 @@ def test_update_parameters(Solver):
 
     new_parameters = {}
     for name, default_value in cls.default_parameters().items():
-
         if isinstance(default_value, bool):
             # Use a different value
             new_value = not parameters[name]

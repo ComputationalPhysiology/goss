@@ -2,7 +2,6 @@ import goss
 
 
 def test_GossCodeGenerator(oscilator_ode):
-
     code_params = {
         "state_repr": "named",
         "body_repr": "named",

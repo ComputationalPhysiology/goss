@@ -14,7 +14,6 @@ def has_shape(y: np.ndarray, xdim: int, ydim: int) -> bool:
 
 class ODESystemSolver:
     def __init__(self, num_nodes: int, solver: ODESolver, ode: ParameterizedODE):
-
         from . import _gosscpp  # type: ignore
 
         self._cpp_object = _gosscpp.ODESystemSolver(

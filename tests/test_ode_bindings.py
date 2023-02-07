@@ -19,7 +19,6 @@ def test_get_ic(oscilator):
 
 
 def test_ode_eval_full(oscilator):
-
     values = oscilator.eval(np.array([0.1, 0.2]), 0)
     assert np.allclose(values, np.array([-0.2, 0.1]))
 
@@ -67,7 +66,6 @@ def test_ode_compute_jacobian_oscilator(oscilator):
 
 
 def test_ode_jacobian_tentusscher_2004(tentusscher_2004):
-
     ic = tentusscher_2004.get_ic()
     jac = tentusscher_2004.compute_jacobian(ic, 0)
     # jac_orig = jac.copy()
@@ -100,7 +98,6 @@ def test_monitored_values(fitzhughnagumo_ode):
 
 @pytest.mark.parametrize("only_linear", [True, False])
 def test_linearized_rhs_only_linear_True(oscilator, only_linear):
-
     states = np.array([0.1, 0.2])
     rhs, linear = oscilator.linearized_eval(states, 0, only_linear)
 

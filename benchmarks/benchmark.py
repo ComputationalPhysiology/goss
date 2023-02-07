@@ -195,7 +195,6 @@ def main(  # noqa: C901
         selected_methods = list(all_methods.keys())
 
     def time_methods():
-
         time_outfile = Path(f"timings_{name}_{number}_{repeat}.npy")
 
         if recompute or not time_outfile.is_file():
@@ -234,7 +233,6 @@ def main(  # noqa: C901
         plt.show()
 
     def plot_methods():
-
         solutions_outfile = Path(f"solutions_{name}.npy")
 
         if recompute or not solutions_outfile.is_file():

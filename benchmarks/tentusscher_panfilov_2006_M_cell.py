@@ -397,7 +397,6 @@ internal_time_steps["goss (ThetaSolver)"] = 0.1
 
 
 def main():
-
     init_parameters = np.array(
         [
             0.03,

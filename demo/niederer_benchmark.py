@@ -41,7 +41,6 @@ ic = {
 
 
 def setup_model(dx=0.5):
-
     Lx = 20.0  # mm
     Ly = 7.0  # mm
     Lz = 3.0  # mm
@@ -166,7 +165,7 @@ def run_benchmark_goss(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
 
     vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "niederer_benchmark_goss.xdmf")
     vfile.write(v, 0.0)
-    for (i, ((t0, t1), fields)) in enumerate(solutions):
+    for i, ((t0, t1), fields) in enumerate(solutions):
         if (i % 20 == 0) and dolfin.MPI.rank(dolfin.MPI.comm_world) == 0:
             print("Reached t=%g/%g, dt=%g" % (t0, T, dt))
         assigner.assign(v, vs_.sub(V_index))
@@ -177,7 +176,6 @@ def run_benchmark_goss(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
 
 
 def run_benchmark_vanilla(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
-
     CellModel = cbcbeat.Tentusscher_panfilov_2006_epi_cell
 
     ps = cbcbeat.SplittingSolver.default_parameters()
@@ -215,7 +213,7 @@ def run_benchmark_vanilla(mesh, time, M, stimulus, T, dt, scheme="GRL1"):
     solutions = solver.solve((t0, T), dt)
     vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "niederer_benchmark_vanilla.xdmf")
     vfile.write(v, 0.0)
-    for (i, ((t0, t1), fields)) in enumerate(solutions):
+    for i, ((t0, t1), fields) in enumerate(solutions):
         if (i % 20 == 0) and dolfin.MPI.rank(dolfin.MPI.comm_world) == 0:
             print("Reached t=%g/%g, dt=%g" % (t0, T, dt))
         assigner.assign(v, vs_.sub(0))
