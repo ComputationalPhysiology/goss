@@ -17,7 +17,6 @@ class LinearizedEval(NamedTuple):
 
 
 def load_file(path: Path, **kwargs):
-
     while not path.is_file():
         if path.suffix == "":
             # Assume extension is ".ode"
@@ -40,7 +39,6 @@ def load_file(path: Path, **kwargs):
 
 class ODE:
     def __init__(self, *args, **kwargs):
-
         if isinstance(args[0], gotran.ODE):
             self._cpp_object = compilemodule.jit(args[0], **kwargs)
         elif isinstance(args[0], (os.PathLike, str)):

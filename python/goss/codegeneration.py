@@ -213,7 +213,6 @@ class GossCodeGeneratorParameters(BaseModel):
         table.add_column("Description", style="green")
 
         for k, v in schema["properties"].items():
-
             t = v.get("type", "")
             desc = v.get("description", "")
 
@@ -582,7 +581,6 @@ class GossCodeGenerator(CppCodeGenerator):
         self.class_form["eval_componentwise_code"] = "\n" + code + "\n"
 
     def _eval_linearized_code(self):
-
         lin = linearized_derivatives(
             self.ode,
             function_name="linearized_eval",
@@ -642,7 +640,6 @@ class GossCodeGenerator(CppCodeGenerator):
             self.class_form["jacobian_code"] = "\n" + code + "\n"
 
         if self.params.functions.lu_factorization.generate:
-
             if jac is None:
                 jac = jacobian_expressions(
                     self.ode,
@@ -665,7 +662,6 @@ class GossCodeGenerator(CppCodeGenerator):
             self.class_form["factorizing_code"] = "\n" + code + "\n"
 
         if self.params.functions.forward_backward_subst.generate:
-
             if jac is None:
                 jac = jacobian_expressions(
                     self.ode,

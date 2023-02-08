@@ -61,7 +61,6 @@ def cppyy_jit(
 
 
 def code_to_submodule(code: str, name):
-
     import cppyy
 
     cppyy.add_include_path(here.joinpath("include").as_posix())

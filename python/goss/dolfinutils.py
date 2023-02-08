@@ -214,7 +214,6 @@ def setup_dofs(
     domains: typing.Optional[dolfin.cpp.mesh.MeshFunctionSizet] = None,
     distinct_domains: typing.Optional[list[int]] = None,
 ):
-
     mesh = V.mesh()
 
     num_field_states = len(field_names)
@@ -320,7 +319,6 @@ def setup_dofs(
 
     # Allocate memory for accessing values from DOLFIN Function
     if nested_dofs:
-
         # Always use np.float_ for the dolfin_values
         dolfin_values = np.concatenate(
             tuple(value for value in goss_values.values()),
@@ -357,7 +355,6 @@ def check_domains_dim(domains, family):
 
 
 def check_domains(domains, odes, mesh, space) -> list[int]:
-
     family, degree = family_and_degree_from_str(space)
 
     assert isinstance(domains, dolfin.cpp.mesh.MeshFunctionSizet), (
@@ -521,7 +518,6 @@ class DOLFINODESystemSolver:
 
             # Check for any field params on this domain
             if len(ode.field_params) > 0:
-
                 # function space of parameter Function
                 V_param = first_value(ode.field_params).function_space()
 
@@ -657,7 +653,6 @@ class DOLFINODESystemSolver:
 
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
-
             # Fetch solution from stored field states
             self._dofs.goss_values[label] = ode_system_solver.field_states.ravel()
 
@@ -684,7 +679,6 @@ class DOLFINODESystemSolver:
         V = self.vs.function_space()
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
-
             ic = ode_system_solver.ode.field_state_initial_conditions()
             values = dolfin.interpolate(ic, V).vector().get_local()
 
@@ -714,7 +708,6 @@ class DOLFINODESystemSolver:
 
         # Update solver with new field_state values
         for label, ode_system_solver in self._ode_system_solvers.items():
-
             # Iterate over the fields and collect values if nested dofs
             if self._dofs.nested_dofs:
                 for field_name in self._field_names:

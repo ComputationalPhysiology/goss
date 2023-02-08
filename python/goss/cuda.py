@@ -49,7 +49,6 @@ def get_np_float_type(code_params):
 
 class ODECUDAHandler(object):
     def __init__(self, num_nodes, ode):
-
         if cuda is None:
             raise ImportError("PyCUDA is not installed.")
 
