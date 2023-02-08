@@ -236,8 +236,10 @@ void ODESystemSolver::set_num_threads(uint num_threads)
     _threaded_solvers.resize(num_threads);
 
     // Re-create threaded solvers
-    for (uint i = 0; i < num_threads; i++)
+    for (uint i = 0; i < num_threads; i++){
         _threaded_solvers[i] = _solver->copy();
+        _threaded_solvers[i]->set_internal_time_step(_solver->get_internal_time_step());
+    }
 
 #else
 
