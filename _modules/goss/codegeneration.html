@@ -467,7 +467,6 @@
         <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
             <span class="n">t</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -836,7 +835,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;eval_componentwise_code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">code</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">_eval_linearized_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
         <span class="n">lin</span> <span class="o">=</span> <span class="n">linearized_derivatives</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">,</span>
             <span class="n">function_name</span><span class="o">=</span><span class="s2">&quot;linearized_eval&quot;</span><span class="p">,</span>
@@ -896,7 +894,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;jacobian_code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">code</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">lu_factorization</span><span class="o">.</span><span class="n">generate</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">jac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian_expressions</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">,</span>
@@ -919,7 +916,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">class_form</span><span class="p">[</span><span class="s2">&quot;factorizing_code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">code</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">forward_backward_subst</span><span class="o">.</span><span class="n">generate</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">jac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian_expressions</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">,</span>

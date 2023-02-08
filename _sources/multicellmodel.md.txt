@@ -267,7 +267,7 @@ and solve the model for 100 ms with increments of 0.5. We also save the resultin
 dt = 0.5
 T = 100
 vfile = dolfin.XDMFFile(dolfin.MPI.comm_world, "multicell.xdmf")
-for ((t0, t1), fields) in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
+for (t0, t1), fields in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
     v.assign(vs_)
     vfile.write(v, t0)
 ```

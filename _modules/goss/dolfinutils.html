@@ -468,7 +468,6 @@
     <span class="n">domains</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">MeshFunctionSizet</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">distinct_domains</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
 
     <span class="n">num_field_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span>
@@ -574,7 +573,6 @@
 
     <span class="c1"># Allocate memory for accessing values from DOLFIN Function</span>
     <span class="k">if</span> <span class="n">nested_dofs</span><span class="p">:</span>
-
         <span class="c1"># Always use np.float_ for the dolfin_values</span>
         <span class="n">dolfin_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
             <span class="nb">tuple</span><span class="p">(</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">goss_values</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
@@ -611,7 +609,6 @@
 
 
 <span class="k">def</span> <span class="nf">check_domains</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">odes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-
     <span class="n">family</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">family_and_degree_from_str</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">cpp</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">MeshFunctionSizet</span><span class="p">),</span> <span class="p">(</span>
@@ -775,7 +772,6 @@
 
             <span class="c1"># Check for any field params on this domain</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-
                 <span class="c1"># function space of parameter Function</span>
                 <span class="n">V_param</span> <span class="o">=</span> <span class="n">first_value</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">field_params</span><span class="p">)</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
 
@@ -911,7 +907,6 @@
 
         <span class="c1"># Update solver with new field_state values</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
             <span class="c1"># Fetch solution from stored field states</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">goss_values</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">field_states</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
@@ -938,7 +933,6 @@
         <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="c1"># Update solver with new field_state values</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
             <span class="n">ic</span> <span class="o">=</span> <span class="n">ode_system_solver</span><span class="o">.</span><span class="n">ode</span><span class="o">.</span><span class="n">field_state_initial_conditions</span><span class="p">()</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">ic</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span><span class="o">.</span><span class="n">get_local</span><span class="p">()</span>
 
@@ -968,7 +962,6 @@
 
         <span class="c1"># Update solver with new field_state values</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">ode_system_solver</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode_system_solvers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
             <span class="c1"># Iterate over the fields and collect values if nested dofs</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dofs</span><span class="o">.</span><span class="n">nested_dofs</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="p">:</span>
