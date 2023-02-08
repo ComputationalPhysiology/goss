@@ -69,7 +69,7 @@ void ODESystemSolver::forward(double t, double interval)
 
     // Iterate over all nodes using threaded or non-threaded loop
     if (_num_threads > 0) {
-#pragma omp parallel for schedule(guided, 20)
+#pragma omp parallel for
         for (uint node = 0; node < _num_nodes; node++)
             _forward_node(*_threaded_solvers[omp_get_thread_num()], node, t, interval);
     } else {
@@ -236,8 +236,10 @@ void ODESystemSolver::set_num_threads(uint num_threads)
     _threaded_solvers.resize(num_threads);
 
     // Re-create threaded solvers
-    for (uint i = 0; i < num_threads; i++)
+    for (uint i = 0; i < num_threads; i++){
         _threaded_solvers[i] = _solver->copy();
+        _threaded_solvers[i]->set_internal_time_step(_solver->get_internal_time_step());
+    }
 
 #else
 
