@@ -285,13 +285,12 @@ void ESDIRK23a::forward(double *y, const double t0, const double interval)
     //not used at this point...
     reached_tend = false;
 
+    _dt = std::max(s_fac * prev_dt * pow((tol / loc_error), 0.25), min_dt);
+    _dt = std::min(_dt, interval);
+
     if (first_step) {
-        _dt = interval;
         prev_dt = _dt;
         compute_ode_jacobian(y, t0); //,&jac[0]);
-    } else {
-        _dt = std::max(s_fac * prev_dt * pow((tol / loc_error), 0.25), min_dt);
-        _dt = std::min(_dt, interval);
     }
 
     while (local_t < interval) {
