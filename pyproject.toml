@@ -10,8 +10,5 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
+skip = ["pp*", "cp36-*"]
 test-command = "python -c 'import goss'"
-
-[tool.cibuildwheel.macos]
-before-build = "export HOMEBREW_AUTO_UPDATING=0 && brew update && brew install ninja libomp"
-archs = ["x86_64", "arm64"]
