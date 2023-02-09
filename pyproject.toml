@@ -11,4 +11,5 @@ build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 skip = ["pp*", "cp36-*"]
-test-command = "python -c 'import goss'"
+test-requires = "pytest"
+test-command = "pytest {package}/tests"
