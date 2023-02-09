@@ -10,7 +10,7 @@ long_description = (here / "README.md").read_text()
 setup(
     name="pygoss",
     python_requires=">=3.7.0",
-    version="0.3.17",
+    version="0.3.18",
     description="Python interface to goss - General ODE System Solver",
     long_description=long_description,
     long_description_content_type="text/markdown",
