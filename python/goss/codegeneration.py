@@ -392,7 +392,7 @@ class GossCodeGenerator(CppCodeGenerator):
         ode = self.ode
 
         # State names
-        state_names = [state.name for state in ode.full_states]
+        state_names = [state.name for state in ode.states]
         body = ["", "// State names"]
         body.extend(
             '_state_names[{0}] = "{1}"'.format(i, name)
