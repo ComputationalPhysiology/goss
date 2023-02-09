@@ -1,11 +1,6 @@
 name: Build and upload to PyPI
 
-on:
-  push:
-    branches:
-      - "!*"
-    tags:
-      - "v*"
+on: [push]
 
 jobs:
   build_wheels:
@@ -62,6 +57,7 @@ jobs:
         if: contains(matrix.os, 'macos') && matrix.cibw.arch == 'arm64'
         run: |
           echo 'MACOSX_DEPLOYMENT_TARGET=10.15' >> "$GITHUB_ENV"
+          echo 'OPENMP=0' >> "$GITHUB_ENV"
 
       - name: Install cibuildwheel
         run: |
