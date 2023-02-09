@@ -646,7 +646,7 @@
         <span class="n">ode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span>
 
         <span class="c1"># State names</span>
-        <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">full_states</span><span class="p">]</span>
+        <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">states</span><span class="p">]</span>
         <span class="n">body</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;// State names&quot;</span><span class="p">]</span>
         <span class="n">body</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="s1">&#39;_state_names[</span><span class="si">{0}</span><span class="s1">] = &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
