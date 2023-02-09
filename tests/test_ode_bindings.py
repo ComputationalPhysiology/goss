@@ -118,3 +118,13 @@ def test_ode_contructors(oscilator_ode):
 def test_invalid_ode_construtor():
     with pytest.raises(ValueError):
         goss.ODE(42)
+
+
+def test_ode_state_names_ordering(tentusscher_2004_ode):
+    ode = goss.ParameterizedODE(tentusscher_2004_ode)
+    assert ode.state_names == tentusscher_2004_ode.state_symbols
+
+
+def test_ode_parameter_names_ordering(tentusscher_2004_ode):
+    ode = goss.ParameterizedODE(tentusscher_2004_ode)
+    assert ode.parameter_names == tentusscher_2004_ode.parameter_symbols
