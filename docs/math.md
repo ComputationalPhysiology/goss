@@ -43,18 +43,17 @@ Different schemes are useful in different situations. For examples for stiff ODE
 ## Schemes in `goss`
 In `goss` we have implemented 11 different schemes which could
 
-┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
-┃          Name ┃ Explicit/Implicit ┃ Adaptive/Nonadaptive ┃
-┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
-│ ExplicitEuler │ Explicit          │ Nonadaptive          │
-│           RK2 │ Explicit          │ Nonadaptive          │
-│           RK4 │ Explicit          │ Nonadaptive          │
-│           RL1 │ Explicit          │ Nonadaptive          │
-│           RL2 │ Explicit          │ Nonadaptive          │
-│          GRL1 │ Explicit          │ Nonadaptive          │
-│          GRL2 │ Explicit          │ Nonadaptive          │
-│ ImplicitEuler │ Implicit          │ Nonadaptive          │
-│   ThetaSolver │ Implicit          │ Nonadaptive          │
-│         RKF32 │ Explicit          │ Adaptive             │
-│     ESDIRK23a │ Implicit          │ Adaptive             │
-└───────────────┴───────────────────┴──────────────────────┘
+
+|          Name | Explicit/Implicit | Adaptive/Nonadaptive |
+|---------------|-------------------|----------------------|
+| ExplicitEuler | Explicit          | Nonadaptive          |
+|           RK2 | Explicit          | Nonadaptive          |
+|           RK4 | Explicit          | Nonadaptive          |
+|           RL1 | Explicit          | Nonadaptive          |
+|           RL2 | Explicit          | Nonadaptive          |
+|          GRL1 | Explicit          | Nonadaptive          |
+|          GRL2 | Explicit          | Nonadaptive          |
+| ImplicitEuler | Implicit          | Nonadaptive          |
+|   ThetaSolver | Implicit          | Nonadaptive          |
+|         RKF32 | Explicit          | Adaptive             |
+|     ESDIRK23a | Implicit          | Adaptive             |

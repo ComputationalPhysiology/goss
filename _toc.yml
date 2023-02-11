@@ -20,6 +20,8 @@ parts:
     - file: "docs/demos/oscilator_v3"
     - file: "docs/demos/tentusscher"
     - file: "docs/demos/tentusscher_field_parameters"
+    - file: "docs/demos/monodomain"
+    - file: "docs/demos/bidomain"
     - file: "docs/demos/multicellmodel"
 
 

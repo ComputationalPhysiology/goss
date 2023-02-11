@@ -32,9 +32,13 @@ parse:
 sphinx:
   config:
     bibtex_bibfiles: ["docs/refs.bib"]
+    suppress_warnings: ["bibtex.duplicate_citation"]
 
   extra_extensions:
   - 'sphinx.ext.autodoc'
   - 'sphinx.ext.napoleon'
   - 'sphinx.ext.viewcode'
   - "sphinxcontrib.bibtex"
+
+
+exclude_patterns: [".pytest_cache/*"]
