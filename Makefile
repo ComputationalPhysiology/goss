@@ -42,13 +42,14 @@ convert-demos:
 	jupytext demo/lorentz.py -o docs/demos/lorentz.md
 	jupytext demo/tentusscher.py -o docs/demos/tentusscher.md
 	jupytext demo/tentusscher_field_parameters.py -o docs/demos/tentusscher_field_parameters.md
+	jupytext demo/odes_on_mesh.py -o docs/demos/odes_on_mesh.md
 	jupytext demo/bidomain.py -o docs/demos/bidomain.md
 	jupytext demo/monodomain.py -o docs/demos/monodomain.md
 	jupytext demo/niederer_benchmark.py -o docs/demos/niederer_benchmark.md
 	jupytext demo/multicellmodel.py -o docs/demos/multicellmodel.md
 
 
-docs: conver-demos ## generate Sphinx HTML documentation, including API doc
+docs: convert-demos ## generate Sphinx HTML documentation, including API doc
 	jupyter-book build .
 
 show:

@@ -43,6 +43,9 @@ solver.internal_time_step = 0.01
 num_nodes = 9
 system = goss.ODESystemSolver(num_nodes, solver, ode)
 
+# Let us also set the number of threads to 9 in order to run each parameter set in parallel
+
+system.num_threads = 9
 
 # Now, let us pick three block factors (1 representing baseline)
 
