@@ -59,7 +59,7 @@ ax.legend()
 plt.show()
 
 #
-# ```{figure} _static/oscilator.png
+# ```{figure} ../_static/oscilator.png
 # ---
 # name: oscilator_v3
 # ---

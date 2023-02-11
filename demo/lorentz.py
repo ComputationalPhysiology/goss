@@ -92,7 +92,7 @@ ax.set_title("Lorenz Attractor")
 plt.show()
 
 #
-# ```{figure} _static/lorentz.png
+# ```{figure} ../_static/lorentz.png
 # ---
 # name: lorentz
 # ---

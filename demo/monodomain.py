@@ -153,7 +153,7 @@ for (t0, t1), fields in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
     vfile.write(v, t0)
 
 #
-# ```{figure} _static/monodomain.png
+# ```{figure} ../_static/monodomain.png
 # ---
 # name: monodomain_fig
 # ---

@@ -56,7 +56,7 @@ plt.show()
 
 
 #
-# ```{figure} _static/tentusscher.png
+# ```{figure} ../_static/tentusscher.png
 # ---
 # name: tentusscher
 # ---

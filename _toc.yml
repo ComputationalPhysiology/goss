@@ -1,0 +1,30 @@
+format: jb-book
+root: README
+
+parts:
+  - caption: Install
+    chapters:
+    - file: docs/install
+
+  - caption: Getting started
+    chapters:
+    - file: "docs/math"
+    - file: "docs/demos/lorentz"
+    - file: "docs/cli"
+    - file: "docs/structure"
+
+  - caption: Demos
+    chapters:
+    - file: "docs/demos/oscilator_v1"
+    - file: "docs/demos/oscilator_v2"
+    - file: "docs/demos/oscilator_v3"
+    - file: "docs/demos/tentusscher"
+    - file: "docs/demos/tentusscher_field_parameters"
+    - file: "docs/demos/multicellmodel"
+
+
+  - caption: Programmers reference
+    chapters:
+    - file: "docs/testing.md"
+    - file: "CONTRIBUTING"
+    - file: "docs/api"

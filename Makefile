@@ -34,25 +34,22 @@ install: clean
 install-no-deps: clean
 	python -m pip install -e . --no-deps
 
+convert-demos:
+	mkdir -p docs/demos
+	jupytext demo/oscilator_v1.py -o docs/demos/oscilator_v1.md
+	jupytext demo/oscilator_v2.py -o docs/demos/oscilator_v2.md
+	jupytext demo/oscilator_v3.py -o docs/demos/oscilator_v3.md
+	jupytext demo/lorentz.py -o docs/demos/lorentz.md
+	jupytext demo/tentusscher.py -o docs/demos/tentusscher.md
+	jupytext demo/tentusscher_field_parameters.py -o docs/demos/tentusscher_field_parameters.md
+	jupytext demo/bidomain.py -o docs/demos/bidomain.md
+	jupytext demo/monodomain.py -o docs/demos/monodomain.md
+	jupytext demo/niederer_benchmark.py -o docs/demos/niederer_benchmark.md
+	jupytext demo/multicellmodel.py -o docs/demos/multicellmodel.md
 
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/source/goss.rst´
-	rm -f docs/source/modules.rst
-	sphinx-apidoc -o docs/source python/goss
-	for file in CONTRIBUTING.md; do \
-			cp $$file docs/source/. ;\
-	done
-	jupytext demo/oscilator_v1.py -o docs/source/oscilator_v1.md
-	jupytext demo/oscilator_v2.py -o docs/source/oscilator_v2.md
-	jupytext demo/oscilator_v3.py -o docs/source/oscilator_v3.md
-	jupytext demo/lorentz.py -o docs/source/lorentz.md
-	jupytext demo/tentusscher.py -o docs/source/tentusscher.md
-	jupytext demo/tentusscher_field_parameters.py -o docs/source/tentusscher_field_parameters.md
-	jupytext demo/bidomain.py -o docs/source/bidomain.md
-	jupytext demo/monodomain.py -o docs/source/monodomain.md
-	jupytext demo/niederer_benchmark.py -o docs/source/niederer_benchmark.md
-	jupytext demo/multicellmodel.py -o docs/source/multicellmodel.md
-	cd docs && make html
+
+docs: conver-demos ## generate Sphinx HTML documentation, including API doc
+	jupyter-book build .
 
 show:
 	open docs/build/html/index.html

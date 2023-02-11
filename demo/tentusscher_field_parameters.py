@@ -119,7 +119,7 @@ plt.show()
 
 
 #
-# ```{figure} _static/tentusscher_field_parameters.png
+# ```{figure} ../_static/tentusscher_field_parameters.png
 # ---
 # name: tentusscher_field_parameters
 # ---

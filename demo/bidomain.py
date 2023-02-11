@@ -164,7 +164,7 @@ for (t0, t1), fields in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
 
 
 #
-# ```{figure} _static/bidomain.png
+# ```{figure} ../_static/bidomain.png
 # ---
 # name: bidomain_fig
 # ---

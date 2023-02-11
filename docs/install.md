@@ -1,25 +1,8 @@
 # Installation
 
+## Installing with pip
 
-## Installing dependencies
-First, you need to install `boost`, i.e
-
-(Debian)
-```
-apt-get install libboost-all-dev
-```
-(Fedora)
-```
-yum install boost-devel
-```
-Mac OSX
-```
-brew install boost
-```
-
-## Installing goss
-
-Next you can install the python package.
+The easiest way to install goss is using pip
 ```
 python -m pip install pygoss
 ```
@@ -75,3 +58,10 @@ It is also recommended to install the `pre-commit` hook that comes with the pack
 pre-commit install
 ```
 Note that linters and formatters will run in the CI system.
+
+
+## OpenMP support
+By default `goss` is linked to OpenMP. If you want to turn off this behavior then you want set the environment variable `OPENMP=0`, e.g
+```
+OPENMP=0 python -m pip install pygoss --no-binary=pygoss
+```
