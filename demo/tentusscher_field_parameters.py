@@ -66,7 +66,7 @@ field_parameters[6:9, 1] *= block_factors
 
 # Note that the field parameters array has dimension number of nodes $\times$ number of field parameters.
 # In the first three nodes we update only `g_CaL` which has index 0, while for the nodes 3 to 6 we update `g_Kr` which has index 1.
-# Finnally we need tp update the field parameters on the system solver
+# Finally we need tp update the field parameters on the system solver
 
 system.field_parameters = field_parameters
 
@@ -126,8 +126,8 @@ plt.show()
 # ---
 # name: tentusscher_field_parameters
 # ---
-# Computed solution of the membrane potential (V) and the intracallular calcium
-# concentraction in the Tentusscher model for different blockage of CaL and Kr
+# Computed solution of the membrane potential (V) and the intracellular calcium
+# concentration in the Tentusscher model for different blockage of CaL and Kr
 # ```
 #
 # ## References

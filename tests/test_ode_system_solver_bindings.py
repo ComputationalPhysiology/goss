@@ -17,7 +17,7 @@ def test_construct_ODESysystemSolver(oscilator):
     assert system_solver.num_nodes == num_nodes
 
     ode = solver.get_ode()
-    # FIXME: The ODE retured here is just an ODE and not a
+    # FIXME: The ODE returned here is just an ODE and not a
     # ParameterizedODE
     assert ode.num_states == oscilator.num_states
 

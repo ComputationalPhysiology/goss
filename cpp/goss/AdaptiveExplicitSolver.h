@@ -26,7 +26,7 @@
 namespace goss
 {
 
-// Base class for Adaptive and Expicit solvers
+// Base class for Adaptive and Explicit solvers
 class AdaptiveExplicitSolver : public ODESolver
 {
 
@@ -117,7 +117,7 @@ class AdaptiveExplicitSolver : public ODESolver
     ulong num_accepted, num_rejected;
     double _t, _ldt, _dt, _dt_prev;
 
-    // Local time step and tolerence.
+    // Local time step and tolerance.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac;
 
     // Bool log of 1) timestep accepted, 2)

@@ -1,8 +1,8 @@
 # # Solving ODEs on a mesh
 #
-# In this demo we will demonstrate how you can solve an ODE for each point in the mesh, where the mesh is defined in FEniCS. This might be relevat if you want to solve an ODE for different parameter sets, where the parameters have some spatial dependence. While this example is somewhat artificial it demonstrates how you could do this.
+# In this demo we will demonstrate how you can solve an ODE for each point in the mesh, where the mesh is defined in FEniCS. This might be relevant if you want to solve an ODE for different parameter sets, where the parameters have some spatial dependence. While this example is somewhat artificial it demonstrates how you could do this.
 #
-# First we make the neccesary imports
+# First we make the necessary imports
 #
 
 import gotran
@@ -38,14 +38,14 @@ beta = dolfin.Function(V_beta)
 beta.interpolate(dolfin.Expression("2.4*x[1] + 0.2", degree=1))
 ode.set_parameter("beta", beta)
 
-# We select three different points that we will track just to see what the soltion of $y$ looks like in these points.
+# We select three different points that we will track just to see what the solution of $y$ looks like in these points.
 #
 
 p0 = (0.0, 0.0)
 p1 = (0.5, 0.5)
 p2 = (1.0, 1.0)
 
-# We alse print out the value of the `beta` at these three points
+# We also print out the value of the `beta` at these three points
 
 print("Beta at p0: ", beta(p0))
 print("Beta at p1: ", beta(p1))
@@ -64,7 +64,7 @@ ode_solver = goss.dolfinutils.DOLFINODESystemSolver(
 
 vs = ode_solver.vs
 
-# Now we make the time stepping. We will simulate this for 1.0 second with a time step of 0.1. At each step we evaluate the soltion at the three predefined points and store the solution
+# Now we make the time stepping. We will simulate this for 1.0 second with a time step of 0.1. At each step we evaluate the solution at the three predefined points and store the solution
 
 dt = 0.01
 T = 1.0

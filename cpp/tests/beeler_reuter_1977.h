@@ -286,7 +286,7 @@ namespace goss {
         di_x1_dV - di_s_dV)/C;
     }
 
-    // Evaluate componenttwise rhs of the ODE
+    // Evaluate componentwise rhs of the ODE
     double eval(uint id, const double* states, double time)
     {
 

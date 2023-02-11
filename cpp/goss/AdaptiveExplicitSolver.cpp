@@ -70,7 +70,7 @@ double AdaptiveExplicitSolver::dtinit(double t, double *y0, double *y1, double *
     // H = 0.01 * norm(y0)/(norm(f0)
     // The increment for explicit Euler is small compared to the solution
     // We assume that y0 and f0 are computed.
-    // y1 and f1 are just pointers to contigous memory which this
+    // y1 and f1 are just pointers to contigious memory which this
     // function borrows
 
     uint i;

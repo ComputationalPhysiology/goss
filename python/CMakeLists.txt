@@ -58,7 +58,7 @@ endif()
 
 # scikit-build specific steps
 if (SKBUILD)
-  # Add relative rpath so _gosscpp can find the Goss::goss libray
+  # Add relative rpath so _gosscpp can find the Goss::goss library
   # when the build is relocated
   if (APPLE)
     set_target_properties(_gosscpp PROPERTIES INSTALL_RPATH "@loader_path/lib")

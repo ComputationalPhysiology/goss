@@ -70,7 +70,7 @@ class ODECUDAHandler(object):
     def num_nodes(self, value):
         if self.is_ready():
             raise Exception(
-                "Cannot change number of nodes while CUDA handler " "is initialised.",
+                "Cannot change number of nodes while CUDA handler " "is initialise.",
             )
         else:
             self._num_nodes = value
@@ -197,7 +197,7 @@ class ODECUDAHandler(object):
     def forward(self, t, dt, update_host_states=False, synchronize=True):
         """Solve one time step of the ODE system on GPU"""
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             timer = Timer("calculate CUDA forward")
             args = [self._d_states, t, dt, self._d_parameters]
@@ -222,7 +222,7 @@ class ODECUDAHandler(object):
 
     def get_host_states(self):
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             cuda.memcpy_dtoh(self._h_states, self._d_states)
             return self._h_states
@@ -232,7 +232,7 @@ class ODECUDAHandler(object):
         Copy host state to device
         """
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             assert self._d_states.shape == states.shape, (
                 "expected same shape on the passed states values and "
@@ -243,7 +243,7 @@ class ODECUDAHandler(object):
 
     def get_host_parameters(self):
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             cuda.memcpy_dtoh(self._h_parameters, self._d_parameters)
 
@@ -274,7 +274,7 @@ class ODECUDAHandler(object):
     def get_field_states(self, h_field_states):
         """Copy field states from device to host memory."""
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             float_t = get_float_type(self.params.code)
             if str(h_field_states.dtype) != float_t:
@@ -294,7 +294,7 @@ class ODECUDAHandler(object):
     def set_field_states(self, h_field_states):
         """Copy field states from host to device memory."""
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             float_t = get_float_type(self.params.code)
             if str(h_field_states.dtype) != float_t:
@@ -314,7 +314,7 @@ class ODECUDAHandler(object):
     def set_field_parameters(self, h_field_parameters):
         """Copy field parameters from host to device memory."""
         if not self.is_ready():
-            raise Exception("CUDA has not been initialised")
+            raise Exception("CUDA has not been initialized")
         else:
             float_t = get_float_type(self.params.code)
             if str(h_field_parameters.dtype) != float_t:
@@ -447,7 +447,7 @@ class CUDAODESystemSolver(object):
 
     def _init_cuda(self, params=None):
         # TODO: Remove this and throw an error instead.
-        # CUDA should be initialised in __init__ and never touched again.
+        # CUDA should be initialized in __init__ and never touched again.
         params = params or self.params
         self._cudahandler.init_cuda(params=params)
 
@@ -571,7 +571,7 @@ class CUDAODESystemSolver(object):
         # TODO: Remove this. num_nodes should not be modifiable.
         if self._cudahandler.is_ready():
             raise Exception(
-                "Cannot change number of nodes while CUDA handler " "is initialised.",
+                "Cannot change number of nodes while CUDA handler " "is initialized.",
             )
         else:
             self._num_nodes = value

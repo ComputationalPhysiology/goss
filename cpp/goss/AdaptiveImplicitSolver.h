@@ -128,7 +128,7 @@ class AdaptiveImplicitSolver : public ImplicitODESolver
     // Log of 1) the numer of steps, 2) the number of rejected steps
     long num_accepted, num_rejected;
 
-    // a bool log of 1) timetep accepted, 2)
+    // a bool log of 1) timestep accepted, 2)
     bool step_accepted, reached_tend;
 
     std::vector<double> dt_v;
@@ -138,7 +138,7 @@ class AdaptiveImplicitSolver : public ImplicitODESolver
 
     double _t, _ldt, _dt, _dt_prev;
 
-    // local time step and tolerence.
+    // local time step and tolerance.
     double _atol, _rtol, _iord, facmin, facmax, facmaxb, stabfac;
 
     // Added stability to reduce the number of Jacobian computations

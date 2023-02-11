@@ -39,7 +39,7 @@ T = 1000
 t = np.arange(0, 1000 + dt, dt)
 y = solver.solve(t)
 
-# We also grab the indices of the membrane potential (V) and the intracallular calcium concentraction
+# We also grab the indices of the membrane potential (V) and the intracellular calcium concentration
 
 V_index = gotran_ode.state_symbols.index("V")
 Cai_index = gotran_ode.state_symbols.index("Ca_i")
@@ -60,7 +60,7 @@ plt.show()
 # ---
 # name: tentusscher
 # ---
-# Computed solution of the membrane potential (V) and the intracallular calcium concentraction in the Tentusscher model
+# Computed solution of the membrane potential (V) and the intracellular calcium concentration in the Tentusscher model
 # ```
 #
 # ## References

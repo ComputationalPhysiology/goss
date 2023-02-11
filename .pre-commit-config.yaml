@@ -37,3 +37,8 @@ repos:
     hooks:
       - id: mypy
         exclude: ^(sandbox/|setup.py|demo)
+
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v6.19.2
+    hooks:
+      - id: cspell

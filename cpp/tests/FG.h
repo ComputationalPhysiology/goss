@@ -26,8 +26,8 @@ namespace goss
      y(t)=2/3*exp(exp(-t)+exp(-19t))
      z(t)=exp(exp(-t)-exp(-19t))
 
-     This is a stiff ode, which is not easy to integrate using schemes whith
-     poor damping properties. The existance of the exact solution makes it
+     This is a stiff ode, which is not easy to integrate using schemes with
+     poor damping properties. The existence of the exact solution makes it
      attractive as a test equation.
    */
   class FG : public ODE

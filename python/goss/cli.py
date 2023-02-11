@@ -151,7 +151,7 @@ def code_params():
     "--code-params",
     "-cp",
     type=CodeParams,
-    help="Parameters controling the code generation",
+    help="Parameters controlling the code generation",
 )
 def gotran2goss(
     filename: Path,
@@ -247,7 +247,7 @@ def run(
     gotran_ode = load_ode(filename)
 
     if not plot_y:
-        click.echo("Warning: ploy-y not specificed - assume you want to plot 'V'")
+        click.echo("Warning: ploy-y not specified - assume you want to plot 'V'")
         plot_y = ["V"]  # Just assume you want to plot the membrane potential
 
     monitored_names = [

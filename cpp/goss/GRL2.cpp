@@ -56,7 +56,7 @@ void GRL2::attach(std::shared_ptr<ODE> ode)
         // goss_error("GRL2.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
         throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
-    // Initalize memory
+    // Initialize memory
     _y2.resize(num_states(), 0.0);
 }
 //-----------------------------------------------------------------------------

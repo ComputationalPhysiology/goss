@@ -161,8 +161,8 @@ void BasicImplicitEuler::forward(double *y, double t, double dt)
         }
 
         if (!newton_converged)
-            // error("Newton solver did not converge. Maximal newton iterations exceded.");
-            printf("Newton solver did not converge. Maximal newton iterations exceded.");
+            // error("Newton solver did not converge. Maximal newton iterations exceeded.");
+            printf("Newton solver did not converge. Maximal newton iterations exceeded.");
         else
             // Output iteration number and residual
             // log(DBG,

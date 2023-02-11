@@ -95,7 +95,7 @@ void ESDIRK4O32::reset()
 //-----------------------------------------------------------------------------
 void ESDIRK4O32::forward(double *y, double t, double interval)
 {
-    // NB sjekk definisjonen av prev vs hvilken dt som sendes til NewtonSolve!
+    // NB check the definition of prev vs which dt that should be passed to NewtonSolve!
 
     _t = t;
     uint i;

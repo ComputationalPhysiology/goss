@@ -6,7 +6,7 @@
 # potential. Not all the ionic currents of the Purkinje fibre model are present
 # in ventricular tissue; therefore, this model is simpler than the MNT model.
 # The total ionic flux is divided into only four discrete, individual ionic
-# currents (seebelow). The main additional feature of the Beeler-Reuter ionic
+# currents (see below). The main additional feature of the Beeler-Reuter ionic
 # current model is a representation of the intracellular calcium ion
 # concentration.
 #

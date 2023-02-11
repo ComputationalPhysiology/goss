@@ -140,7 +140,7 @@ bool ESDIRK23a::do_step(double *y, const double &t0, const double &delta_t)
     (i) compute_stage_val should be replaced by the more general
     newton_solve from ImplicitODESolver.
     (ii) The current formulation solves for stage derivatives. To reduce
-    roundoff errors it should be reformulated to solve for (local) stage
+    round off errors it should be reformulated to solve for (local) stage
     values instead */
 
 

@@ -48,12 +48,12 @@ solver = goss.solvers.RL1(oscilator)
 dt = 0.01
 t = np.arange(0, 10 + dt, dt)
 
-# We also get the initail conditions from the ODE
+# We also get the initial conditions from the ODE
 
 u0 = oscilator.get_ic()
 
-# And we provide the time steps and the initial conditions to the `solve` method. Note that we didn't really need to specify the inital conditions
-# here because if these are not provided then the default initial conditions wlll be used.
+# And we provide the time steps and the initial conditions to the `solve` method. Note that we didn't really need to specify the initial conditions
+# here because if these are not provided then the default initial conditions will be used.
 
 u = solver.solve(t, y0=u0)
 

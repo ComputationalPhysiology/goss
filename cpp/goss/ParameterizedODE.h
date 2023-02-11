@@ -30,7 +30,7 @@
 namespace goss
 {
 
-// Class which provides a more verbose interface for users to controll an ODE
+// Class which provides a more verbose interface for users to control an ODE
 class ParameterizedODE : public ODE
 {
   public:

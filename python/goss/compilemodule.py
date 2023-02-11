@@ -39,7 +39,7 @@ def cppyy_jit(
         A list of names of intermediates of the ODE. Code for monitoring
         the intermediates will be generated.
     code_params : dict
-        Parameters controling the code generation
+        Parameters controlling the code generation
     """
 
     # Code generators
@@ -104,7 +104,7 @@ def jit(
         A list of names of intermediates of the ODE. Code for monitoring
         the intermediates will be generated.
     code_params : dict
-        Parameters controling the code generation
+        Parameters controlling the code generation
     """
 
     python_object = cppyy_jit(

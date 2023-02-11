@@ -125,7 +125,7 @@ namespace goss {
       linear[0] = dI_dv;
     }
 
-    // Evaluate componenttwise rhs of the ODE
+    // Evaluate componentwise rhs of the ODE
     double eval(uint id, const double* states, double time)
     {
 
