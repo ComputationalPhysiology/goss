@@ -4,9 +4,16 @@
 [![PyPI version](https://badge.fury.io/py/pygoss.svg)](https://badge.fury.io/py/pygoss)
 [![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/main/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
 
-# GOSS - General ODE System Solver
+# `goss` - General ODE System Solver
 
-`goss` is a C++ library for solving ordinary differential equations.
+`goss` is python wrapper around a C++ library for solving ordinary differential equations with a variety of different schemes.
+
+
+Documentation is hosted at https://computationalphysiology.github.io/goss
+Source code is found at https://github.com/ComputationalPhysiology/goss
+
+
+## Motivation
 
 The general idea is that you define your ODE in a [`gotran ode file`](https://github.com/ComputationalPhysiology/gotran) and hand the ode over to `goss`.
 
@@ -70,9 +77,6 @@ There is also a command line interface that can be used to list the available so
 ![_](https://raw.githubusercontent.com/ComputationalPhysiology/goss/main/docs/source/_static/cli.gif)
 
 
-## Documentation
-
-Documentation is hosed at https://computationalphysiology.github.io/goss
 
 ## Install
 
@@ -80,53 +84,12 @@ You can install goss with pip
 ```
 python -m pip install pygoss
 ```
+See [installation instructions](docs/install.md) for more options
 
-Alternatively you can clone the repo, cd into it at execute
-```
-python -m pip install .
-```
-or use
-```
-python -m pip install -e .
-```
-for an editable install.
-
-## Testing
-
-### Python
-
-The tests for the python code can be found in the folder [tests](tests) and run with `pytest`. To run the tests, please install the test dependencies
-```
-python -m pip install ".[test]"
-```
-and run the tests with
-```
-python -m pytest
-```
-
-### C++
-
-The C++ source code for `goss` is found in the folder [cpp](cpp). The C++ code also has a separate test suite that can be found in [cpp/tests](cpp/tests). To run the tests you need to first build goss with the BUILD_TESTS flag enabled
-
-```
-cmake -B build-cpp -S cpp -DBUILD_TESTS=ON
-cmake --build build-cpp
-```
-and now you can run the tests
-```
-cd build-cpp
-ctest
-```
-
-## Structure
-
-The bindings between python and C++ uses [pybind11](https://pybind11.readthedocs.io/en/stable/) and all the bindings are found in the file [python/wrapper.cpp](python/wrapper.cpp).
-
-The python package is built using [scikit-build](https://scikit-build.readthedocs.io/en/latest/index.html) which is a build system especially suited for python code with C++ extensions.
 
 ## Known issues
 
-- There is currently an issue on Apple Silicon with exceptions raised from by the jit compiled code which means the [one test](https://github.com/ComputationalPhysiology/goss/blob/bc6eb470151ae17ecc7b58821bedf9e2ce227aa1/tests/test_ode_bindings.py#L51) is not passing. An issue has been filed for this [here](https://github.com/wlav/cppyy/issues/68)
+- There is currently an issue on Apple Silicon with exceptions raised from by the jit compiled code which means the [one test](https://github.com/ComputationalPhysiology/goss/blob/main/tests/test_ode_bindings.py#L51) is not passing. An issue has been filed for this [here](https://github.com/wlav/cppyy/issues/68)
 
 ## Contributing
 
@@ -136,3 +99,8 @@ python -m pip install pre-commit
 pre-commit install
 ```
 For every future commit, you will now run a set of tests that will make sure that you follow the coding style.
+
+See the [contributing section](CONTRIBUTING.md) for more info.
+
+## License
+`goss` is licensed under the GNU LGPL, version 3 or (at your option) any later version.

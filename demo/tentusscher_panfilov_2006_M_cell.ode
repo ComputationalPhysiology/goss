@@ -188,7 +188,7 @@ states("Membrane",
 
 parameters("Membrane",
            R = ScalarParam(8314.472, unit="J*mole**-1*K**-1",
-                           description="Universal gass constant"),
+                           description="Universal gss constant"),
            T = ScalarParam(310, unit="K", description="Temperature"),
            F = ScalarParam(96485.3415, unit="C*mmole**-1"),
            Cm = ScalarParam(0.185, unit="uF", description="Faraday\\'s constant"),

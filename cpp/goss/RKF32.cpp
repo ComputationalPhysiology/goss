@@ -76,7 +76,7 @@ void RKF32::attach(std::shared_ptr<ODE> ode)
         // goss_error("RKF32.cpp", "attaching ode", "cannot integrate a DAE ode with an explicit solver.");
         throw std::runtime_error("cannot integrate a DAE ode with an explicit solver.");
 
-    // Initilize RK increments
+    // Initialize RK increments
     ki.resize(num_states());
     k1.resize(num_states());
     k2.resize(num_states());

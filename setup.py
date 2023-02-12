@@ -50,11 +50,9 @@ setup(
             "wheel",
         ],
         "docs": [
-            "Sphinx",
-            "myst_parser",
-            "sphinx_book_theme",
+            "jupytext",
+            "jupyter-book",
             "sphinxcontrib-bibtex",
-            "sphinx-math-dollar",
         ],
     },
     entry_points={"console_scripts": ["goss=goss.cli:app"]},

@@ -186,7 +186,7 @@ class GossCodeGeneratorParameters(BaseModel):
     generate_jacobian: bool = Field(False, description="Generate Jacobian matrix")
     generate_lu_factorization: bool = Field(
         False,
-        description="Geneate Lu factorization",
+        description="Generate Lu factorization",
     )
     optimize_exprs: OptimizeExprs = Field(
         OptimizeExprs.none,
@@ -254,7 +254,7 @@ class GossCodeGenerator(CppCodeGenerator):
             A list of names of intermediates of the ODE. Code for monitoring
             the intermediates will be generated.
         code_params : dict
-            Parameters controling the code generation
+            Parameters controlling the code generation
         """
 
         field_states = field_states or []
@@ -575,7 +575,7 @@ class GossCodeGenerator(CppCodeGenerator):
             "eval",
             "uint id, const double* states, double time",
             return_type="double",
-            comment="Evaluate componenttwise rhs of the ODE",
+            comment="Evaluate componentwise rhs of the ODE",
         )
         code = "\n".join(self.indent_and_split_lines(body, indent=2))
         self.class_form["eval_componentwise_code"] = "\n" + code + "\n"
@@ -688,7 +688,7 @@ class GossCodeGenerator(CppCodeGenerator):
                 body,
                 "forward_backward_subst",
                 "const double* jac, const double* b, double* dx",
-                comment="Forward/Backward substitution of factoriesed matrix",
+                comment="Forward/Backward substitution of factorized matrix",
                 const=True,
             )
             code = "\n".join(self.indent_and_split_lines(body, indent=2))

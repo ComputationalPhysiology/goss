@@ -113,7 +113,7 @@ class ODESolver(abc.ABC):
         Parameters
         ----------
         name : str
-            The name of the paramrter of interest
+            The name of the parameter of interest
 
         Returns
         -------
@@ -168,7 +168,7 @@ class ODESolver(abc.ABC):
         ----------
         y : np.ndarray
             Array with the current state values. Note that
-            this array will be mutatated and contain the updated
+            this array will be mutated and contain the updated
             states after call to this function.
         t : float
             Time point

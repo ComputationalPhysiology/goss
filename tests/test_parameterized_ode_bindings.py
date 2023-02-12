@@ -109,7 +109,7 @@ def test_invalid_monitored(oscilator_ode):
     with pytest.raises(gotran.GotranException):
         goss.ParameterizedODE(
             oscilator_ode,
-            monitored=["invalid_paramter"],
+            monitored=["invalid_parameter"],
         )
 
 

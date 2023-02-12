@@ -76,7 +76,7 @@ def setup_model(dx=0.5):
     sigma_l = harmonic_mean(sigma_il, sigma_el)
     sigma_t = harmonic_mean(sigma_it, sigma_et)
 
-    # Scale conducitivites by 1/(C_m * chi)
+    # Scale conductivities by 1/(C_m * chi)
     s_l = sigma_l / (C_m * chi)  # mm^2 / ms
     s_t = sigma_t / (C_m * chi)  # mm^2 / ms
 

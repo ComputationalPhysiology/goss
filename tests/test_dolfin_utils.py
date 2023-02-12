@@ -91,7 +91,7 @@ def test_DOLFINParameterizedODE(tentusscher_2004_ode, V):
     assert np.isclose(ode.get_parameter("g_Ks"), 13)
     assert len(ode.field_params) == 1
 
-    # Try to intialize the solver
+    # Try to initialize the solver
     dolfinutils.DOLFINODESystemSolver(
         V.mesh(),
         odes=ode,
@@ -157,7 +157,7 @@ def test_DOLFINODESystemSolver_single_ODE(tentusscher_2004_ode):
 
 @require_dolfin
 @pytest.mark.fenics
-def test_DOLFINODESystemSolver_muliple_ODEs(tentusscher_2004_ode, fitzhughnagumo_ode):
+def test_DOLFINODESystemSolver_multiple_ODEs(tentusscher_2004_ode, fitzhughnagumo_ode):
     params = dolfinutils.DOLFINODESystemSolver.default_parameters()
     mesh = dolfin.UnitCubeMesh(3, 3, 3)
 

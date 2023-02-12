@@ -119,7 +119,7 @@ def test_set_invalid_parameter_type():
 def test_set_invalid_parameter_name():
     solver = goss.solvers.ThetaSolver()
     with pytest.raises(KeyError):
-        solver.set_parameter("invalid_parmeter", 42.0)
+        solver.set_parameter("invalid_parameter", 42.0)
 
 
 @pytest.mark.parametrize("Solver", goss.solvers.GOSSSolvers)
@@ -146,7 +146,7 @@ def test_num_jac_comp(Solver, oscilator):
 def test_AdaptiveImplicitSolver_methods(oscilator):
     solver = goss.solvers.ESDIRK23a(oscilator)
 
-    # Just make sure notthing is failing when calling these methods
+    # Just make sure nothing is failing when calling these methods
     solver.get_num_accepted()
     solver.get_num_rejected()
     assert np.isclose(solver.get_current_time(), 0.0)

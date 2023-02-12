@@ -1,16 +1,4 @@
-docs/source/oscilator_v1.md
-docs/source/oscilator_v2.md
-docs/source/oscilator_v3.md
-docs/source/lorentz.md
-docs/source/tentusscher.md
-docs/source/tentusscher_field_parameters.md
-python/goss/include/
-python/goss/lib/
-docs/make.bat
-docs/source/CONTRIBUTING.md
-docs/source/goss.rst
-docs/source/goss.scripts.rst
-docs/source/modules.rst
+docs/demos
 benchmarks/*.png
 benchmarks/*.npy
 *.h5
@@ -18,6 +6,7 @@ benchmarks/*.npy
 _skbuild/
 build-cpp/
 sandbox
+_build
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,c++,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,c++,python
 

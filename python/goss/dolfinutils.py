@@ -437,7 +437,7 @@ class DOLFINODESystemSolver:
             "expected a dolfin Mesh " "or domain for the mesh argument"
         )
         assert isinstance(odes, (dict, ParameterizedODE)), (
-            "expected a" " dict or a ParametersizedODE for the odes argument"
+            "expected a" " dict or a ParameterizedODE for the odes argument"
         )
 
         # Get family and degree from str
@@ -780,6 +780,6 @@ class DOLFINODESystemSolver:
         if not self._saved_states:
             raise RuntimeError("Cannot restore any states when none are saved.")
 
-        # Restor the states from the saved one
+        # Restore the states from the saved one
         for label, ode_system_solver in self._ode_system_solvers.items():
             ode_system_solver.states()[:] = self._saved_states[label]

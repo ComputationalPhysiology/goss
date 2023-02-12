@@ -65,7 +65,7 @@ class ODESystemSolver
     // Set system field state values
     void set_field_states(const double *system_field_states, bool tangled_storage = true);
 
-    // Reutrn system field parameter values
+    // Return system field parameter values
     void get_field_parameters(double *system_field_params, bool tangled_storage = true) const;
 
     // Set system field parameter values

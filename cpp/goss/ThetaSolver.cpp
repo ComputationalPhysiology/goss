@@ -102,7 +102,7 @@ void ThetaSolver::forward(double *y, double t, double dt)
                 break;
 
             // If the solver has refined, we do not allow it to double its
-            // timestep for anoter step
+            // timestep for another step
             if (!_justrefined)
             {
 

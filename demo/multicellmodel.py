@@ -71,7 +71,7 @@ stim_subdomain.mark(stim_domain, stim_marker)
 stim_amplitude = 50.0
 # Duration of the stimulus
 stim_duration = 1.0
-# Make a constant represting time
+# Make a constant representing time
 time = dolfin.Constant(0.0)
 # Make an expression that we apply a stimulus at 1 ms for a duration of 1 ms
 stim = dolfin.Expression(
@@ -107,7 +107,7 @@ fitzhughnagumo_label = 20
 
 # Similar as in the Tentusscher model we let the membrane potential be a field state. It is actually a requirement from `goss` that if we have multiple models inside of the domain, then they need to have the same field states. Also here we add a field parameter in order to make things a bit more interesting.
 
-# Lets also collect the models and the labels we will use for the different submains
+# Lets also collect the models and the labels we will use for the different subdomains
 
 cellmodels = [tentusscher, fitzhughnagumo]
 labels = [tentusscher_label, fitzhughnagumo_label]
@@ -138,7 +138,7 @@ cellmodels = cbcbeat.MultiCellModel(
 V = dolfin.FunctionSpace(domain, "CG", 1)
 L = domain.coordinates().max()
 
-# Make an expression for a spatially varying paramter
+# Make an expression for a spatially varying parameter
 param_scale = dolfin.Expression(
     "offset+scale*exp(-((x[0]-center_x)*(x[0]-center_x)+"
     "(x[1]-center_y)*(x[1]-center_y))/(sigma*sigma))",
@@ -234,7 +234,7 @@ for (t0, t1), fields in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
 
 
 #
-# ```{figure} _static/multicell.png
+# ```{figure} ../_static/multicell.png
 # ---
 # name: multicell
 # ---

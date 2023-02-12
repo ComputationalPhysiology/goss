@@ -146,7 +146,7 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
         if (relative_residual < relative_tolerance)
             break;
 
-        // Recompute jacobian if nessecary
+        // Recompute jacobian if necessary
         if (_recompute_jacobian || always_recompute_jacobian)
         {
             compute_factorized_jacobian(_yz.data(), t, dt, alpha);
@@ -164,7 +164,7 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
 
             // On first iteration we need an approximation of eta. We take
             // the one from previous step and increase it slightly. This is
-            // important for linear problems which only should recquire 1
+            // important for linear problems which only should require 1
             // iteration to converge.
             _eta = _eta > GOSS_EPS ? _eta : GOSS_EPS;
             _eta = std::pow(_eta, 0.8);
@@ -185,7 +185,7 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
             {
                 // log(DBG,
                 //     "Diverges       | t : %g, it : %2d, relative_previous_residual: %f, "
-                //     "relativ_residual: %g. Reducing time step and recompute jacobian.",
+                //     "relative_residual: %g. Reducing time step and recompute jacobian.",
                 //     t, _newton_iterations, relative_previous_residual, relative_residual);
                 step_ok = false;
                 _rejects++;
@@ -233,9 +233,9 @@ bool ImplicitODESolver::newton_solve(double *z, double *prev, double *y0, double
 
         // log(5,
         //     "Monitor        | t : %g, it : %2d, relative_previous_residual: %f, "
-        //     "relativ_residual: %g.",
+        //     "relative_residual: %g.",
         //     t, _newton_iterations, relative_previous_residual, relative_residual);
-        // eta*residul is the iteration error and an estimation of the
+        // eta*residual is the iteration error and an estimation of the
         // local discretization error.
     } while (_eta * relative_residual >= kappa * relative_tolerance);
 

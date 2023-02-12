@@ -72,7 +72,7 @@ solver = goss.solvers.RKF32(ode)
 t = np.linspace(0, 100, 10001)
 
 #
-# We can also provide the correct inital states to the solver
+# We can also provide the correct initial states to the solver
 #
 
 ic = np.array([0.0, 1.0, 1.05])
@@ -92,7 +92,7 @@ ax.set_title("Lorenz Attractor")
 plt.show()
 
 #
-# ```{figure} _static/lorentz.png
+# ```{figure} ../_static/lorentz.png
 # ---
 # name: lorentz
 # ---

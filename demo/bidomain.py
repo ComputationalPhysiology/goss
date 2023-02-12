@@ -86,7 +86,7 @@ stim_subdomain.mark(stim_domain, stim_marker)
 stim_amplitude = 50.0
 # Duration of the stimulus
 stim_duration = 1.0
-# Make a constant represting time
+# Make a constant representing time
 time = dolfin.Constant(0.0)
 # Make an expression that we apply a stimulus at 1 ms for a duration of 1 ms
 stim = dolfin.Expression(
@@ -164,7 +164,7 @@ for (t0, t1), fields in tqdm.tqdm(solver.solve((0, T), dt), total=int(T / dt)):
 
 
 #
-# ```{figure} _static/bidomain.png
+# ```{figure} ../_static/bidomain.png
 # ---
 # name: bidomain_fig
 # ---
