@@ -81,6 +81,7 @@ Dictionaty
 differrence
 discretization
 dllexport
+dmypy
 docname
 docnames
 dofmap
@@ -145,6 +146,7 @@ htod
 HTRPN
 INCLUDEDIR
 INCLUDEPY
+ionide
 iord
 ipynb
 ipython
@@ -218,6 +220,7 @@ niederer
 Niederer
 nmole
 nopython
+nosetests
 nsteps
 Ntot
 numba
@@ -279,6 +282,7 @@ rvalp
 Saltz
 Sarcolemmal
 savefig
+schneegans
 scikit
 scipy
 Scipy
@@ -363,6 +367,3 @@ yerr
 ylabel
 ysafe
 zlabel
-nosetests
-dmypy
-ionide

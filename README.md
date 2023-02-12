@@ -2,7 +2,7 @@
 [![CI-fenics](https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml)
 [![github pages](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml)
 [![PyPI version](https://badge.fury.io/py/pygoss.svg)](https://badge.fury.io/py/pygoss)
-[![codecov](https://codecov.io/gh/ComputationalPhysiology/goss/branch/main/graph/badge.svg?token=Z7DVGX7SUR)](https://codecov.io/gh/ComputationalPhysiology/goss)
+[![coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finsberg/a7290de789564f03eb6b1ee122fce423/raw/goss-badge.json)](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finsberg/a7290de789564f03eb6b1ee122fce423/raw/goss-badge.json)
 
 # `goss` - General ODE System Solver
 
