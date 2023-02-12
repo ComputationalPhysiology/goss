@@ -363,3 +363,6 @@ yerr
 ylabel
 ysafe
 zlabel
+nosetests
+dmypy
+ionide
