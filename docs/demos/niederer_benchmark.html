@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Niederer Benchmark &#8212; goss</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Multi-cell model" href="multicellmodel.html" />
+    <link rel="prev" title="Bidomain model" href="bidomain.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">goss</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../README.html">
+   goss - General ODE System Solver
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Install
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../install.html">
+   Installation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../math.html">
+   Mathematical background
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lorentz.html">
+   Lorentz Attractor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cli.html">
+   Command line interface
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../structure.html">
+   Structure of
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     goss
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Demos
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="oscilator_v1.html">
+   Oscilator - Using the forward method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="oscilator_v2.html">
+   Oscilator - Using the solve method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="oscilator_v3.html">
+   Oscilator - Using generated code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tentusscher.html">
+   Tentusscher model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tentusscher_field_parameters.html">
+   Field parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="odes_on_mesh.html">
+   Solving ODEs on a mesh
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="monodomain.html">
+   Monodomain model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bidomain.html">
+   Bidomain model
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Niederer Benchmark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="multicellmodel.html">
+   Multi-cell model
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Programmers reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../CONTRIBUTING.html">
+   Contributing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../api.html">
+   API Reference
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/docs/demos/niederer_benchmark.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/ComputationalPhysiology/goss"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2Fdocs/demos/niederer_benchmark.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Niederer Benchmark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="niederer-benchmark">
+<span id="id1"></span><h1>Niederer Benchmark<a class="headerlink" href="#niederer-benchmark" title="Permalink to this headline">¶</a></h1>
+<p>In this demo we compare the pure <code class="docutils literal notranslate"><span class="pre">cbcbeat</span></code> <code class="docutils literal notranslate"><span class="pre">SplittingSolver</span></code> and the <code class="docutils literal notranslate"><span class="pre">GOSSplittingSolver</span></code> on the <a class="reference external" href="https://doi.org/10.1098/rsta.2011.0139">Niederer benchmark problem</a>. The code here is based in the <a class="reference external" href="https://github.com/ComputationalPhysiology/cbcbeat/tree/master/demo/niederer-benchmark">original implementation in the <code class="docutils literal notranslate"><span class="pre">cbcbeat</span></code> repo</a></p>
+<p>First we import the required packages (including the <code class="docutils literal notranslate"><span class="pre">GOSSplittingSolver</span></code>)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dolfin</span>
+<span class="kn">import</span> <span class="nn">cbcbeat</span>
+<span class="kn">import</span> <span class="nn">goss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gotran</span>
+<span class="kn">from</span> <span class="nn">cbcbeat.gossplittingsolver</span> <span class="kn">import</span> <span class="n">GOSSplittingSolver</span>
+</pre></div>
+</div>
+<p>and define the given initial conditions from the problem descriptions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ic</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;V&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">85.23</span><span class="p">,</span>  <span class="c1"># mV</span>
+    <span class="s2">&quot;Xr1&quot;</span><span class="p">:</span> <span class="mf">0.00621</span><span class="p">,</span>
+    <span class="s2">&quot;Xr2&quot;</span><span class="p">:</span> <span class="mf">0.4712</span><span class="p">,</span>
+    <span class="s2">&quot;Xs&quot;</span><span class="p">:</span> <span class="mf">0.0095</span><span class="p">,</span>
+    <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="mf">0.00172</span><span class="p">,</span>
+    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">0.7444</span><span class="p">,</span>
+    <span class="s2">&quot;j&quot;</span><span class="p">:</span> <span class="mf">0.7045</span><span class="p">,</span>
+    <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mf">3.373e-05</span><span class="p">,</span>
+    <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="mf">0.7888</span><span class="p">,</span>
+    <span class="s2">&quot;f2&quot;</span><span class="p">:</span> <span class="mf">0.9755</span><span class="p">,</span>
+    <span class="s2">&quot;fCass&quot;</span><span class="p">:</span> <span class="mf">0.9953</span><span class="p">,</span>
+    <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mf">0.999998</span><span class="p">,</span>
+    <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mf">2.42e-08</span><span class="p">,</span>
+    <span class="s2">&quot;Ca_i&quot;</span><span class="p">:</span> <span class="mf">0.000126</span><span class="p">,</span>  <span class="c1"># millimolar</span>
+    <span class="s2">&quot;R_prime&quot;</span><span class="p">:</span> <span class="mf">0.9073</span><span class="p">,</span>
+    <span class="s2">&quot;Ca_SR&quot;</span><span class="p">:</span> <span class="mf">3.64</span><span class="p">,</span>  <span class="c1"># millimolar</span>
+    <span class="s2">&quot;Ca_ss&quot;</span><span class="p">:</span> <span class="mf">0.00036</span><span class="p">,</span>  <span class="c1"># millimolar</span>
+    <span class="s2">&quot;Na_i&quot;</span><span class="p">:</span> <span class="mf">8.604</span><span class="p">,</span>  <span class="c1"># millimolar</span>
+    <span class="s2">&quot;K_i&quot;</span><span class="p">:</span> <span class="mf">136.89</span><span class="p">,</span>  <span class="c1"># millimolar</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We make a general method for setting up the model</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">setup_model</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">Lx</span> <span class="o">=</span> <span class="mf">20.0</span>  <span class="c1"># mm</span>
+    <span class="n">Ly</span> <span class="o">=</span> <span class="mf">7.0</span>  <span class="c1"># mm</span>
+    <span class="n">Lz</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># mm</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">BoxMesh</span><span class="p">(</span>
+        <span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">comm_world</span><span class="p">,</span>
+        <span class="n">dolfin</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="n">dolfin</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">Lz</span><span class="p">),</span>
+        <span class="n">N</span><span class="p">(</span><span class="n">Lx</span> <span class="o">/</span> <span class="n">dx</span><span class="p">),</span>
+        <span class="n">N</span><span class="p">(</span><span class="n">Ly</span> <span class="o">/</span> <span class="n">dx</span><span class="p">),</span>
+        <span class="n">N</span><span class="p">(</span><span class="n">Lz</span> <span class="o">/</span> <span class="n">dx</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">L</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="c1"># Surface to volume ratio</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="mf">140.0</span>  <span class="c1"># mm^{-1}</span>
+    <span class="c1"># Membrane capacitance</span>
+    <span class="n">C_m</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># mu F / mm^2</span>
+
+    <span class="c1"># Conductivities as defined by page 4339 of Niederer benchmark</span>
+    <span class="n">sigma_il</span> <span class="o">=</span> <span class="mf">0.17</span>  <span class="c1"># mS / mm</span>
+    <span class="n">sigma_it</span> <span class="o">=</span> <span class="mf">0.019</span>  <span class="c1"># mS / mm</span>
+    <span class="n">sigma_el</span> <span class="o">=</span> <span class="mf">0.62</span>  <span class="c1"># mS / mm</span>
+    <span class="n">sigma_et</span> <span class="o">=</span> <span class="mf">0.24</span>  <span class="c1"># mS / mm</span>
+
+    <span class="c1"># Compute monodomain approximation by taking harmonic mean in each</span>
+    <span class="c1"># direction of intracellular and extracellular part</span>
+    <span class="k">def</span> <span class="nf">harmonic_mean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="n">sigma_l</span> <span class="o">=</span> <span class="n">harmonic_mean</span><span class="p">(</span><span class="n">sigma_il</span><span class="p">,</span> <span class="n">sigma_el</span><span class="p">)</span>
+    <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">harmonic_mean</span><span class="p">(</span><span class="n">sigma_it</span><span class="p">,</span> <span class="n">sigma_et</span><span class="p">)</span>
+
+    <span class="c1"># Scale conductivities by 1/(C_m * chi)</span>
+    <span class="n">s_l</span> <span class="o">=</span> <span class="n">sigma_l</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_m</span> <span class="o">*</span> <span class="n">chi</span><span class="p">)</span>  <span class="c1"># mm^2 / ms</span>
+    <span class="n">s_t</span> <span class="o">=</span> <span class="n">sigma_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_m</span> <span class="o">*</span> <span class="n">chi</span><span class="p">)</span>  <span class="c1"># mm^2 / ms</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(((</span><span class="n">s_l</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">s_t</span><span class="p">)))</span>
+
+    <span class="c1"># Define time</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="c1"># Mark stimulation region defined as [0, L]^3</span>
+    <span class="n">S1_marker</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">1.5</span>
+    <span class="n">S1_subdomain</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">CompiledSubDomain</span><span class="p">(</span>
+        <span class="s2">&quot;x[0] &lt;= L + DOLFIN_EPS &amp;&amp; x[1] &lt;= L + DOLFIN_EPS &amp;&amp; x[2] &lt;= L + DOLFIN_EPS&quot;</span><span class="p">,</span>
+        <span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">S1_markers</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">MeshFunction</span><span class="p">(</span><span class="s2">&quot;size_t&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">dim</span><span class="p">())</span>
+    <span class="n">S1_subdomain</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="n">S1_markers</span><span class="p">,</span> <span class="n">S1_marker</span><span class="p">)</span>
+
+    <span class="c1"># Define stimulation (NB: region of interest carried by the mesh</span>
+    <span class="c1"># and assumptions in cbcbeat)</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># ms</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="mf">50000.0</span>  <span class="c1"># mu A/cm^3</span>
+    <span class="n">cm2mm</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">chi</span> <span class="o">*</span> <span class="n">C_m</span><span class="p">)</span>  <span class="c1"># NB: cbcbeat convention</span>
+    <span class="n">amplitude</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">cm2mm</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span>  <span class="c1"># mV/ms</span>
+    <span class="n">I_s</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span>
+        <span class="s2">&quot;time &gt;= start ? (time &lt;= (duration + start) ? amplitude : 0.0) : 0.0&quot;</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+        <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+        <span class="n">amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+        <span class="n">degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Store input parameters in cardiac model</span>
+    <span class="n">stimulus</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">Markerwise</span><span class="p">((</span><span class="n">I_s</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">S1_markers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span>
+</pre></div>
+</div>
+<p>One method for running the benchmark using goss</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_benchmark_goss</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;GRL1&quot;</span><span class="p">):</span>
+    <span class="n">gotran_ode</span> <span class="o">=</span> <span class="n">gotran</span><span class="o">.</span><span class="n">load_ode</span><span class="p">(</span><span class="s2">&quot;tentusscher_panfilov_2006_M_cell.ode&quot;</span><span class="p">)</span>
+
+    <span class="n">cellmodel</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">dolfinutils</span><span class="o">.</span><span class="n">DOLFINParameterizedODE</span><span class="p">(</span>
+        <span class="n">gotran_ode</span><span class="p">,</span>
+        <span class="n">field_states</span><span class="o">=</span><span class="n">gotran_ode</span><span class="o">.</span><span class="n">state_symbols</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Do not apply any stimulus in the cell model</span>
+    <span class="n">cellmodel</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;stim_amplitude&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">cellmodel</span><span class="o">.</span><span class="n">set_initial_conditions</span><span class="p">(</span><span class="o">**</span><span class="n">ic</span><span class="p">)</span>
+
+    <span class="n">heart</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">CardiacModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cellmodel</span><span class="p">,</span> <span class="n">stimulus</span><span class="p">)</span>
+
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">GOSSplittingSolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;pde_solver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;monodomain&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;linear_solver_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;iterative&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;preconditioner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sor&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;default_timestep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;use_custom_preconditioner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;enable_adjoint&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;apply_stimulus_current_to_pde&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;ode_solver&quot;</span><span class="p">][</span><span class="s2">&quot;solver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+
+    <span class="n">V_index</span> <span class="o">=</span> <span class="n">heart</span><span class="o">.</span><span class="n">cell_models</span><span class="p">()</span><span class="o">.</span><span class="n">state_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
+
+    <span class="n">solver</span> <span class="o">=</span> <span class="n">GOSSplittingSolver</span><span class="p">(</span><span class="n">heart</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">V_index</span><span class="o">=</span><span class="n">V_index</span><span class="p">)</span>
+
+    <span class="c1"># Extract the solution fields and set the initial conditions</span>
+    <span class="p">(</span><span class="n">vs_</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">vur</span><span class="p">)</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solution_fields</span><span class="p">()</span>
+
+    <span class="c1"># Set-up separate potential function for post processing</span>
+    <span class="n">VS0</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">V_index</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">VS0</span><span class="o">.</span><span class="n">collapse</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+    <span class="c1"># Set-up object to optimize assignment from a function to subfunction</span>
+    <span class="n">assigner</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">FunctionAssigner</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">VS0</span><span class="p">)</span>
+    <span class="n">assigner</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vs_</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">V_index</span><span class="p">))</span>
+
+    <span class="c1"># Solve</span>
+    <span class="n">solutions</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">dt</span><span class="p">)</span>
+
+    <span class="n">vfile</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">XDMFFile</span><span class="p">(</span><span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">comm_world</span><span class="p">,</span> <span class="s2">&quot;niederer_benchmark_goss.xdmf&quot;</span><span class="p">)</span>
+    <span class="n">vfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">((</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">),</span> <span class="n">fields</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">comm_world</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reached t=</span><span class="si">%g</span><span class="s2">/</span><span class="si">%g</span><span class="s2">, dt=</span><span class="si">%g</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+        <span class="n">assigner</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vs_</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">V_index</span><span class="p">))</span>
+        <span class="n">vfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and one method for running the benchmark using the original (vanilla)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_benchmark_vanilla</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;GRL1&quot;</span><span class="p">):</span>
+    <span class="n">CellModel</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">Tentusscher_panfilov_2006_epi_cell</span>
+
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">SplittingSolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;pde_solver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;monodomain&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;linear_solver_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;iterative&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;preconditioner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sor&quot;</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;default_timestep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;MonodomainSolver&quot;</span><span class="p">][</span><span class="s2">&quot;use_custom_preconditioner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;apply_stimulus_current_to_pde&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ps</span><span class="p">[</span><span class="s2">&quot;CardiacODESolver&quot;</span><span class="p">][</span><span class="s2">&quot;scheme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+
+    <span class="n">cellmodel</span> <span class="o">=</span> <span class="n">CellModel</span><span class="p">(</span><span class="n">init_conditions</span><span class="o">=</span><span class="n">ic</span><span class="p">)</span>
+
+    <span class="c1"># Set-up cardiac model</span>
+    <span class="n">heart</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">CardiacModel</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cellmodel</span><span class="p">,</span> <span class="n">stimulus</span><span class="p">)</span>
+
+    <span class="n">solver</span> <span class="o">=</span> <span class="n">cbcbeat</span><span class="o">.</span><span class="n">SplittingSolver</span><span class="p">(</span><span class="n">heart</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
+
+    <span class="c1"># Extract the solution fields and set the initial conditions</span>
+    <span class="p">(</span><span class="n">vs_</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">vur</span><span class="p">)</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solution_fields</span><span class="p">()</span>
+    <span class="n">vs_</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cellmodel</span><span class="o">.</span><span class="n">initial_conditions</span><span class="p">())</span>
+
+    <span class="c1"># Set-up separate potential function for post processing</span>
+    <span class="n">VS0</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">VS0</span><span class="o">.</span><span class="n">collapse</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+    <span class="c1"># Set-up object to optimize assignment from a function to subfunction</span>
+    <span class="n">assigner</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">FunctionAssigner</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">VS0</span><span class="p">)</span>
+    <span class="n">assigner</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vs_</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">solutions</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">((</span><span class="n">t0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="n">vfile</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">XDMFFile</span><span class="p">(</span><span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">comm_world</span><span class="p">,</span> <span class="s2">&quot;niederer_benchmark_vanilla.xdmf&quot;</span><span class="p">)</span>
+    <span class="n">vfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">((</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">),</span> <span class="n">fields</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">dolfin</span><span class="o">.</span><span class="n">MPI</span><span class="o">.</span><span class="n">comm_world</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reached t=</span><span class="si">%g</span><span class="s2">/</span><span class="si">%g</span><span class="s2">, dt=</span><span class="si">%g</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+        <span class="n">assigner</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">vs_</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">vfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now lets run the two benchmarks and list the timings for comparison</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">dx</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span> <span class="o">=</span> <span class="n">setup_model</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;Goss&quot;</span><span class="p">):</span>
+    <span class="n">run_benchmark_goss</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span><span class="o">=</span><span class="n">stimulus</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;Vanilla&quot;</span><span class="p">):</span>
+    <span class="n">run_benchmark_vanilla</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">stimulus</span><span class="o">=</span><span class="n">stimulus</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">dolfin</span><span class="o">.</span><span class="n">list_timings</span><span class="p">(</span><span class="n">dolfin</span><span class="o">.</span><span class="n">TimingClear</span><span class="o">.</span><span class="n">keep</span><span class="p">,</span> <span class="p">[</span><span class="n">dolfin</span><span class="o">.</span><span class="n">TimingType</span><span class="o">.</span><span class="n">wall</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>In my case the output of the timings are</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MPI_AVG</span><span class="p">]</span> <span class="n">Summary</span> <span class="n">of</span> <span class="n">timings</span>                 <span class="o">|</span>  <span class="n">reps</span>    <span class="n">wall</span> <span class="n">avg</span>    <span class="n">wall</span> <span class="n">tot</span>
+<span class="o">----------------------------------------------------------------------------</span>
+<span class="n">Apply</span> <span class="p">(</span><span class="n">PETScMatrix</span><span class="p">)</span>                          <span class="o">|</span>     <span class="mi">2</span>   <span class="mf">0.0015301</span>   <span class="mf">0.0030603</span>
+<span class="n">Apply</span> <span class="p">(</span><span class="n">PETScVector</span><span class="p">)</span>                          <span class="o">|</span>  <span class="mi">2425</span>  <span class="mf">7.7884e-06</span>    <span class="mf">0.018887</span>
+<span class="n">Assemble</span> <span class="n">cells</span>                               <span class="o">|</span>   <span class="mi">402</span>    <span class="mf">0.089612</span>      <span class="mf">36.024</span>
+<span class="n">Assemble</span> <span class="n">rhs</span>                                 <span class="o">|</span>   <span class="mi">400</span>    <span class="mf">0.090153</span>      <span class="mf">36.061</span>
+<span class="n">Build</span> <span class="n">BoxMesh</span>                                <span class="o">|</span>     <span class="mi">1</span>    <span class="mf">0.018548</span>    <span class="mf">0.018548</span>
+<span class="n">Build</span> <span class="n">sparsity</span>                               <span class="o">|</span>     <span class="mi">2</span>    <span class="mf">0.059989</span>     <span class="mf">0.11998</span>
+<span class="n">Compute</span> <span class="n">SCOTCH</span> <span class="n">graph</span> <span class="n">re</span><span class="o">-</span><span class="n">ordering</span>             <span class="o">|</span>     <span class="mi">6</span>   <span class="mf">0.0079531</span>    <span class="mf">0.047719</span>
+<span class="n">Compute</span> <span class="n">connectivity</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span>                     <span class="o">|</span>     <span class="mi">1</span>    <span class="mf">0.018011</span>    <span class="mf">0.018011</span>
+<span class="n">Compute</span> <span class="n">connectivity</span> <span class="mi">2</span><span class="o">-</span><span class="mi">3</span>                     <span class="o">|</span>     <span class="mi">1</span>    <span class="mf">0.020575</span>    <span class="mf">0.020575</span>
+<span class="n">Compute</span> <span class="n">entities</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">2</span>                     <span class="o">|</span>     <span class="mi">1</span>     <span class="mf">0.18813</span>     <span class="mf">0.18813</span>
+<span class="n">Delete</span> <span class="n">sparsity</span>                              <span class="o">|</span>     <span class="mi">2</span>   <span class="mf">2.139e-06</span>   <span class="mf">4.278e-06</span>
+<span class="n">DistributedMeshTools</span><span class="p">:</span> <span class="n">reorder</span> <span class="n">vertex</span> <span class="n">values</span>  <span class="o">|</span>   <span class="mi">402</span>   <span class="mf">0.0068479</span>      <span class="mf">2.7529</span>
+<span class="n">Goss</span>                                         <span class="o">|</span>     <span class="mi">1</span>      <span class="mf">90.596</span>      <span class="mf">90.596</span>
+<span class="n">Init</span> <span class="n">dof</span> <span class="n">vector</span>                              <span class="o">|</span>     <span class="mi">9</span>     <span class="mf">0.01619</span>     <span class="mf">0.14571</span>
+<span class="n">Init</span> <span class="n">dofmap</span>                                  <span class="o">|</span>     <span class="mi">6</span>     <span class="mf">0.32169</span>      <span class="mf">1.9302</span>
+<span class="n">Init</span> <span class="n">dofmap</span> <span class="kn">from</span> <span class="nn">UFC</span> <span class="n">dofmap</span>                  <span class="o">|</span>     <span class="mi">6</span>    <span class="mf">0.037678</span>     <span class="mf">0.22607</span>
+<span class="n">Init</span> <span class="n">tensor</span>                                  <span class="o">|</span>     <span class="mi">2</span>   <span class="mf">0.0034466</span>   <span class="mf">0.0068933</span>
+<span class="n">Merge</span> <span class="n">step</span>                                   <span class="o">|</span>   <span class="mi">400</span>   <span class="mf">0.0014565</span>      <span class="mf">0.5826</span>
+<span class="n">Number</span> <span class="n">distributed</span> <span class="n">mesh</span> <span class="n">entities</span>             <span class="o">|</span>     <span class="mi">6</span>  <span class="mf">1.7222e-06</span>  <span class="mf">1.0333e-05</span>
+<span class="n">ODE</span> <span class="n">step</span>                                     <span class="o">|</span>   <span class="mi">800</span>     <span class="mf">0.13433</span>      <span class="mf">107.47</span>
+<span class="n">PDE</span> <span class="n">Step</span>                                     <span class="o">|</span>   <span class="mi">400</span>     <span class="mf">0.10686</span>      <span class="mf">42.742</span>
+<span class="n">PETSc</span> <span class="n">Krylov</span> <span class="n">solver</span>                          <span class="o">|</span>   <span class="mi">400</span>     <span class="mf">0.01652</span>      <span class="mf">6.6078</span>
+<span class="n">PointIntegralSolver</span><span class="p">::</span><span class="n">apply</span>                   <span class="o">|</span>   <span class="mi">400</span>  <span class="mf">2.7312e-05</span>    <span class="mf">0.010925</span>
+<span class="n">PointIntegralSolver</span><span class="p">::</span><span class="n">step</span>                    <span class="o">|</span>   <span class="mi">400</span>     <span class="mf">0.14869</span>      <span class="mf">59.477</span>
+<span class="n">SCOTCH</span><span class="p">:</span> <span class="n">call</span> <span class="n">SCOTCH_graphBuild</span>               <span class="o">|</span>     <span class="mi">6</span>  <span class="mf">2.4337e-05</span>  <span class="mf">0.00014602</span>
+<span class="n">SCOTCH</span><span class="p">:</span> <span class="n">call</span> <span class="n">SCOTCH_graphOrder</span>               <span class="o">|</span>     <span class="mi">6</span>     <span class="mf">0.00578</span>     <span class="mf">0.03468</span>
+<span class="n">Vanilla</span>                                      <span class="o">|</span>     <span class="mi">1</span>      <span class="mf">103.25</span>      <span class="mf">103.25</span>
+</pre></div>
+</div>
+<p>and we see that <code class="docutils literal notranslate"><span class="pre">goss</span></code> is about 10% faster than the original “Vanilla” version.</p>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./docs/demos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="bidomain.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Bidomain model</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="multicellmodel.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Multi-cell model</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Johan Hake, Henrik Finsberg<br/>
+    
+        &copy; Copyright 2022, Simula Research Laboratory.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

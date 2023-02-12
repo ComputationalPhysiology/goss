@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>goss.solvers &#8212; goss</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">goss</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../README.html">
+   goss - General ODE System Solver
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Install
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/install.html">
+   Installation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/math.html">
+   Mathematical background
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/lorentz.html">
+   Lorentz Attractor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/cli.html">
+   Command line interface
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/structure.html">
+   Structure of
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     goss
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Demos
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/oscilator_v1.html">
+   Oscilator - Using the forward method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/oscilator_v2.html">
+   Oscilator - Using the solve method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/oscilator_v3.html">
+   Oscilator - Using generated code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/tentusscher.html">
+   Tentusscher model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/tentusscher_field_parameters.html">
+   Field parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/odes_on_mesh.html">
+   Solving ODEs on a mesh
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/monodomain.html">
+   Monodomain model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/bidomain.html">
+   Bidomain model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/niederer_benchmark.html">
+   Niederer Benchmark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/demos/multicellmodel.html">
+   Multi-cell model
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Programmers reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../CONTRIBUTING.html">
+   Contributing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../docs/api.html">
+   API Reference
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/ComputationalPhysiology/goss"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2F_modules/goss/solvers.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <h1>Source code for goss.solvers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.ode</span> <span class="kn">import</span> <span class="n">ODE</span>
+
+
+<div class="viewcode-block" id="ODESolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver">[docs]</a><span class="k">class</span> <span class="nc">ODESolver</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for ODESolver.</span>
+
+<span class="sd">    Your can instantiate an ODE solver in many different ways,</span>
+<span class="sd">    but the general theme is that an ode solver need an ode-model</span>
+<span class="sd">    that is typically coming from a gotran ode-file.</span>
+
+<span class="sd">    The default way to instantiate a solver is to provide the</span>
+<span class="sd">    ode as the first argument</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver = ExplicitEuler(ode)</span>
+
+<span class="sd">    where `ode` is of type `goss.ode.ODE`.</span>
+<span class="sd">    Another way is to create an empty ODESolver</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver = ExplicitEuler()</span>
+
+<span class="sd">    but then you need to attach an ode later in order to use it</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        solver.attach(ode)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_gosscpp</span>
+
+        <span class="c1"># Get the name of the class</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="c1"># TODO: Add a check to make sure that the name is valid</span>
+
+        <span class="c1"># Grab the C++ constructor</span>
+        <span class="n">cpp_solver</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_gosscpp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Implement a protocol for the cpp_object</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span> <span class="o">=</span> <span class="n">cpp_solver</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ODE</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span> <span class="o">=</span> <span class="n">cpp_solver</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_gosscpp</span><span class="o">.</span><span class="n">ODESolver</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown argument of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()&quot;</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ode</span><span class="p">:</span> <span class="n">ODE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_adaptive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Flag to indicate whether the solver is adaptive for not&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">is_adaptive</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ODESolver.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary with the default parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="ODESolver.update_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.update_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">update_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Update the parameters given a dictionary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters : dict[str, Any]</span>
+<span class="sd">            The new parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">internal_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Time step used internally by the solver&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_internal_time_step</span><span class="p">()</span>
+
+    <span class="nd">@internal_time_step</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">internal_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_step</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_internal_time_step</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Dictionaty with the current parameters&quot;&quot;&quot;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">}</span>
+
+<div class="viewcode-block" id="ODESolver.get_parameter"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.get_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the current value of a parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the parameter of interest</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            The value of the parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODESolver.set_parameter"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.set_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the value of a parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the parameter you want to set</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            The new value of the parameter</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        KeyError</span>
+<span class="sd">            If the name is not a valid parameter</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the type of the new value does not match the original value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, expected one of </span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">])):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> to be of type&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODESolver.get_ode"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.get_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ODE</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the ODE from the cpp object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ODE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_ode</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ODESolver.copy"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of the solver&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ODESolver.forward"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Do one forward iteration</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : np.ndarray</span>
+<span class="sd">            Array with the current state values. Note that</span>
+<span class="sd">            this array will be mutated and contain the updated</span>
+<span class="sd">            states after call to this function.</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Time point</span>
+<span class="sd">        interval : float</span>
+<span class="sd">            Interval to step</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODESolver.solve"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ODESolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">y0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Solve the ode for a given number of time steps</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : np.ndarray</span>
+<span class="sd">            The time steps</span>
+<span class="sd">        y0 : Optional[np.ndarray], optional</span>
+<span class="sd">            Initial conditions. If not provided (default), then</span>
+<span class="sd">            the default initial conditions will be used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            The states at each time point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">y0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use the initial conditions from the ODE</span>
+            <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode</span><span class="p">()</span><span class="o">.</span><span class="n">get_ic</span><span class="p">()</span>
+        <span class="n">num_steps</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_states</span><span class="p">))</span>
+
+        <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">y0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of states in the ODE&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">num_states</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ExplicitEuler"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ExplicitEuler">[docs]</a><span class="k">class</span> <span class="nc">ExplicitEuler</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RL1"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.RL1">[docs]</a><span class="k">class</span> <span class="nc">RL1</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RL2"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.RL2">[docs]</a><span class="k">class</span> <span class="nc">RL2</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RK2"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.RK2">[docs]</a><span class="k">class</span> <span class="nc">RK2</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RK4"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.RK4">[docs]</a><span class="k">class</span> <span class="nc">RK4</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="GRL1"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GRL1">[docs]</a><span class="k">class</span> <span class="nc">GRL1</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">):</span>
+<div class="viewcode-block" id="GRL1.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GRL1.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">ODESolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">names</span></div></div>
+
+
+<div class="viewcode-block" id="GRL2"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GRL2">[docs]</a><span class="k">class</span> <span class="nc">GRL2</span><span class="p">(</span><span class="n">GRL1</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ImplicitODESolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ImplicitODESolver">[docs]</a><span class="k">class</span> <span class="nc">ImplicitODESolver</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="ImplicitODESolver.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ImplicitODESolver.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">ODESolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;eta_0&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                <span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+                <span class="s2">&quot;relative_tolerance&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+                <span class="s2">&quot;max_iterations&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+                <span class="s2">&quot;max_relative_previous_residual&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+                <span class="s2">&quot;always_recompute_jacobian&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span></div>
+
+<div class="viewcode-block" id="ImplicitODESolver.num_jac_comp"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ImplicitODESolver.num_jac_comp">[docs]</a>    <span class="k">def</span> <span class="nf">num_jac_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the number of times the jacobian</span>
+<span class="sd">        has been computed&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">num_jac_comp</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">compute_factorized_jacobian</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">compute_factorized_jacobian</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BasicImplicitEuler"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.BasicImplicitEuler">[docs]</a><span class="k">class</span> <span class="nc">BasicImplicitEuler</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;FIXME: This is not working as expected&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ImplicitEuler"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ImplicitEuler">[docs]</a><span class="k">class</span> <span class="nc">ImplicitEuler</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">):</span>
+<div class="viewcode-block" id="ImplicitEuler.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ImplicitEuler.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">ImplicitODESolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;num_refinements_without_always_recomputing_jacobian&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;min_dt&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span></div></div>
+
+
+<div class="viewcode-block" id="ThetaSolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ThetaSolver">[docs]</a><span class="k">class</span> <span class="nc">ThetaSolver</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">):</span>
+<div class="viewcode-block" id="ThetaSolver.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ThetaSolver.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">ImplicitODESolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;num_refinements_without_always_recomputing_jacobian&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;min_dt&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+                <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span></div></div>
+
+
+<div class="viewcode-block" id="AdaptiveSolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.AdaptiveSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveSolver</span><span class="p">(</span><span class="n">ODESolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_current_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_current_time</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_current_time_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_current_time_step</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_num_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_num_accepted</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_num_rejected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_num_rejected</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_single_step_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_single_step_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_tol</span><span class="p">(</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_iord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iord</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">set_iord</span><span class="p">(</span><span class="n">iord</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">atol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_atol</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rtol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_rtol</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">iord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">get_iord</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AdaptiveExplicitSolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.AdaptiveExplicitSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveExplicitSolver</span><span class="p">(</span><span class="n">AdaptiveSolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RKF32"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.RKF32">[docs]</a><span class="k">class</span> <span class="nc">RKF32</span><span class="p">(</span><span class="n">AdaptiveExplicitSolver</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nfevals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of right hand side evaluations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">nfevals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of accepted timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsa</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of rejected timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsr</span></div>
+
+
+<div class="viewcode-block" id="AdaptiveImplicitSolver"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.AdaptiveImplicitSolver">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveImplicitSolver</span><span class="p">(</span><span class="n">ImplicitODESolver</span><span class="p">,</span> <span class="n">AdaptiveSolver</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ESDIRK"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ESDIRK">[docs]</a><span class="k">class</span> <span class="nc">ESDIRK</span><span class="p">(</span><span class="n">AdaptiveImplicitSolver</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nfevals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of right hand side evaluations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">nfevals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of accepted timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsa</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of rejected timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsr</span></div>
+
+
+<div class="viewcode-block" id="ESDIRK4O32"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ESDIRK4O32">[docs]</a><span class="k">class</span> <span class="nc">ESDIRK4O32</span><span class="p">(</span><span class="n">ESDIRK</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;FIXME: This is not working as expected&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ESDIRK23a"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ESDIRK23a">[docs]</a><span class="k">class</span> <span class="nc">ESDIRK23a</span><span class="p">(</span><span class="n">ESDIRK</span><span class="p">):</span>
+<div class="viewcode-block" id="ESDIRK23a.default_parameters"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.ESDIRK23a.default_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">AdaptiveImplicitSolver</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;num_refinements_without_always_recomputing_jacobian&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;min_dt&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nfevals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of right hand side evaluations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">nfevals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of accepted timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsa</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ndtsr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of rejected timesteps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_object</span><span class="o">.</span><span class="n">ndtsr</span></div>
+
+
+<div class="viewcode-block" id="GOSSSolvers"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GOSSSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ExplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ExplicitEuler&quot;</span>
+    <span class="n">RK2</span> <span class="o">=</span> <span class="s2">&quot;RK2&quot;</span>
+    <span class="n">RK4</span> <span class="o">=</span> <span class="s2">&quot;RK4&quot;</span>
+    <span class="n">RL1</span> <span class="o">=</span> <span class="s2">&quot;RL1&quot;</span>
+    <span class="n">RL2</span> <span class="o">=</span> <span class="s2">&quot;RL2&quot;</span>
+    <span class="n">GRL1</span> <span class="o">=</span> <span class="s2">&quot;GRL1&quot;</span>
+    <span class="n">GRL2</span> <span class="o">=</span> <span class="s2">&quot;GRL2&quot;</span>
+    <span class="c1"># BasicImplicitEuler = &quot;BasicImplicitEuler&quot;</span>
+    <span class="n">ImplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ImplicitEuler&quot;</span>
+    <span class="n">ThetaSolver</span> <span class="o">=</span> <span class="s2">&quot;ThetaSolver&quot;</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span>
+    <span class="n">ESDIRK23a</span> <span class="o">=</span> <span class="s2">&quot;ESDIRK23a&quot;</span></div>
+    <span class="c1"># ESDIRK4O32 = &quot;ESDIRK4O32&quot;</span>
+
+
+<div class="viewcode-block" id="GOSSImplicitSolvers"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GOSSImplicitSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSImplicitSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="c1"># BasicImplicitEuler = &quot;BasicImplicitEuler&quot;</span>
+    <span class="n">ImplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ImplicitEuler&quot;</span>
+    <span class="n">ThetaSolver</span> <span class="o">=</span> <span class="s2">&quot;ThetaSolver&quot;</span>
+    <span class="n">ESDIRK23a</span> <span class="o">=</span> <span class="s2">&quot;ESDIRK23a&quot;</span></div>
+    <span class="c1"># ESDIRK4O32 = &quot;ESDIRK4O32&quot;</span>
+
+
+<div class="viewcode-block" id="GOSSExplicitSolvers"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GOSSExplicitSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSExplicitSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ExplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ExplicitEuler&quot;</span>
+    <span class="n">RK2</span> <span class="o">=</span> <span class="s2">&quot;RK2&quot;</span>
+    <span class="n">RK4</span> <span class="o">=</span> <span class="s2">&quot;RK4&quot;</span>
+    <span class="n">RL1</span> <span class="o">=</span> <span class="s2">&quot;RL1&quot;</span>
+    <span class="n">RL2</span> <span class="o">=</span> <span class="s2">&quot;RL2&quot;</span>
+    <span class="n">GRL1</span> <span class="o">=</span> <span class="s2">&quot;GRL1&quot;</span>
+    <span class="n">GRL2</span> <span class="o">=</span> <span class="s2">&quot;GRL2&quot;</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span></div>
+
+
+<div class="viewcode-block" id="GOSSNonAdaptiveSolvers"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GOSSNonAdaptiveSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSNonAdaptiveSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ExplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ExplicitEuler&quot;</span>
+    <span class="n">RK2</span> <span class="o">=</span> <span class="s2">&quot;RK2&quot;</span>
+    <span class="n">RK4</span> <span class="o">=</span> <span class="s2">&quot;RK4&quot;</span>
+    <span class="n">RL1</span> <span class="o">=</span> <span class="s2">&quot;RL1&quot;</span>
+    <span class="n">RL2</span> <span class="o">=</span> <span class="s2">&quot;RL2&quot;</span>
+    <span class="n">GRL1</span> <span class="o">=</span> <span class="s2">&quot;GRL1&quot;</span>
+    <span class="n">GRL2</span> <span class="o">=</span> <span class="s2">&quot;GRL2&quot;</span>
+    <span class="c1"># BasicImplicitEuler = &quot;BasicImplicitEuler&quot;</span>
+    <span class="n">ImplicitEuler</span> <span class="o">=</span> <span class="s2">&quot;ImplicitEuler&quot;</span>
+    <span class="n">ThetaSolver</span> <span class="o">=</span> <span class="s2">&quot;ThetaSolver&quot;</span></div>
+
+
+<div class="viewcode-block" id="GOSSAdaptiveSolvers"><a class="viewcode-back" href="../../docs/api.html#goss.solvers.GOSSAdaptiveSolvers">[docs]</a><span class="k">class</span> <span class="nc">GOSSAdaptiveSolvers</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">RKF32</span> <span class="o">=</span> <span class="s2">&quot;RKF32&quot;</span>
+    <span class="n">ESDIRK23a</span> <span class="o">=</span> <span class="s2">&quot;ESDIRK23a&quot;</span></div>
+    <span class="c1"># ESDIRK4O32 = &quot;ESDIRK4O32&quot;</span>
+
+
+<span class="n">solver_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ExplicitEuler&quot;</span><span class="p">:</span> <span class="n">ExplicitEuler</span><span class="p">,</span>
+    <span class="s2">&quot;RK2&quot;</span><span class="p">:</span> <span class="n">RK2</span><span class="p">,</span>
+    <span class="s2">&quot;RK4&quot;</span><span class="p">:</span> <span class="n">RK4</span><span class="p">,</span>
+    <span class="s2">&quot;RL1&quot;</span><span class="p">:</span> <span class="n">RL1</span><span class="p">,</span>
+    <span class="s2">&quot;RL2&quot;</span><span class="p">:</span> <span class="n">RL2</span><span class="p">,</span>
+    <span class="s2">&quot;GRL1&quot;</span><span class="p">:</span> <span class="n">GRL1</span><span class="p">,</span>
+    <span class="s2">&quot;GRL2&quot;</span><span class="p">:</span> <span class="n">GRL2</span><span class="p">,</span>
+    <span class="c1"># &quot;BasicImplicitEuler&quot;: BasicImplicitEuler,</span>
+    <span class="s2">&quot;ImplicitEuler&quot;</span><span class="p">:</span> <span class="n">ImplicitEuler</span><span class="p">,</span>
+    <span class="s2">&quot;ThetaSolver&quot;</span><span class="p">:</span> <span class="n">ThetaSolver</span><span class="p">,</span>
+    <span class="s2">&quot;RKF32&quot;</span><span class="p">:</span> <span class="n">RKF32</span><span class="p">,</span>
+    <span class="s2">&quot;ESDIRK23a&quot;</span><span class="p">:</span> <span class="n">ESDIRK23a</span><span class="p">,</span>
+    <span class="c1"># &quot;ESDIRK4O32&quot;: ESDIRK4O32,</span>
+<span class="p">}</span>
+</pre></div>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Johan Hake, Henrik Finsberg<br/>
+    
+        &copy; Copyright 2022, Simula Research Laboratory.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

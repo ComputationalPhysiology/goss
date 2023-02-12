@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>goss - General ODE System Solver &#8212; goss</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="docs/install.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">goss</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1 current">
+  <a class="reference internal" href="#">
+   goss - General ODE System Solver
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Install
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/install.html">
+   Installation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/math.html">
+   Mathematical background
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/lorentz.html">
+   Lorentz Attractor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/cli.html">
+   Command line interface
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/structure.html">
+   Structure of
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     goss
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Demos
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/oscilator_v1.html">
+   Oscilator - Using the forward method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/oscilator_v2.html">
+   Oscilator - Using the solve method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/oscilator_v3.html">
+   Oscilator - Using generated code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/tentusscher.html">
+   Tentusscher model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/tentusscher_field_parameters.html">
+   Field parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/odes_on_mesh.html">
+   Solving ODEs on a mesh
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/monodomain.html">
+   Monodomain model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/bidomain.html">
+   Bidomain model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/niederer_benchmark.html">
+   Niederer Benchmark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/demos/multicellmodel.html">
+   Multi-cell model
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Programmers reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="CONTRIBUTING.html">
+   Contributing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="docs/api.html">
+   API Reference
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/README.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/ComputationalPhysiology/goss"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/ComputationalPhysiology/goss/issues/new?title=Issue%20on%20page%20%2FREADME.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#motivation">
+   Motivation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#known-issues">
+   Known issues
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributing">
+   Contributing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>goss - General ODE System Solver</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#motivation">
+   Motivation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#known-issues">
+   Known issues
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributing">
+   Contributing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <p><a class="reference external" href="https://github.com/ComputationalPhysiology/goss/actions/workflows/cpp.yml"><img alt="CI-cpp" src="https://github.com/ComputationalPhysiology/goss/actions/workflows/cpp.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml"><img alt="CI-fenics" src="https://github.com/ComputationalPhysiology/goss/actions/workflows/fenics.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml"><img alt="github pages" src="https://github.com/ComputationalPhysiology/goss/actions/workflows/github-pages.yml/badge.svg" /></a>
+<a class="reference external" href="https://badge.fury.io/py/pygoss"><img alt="PyPI version" src="https://badge.fury.io/py/pygoss.svg" /></a>
+<a class="reference external" href="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finsberg/a7290de789564f03eb6b1ee122fce423/raw/goss-badge.json"><img alt="coverage" src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finsberg/a7290de789564f03eb6b1ee122fce423/raw/goss-badge.json" /></a></p>
+<div class="tex2jax_ignore mathjax_ignore section" id="goss-general-ode-system-solver">
+<h1><code class="docutils literal notranslate"><span class="pre">goss</span></code> - General ODE System Solver<a class="headerlink" href="#goss-general-ode-system-solver" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">goss</span></code> is python wrapper around a C++ library for solving ordinary differential equations with a variety of different schemes.</p>
+<p>Documentation is hosted at <a class="reference external" href="https://computationalphysiology.github.io/goss">https://computationalphysiology.github.io/goss</a>
+Source code is found at <a class="reference external" href="https://github.com/ComputationalPhysiology/goss">https://github.com/ComputationalPhysiology/goss</a></p>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>The general idea is that you define your ODE in a <a class="reference external" href="https://github.com/ComputationalPhysiology/gotran"><code class="docutils literal notranslate"><span class="pre">gotran</span> <span class="pre">ode</span> <span class="pre">file</span></code></a> and hand the ode over to <code class="docutils literal notranslate"><span class="pre">goss</span></code>.</p>
+<p>First define the ode in a gotran ODE file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># lorentz.ode</span>
+<span class="n">parameters</span><span class="p">(</span>
+<span class="n">sigma</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="n">rho</span><span class="o">=</span><span class="mf">28.0</span><span class="p">,</span>
+<span class="n">beta</span><span class="o">=</span><span class="mi">8</span><span class="o">/</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># The values of the states represent the initial conditions</span>
+<span class="n">states</span><span class="p">(</span>
+<span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="n">z</span><span class="o">=</span><span class="mf">1.05</span>
+<span class="p">)</span>
+
+<span class="n">dx_dt</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">dy_dt</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span>
+<span class="n">dz_dt</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span>
+</pre></div>
+</div>
+<p>You can now solve the ode as follows</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">gotran</span> <span class="kn">import</span> <span class="n">load_ode</span>
+<span class="kn">import</span> <span class="nn">goss</span>
+
+<span class="c1"># Import the ode in gotran</span>
+<span class="n">lorentz</span> <span class="o">=</span> <span class="n">load_ode</span><span class="p">(</span><span class="s2">&quot;lorentz.ode&quot;</span><span class="p">)</span>
+<span class="c1"># Jit compile the code for the right hand side</span>
+<span class="n">ode</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">ParameterizedODE</span><span class="p">(</span><span class="n">lorentz</span><span class="p">)</span>
+<span class="c1"># Select a solver and instantiate the solver</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">goss</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">RKF32</span><span class="p">(</span><span class="n">ode</span><span class="p">)</span>
+<span class="c1"># Select the time steps you want to solve for</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10001</span><span class="p">)</span>
+<span class="c1"># Solve the system</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Plot the solution</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">u</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z Axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Lorenz Attractor&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="_" src="https://raw.githubusercontent.com/ComputationalPhysiology/goss/main/docs/source/_static/lorentz.png" /></p>
+<p>For more examples, check out the <a class="reference external" href="https://github.com/ComputationalPhysiology/goss/tree/main/demo">demo folder</a></p>
+<p>There is also a command line interface that can be used to list the available solvers, run the solver and generate the goss code</p>
+<p><img alt="_" src="https://raw.githubusercontent.com/ComputationalPhysiology/goss/main/docs/source/_static/cli.gif" /></p>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>You can install goss with pip</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pygoss</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="docs/install.html"><span class="doc std std-doc">installation instructions</span></a> for more options</p>
+</div>
+<div class="section" id="known-issues">
+<h2>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>There is currently an issue on Apple Silicon with exceptions raised from by the jit compiled code which means the <a class="reference external" href="https://github.com/ComputationalPhysiology/goss/blob/main/tests/test_ode_bindings.py#L51">one test</a> is not passing. An issue has been filed for this <a class="reference external" href="https://github.com/wlav/cppyy/issues/68">here</a></p></li>
+</ul>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>Contributions are very welcomed. To contribute please fork the repo, create a branch a submit a pull request. Before the pull request can be accepted it has to pass the test suit for the python and C++ code. Also note that we try to enforce an consistent coding style. To ensure that you follow the coding style you can install the pre-commit hook in the repo</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pre</span><span class="o">-</span><span class="n">commit</span>
+<span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>For every future commit, you will now run a set of tests that will make sure that you follow the coding style.</p>
+<p>See the <a class="reference internal" href="CONTRIBUTING.html"><span class="doc std std-doc">contributing section</span></a> for more info.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">goss</span></code> is licensed under the GNU LGPL, version 3 or (at your option) any later version.</p>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="docs/install.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installation</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Johan Hake, Henrik Finsberg<br/>
+    
+        &copy; Copyright 2022, Simula Research Laboratory.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
