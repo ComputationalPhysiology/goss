@@ -1,7 +1,0 @@
-goss
-====
-
-.. toctree::
-   :maxdepth: 4
-
-   goss
