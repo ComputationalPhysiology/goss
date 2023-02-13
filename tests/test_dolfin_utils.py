@@ -193,7 +193,6 @@ def test_DOLFINODESystemSolver_multiple_ODEs(tentusscher_2004_ode, fitzhughnagum
         odes=odes,
         domains=domains,
         params=params,
-        space="P_1",
     )
 
     ode_solver.step((0, 0.1))
