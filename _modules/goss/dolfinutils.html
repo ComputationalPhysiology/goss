@@ -701,7 +701,12 @@ const thebe_selector_output = ".output, .cell_output"
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">default_parameters</span><span class="p">():</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="s2">&quot;GRL1&quot;</span><span class="p">,</span> <span class="s2">&quot;num_threads&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;use_cuda&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="s2">&quot;GRL1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;num_threads&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;use_cuda&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;space&quot;</span><span class="p">:</span> <span class="s2">&quot;P_1&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">default_parameters_dolfin</span><span class="p">():</span>
@@ -715,7 +720,6 @@ const thebe_selector_output = ".output, .cell_output"
         <span class="n">mesh</span><span class="p">,</span>
         <span class="n">odes</span><span class="p">,</span>
         <span class="n">domains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">space</span><span class="o">=</span><span class="s2">&quot;P_1&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -744,9 +748,6 @@ const thebe_selector_output = ".output, .cell_output"
             <span class="s2">&quot;expected a&quot;</span> <span class="s2">&quot; dict or a ParameterizedODE for the odes argument&quot;</span>
         <span class="p">)</span>
 
-        <span class="c1"># Get family and degree from str</span>
-        <span class="n">family</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">family_and_degree_from_str</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
-
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">()</span>
@@ -756,10 +757,17 @@ const thebe_selector_output = ".output, .cell_output"
         <span class="n">solver</span><span class="o">.</span><span class="n">update_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solver_parameters&quot;</span><span class="p">,</span> <span class="p">{}))</span>
 
         <span class="n">odes</span> <span class="o">=</span> <span class="n">DOLFINParameterizedODE</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">odes</span><span class="p">)</span>
+        <span class="c1"># Get family and degree from str</span>
+        <span class="n">family</span><span class="p">,</span> <span class="n">degree</span> <span class="o">=</span> <span class="n">family_and_degree_from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;space&quot;</span><span class="p">])</span>
 
         <span class="n">distinct_domains</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">odes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">distinct_domains</span> <span class="o">=</span> <span class="n">check_domains</span><span class="p">(</span><span class="n">domains</span><span class="p">,</span> <span class="n">odes</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+            <span class="n">distinct_domains</span> <span class="o">=</span> <span class="n">check_domains</span><span class="p">(</span>
+                <span class="n">domains</span><span class="p">,</span>
+                <span class="n">odes</span><span class="p">,</span>
+                <span class="n">mesh</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;space&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
         <span class="c1"># else:</span>
 
         <span class="c1"># FIXME: Do we really need to check this?</span>
@@ -773,9 +781,22 @@ const thebe_selector_output = ".output, .cell_output"
         <span class="n">distinct_domains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">odes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">num_field_states</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">V</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">num_field_states</span><span class="p">)</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">VectorElement</span><span class="p">(</span>
+                <span class="n">family</span><span class="o">=</span><span class="n">family</span><span class="p">,</span>
+                <span class="n">cell</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">ufl_cell</span><span class="p">(),</span>
+                <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span>
+                <span class="n">quad_scheme</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">dim</span><span class="o">=</span><span class="n">num_field_states</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">V</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">FiniteElement</span><span class="p">(</span>
+                <span class="n">family</span><span class="o">=</span><span class="n">family</span><span class="p">,</span>
+                <span class="n">cell</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">ufl_cell</span><span class="p">(),</span>
+                <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span>
+                <span class="n">quad_scheme</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">dolfin</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
 
         <span class="n">dofs</span> <span class="o">=</span> <span class="n">setup_dofs</span><span class="p">(</span>
             <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">,</span>
