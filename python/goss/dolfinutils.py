@@ -397,7 +397,12 @@ class DOLFINODESystemSolver:
 
     @staticmethod
     def default_parameters():
-        return {"solver": "GRL1", "num_threads": 0, "use_cuda": False}
+        return {
+            "solver": "GRL1",
+            "num_threads": 0,
+            "use_cuda": False,
+            "space": "P_1",
+        }
 
     @staticmethod
     def default_parameters_dolfin():
@@ -411,7 +416,6 @@ class DOLFINODESystemSolver:
         mesh,
         odes,
         domains=None,
-        space="P_1",
         params=None,
     ):
         """
@@ -440,9 +444,6 @@ class DOLFINODESystemSolver:
             "expected a" " dict or a ParameterizedODE for the odes argument"
         )
 
-        # Get family and degree from str
-        family, degree = family_and_degree_from_str(space)
-
         params = params or {}
 
         self.parameters = self.default_parameters()
@@ -452,10 +453,17 @@ class DOLFINODESystemSolver:
         solver.update_parameters(self.parameters.get("solver_parameters", {}))
 
         odes = DOLFINParameterizedODE.convert(odes)
+        # Get family and degree from str
+        family, degree = family_and_degree_from_str(self.parameters["space"])
 
         distinct_domains = [0]
         if len(odes) > 1:
-            distinct_domains = check_domains(domains, odes, mesh, space)
+            distinct_domains = check_domains(
+                domains,
+                odes,
+                mesh,
+                self.parameters["space"],
+            )
         # else:
 
         # FIXME: Do we really need to check this?
@@ -469,9 +477,22 @@ class DOLFINODESystemSolver:
         distinct_domains = list(odes.keys())
 
         if num_field_states > 1:
-            V = dolfin.VectorFunctionSpace(mesh, family, degree, dim=num_field_states)
+            element = dolfin.VectorElement(
+                family=family,
+                cell=mesh.ufl_cell(),
+                degree=degree,
+                quad_scheme="default",
+                dim=num_field_states,
+            )
+
         else:
-            V = dolfin.FunctionSpace(mesh, family, degree)
+            element = dolfin.FiniteElement(
+                family=family,
+                cell=mesh.ufl_cell(),
+                degree=degree,
+                quad_scheme="default",
+            )
+        V = dolfin.FunctionSpace(mesh, element)
 
         dofs = setup_dofs(
             V=V,
