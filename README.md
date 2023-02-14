@@ -67,7 +67,7 @@ ax.set_zlabel("Z Axis")
 ax.set_title("Lorenz Attractor")
 plt.show()
 ```
-![_](https://raw.githubusercontent.com/ComputationalPhysiology/goss/main/docs/source/_static/lorentz.png)
+![_](https://raw.githubusercontent.com/ComputationalPhysiology/goss/main/docs/_static/lorentz.png)
 
 
 For more examples, check out the [demo folder](https://github.com/ComputationalPhysiology/goss/tree/main/demo)
