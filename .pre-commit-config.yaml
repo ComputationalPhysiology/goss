@@ -39,6 +39,6 @@ repos:
         exclude: ^(sandbox/|setup.py|demo)
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v6.26.0
+    rev: v6.27.0
     hooks:
       - id: cspell
