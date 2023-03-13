@@ -33,11 +33,11 @@ jobs:
               arch: x86_64
               build: "*-manylinux_x86_64"
 
-          - os: ubuntu-20.04
-            name: manylinux-arch64
-            cibw:
-              arch: aarch64
-              build: "*-manylinux_aarch64"
+          # - os: ubuntu-20.04
+          #   name: manylinux-arch64
+          #   cibw:
+          #     arch: aarch64
+          #     build: "*-manylinux_aarch64"
 
     steps:
       - uses: actions/checkout@v3
