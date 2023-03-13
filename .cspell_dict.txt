@@ -283,6 +283,7 @@ Saltz
 Sarcolemmal
 savefig
 schneegans
+scientificcomputing
 scikit
 scipy
 Scipy
