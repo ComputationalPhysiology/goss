@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: finsberg/fenics
+      image: ghcr.io/scientificcomputing/fenics:2023-03-01
     steps:
       - uses: actions/checkout@v3
       - name: Build goss

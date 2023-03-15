@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Set the version
-project(Goss VERSION "0.1.0" LANGUAGES CXX)
+project(Goss VERSION "0.4.0" LANGUAGES CXX)
 include(GNUInstallDirs)
 
 if(SKBUILD)
@@ -92,7 +92,8 @@ set(HEADERS_goss
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/constants.h
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/goss.h
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/types.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/goss/version.h)
+  ${CMAKE_CURRENT_SOURCE_DIR}/goss/version.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/goss/ThetaSolver.h)
 
 target_sources(goss PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/AdaptiveExplicitSolver.cpp
