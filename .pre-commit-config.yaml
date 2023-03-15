@@ -33,12 +33,12 @@ repos:
         exclude: ^sandbox/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.0.0
+    rev: v1.1.1
     hooks:
       - id: mypy
         exclude: ^(sandbox/|setup.py|demo)
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v6.22.0
+    rev: v6.28.0
     hooks:
       - id: cspell
