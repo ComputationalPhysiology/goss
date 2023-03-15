@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Set the version
-project(Goss VERSION "0.4.0" LANGUAGES CXX)
+project(Goss VERSION "0.4.1" LANGUAGES CXX)
 include(GNUInstallDirs)
 
 if(SKBUILD)

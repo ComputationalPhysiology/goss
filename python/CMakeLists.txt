@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18.2)
 
-project(goss_pybind11 VERSION "0.4.0" LANGUAGES CXX)
+project(goss_pybind11 VERSION "0.4.1" LANGUAGES CXX)
 
 include(GNUInstallDirs)
 
