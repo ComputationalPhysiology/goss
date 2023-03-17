@@ -50,6 +50,7 @@ cgen
 cibuildwheel
 cibw
 CIBW
+cmdclass
 CMDN
 codecov
 codegen
@@ -71,10 +72,12 @@ cuda
 CUDA
 cudahandler
 CUDAODE
+CXXFLAGS
 cytosole
 Cytosole
 Daversin
 DBUILD
+DCMAKE
 declspec
 depeds
 Dictionaty
@@ -97,6 +100,7 @@ dtinit
 dtnew
 dtoh
 dtype
+DVERSION
 dxto
 dylib
 dyto
@@ -108,6 +112,7 @@ encapsulateandcontain
 epicardial
 ESDIRK
 etamin
+extdir
 facmax
 facmaxb
 facmin
@@ -301,6 +306,7 @@ skbuild
 SKBUILD
 smod
 Sneyd
+sourcedir
 sphinxcontrib
 Spyder
 spyderproject
