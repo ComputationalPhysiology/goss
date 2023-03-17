@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 3.18.2)
+cmake_minimum_required(VERSION 3.16)
 
 project(goss_pybind11 VERSION "0.4.1" LANGUAGES CXX)
-
-include(GNUInstallDirs)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -11,34 +9,37 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenMP)
 
-# See https://gitlab.kitware.com/cmake/cmake/-/issues/16414
-add_library(Goss::goss ALIAS goss)
+if (TARGET goss)
+  add_library(Goss::goss ALIAS goss)
+else()
+  # Find goss (C++)
+  find_package(Goss REQUIRED)
+endif()
 
-# find_package(GOSS REQUIRED)
 
-# find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-# find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-if(SKBUILD)
-  # Scikit-Build does not add your site-packages to the search path
-  # automatically, so we need to add it or the pybind11 specific
-  # directory here.
-  execute_process(
-    COMMAND
+if(NOT SKBUILD)
+  if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0")
+    find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+  else()
+    find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+  endif()
+endif()
+
+execute_process(
+  COMMAND
     "${Python3_EXECUTABLE}" -c
     "import pybind11; print(pybind11.get_cmake_dir())"
-    OUTPUT_VARIABLE _tmp_dir
-    OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT)
-  list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
-endif()
+  OUTPUT_VARIABLE _tmp_dir
+  OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT)
+list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
 
 find_package(pybind11 REQUIRED CONFIG HINTS ${PYBIND11_DIR} ${PYBIND11_ROOT}
   $ENV{PYBIND11_DIR} $ENV{PYBIND11_ROOT})
 
-set(python_module_name _gosscpp)
 
 # Create the binding library
 pybind11_add_module(_gosscpp MODULE wrapper.cpp)
-target_link_libraries(_gosscpp PRIVATE Goss::goss)
+target_link_libraries(_gosscpp PUBLIC Goss::goss)
 
 # Add strict compiler flags
 include(CheckCXXCompilerFlag)
@@ -66,3 +67,4 @@ if(SKBUILD)
 
   install(TARGETS _gosscpp DESTINATION .)
 endif()
+#

@@ -62,6 +62,7 @@ setup(
         "-DPython3_INCLUDE_DIRS=" + sysconfig.get_config_var("INCLUDEPY"),
     ],
     packages=["goss"],
+    package_data={"goss": ["py.typed"]},
     package_dir={"": "python"},
     cmake_install_dir="python/goss/",
     classifiers=[

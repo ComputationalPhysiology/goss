@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.19)
 
 project(GossFull VERSION "0.3.1.0" LANGUAGES CXX)
 add_subdirectory(cpp)

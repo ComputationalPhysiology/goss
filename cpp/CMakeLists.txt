@@ -27,6 +27,7 @@ option(BUILD_SHARED_LIBS "Build Goss with shared libraries." ON)
 add_feature_info(BUILD_SHARED_LIBS BUILD_SHARED_LIBS "Build Goss with shared libraries.")
 option(BUILD_TESTS "Build the test suite." OFF)
 
+
 # Check if OpenMP is turned Off, otherwise set it to true
 if(DEFINED ENV{OPENMP})
   set(USE_OPENMP $ENV{OPENMP})
@@ -67,6 +68,7 @@ feature_summary(WHAT ALL)
 add_library(goss)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/goss/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/goss/version.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(HEADERS_goss
   ${CMAKE_CURRENT_SOURCE_DIR}/goss/AdaptiveExplicitSolver.h
