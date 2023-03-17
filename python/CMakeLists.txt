@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(goss_pybind11 VERSION "0.4.1" LANGUAGES CXX)
+project(goss_pybind11 VERSION "0.4.2" LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)

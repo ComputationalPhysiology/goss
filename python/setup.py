@@ -90,7 +90,7 @@ class CMakeBuild(build_ext):
 setup(
     name="pygoss",
     python_requires=">=3.7.0",
-    version="0.4.1",
+    version="0.4.2",
     description="Python interface to goss - General ODE System Solver",
     long_description_content_type="text/markdown",
     url="https://github.com/ComputationalPhysiology/goss",
