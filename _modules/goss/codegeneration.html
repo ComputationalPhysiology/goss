@@ -496,7 +496,7 @@ document.write(`
     <span class="n">numerals_symbols</span> <span class="o">=</span> <span class="s2">&quot;numerals_symbols&quot;</span></div>
 
 
-<span class="k">class</span> <span class="nc">GossCodeGeneratorParameters</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="GossCodeGeneratorParameters"><a class="viewcode-back" href="../../docs/api.html#goss.codegeneration.GossCodeGeneratorParameters">[docs]</a><span class="k">class</span> <span class="nc">GossCodeGeneratorParameters</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">state_repr</span><span class="p">:</span> <span class="n">StateRepr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">StateRepr</span><span class="o">.</span><span class="n">named</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Representation of the state&quot;</span><span class="p">,</span>
@@ -550,7 +550,7 @@ document.write(`
 
             <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]),</span> <span class="n">t</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
         <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
-        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GossCodeGenerator"><a class="viewcode-back" href="../../docs/api.html#goss.codegeneration.GossCodeGenerator">[docs]</a><span class="k">class</span> <span class="nc">GossCodeGenerator</span><span class="p">(</span><span class="n">CppCodeGenerator</span><span class="p">):</span>

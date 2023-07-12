@@ -90,7 +90,7 @@ See [installation instructions](docs/install.md) for more options
 ## Known issues
 
 - There is currently an issue on Apple Silicon with exceptions raised from by the jit compiled code which means the [one test](https://github.com/ComputationalPhysiology/goss/blob/main/tests/test_ode_bindings.py#L51) is not passing. An issue has been filed for this [here](https://github.com/wlav/cppyy/issues/68)
-- If you get the following type of error: `UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position ...`, then you can try to install the `goss` from source, i.e
+- If you get the following type of error: `UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position ...`, then you can try to install `goss` from source, i.e
 ```
 python3 -m pip install pygoss --no-binary=pygoss --force-reinstall --no-deps
 ```
