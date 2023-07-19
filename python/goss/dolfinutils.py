@@ -166,7 +166,9 @@ class DOLFINParameterizedODE(ParameterizedODE):
     def initial_conditions(self) -> dolfin.Expression:
         "Return initial conditions for v and s as an Expression."
         return dolfin.Expression(
-            list(self.state_names), degree=1, **self._initial_conditions
+            list(self.state_names),
+            degree=1,
+            **self._initial_conditions,
         )
 
     def field_state_initial_conditions(self) -> dolfin.Expression:
