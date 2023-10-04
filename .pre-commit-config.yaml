@@ -9,7 +9,7 @@ repos:
       - id: debug-statements
 
   - repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.10.0
+    rev: v3.12.0
     hooks:
       - id: reorder-python-imports
         exclude: ^sandbox/|^demo/
@@ -39,6 +39,6 @@ repos:
         exclude: ^(sandbox/|setup.py|demo)
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v7.3.0
+    rev: v7.3.1
     hooks:
       - id: cspell
