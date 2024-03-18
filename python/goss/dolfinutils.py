@@ -585,9 +585,9 @@ class DOLFINODESystemSolver:
                         ] = (ode.field_params[param].vector().get_local())
 
                 else:
-                    self._param_values[label][
-                        local_id :: ode.num_field_parameters
-                    ] = ode.get_parameter(param)
+                    self._param_values[label][local_id :: ode.num_field_parameters] = (
+                        ode.get_parameter(param)
+                    )
 
             # Reset any changed field parameters
             ode.changed_field_parameters = []
